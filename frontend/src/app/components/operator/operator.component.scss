@@ -42,3 +42,19 @@
     min-width: 20%;
   }
 }
+
+li {
+  cursor: pointer;
+}
+
+li:hover:not(.is-active) {
+  background-color: #ededed;
+  border-radius: 6px;
+}
+
+.is-active {
+  background-color: lightgray;
+  border-radius: 6px;
+  font-weight: bold;
+  color: darkblue;
+}
