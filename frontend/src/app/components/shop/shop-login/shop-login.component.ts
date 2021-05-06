@@ -7,10 +7,10 @@ import {AuthRequest} from '../../../dtos/auth-request';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  templateUrl: './shop-login.component.html',
+  styleUrls: ['./shop-login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class ShopLoginComponent implements OnInit {
 
   loginForm: FormGroup;
   // After first submission attempt, form validation will start

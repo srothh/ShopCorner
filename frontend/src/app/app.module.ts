@@ -5,11 +5,11 @@ import {HttpClientModule} from '@angular/common/http';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {HeaderComponent} from './components/shop/header/header.component';
-import {FooterComponent} from './components/shop/footer/footer.component';
-import {HomeComponent} from './components/shop/home/home.component';
-import {LoginComponent} from './components/shop/login/login.component';
-import {MessageComponent} from './components/shop/message/message.component';
+import {HeaderComponent} from './components/shop/shop-header/header.component';
+import {FooterComponent} from './components/shop/shop-footer/footer.component';
+import {ShopHomeComponent} from './components/shop/shop-home/shop-home.component';
+import {ShopLoginComponent} from './components/shop/shop-login/shop-login.component';
+import {ShopMessageComponent} from './components/shop/shop-message/shop-message.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {httpInterceptorProviders} from './interceptors';
 import { OperatorComponent } from './components/operator/operator.component';
@@ -22,15 +22,18 @@ import { OperatorPromotionComponent } from './components/operator/operator-promo
 import { OperatorStatisticComponent } from './components/operator/operator-statistics/operator-statistic.component';
 import { OperatorCustomerComponent } from './components/operator/operator-customers/operator-customer.component';
 import { OperatorAccountComponent } from './components/operator/operator-accounts/operator-account.component';
+import { ShopComponent } from './components/shop/shop.component';
+import { ShopProductComponent } from './components/shop/shop-product/shop-product.component';
+import { ShopCartComponent } from './components/shop/shop-cart/shop-cart.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    HomeComponent,
-    LoginComponent,
-    MessageComponent,
+    ShopHomeComponent,
+    ShopLoginComponent,
+    ShopMessageComponent,
     OperatorComponent,
     OperatorHomeComponent,
     OperatorShopComponent,
@@ -41,6 +44,9 @@ import { OperatorAccountComponent } from './components/operator/operator-account
     OperatorStatisticComponent,
     OperatorCustomerComponent,
     OperatorAccountComponent,
+    ShopComponent,
+    ShopProductComponent,
+    ShopCartComponent,
   ],
   imports: [
     BrowserModule,

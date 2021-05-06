@@ -8,10 +8,10 @@ import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-message',
-  templateUrl: './message.component.html',
-  styleUrls: ['./message.component.scss']
+  templateUrl: './shop-message.component.html',
+  styleUrls: ['./shop-message.component.scss']
 })
-export class MessageComponent implements OnInit {
+export class ShopMessageComponent implements OnInit {
 
   error = false;
   errorMessage = '';
