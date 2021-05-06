@@ -1,10 +1,10 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {MessageService} from '../../services/message.service';
-import {Message} from '../../dtos/message';
+import {MessageService} from '../../../services/message.service';
+import {Message} from '../../../dtos/message';
 import {NgbPaginationConfig} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'lodash';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthService} from '../../services/auth.service';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-message',

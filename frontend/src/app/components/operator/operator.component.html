@@ -1,0 +1,35 @@
+<div class="d-flex" id="wrapper">
+
+  <!-- Sidebar -->
+  <div class="bg-light border-right" id="sidebar-wrapper">
+    <div class="p-5">
+      <div class="d-flex flex-row align-items-center">
+        <!-- Temporary operator image -->
+        <img src="https://bawue.museum-digital.de/data/bawue/resources/images/201912/200w_254450-5df294e77183f.jpg"
+             alt="User Profile Image"
+             class="rounded-circle" style="height: 3.5rem; width: 3.5rem;">
+        <!-- Temporary operator name -->
+        <span class="ml-5 font-weight-bold">Bonus Eventus</span>
+      </div>
+      <ul class="list-unstyled mt-5">
+        <li><a routerLink="/operator/home">Home</a></li>
+        <li><a routerLink="/operator/shop">Shop</a></li>
+        <li><a routerLink="/operator/invoices">Invoices</a></li>
+        <li><a routerLink="/operator/orders">Orders</a></li>
+        <li><a routerLink="/operator/products">Products</a></li>
+        <li><a routerLink="/operator/promotions">Promotions</a></li>
+        <li><a routerLink="/operator/statistics">Statistics</a></li>
+        <li><a routerLink="/operator/customers">Customers</a></li>
+        <li><a routerLink="/operator/accounts">Operator Accounts</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+</div>
