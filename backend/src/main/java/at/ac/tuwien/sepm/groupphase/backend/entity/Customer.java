@@ -11,16 +11,19 @@ public class Customer {
     private String name;
     private String loginName;
     private Long address;
+    private String phoneNumber;
+
     public Customer() {
     }
 
-    public Customer(String email, String password, String name, String loginName, Long address, Long id) {
+    public Customer(String email, String password, String name, String loginName, Long address, Long id, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.loginName = loginName;
         this.address = address;
         this.id = id;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getEmail() {

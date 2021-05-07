@@ -2,7 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class CustomerDto {
+public class CustomerRegistrationDto {
 
     private Long id;
     @NotNull(message= "email must not be null")
@@ -15,10 +15,10 @@ public class CustomerDto {
     private String loginName;
     @NotNull(message= "address must not be null")
     private Long address;
-    public CustomerDto() {
+    public CustomerRegistrationDto() {
     }
 
-    public CustomerDto(String email, String password, String name, String loginName, Long address, Long id) {
+    public CustomerRegistrationDto(String email, String password, String name, String loginName, Long address, Long id) {
         this.email = email;
         this.password = password;
         this.name = name;
