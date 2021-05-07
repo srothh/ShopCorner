@@ -1,21 +1,20 @@
-package at.ac.tuwien.sepm.groupphase.backend.entity;
+package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
+
+import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-public class Category {
-    @Id
-    @SequenceGenerator(name="category_sequence", sequenceName = "category_sequence")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+public class CategoryDto {
+
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "category")
     private Set<Product> products = new HashSet<>();
 
-    public Category(){}
+    public CategoryDto(){}
 
     public Long getId() {
         return id;
@@ -44,13 +43,13 @@ public class Category {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Category)) {
+        if (!(o instanceof CategoryDto)) {
             return false;
         }
-        Category category = (Category) o;
-        return Objects.equals(id, category.id)
-            && Objects.equals(name, category.name)
-            && Objects.equals(products,category.products);
+        CategoryDto categoryDto = (CategoryDto) o;
+        return Objects.equals(id, categoryDto.id)
+            && Objects.equals(name, categoryDto.name)
+            && Objects.equals(products,categoryDto.products);
 
     }
 
@@ -61,7 +60,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
+        return "CategoryDto{" +
             "id=" + id +
             ", name='" + name + '\'' +
             ", products=" + products +

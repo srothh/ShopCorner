@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,8 @@ public class ProductEndpoint {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDto createProduct(@RequestBody ProductDto productDto){
+        Product productEntity = this.productMapper.dtoToEntity(productDto);
+        System.out.println("productEntity is:" +  productEntity);
         return this.productMapper
             .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto)));
     }

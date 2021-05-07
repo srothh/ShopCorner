@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -13,11 +15,14 @@ public class Product {
     @NotNull
     private String name;
     private String description;
+    @DecimalMin("0.0")
     private Double amount;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_fk")
+    @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
+    //TODO: create new Tax Table and make a reference to it
     private Double taxRate;
+
 
     public Product() {
     }
