@@ -77,12 +77,13 @@ CREATE TABLE IF NOT EXISTS invoice
 
 CREATE TABLE IF NOT EXISTS invoice_item
 (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    number_of_items BIGINT NOT NULL,
     invoice_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
     CONSTRAINT invoice_item_fk FOREIGN KEY (invoice_id) REFERENCES invoice(id) ON DELETE SET NULL,
-    CONSTRAINT product_fk FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE SET NULL
-);
+    CONSTRAINT product_fk FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE SET NULL,
+    PRIMARY KEY (invoice_id,product_id)
+    );
 
 CREATE TABLE IF NOT EXISTS cancellation_invoice
 (

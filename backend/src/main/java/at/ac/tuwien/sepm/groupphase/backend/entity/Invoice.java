@@ -17,14 +17,10 @@ public class Invoice {
     @Column(nullable = false)
     private double amount;
 
-    @ManyToMany
-    @JoinTable(
-        name = "invoice_item",
-        joinColumns = @JoinColumn(name = "invoice_id"),
-        inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Products> items;
+    @OneToMany(mappedBy = "invoice")
+    private Set<InvoiceItem> items;
 
-    public Invoice(Long id, LocalDateTime date, double amount, Set<Products> items) {
+    public Invoice(Long id, LocalDateTime date, double amount, Set<InvoiceItem> items) {
         this.id = id;
         this.date = date;
         this.amount = amount;
