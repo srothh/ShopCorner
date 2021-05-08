@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.lang.invoke.MethodHandles;
 @Service
@@ -21,39 +22,34 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(Product product) {
-        if (validateProduct(product)) {
-            return this.productRepository.save(product);
-        }
-        return null;
+    public Product createProduct(Product product) throws Exception {
+        validateProduct(product);
+        return this.productRepository.save(product);
     }
-    public boolean validateProduct(Product product){
+    public void validateProduct(Product product) throws Exception{
         //name is mandatory!
         if (product.getName() == null) {
-            System.out.println("property cannot be null");
-            return false;
+            throw new Exception("name cannot be null!");
         }
 
         //a string with only whitespaces not allowed
         if (product.getName().trim().isEmpty()){
-            System.out.println("name consist of only whitespaces");
-            return false;
+            throw new Exception("name consist of only whitespaces");
         }
+        //maximum of characters exceeded!
         if (product.getName().length() > 20 ) {
-            System.out.println("name too long!");
-            return false;
+            throw new Exception("name is too long!");
+
         }
         if (product.getDescription() != null){
             if (product.getDescription().trim().isEmpty()){
-                System.out.println("description consist of only whitespaces!");
-                return false;
+                throw new Exception("name consist of only whitespaces");
             }
             if (product.getDescription().length() > 50 ) {
-                System.out.println("description too long!");
-                return false;
+                throw new Exception("name is too long!");
             }
 
         }
-        return true;
+
     }
 }

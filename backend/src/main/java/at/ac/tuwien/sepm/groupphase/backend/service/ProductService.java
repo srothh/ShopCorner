@@ -12,8 +12,9 @@ public interface ProductService {
          *
          * @param product the newly added product
          * @return the newly created product
+         * @throws Exception if validation of a product has failed
          */
-        Product createProduct(Product product);
+        Product createProduct(Product product) throws Exception;
 
 
 
