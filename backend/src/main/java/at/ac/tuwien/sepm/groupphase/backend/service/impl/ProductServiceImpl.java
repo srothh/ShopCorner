@@ -22,6 +22,38 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(Product product) {
-        return this.productRepository.save(product);
+        if (validateProduct(product)) {
+            return this.productRepository.save(product);
+        }
+        return null;
+    }
+    public boolean validateProduct(Product product){
+        //name is mandatory!
+        if (product.getName() == null) {
+            System.out.println("property cannot be null");
+            return false;
+        }
+
+        //a string with only whitespaces not allowed
+        if (product.getName().trim().isEmpty()){
+            System.out.println("name consist of only whitespaces");
+            return false;
+        }
+        if (product.getName().length() > 20 ) {
+            System.out.println("name too long!");
+            return false;
+        }
+        if (product.getDescription() != null){
+            if (product.getDescription().trim().isEmpty()){
+                System.out.println("description consist of only whitespaces!");
+                return false;
+            }
+            if (product.getDescription().length() > 50 ) {
+                System.out.println("description too long!");
+                return false;
+            }
+
+        }
+        return true;
     }
 }
