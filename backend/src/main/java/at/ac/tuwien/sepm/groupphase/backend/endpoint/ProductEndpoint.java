@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value ="api/v1/products")
@@ -36,6 +38,20 @@ public class ProductEndpoint {
         }
         catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductDto> getAllProducts(){
+        try {
+            return this.productService.getAllProducts()
+                .stream()
+                .map(this.productMapper::entityToDto)
+                .collect(Collectors.toList());
+        }
+        catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

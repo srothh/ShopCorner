@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
+
 @Service
 public class ProductServiceImpl implements ProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -26,6 +28,14 @@ public class ProductServiceImpl implements ProductService {
         validateProduct(product);
         return this.productRepository.save(product);
     }
+
+    @Override
+    public List<Product> getAllProducts() throws Exception {
+        return this.productRepository.findAll();
+    }
+
+
+    //NOTE: this can be extracted to a validator class -> waiting to see how teammates have implemented this
     public void validateProduct(Product product) throws Exception{
         //name is mandatory!
         if (product.getName() == null) {
@@ -43,10 +53,10 @@ public class ProductServiceImpl implements ProductService {
         }
         if (product.getDescription() != null){
             if (product.getDescription().trim().isEmpty()){
-                throw new Exception("name consist of only whitespaces");
+                throw new Exception("description consist of only whitespaces");
             }
             if (product.getDescription().length() > 50 ) {
-                throw new Exception("name is too long!");
+                throw new Exception("description is too long!");
             }
 
         }
