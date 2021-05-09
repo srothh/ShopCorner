@@ -7,9 +7,10 @@ import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
 @Mapper
-@Component("CustomerMapper")
+@Component
 public interface CustomerMapper {
     @Named("Customer")
     Customer CustomerDtoToCustomer(CustomerRegistrationDto dto);
+
     CustomerRegistrationDto CustomerToCustomerDto(Customer customer);
 }

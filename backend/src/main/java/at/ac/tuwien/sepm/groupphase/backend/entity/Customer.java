@@ -1,16 +1,28 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "customer")
 public class Customer {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true, updatable = false)
     private Long id;
+    @Column(name = "email", nullable = false)
     private String email;
+    @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "login_name", nullable = false)
     private String loginName;
+    //TODO: add relation to address
+    @Column(name = "address")
     private Long address;
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     public Customer() {
@@ -23,6 +35,22 @@ public class Customer {
         this.loginName = loginName;
         this.address = address;
         this.id = id;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
