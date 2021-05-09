@@ -17,6 +17,7 @@ import {OperatorAccountComponent} from './components/operator/operator-accounts/
 import {ShopComponent} from './components/shop/shop.component';
 import {ShopProductComponent} from './components/shop/shop-product/shop-product.component';
 import {ShopCartComponent} from './components/shop/shop-cart/shop-cart.component';
+import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 
 const routes: Routes = [
   {path: '', component: ShopComponent, children: [
@@ -26,6 +27,7 @@ const routes: Routes = [
       {path: 'message', canActivate: [AuthGuard], component: ShopMessageComponent},
       {path: 'products', component: ShopProductComponent},
       {path: 'cart', component: ShopCartComponent},
+      {path: 'register', component: ShopRegistrationComponent}
     ]},
   {path: 'operator', component: OperatorComponent, children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },

@@ -25,6 +25,7 @@ import { OperatorAccountComponent } from './components/operator/operator-account
 import { ShopComponent } from './components/shop/shop.component';
 import { ShopProductComponent } from './components/shop/shop-product/shop-product.component';
 import { ShopCartComponent } from './components/shop/shop-cart/shop-cart.component';
+import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { ShopCartComponent } from './components/shop/shop-cart/shop-cart.compone
     ShopComponent,
     ShopProductComponent,
     ShopCartComponent,
+    ShopRegistrationComponent,
   ],
   imports: [
     BrowserModule,
