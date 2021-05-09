@@ -5,16 +5,17 @@ import javax.validation.constraints.NotNull;
 public class CustomerRegistrationDto {
 
     private Long id;
-    @NotNull(message= "email must not be null")
+    @NotNull(message = "email must not be null")
     private String email;
-    @NotNull(message= "password must not be null")
+    @NotNull(message = "password must not be null")
     private String password;
     @NotNull(message = "Name must not be null")
     private String name;
-    @NotNull(message= "loginName must not be null")
+    @NotNull(message = "loginName must not be null")
     private String loginName;
-    @NotNull(message= "address must not be null")
+    @NotNull(message = "address must not be null")
     private Long address;
+
     public CustomerRegistrationDto() {
     }
 
