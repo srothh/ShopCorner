@@ -1,7 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Message;
+
+import java.util.List;
 
 public interface InvoiceService {
 
@@ -12,4 +13,13 @@ public interface InvoiceService {
      * @return the message entry
      */
     Invoice findOne(Long id);
+
+
+    /**
+     * Find all invoice entries ordered by published at date (descending).
+     *
+     * @return ordered list of al message entries
+     */
+    List<Invoice> findAll();
+
 }
