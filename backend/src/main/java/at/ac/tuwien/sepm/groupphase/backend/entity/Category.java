@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -8,11 +10,12 @@ import java.util.Set;
 @Entity
 public class Category {
     @Id
-    @SequenceGenerator(name="category_sequence", sequenceName = "category_sequence")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    //@SequenceGenerator(name="category_sequence", sequenceName = "category_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
     public Category(){}

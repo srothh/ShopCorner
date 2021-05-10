@@ -12,10 +12,11 @@ public interface ProductService {
      * Creates a new product.
      *
      * @param product the newly added product
+     * @param categoryId assigns a product to its category
      * @return the newly created product
      * @throws Exception if validation of a product has failed
      */
-    Product createProduct(Product product) throws Exception;
+    Product createProduct(Product product,Long categoryId) throws Exception;
 
     /**
      * Gets all products that were previously added in the database.

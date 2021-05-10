@@ -11,9 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value ="api/v1/categories")
@@ -31,10 +35,20 @@ public class CategoryEndpoint {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto createCategory(@RequestBody CategoryDto categoryDto){
-        Category entity = this.categoryMapper.dtoToEntity(categoryDto);
-        System.out.println("Dto:"+ categoryDto);
-        System.out.println("entity:"+ entity);
         return this.categoryMapper
             .entityToDto(this.categoryService.createCategory(this.categoryMapper.dtoToEntity(categoryDto)));
+    }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<CategoryDto> getAllProducts(){
+        try {
+            return this.categoryService.getAllCategories()
+                .stream()
+                .map(this.categoryMapper::entityToDto)
+                .collect(Collectors.toList());
+        }
+        catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 }

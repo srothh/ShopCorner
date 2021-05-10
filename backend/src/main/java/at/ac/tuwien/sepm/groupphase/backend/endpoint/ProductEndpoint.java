@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value ="api/v1/products")
 public class ProductEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final ProductService productService;
@@ -29,19 +28,19 @@ public class ProductEndpoint {
         this.productMapper = productMapper;
     }
 
-    @PostMapping
+    @PostMapping("api/v1/products/{categoryId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductDto createProduct(@RequestBody ProductDto productDto) throws Exception{
+    public ProductDto createProduct(@RequestBody ProductDto productDto, @PathVariable(required = false) Long categoryId) throws Exception{
         try {
             return this.productMapper
-                .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto)));
+                .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto), categoryId));
         }
         catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @GetMapping
+    @GetMapping("api/v1/products")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductDto> getAllProducts(){
         try {
