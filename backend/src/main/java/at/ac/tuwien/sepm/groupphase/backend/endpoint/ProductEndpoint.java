@@ -28,7 +28,7 @@ public class ProductEndpoint {
         this.productMapper = productMapper;
     }
 
-    @PostMapping("api/v1/products/{categoryId}")
+    @PostMapping("api/v1/products/categories/{categoryId}")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDto createProduct(@RequestBody ProductDto productDto, @PathVariable(required = false) Long categoryId) throws Exception{
         try {

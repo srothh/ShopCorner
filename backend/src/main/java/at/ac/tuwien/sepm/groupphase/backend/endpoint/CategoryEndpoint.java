@@ -46,6 +46,7 @@ public class CategoryEndpoint {
                 .stream()
                 .map(this.categoryMapper::entityToDto)
                 .collect(Collectors.toList());
+
         }
         catch(Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

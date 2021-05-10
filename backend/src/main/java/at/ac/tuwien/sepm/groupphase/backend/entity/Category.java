@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -52,14 +53,12 @@ public class Category {
         }
         Category category = (Category) o;
         return Objects.equals(id, category.id)
-            && Objects.equals(name, category.name)
-            && Objects.equals(products,category.products);
-
+            && Objects.equals(name, category.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, products);
+        return Objects.hash(id, name);
     }
 
     @Override
@@ -67,7 +66,7 @@ public class Category {
         return "Category{" +
             "id=" + id +
             ", name='" + name + '\'' +
-            ", products=" + products +
+            //", products=" + products +
             '}';
     }
 }

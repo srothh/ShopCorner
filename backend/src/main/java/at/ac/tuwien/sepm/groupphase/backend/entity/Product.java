@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
@@ -77,6 +78,7 @@ public class Product {
         this.taxRate = taxRate;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -87,16 +89,13 @@ public class Product {
         }
         Product product = (Product) o;
         return Objects.equals(id, product.id)
-            && Objects.equals(name, product.name)
-            && Objects.equals(description, product.description)
-            && Objects.equals(amount, product.amount)
-            && Objects.equals(category, product.category)
-            && Objects.equals(taxRate, product.taxRate);
+            && Objects.equals(name, product.name);
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, amount, category, taxRate);
+        return Objects.hash(id, name);
     }
 
     @Override
