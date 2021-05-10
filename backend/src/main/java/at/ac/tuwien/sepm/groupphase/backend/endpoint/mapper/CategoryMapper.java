@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Mapper
 public interface CategoryMapper {
-        CategoryDto entityToDto(Category category);
-        Category dtoToEntity(CategoryDto categoryDto);
+    CategoryDto entityToDto(Category category);
+
+    Category dtoToEntity(CategoryDto categoryDto);
 }

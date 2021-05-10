@@ -1,9 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
-
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -14,7 +11,8 @@ public class CategoryDto {
     private String name;
     private Set<Product> products = new HashSet<>();
 
-    public CategoryDto(){}
+    public CategoryDto() {
+    }
 
     public Long getId() {
         return id;
@@ -39,6 +37,7 @@ public class CategoryDto {
     public void setProducts(Set<Product> products) {
         this.products = products;
     }
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -49,7 +48,7 @@ public class CategoryDto {
         CategoryDto categoryDto = (CategoryDto) o;
         return Objects.equals(id, categoryDto.id)
             && Objects.equals(name, categoryDto.name)
-            && Objects.equals(products,categoryDto.products);
+            && Objects.equals(products, categoryDto.products);
 
     }
 
@@ -60,10 +59,14 @@ public class CategoryDto {
 
     @Override
     public String toString() {
-        return "CategoryDto{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", products=" + products +
+        return "CategoryDto{"
+            +
+            "id=" + id
+            +
+            ", name='" + name + '\''
+            +
+            ", products=" + products
+            +
             '}';
     }
 }

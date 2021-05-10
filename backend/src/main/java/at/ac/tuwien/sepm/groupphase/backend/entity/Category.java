@@ -1,9 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang3.builder.ToStringExclude;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -44,6 +47,7 @@ public class Category {
     public void setProducts(Set<Product> products) {
         this.products = products;
     }
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -63,9 +67,12 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
+        return "Category{"
+            +
+            "id=" + id
+            +
+            ", name='" + name + '\''
+            +
             //", products=" + products +
             '}';
     }

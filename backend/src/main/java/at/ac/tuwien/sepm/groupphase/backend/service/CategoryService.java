@@ -18,6 +18,7 @@ public interface CategoryService {
 
     /**
      * Gets all Categories that were previously created.
+     *
      * @return all categories that were previously saved
      */
     List<Category> getAllCategories();

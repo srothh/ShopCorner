@@ -1,9 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
-
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -91,13 +88,20 @@ public class ProductDto {
 
     @Override
     public String toString() {
-        return "ProductDto{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", amount=" + amount +
-            ", category=" + category +
-            ", taxRate=" + taxRate +
+        return "ProductDto{"
+            +
+            "id=" + id
+            +
+            ", name='" + name + '\''
+            +
+            ", description='" + description + '\''
+            +
+            ", amount=" + amount
+            +
+            ", category=" + category
+            +
+            ", taxRate=" + taxRate
+            +
             '}';
     }
 }
