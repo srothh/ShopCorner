@@ -3,10 +3,17 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 @Entity
 @Table(name = "customer")
@@ -14,18 +21,29 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(name = "id", nullable = false, unique = true, updatable = false)
     private Long id;
-    @Column(name = "email", nullable = false)
-    private String email;
-    @Column(name = "password", nullable = false)
-    private String password;
     @Column(name = "name", nullable = false)
+    @NotBlank
+    @Max(value = 255, message = "Name must not be longer than 255 characters")
     private String name;
     @Column(name = "login_name", nullable = false)
+    @NotBlank
+    @Max(value = 128, message = "Login name must not be longer than 128 characters")
     private String loginName;
+    @Column(name = "password", nullable = false)
+    @NotBlank
+    @Max(value = 128, message = "Password must not be longer than 128 characters")
+    private String password;
+    @Column(name = "email", nullable = false)
+    @Max(value = 255, message = "Email must not be longer than 255 characters")
+    @NotBlank
+    @Email
+    private String email;
     //TODO: add relation to address
-    @Column(name = "address")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id", nullable = false)
+    @Positive
     private Long address;
     @Column(name = "phone_number")
     private String phoneNumber;

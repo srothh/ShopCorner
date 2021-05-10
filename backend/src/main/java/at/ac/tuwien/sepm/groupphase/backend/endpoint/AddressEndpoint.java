@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
-import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
+import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
@@ -20,25 +20,25 @@ import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 
 @RestController
-@RequestMapping("/users")
-public class CustomerEndpoint {
+@RequestMapping("/address")
+public class AddressEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private final CustomerMapper customerMapper;
-    private final CustomerService customerService;
-
     @Autowired
-    public CustomerEndpoint(CustomerMapper customerMapper, CustomerService customerService) {
-        this.customerMapper = customerMapper;
-        this.customerService = customerService;
+    private final AddressMapper addressMapper;
+    private final AddressService addressService;
+
+    public AddressEndpoint(AddressMapper addressMapper, AddressService addressService) {
+        this.addressMapper = addressMapper;
+        this.addressService = addressService;
     }
 
     @PermitAll
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register a new customer account", security = @SecurityRequirement(name = "apiKey"))
-    public CustomerRegistrationDto registerNewCustomer(@Valid @RequestBody CustomerRegistrationDto dto) {
-        LOGGER.info("POST {}", dto);
-        return customerMapper.customerToCustomerDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto)));
+    public AddressDto addNewAddress(@Valid @RequestBody AddressDto dto) {
+        LOGGER.info("POST /address");
+        return addressMapper.customerToCustomerDto(addressService.addNewAddress(addressMapper.addressDtoToAddress(dto)));
     }
 }

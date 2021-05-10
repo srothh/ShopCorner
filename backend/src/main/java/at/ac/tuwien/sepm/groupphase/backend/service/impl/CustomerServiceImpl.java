@@ -17,9 +17,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final Validator validator;
-    @Autowired
     private final CustomerRepository customerRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -31,10 +29,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer registerNewCustomer(Customer customer) {
-        LOGGER.debug("registerNewCustomer({})", customer);
+        LOGGER.trace("registerNewCustomer({})", customer);
         validator.validateCustomerRegistration(customer);
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-
         return customerRepository.registerNewCustomer(customer.getId(), customer.getName(), customer.getLoginName(), customer.getPassword(), customer.getEmail(), customer.getAddress(), customer.getPhoneNumber());
     }
 }
