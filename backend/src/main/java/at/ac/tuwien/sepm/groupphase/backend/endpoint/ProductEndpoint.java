@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,12 +29,16 @@ public class ProductEndpoint {
         this.productMapper = productMapper;
     }
 
-    @PostMapping("api/v1/products/categories/{categoryId}")
+    @PostMapping({"api/v1/products/categories/{categoryId}","api/v1/products/categories/"})
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductDto createProduct(@RequestBody ProductDto productDto, @PathVariable(required = false) Long categoryId) throws Exception{
+    public ProductDto createProduct(@RequestBody ProductDto productDto, @PathVariable Optional<Long> categoryId) throws Exception{
         try {
+            Long validCategoryId = null;
+            if (categoryId.isPresent()){
+                validCategoryId = categoryId.get();
+            }
             return this.productMapper
-                .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto), categoryId));
+                .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto), validCategoryId));
         }
         catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
