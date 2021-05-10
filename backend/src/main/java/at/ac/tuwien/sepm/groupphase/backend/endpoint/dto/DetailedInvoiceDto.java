@@ -1,17 +1,19 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+
 import java.util.Objects;
 import java.util.Set;
 
 public class DetailedInvoiceDto extends SimpleInvoiceDto{
 
-    private Set<ProductsDto> items;
+    private Set<InvoiceItem> items;
 
-    public Set<ProductsDto> getItems() {
+    public Set<InvoiceItem> getItems() {
         return items;
     }
 
-    public void setItems(Set<ProductsDto> items) {
+    public void setItems(Set<InvoiceItem> items) {
         this.items = items;
     }
 
@@ -23,6 +25,7 @@ public class DetailedInvoiceDto extends SimpleInvoiceDto{
         DetailedInvoiceDto that = (DetailedInvoiceDto) o;
         return items.equals(that.items);
     }
+
 
     @Override
     public int hashCode() {

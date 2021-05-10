@@ -1,7 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -17,17 +22,66 @@ public class Invoice {
     @Column(nullable = false)
     private double amount;
 
-    @OneToMany(mappedBy = "invoice")
+    @OneToMany(mappedBy = "invoice",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @Fetch(value= FetchMode.SELECT)
     private Set<InvoiceItem> items;
 
-    public Invoice(Long id, LocalDateTime date, double amount, Set<InvoiceItem> items) {
+
+    public Invoice() {
+        items=new HashSet<>();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public Set<InvoiceItem> getItems() {
+        return items;
+    }
+
+    public void setItems(Set<InvoiceItem> items) {
         this.items = items;
     }
 
-    public Invoice() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Invoice invoice = (Invoice) o;
+        return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && date.equals(invoice.date) && items.equals(invoice.items);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, date, amount, items);
+    }
+
+    @Override
+    public String toString() {
+        return "Invoice{" +
+            "id=" + id +
+            ", date=" + date +
+            ", amount=" + amount +
+            '}';
     }
 }

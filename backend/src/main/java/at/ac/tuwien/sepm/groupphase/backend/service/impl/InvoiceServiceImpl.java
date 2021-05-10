@@ -24,7 +24,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 
     @Override
-    public List<Invoice> findAll() {
+    public List<Invoice> findAllInvoices() {
         LOGGER.debug("Find all invoices");
         return invoiceRepository.findAll();
     }

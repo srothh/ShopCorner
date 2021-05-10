@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 public class SimpleInvoiceDto {
 
@@ -35,7 +36,6 @@ public class SimpleInvoiceDto {
     }
 
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,4 +48,6 @@ public class SimpleInvoiceDto {
     public int hashCode() {
         return Objects.hash(id, date, amount);
     }
+
+
 }

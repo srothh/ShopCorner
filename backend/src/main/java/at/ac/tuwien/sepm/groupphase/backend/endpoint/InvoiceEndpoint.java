@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +47,11 @@ public class InvoiceEndpoint {
     @Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
     public List<SimpleInvoiceDto> findAll() {
         LOGGER.info("GET /invoices");
-        return invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.findAll());
+
+        return invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.findAllInvoices());
     }
+
+
+
+
 }

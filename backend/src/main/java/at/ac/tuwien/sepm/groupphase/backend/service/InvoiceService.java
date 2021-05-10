@@ -20,6 +20,6 @@ public interface InvoiceService {
      *
      * @return ordered list of al message entries
      */
-    List<Invoice> findAll();
+    List<Invoice> findAllInvoices();
 
 }
