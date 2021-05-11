@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Operator {
@@ -10,15 +12,20 @@ public class Operator {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 128)
+    @NotBlank
     private String login_name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 60)
+    @NotBlank
     private String password;
 
     @Column(nullable = false)
+    @Email
+    @NotBlank
     private String email;
 
     @Column(nullable = false)

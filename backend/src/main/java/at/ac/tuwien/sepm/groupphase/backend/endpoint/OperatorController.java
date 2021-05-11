@@ -3,12 +3,14 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.invoke.MethodHandles;
 
@@ -33,9 +35,15 @@ public class OperatorController {
     public OperatorDto registerOperator(@RequestBody OperatorDto newOperator) {
         LOGGER.info("POST " + BASE_URL + "/register body: {}", newOperator);
 
-        Operator operator = operatorMapper.dtoToEntity(newOperator);
-        operatorService.save(operator);
-        return operatorMapper.entityToDto(operator);
+        try {
+            Operator operator = operatorMapper.dtoToEntity(newOperator);
+            operatorService.save(operator);
+            return operatorMapper.entityToDto(operator);
+        }
+        catch(ValidationException e) {
+            LOGGER.error(e.getMessage(), e.fillInStackTrace());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
+        }
     }
 
 

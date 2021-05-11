@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 @Service
 public class OperatorDetailService implements OperatorService {
@@ -22,12 +23,13 @@ public class OperatorDetailService implements OperatorService {
 
     private final OperatorRepository operatorRepository;
     private final PasswordEncoder passwordEncoder;
-    //private final Validator validator;
+    private final Validator validator;
 
     @Autowired
-    public OperatorDetailService(OperatorRepository operatorRepository, EncoderConfig encoderConfig) {
+    public OperatorDetailService(OperatorRepository operatorRepository, EncoderConfig encoderConfig, Validator validator) {
         this.operatorRepository = operatorRepository;
         this.passwordEncoder = encoderConfig.passwordEncoder();
+        this.validator = validator;
     }
 
     @Override
@@ -36,14 +38,14 @@ public class OperatorDetailService implements OperatorService {
     }
 
     /**
-     * Find an operator based on the email address.
+     * Find all operators.
      *
-     * @param email the email address
-     * @return an operator
+     * @return a list of operators
      */
     @Override
-    public Operator findOperatorByEmail(String email){
-        return null;
+    public List<Operator> findAll(){
+        LOGGER.trace("findAll()");
+        return operatorRepository.findAll();
     }
 
 
@@ -56,7 +58,7 @@ public class OperatorDetailService implements OperatorService {
     @Override
     public Operator save(Operator operator){
         LOGGER.trace("save({})", operator);
-        //validator.validateNewOperator(operator);
+        validator.validateNewOperator(operator, this);
         String password = passwordEncoder.encode(operator.getPassword());
         operator.setPassword(password);
         return operatorRepository.save(operator);

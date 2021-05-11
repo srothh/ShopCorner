@@ -5,6 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.List;
+
 public interface OperatorService extends UserDetailsService {
 
     /**
@@ -18,12 +20,11 @@ public interface OperatorService extends UserDetailsService {
     UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
 
     /**
-     * Find an operator based on the email address.
+     * Find all operators.
      *
-     * @param email the email address
-     * @return an operator
+     * @return a list of operators
      */
-    Operator findOperatorByEmail(String email);
+    List<Operator> findAll();
 
 
     /**

@@ -2,9 +2,9 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.*;
 import java.util.Objects;
 
 public class OperatorDto {
@@ -12,24 +12,26 @@ public class OperatorDto {
     private Long id;
 
     @NotNull(message = "Name must not be null")
-    @NotEmpty
+    @NotBlank
+    @Size(max = 255)
     private String name;
 
     @NotNull(message = "Login name must not be null")
-    @NotEmpty
+    @NotBlank
+    @Size(max = 128)
     private String login_name;
 
     @NotNull(message = "Password must not be null")
-    @NotEmpty
+    @NotBlank
     private String password;
 
     @NotNull(message = "Email must not be null")
-    @NotEmpty
+    @NotBlank
     @Email
     private String email;
 
     @NotNull(message = "Permissions must not be null")
-    @NotEmpty
+    @Enumerated(EnumType.STRING)
     private Permissions permissions;
 
 
