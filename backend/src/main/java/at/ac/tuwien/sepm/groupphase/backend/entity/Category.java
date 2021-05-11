@@ -20,7 +20,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = true )
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
@@ -51,8 +51,8 @@ public class Category {
     }
 
     @PreRemove
-    public void preRemove(){
-        for (Product product: products){
+    public void preRemove() {
+        for (Product product : products) {
             product.setCategory(null);
         }
     }
