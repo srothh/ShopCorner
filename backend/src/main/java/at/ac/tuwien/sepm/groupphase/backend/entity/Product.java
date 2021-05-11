@@ -14,14 +14,13 @@ import java.util.Objects;
 @Entity
 public class Product {
     @Id
-    //@SequenceGenerator(name = "product_sequence", sequenceName = "product_sequence")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     private String name;
     private String description;
     @DecimalMin("0.0")
-    private Double amount;
+    private Double price;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
@@ -56,12 +55,12 @@ public class Product {
         this.description = description;
     }
 
-    public Double getAmount() {
-        return amount;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
+    public void setPrice(Double amount) {
+        this.price = amount;
     }
 
     public Category getCategory() {
@@ -110,7 +109,7 @@ public class Product {
             +
             ", description='" + description + '\''
             +
-            ", amount=" + amount
+            ", amount=" + price
             +
             ", category=" + category
             +

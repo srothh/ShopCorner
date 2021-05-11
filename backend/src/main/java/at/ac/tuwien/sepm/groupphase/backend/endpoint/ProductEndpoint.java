@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class ProductEndpoint {
     @PermitAll
     @PostMapping({"api/v1/products/categories/{categoryId}", "api/v1/products/categories/"})
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductDto createProduct(@RequestBody ProductDto productDto, @PathVariable Optional<Long> categoryId) throws Exception {
+    public ProductDto createProduct(@RequestBody @Valid ProductDto productDto, @PathVariable Optional<Long> categoryId) {
         try {
             Long validCategoryId = null;
             if (categoryId.isPresent()) {

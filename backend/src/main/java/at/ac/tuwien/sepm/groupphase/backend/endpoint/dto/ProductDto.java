@@ -9,7 +9,7 @@ public class ProductDto {
     @NotNull
     private String name;
     private String description;
-    private Double amount;
+    private Double price;
     private Category category;
     private Double taxRate;
 
@@ -40,12 +40,12 @@ public class ProductDto {
         this.description = description;
     }
 
-    public Double getAmount() {
-        return amount;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public Category getCategory() {
@@ -76,14 +76,14 @@ public class ProductDto {
         return Objects.equals(id, productDto.id)
             && Objects.equals(name, productDto.name)
             && Objects.equals(description, productDto.description)
-            && Objects.equals(amount, productDto.amount)
+            && Objects.equals(price, productDto.price)
             && Objects.equals(category, productDto.category)
             && Objects.equals(taxRate, productDto.taxRate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, amount, category, taxRate);
+        return Objects.hash(id, name, description, price, category, taxRate);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ProductDto {
             +
             ", description='" + description + '\''
             +
-            ", amount=" + amount
+            ", amount=" + price
             +
             ", category=" + category
             +
