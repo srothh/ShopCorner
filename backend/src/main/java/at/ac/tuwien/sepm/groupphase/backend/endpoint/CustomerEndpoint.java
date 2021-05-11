@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/v1/users")
 public class CustomerEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
