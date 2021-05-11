@@ -6,9 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "address")
@@ -18,23 +17,23 @@ public class Address {
     @Column(name = "id", nullable = false, unique = true, updatable = false)
     private Long id;
     @Column(name = "street", nullable = false)
-    @Max(value = 255, message = "Street name must not be longer than 255 characters")
     @NotBlank
     private String street;
     @Column(name = "postal_code", nullable = false)
-    @Pattern(regexp = "[1-9]\\d{3}")
+    @Digits(integer = 4, fraction = 0)
     private int postalCode;
     @Column(name = "house_number", nullable = false)
     @NotBlank
-    @Max(value = 64, message = "house number must not be longer than 64 characters")
     private String houseNumber;
     @Column(name = "stair_number", columnDefinition = "BIGINT DEFAULT NULL")
     private int stairNumber;
     @Column(name = "door_number", columnDefinition = "VARCHAR(64) DEFAULT NULL")
-    @Max(value = 64, message = "Door number must not be longer than 64 characters")
     private String doorNumber;
 
-    public Address(Long id, String street, int postalCode, String houseNumber, int stairNumber, String doorNumber){
+    public Address() {
+    }
+
+    public Address(Long id, String street, int postalCode, String houseNumber, int stairNumber, String doorNumber) {
         this.id = id;
         this.street = street;
         this.postalCode = postalCode;

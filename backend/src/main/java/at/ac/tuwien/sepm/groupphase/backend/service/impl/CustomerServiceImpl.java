@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 
 @Service
@@ -28,10 +29,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
         validator.validateCustomerRegistration(customer);
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        return customerRepository.registerNewCustomer(customer.getId(), customer.getName(), customer.getLoginName(), customer.getPassword(), customer.getEmail(), customer.getAddress(), customer.getPhoneNumber());
+        return customerRepository.save(customer);
     }
 }

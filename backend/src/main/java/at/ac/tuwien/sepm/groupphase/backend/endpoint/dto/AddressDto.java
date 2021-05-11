@@ -1,13 +1,21 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class AddressDto {
 
     private Long id;
+    @NotNull(message = "Street name is mandatory")
+    @NotBlank
     private String street;
     private int postalCode;
     private String houseNumber;
     private int stairNumber;
     private String doorNumber;
+
+    public AddressDto() {
+    }
 
     public AddressDto(Long id, String street, int postalCode, String houseNumber, int stairNumber, String doorNumber) {
         this.id = id;

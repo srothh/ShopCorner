@@ -39,6 +39,6 @@ public class AddressEndpoint {
     @Operation(summary = "Register a new customer account", security = @SecurityRequirement(name = "apiKey"))
     public AddressDto addNewAddress(@Valid @RequestBody AddressDto dto) {
         LOGGER.info("POST /address");
-        return addressMapper.customerToCustomerDto(addressService.addNewAddress(addressMapper.addressDtoToAddress(dto)));
+        return addressMapper.addressToAddressDto(addressService.addNewAddress(addressMapper.addressDtoToAddress(dto)));
     }
 }

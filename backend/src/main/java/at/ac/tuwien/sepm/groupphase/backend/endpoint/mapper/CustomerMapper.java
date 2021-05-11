@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface CustomerMapper {
-    @Named("Customer")
     Customer customerDtoToCustomer(CustomerRegistrationDto dto);
 
     CustomerRegistrationDto customerToCustomerDto(Customer customer);

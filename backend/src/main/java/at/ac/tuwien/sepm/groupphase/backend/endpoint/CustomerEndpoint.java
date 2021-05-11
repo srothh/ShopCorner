@@ -38,7 +38,7 @@ public class CustomerEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register a new customer account", security = @SecurityRequirement(name = "apiKey"))
     public CustomerRegistrationDto registerNewCustomer(@Valid @RequestBody CustomerRegistrationDto dto) {
-        LOGGER.info("POST {}", dto);
+        LOGGER.info("POST /address");
         return customerMapper.customerToCustomerDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto)));
     }
 }

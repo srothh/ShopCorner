@@ -15,16 +15,26 @@ public class CustomerRegistrationDto {
     private String loginName;
     @NotNull(message = "address must not be null")
     private Long address;
+    private String phoneNumber;
 
     public CustomerRegistrationDto() {
     }
 
-    public CustomerRegistrationDto(String email, String password, String name, String loginName, Long address, Long id) {
+    public CustomerRegistrationDto(Long id, String name, String loginName, String password, String email, Long address, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.loginName = loginName;
         this.address = address;
+        this.id = id;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
