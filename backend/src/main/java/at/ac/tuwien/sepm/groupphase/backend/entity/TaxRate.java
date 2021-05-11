@@ -1,11 +1,17 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tax_rate")
@@ -14,6 +20,10 @@ public class TaxRate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Double percentage;
+    @OneToMany(mappedBy = "taxRate", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Product> products = new HashSet<>();
+
 
     public TaxRate(){}
 
@@ -32,6 +42,15 @@ public class TaxRate {
     public void setPercentage(Double percentage) {
         this.percentage = percentage;
     }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
+
 
     @Override
     public boolean equals(Object o) {

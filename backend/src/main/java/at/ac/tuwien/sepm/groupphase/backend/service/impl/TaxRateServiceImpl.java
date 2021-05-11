@@ -25,6 +25,6 @@ public class TaxRateServiceImpl implements TaxRateService {
 
     @Override
     public List<TaxRate> getAllTaxRates() throws Exception {
-        return this.taxRateRepository.findAll();
+        return this.taxRateRepository.getAllTaxRates();
     }
 }

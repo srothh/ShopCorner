@@ -24,8 +24,11 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
-    //TODO: create new Tax Table and make a reference to it
-    private Double taxRate;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tax_rate")
+    private TaxRate taxRate;
+
 
 
     public Product() {
@@ -71,11 +74,11 @@ public class Product {
         this.category = category;
     }
 
-    public Double getTaxRate() {
+    public TaxRate getTaxRate() {
         return taxRate;
     }
 
-    public void setTaxRate(Double taxRate) {
+    public void setTaxRate(TaxRate taxRate) {
         this.taxRate = taxRate;
     }
 

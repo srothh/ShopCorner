@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
+import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -11,7 +13,7 @@ public class ProductDto {
     private String description;
     private Double price;
     private Category category;
-    private Double taxRate;
+    private TaxRate taxRate;
 
     public ProductDto() {
     }
@@ -56,11 +58,11 @@ public class ProductDto {
         this.category = category;
     }
 
-    public Double getTaxRate() {
+    public TaxRate getTaxRate() {
         return taxRate;
     }
 
-    public void setTaxRate(Double taxRate) {
+    public void setTaxRate(TaxRate taxRate) {
         this.taxRate = taxRate;
     }
 

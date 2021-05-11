@@ -38,16 +38,16 @@ public class ProductEndpoint {
     }
 
     @PermitAll
-    @PostMapping({"api/v1/products/categories/{categoryId}", "api/v1/products/categories/"})
+    @PostMapping({"api/v1/products/categories/{categoryId}/tax-rates/{taxRateId}", "api/v1/products/categories/tax-rates/{taxRateId}"})
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductDto createProduct(@RequestBody @Valid ProductDto productDto, @PathVariable Optional<Long> categoryId) {
+    public ProductDto createProduct(@RequestBody @Valid ProductDto productDto, @PathVariable Optional<Long> categoryId, @PathVariable Long taxRateId) {
         try {
             Long validCategoryId = null;
             if (categoryId.isPresent()) {
                 validCategoryId = categoryId.get();
             }
             return this.productMapper
-                .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto), validCategoryId));
+                .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto), validCategoryId, taxRateId));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

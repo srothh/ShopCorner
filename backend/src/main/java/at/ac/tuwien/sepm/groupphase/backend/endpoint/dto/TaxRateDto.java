@@ -1,12 +1,17 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class TaxRateDto {
     private Long id;
     private Double percentage;
+    private Set<Product> products = new HashSet<>();
+
 
     public TaxRateDto(){}
 
@@ -25,6 +30,15 @@ public class TaxRateDto {
     public void setPercentage(Double percentage) {
         this.percentage = percentage;
     }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
+
 
     @Override
     public boolean equals(Object o) {
