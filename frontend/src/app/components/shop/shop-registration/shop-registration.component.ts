@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../../services/auth.service';
 import {Router} from '@angular/router';
-import {AuthRequest} from '../../../dtos/auth-request';
 import {Address} from '../../../dtos/address';
 import {Customer} from '../../../dtos/customer';
-import {AddressService} from "../../../services/address.service";
-import {CustomerService} from "../../../services/customer.service";
+import {AddressService} from '../../../services/address.service';
+import {CustomerService} from '../../../services/customer.service';
 
 
 @Component({
@@ -24,7 +23,8 @@ export class ShopRegistrationComponent {
   errorMessage = '';
   addId: number;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private addressService: AddressService, private customerService: CustomerService) {
+  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router,
+              private addressService: AddressService, private customerService: CustomerService) {
     this.registrationForm = this.formBuilder.group({
       password: ['', [Validators.required, Validators.minLength(8)]],
       loginName: ['', [Validators.required]],
@@ -49,17 +49,21 @@ export class ShopRegistrationComponent {
         this.addressForm.controls.stairNumber.value, this.addressForm.controls.doorNumber.value);
       this.addressService.addAddress(address).subscribe((add: Address) => {
         this.addId = add.id;
-      }, error=>{console.log(error)}
+      }, error=> {
+console.log(error);
+}
     );
       const customer: Customer = new Customer(0, this.registrationForm.controls.loginName.value,
         this.registrationForm.controls.password.value,
         this.registrationForm.controls.name.value, this.registrationForm.controls.email.value, this.addId,
         this.registrationForm.controls.phoneNumber.value);
       this.customerService.addCustomer(customer).subscribe(() => {
-      }, error1 => {console.log(error1)}
+      },
+          error1 => {
+console.log(error1);
+}
         );
-    }
-    else {
+    } else {
       console.log('Invalid input');
     }
   }
