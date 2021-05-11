@@ -82,7 +82,6 @@ public class Product {
         this.taxRate = taxRate;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -96,6 +95,7 @@ public class Product {
             && Objects.equals(name, product.name);
 
     }
+
 
     @Override
     public int hashCode() {

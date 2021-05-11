@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
 import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
+import javax.persistence.PreRemove;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -18,7 +20,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = true )
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
@@ -46,6 +48,13 @@ public class Category {
 
     public void setProducts(Set<Product> products) {
         this.products = products;
+    }
+
+    @PreRemove
+    public void preRemove(){
+        for (Product product: products){
+            product.setCategory(null);
+        }
     }
 
     public boolean equals(Object o) {
