@@ -5,6 +5,8 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +18,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 
 @RestController
 @RequestMapping(OperatorController.BASE_URL)
 public class OperatorController {
 
-    static final String BASE_URL = "/operators";
+    static final String BASE_URL = "/api/v1/operators";
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final OperatorService operatorService;
@@ -34,9 +38,11 @@ public class OperatorController {
         this.operatorMapper = operatorMapper;
     }
 
+    @PermitAll //change to @Secured("ROLE_ADMIN")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public OperatorDto registerOperator(@RequestBody OperatorDto newOperator) {
+    @Operation(summary = "Register a new operator account", security = @SecurityRequirement(name = "apiKey"))
+    public OperatorDto registerOperator(@Valid @RequestBody OperatorDto newOperator) {
         LOGGER.info("POST " + BASE_URL + "/register body: {}", newOperator);
 
         try {
