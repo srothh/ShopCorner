@@ -9,17 +9,21 @@ import org.springframework.stereotype.Component;
 public class OperatorMapper {
 
     public OperatorDto entityToDto(Operator operator) {
-        if (operator == null) { return null; }
+        if (operator == null) {
+            return null;
+        }
 
-        return new OperatorDto(operator.getId(), operator.getName(), operator.getLogin_name(), operator.getPassword(),
+        return new OperatorDto(operator.getId(), operator.getName(), operator.getLoginName(), operator.getPassword(),
             operator.getEmail(), operator.getPermissions());
     }
 
-    public Operator dtoToEntity(OperatorDto operatorDto){
+    public Operator dtoToEntity(OperatorDto operatorDto) {
 
-        if(operatorDto == null) { return null; }
+        if (operatorDto == null) {
+            return null;
+        }
 
-        return new Operator(operatorDto.getId(), operatorDto.getName(), operatorDto.getLogin_name(), operatorDto.getPassword(),
+        return new Operator(operatorDto.getId(), operatorDto.getName(), operatorDto.getLoginName(), operatorDto.getPassword(),
             operatorDto.getEmail(), operatorDto.getPermissions());
     }
 }

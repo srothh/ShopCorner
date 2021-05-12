@@ -43,7 +43,7 @@ public class OperatorDetailService implements OperatorService {
      * @return a list of operators
      */
     @Override
-    public List<Operator> findAll(){
+    public List<Operator> findAll() {
         LOGGER.trace("findAll()");
         return operatorRepository.findAll();
     }
@@ -56,7 +56,7 @@ public class OperatorDetailService implements OperatorService {
      * @return the operator that has just been saved.
      */
     @Override
-    public Operator save(Operator operator){
+    public Operator save(Operator operator) {
         LOGGER.trace("save({})", operator);
         validator.validateNewOperator(operator, this);
         String password = passwordEncoder.encode(operator.getPassword());

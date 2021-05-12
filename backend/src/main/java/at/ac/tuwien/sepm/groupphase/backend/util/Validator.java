@@ -16,13 +16,13 @@ public class Validator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public void validateNewOperator(Operator operator, OperatorService operatorService){
+    public void validateNewOperator(Operator operator, OperatorService operatorService) {
         LOGGER.trace("validateNewOperator({})", operator);
 
         List<Operator> operators = operatorService.findAll();
         for (Operator op : operators) {
 
-            if(op.getEmail().equals(operator.getEmail())){
+            if (op.getEmail().equals(operator.getEmail())) {
                 throw new ValidationException("Operator already exists!");
             }
         }

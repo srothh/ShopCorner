@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OperatorService extends UserDetailsService {
 
-    /**
+    /** .
      * Find a user in the context of Spring Security based on the email address
      *
      * @param email the email address

@@ -4,7 +4,10 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class OperatorDto {
@@ -19,7 +22,7 @@ public class OperatorDto {
     @NotNull(message = "Login name must not be null")
     @NotBlank
     @Size(max = 128)
-    private String login_name;
+    private String loginName;
 
     @NotNull(message = "Password must not be null")
     @NotBlank
@@ -37,25 +40,35 @@ public class OperatorDto {
 
     public OperatorDto(){}
 
-    public OperatorDto(Long id, String name, String login_name, String password, String email, Permissions permissions){
+    public OperatorDto(Long id, String name, String loginName, String password, String email, Permissions permissions) {
         this.id = id;
         this.name = name;
-        this.login_name = login_name;
+        this.loginName = loginName;
         this.password = password;
         this.email = email;
         this.permissions = permissions;
     }
 
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return this.name; }
+    public String getName() {
+        return this.name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getLogin_name() { return this.login_name; }
+    public String getLoginName() {
+        return this.loginName;
+    }
 
-    public void setLogin_name(String login_name) { this.login_name = login_name; }
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
 
     public String getEmail() {
         return email;
@@ -93,7 +106,7 @@ public class OperatorDto {
         OperatorDto operatorLoginDto = (OperatorDto) o;
         return Objects.equals(id, operatorLoginDto.id)
             && Objects.equals(name, operatorLoginDto.name)
-            && Objects.equals(login_name, operatorLoginDto.login_name)
+            && Objects.equals(loginName, operatorLoginDto.loginName)
             && Objects.equals(email, operatorLoginDto.email)
             && Objects.equals(password, operatorLoginDto.password)
             && Objects.equals(permissions, operatorLoginDto.permissions);
@@ -101,15 +114,15 @@ public class OperatorDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, login_name, email, password);
-    } // + permissions
+        return Objects.hash(id, name, loginName, email, password, permissions);
+    }
 
     @Override
     public String toString() {
         return "OperatorDto{"
             + "id='" + id + '\''
             + ", name='" + name + '\''
-            + ", login_name='" + login_name + '\''
+            + ", login_name='" + loginName + '\''
             + ", email='" + email + '\''
             + ", password='" + password + '\''
             + ", permissions='" + permissions + '\''
