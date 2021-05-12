@@ -17,7 +17,7 @@ import {OperatorAccountComponent} from './components/operator/operator-accounts/
 import {ShopComponent} from './components/shop/shop.component';
 import {ShopProductComponent} from './components/shop/shop-product/shop-product.component';
 import {ShopCartComponent} from './components/shop/shop-cart/shop-cart.component';
-import {OperatorAddProductComponent} from "./components/operator/operator-add-product/operator-add-product.component";
+import {OperatorAddProductComponent} from './components/operator/operator-add-product/operator-add-product.component';
 
 const routes: Routes = [
   {
