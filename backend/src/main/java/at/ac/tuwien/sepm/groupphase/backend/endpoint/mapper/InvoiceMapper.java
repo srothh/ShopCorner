@@ -17,9 +17,9 @@ public interface InvoiceMapper {
 
 
     @IterableMapping(qualifiedByName = "simpleInvoice")
-    List<SimpleInvoiceDto> invoiceToSimpleInvoiceDto (List<Invoice> invoice);
+    List<SimpleInvoiceDto> invoiceToSimpleInvoiceDto(List<Invoice> invoice);
 
-    DetailedInvoiceDto invoiceToDetailedInvoiceDto (Invoice invoice);
+    DetailedInvoiceDto invoiceToDetailedInvoiceDto(Invoice invoice);
 
 
 }

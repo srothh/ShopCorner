@@ -3,7 +3,14 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -16,19 +23,19 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "date")
+    @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
     @Column(nullable = false)
     private double amount;
 
-    @OneToMany(mappedBy = "invoice",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @Fetch(value= FetchMode.SELECT)
+    @OneToMany(mappedBy = "invoice", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Fetch(value = FetchMode.SELECT)
     private Set<InvoiceItem> items;
 
 
     public Invoice() {
-        items=new HashSet<>();
+        items = new HashSet<>();
     }
 
     public Long getId() {
@@ -65,8 +72,12 @@ public class Invoice {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Invoice invoice = (Invoice) o;
         return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && date.equals(invoice.date) && items.equals(invoice.items);
     }
@@ -78,10 +89,6 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "Invoice{" +
-            "id=" + id +
-            ", date=" + date +
-            ", amount=" + amount +
-            '}';
+        return "Invoice{" + "id=" + id + ", date=" + date + ", amount=" + amount + '}';
     }
 }

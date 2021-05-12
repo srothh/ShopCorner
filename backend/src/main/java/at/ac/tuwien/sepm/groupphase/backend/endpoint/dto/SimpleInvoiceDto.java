@@ -38,8 +38,12 @@ public class SimpleInvoiceDto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         SimpleInvoiceDto that = (SimpleInvoiceDto) o;
         return Double.compare(that.amount, amount) == 0 && id.equals(that.id) && date.equals(that.date);
     }

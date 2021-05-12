@@ -9,10 +9,10 @@ import java.util.Objects;
 @Embeddable
 public class InvoiceItemKey implements Serializable {
 
-    @Column(name="invoice_id",nullable = false)
+    @Column(name = "invoice_id", nullable = false)
     Long invoiceId;
 
-    @Column(name = "product_id",nullable = false)
+    @Column(name = "product_id", nullable = false)
     Long productId;
 
     public InvoiceItemKey() {
@@ -36,8 +36,12 @@ public class InvoiceItemKey implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         InvoiceItemKey that = (InvoiceItemKey) o;
         return Objects.equals(invoiceId, that.invoiceId) && Objects.equals(productId, that.productId);
     }
@@ -49,9 +53,6 @@ public class InvoiceItemKey implements Serializable {
 
     @Override
     public String toString() {
-        return "InvoiceItemKey{" +
-            "invoiceId=" + invoiceId +
-            ", productId=" + productId +
-            '}';
+        return "InvoiceItemKey{" + "invoiceId=" + invoiceId + ", productId=" + productId + '}';
     }
 }

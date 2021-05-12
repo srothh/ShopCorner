@@ -7,8 +7,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class DetailedInvoiceDto extends SimpleInvoiceDto{
-
+public class DetailedInvoiceDto extends SimpleInvoiceDto {
     private Set<Product> items;
 
     public Set<Product> getItems() {
@@ -16,10 +15,10 @@ public class DetailedInvoiceDto extends SimpleInvoiceDto{
     }
 
     public void setItems(Set<InvoiceItem> invoiceItems) {
-        if(this.items==null){
+        if (this.items == null) {
             items = new HashSet<>();
         }
-        for(InvoiceItem i:invoiceItems){
+        for (InvoiceItem i : invoiceItems) {
             System.out.println(i.getProduct().toString());
             this.items.add(i.getProduct());
         }
@@ -27,9 +26,15 @@ public class DetailedInvoiceDto extends SimpleInvoiceDto{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         DetailedInvoiceDto that = (DetailedInvoiceDto) o;
         return items.equals(that.items);
     }
@@ -43,10 +48,12 @@ public class DetailedInvoiceDto extends SimpleInvoiceDto{
 
     @Override
     public String toString() {
-        String s ="";
-        if(items == null)return "NULL";
-        for(Product i: items){
-            s+=i.toString()+"\n";
+        String s = "";
+        if (items == null) {
+            return null;
+        }
+        for (Product i : items) {
+            s = s + i.toString() + "\n";
         }
         return s;
     }

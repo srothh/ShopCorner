@@ -20,8 +20,9 @@ public class InvoiceDataInitBean {
     public InvoiceDataInitBean(DataSource source) {
         this.source = source;
     }
+
     @PostConstruct
-    void wipeDatabase () {
+    void wipeDatabase() {
         try {
             ScriptUtils.executeSqlScript(source.getConnection(), new ClassPathResource("sql/initIvoiceDb.sql"));
         } catch (Exception e) {

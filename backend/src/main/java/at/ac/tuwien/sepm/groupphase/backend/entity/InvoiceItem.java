@@ -2,8 +2,12 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 
-import javax.persistence.*;
 
 @Entity
 public class InvoiceItem {
@@ -13,20 +17,20 @@ public class InvoiceItem {
     @JsonIgnore
     @ManyToOne
     @MapsId("invoiceId")
-    @JoinColumn(name = "invoice_id",referencedColumnName = "id")
+    @JoinColumn(name = "invoice_id", referencedColumnName = "id")
     private Invoice invoice;
 
     @JsonIgnore
     @ManyToOne
     @MapsId("productId")
-    @JoinColumn(name = "product_id",referencedColumnName = "id")
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
     private int numberOfItems;
 
-    public InvoiceItem(){
+    public InvoiceItem() {
         invoice = new Invoice();
-        product =new Product();
+        product = new Product();
     }
 
     public InvoiceItemKey getId() {
@@ -63,6 +67,6 @@ public class InvoiceItem {
 
     @Override
     public String toString() {
-        return invoice.toString()+" "+product.toString()+" "+numberOfItems;
+        return invoice.toString() + " " + product.toString() + " " + numberOfItems;
     }
 }
