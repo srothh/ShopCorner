@@ -6,9 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./operator-product.component.scss']
 })
 export class OperatorProductComponent implements OnInit {
-
   constructor() { }
-
   ngOnInit(): void {
   }
 
