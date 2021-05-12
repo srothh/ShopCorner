@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public interface AddressMapper {
 
-    AddressDto addressToDto (Address address);
+    AddressDto addressToDto(Address address);
 
-    Address DtoToAddress (AddressDto address);
+    Address dtoToAddress(AddressDto address);
 }

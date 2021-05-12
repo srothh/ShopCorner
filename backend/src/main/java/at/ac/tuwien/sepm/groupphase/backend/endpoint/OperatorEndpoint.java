@@ -1,17 +1,21 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OverviewOperatorMapper;
-import at.ac.tuwien.sepm.groupphase.backend.service.OverviewOperatorService;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
+import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.annotation.Secured;
 
 import javax.annotation.security.PermitAll;
 import java.lang.invoke.MethodHandles;
@@ -23,13 +27,13 @@ public class OperatorEndpoint {
 
     static final String BASE_URL = "/operators";
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private final OverviewOperatorMapper overviewOperatorMapper;
-    private final OverviewOperatorService overviewOperatorService;
+    private final OperatorMapper operatorMapper;
+    private final OperatorService operatorService;
 
     @Autowired
-    public OperatorEndpoint(OverviewOperatorMapper overviewOperatorMapper, OverviewOperatorService overviewOperatorService) {
-        this.overviewOperatorMapper = overviewOperatorMapper;
-        this.overviewOperatorService = overviewOperatorService;
+    public OperatorEndpoint(OperatorMapper operatorMapper, OperatorService operatorService) {
+        this.operatorMapper = operatorMapper;
+        this.operatorService = operatorService;
     }
 
     @PermitAll
@@ -37,7 +41,7 @@ public class OperatorEndpoint {
     @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
     public List<OverviewOperatorDto> getAll() {
         LOGGER.info("GET /operators");
-        return overviewOperatorMapper.overviewOperatorToDto(overviewOperatorService.getAll());
+        return operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll());
     }
 
 }

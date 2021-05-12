@@ -4,16 +4,16 @@ public class OverviewOperatorDto {
 
     private long id;
     private String name;
-    private String mail;
-    private AddressDto address;
-    private String permissionType;
+    private String email;
+    //private AddressDto address;
+    private String permissions;
 
-    public OverviewOperatorDto(long id, String name, String mail, AddressDto address, String permissionType) {
+    public OverviewOperatorDto(long id, String name, String email, AddressDto address, String permissions) {
         this.id = id;
         this.name = name;
-        this.mail = mail;
-        this.address = address;
-        this.permissionType = permissionType;
+        this.email = email;
+        //this.address = address;
+        this.permissions = permissions;
     }
 
     public long getId() {
@@ -32,27 +32,27 @@ public class OverviewOperatorDto {
         this.name = name;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public AddressDto getAddress() {
+    /*public AddressDto getAddress() {
         return address;
     }
 
     public void setAddress(AddressDto address) {
         this.address = address;
+    }*/
+
+    public String getPermissions() {
+        return permissions;
     }
 
-    public String getPermissionType() {
-        return permissionType;
-    }
-
-    public void setPermissionType(String permissionType) {
-        this.permissionType = permissionType;
+    public void setPermissions(String permissions) {
+        this.permissions = permissions;
     }
 }
