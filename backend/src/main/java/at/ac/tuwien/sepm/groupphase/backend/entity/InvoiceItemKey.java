@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ public class InvoiceItemKey implements Serializable {
 
     @Column(name="invoice_id",nullable = false)
     Long invoiceId;
+
     @Column(name = "product_id",nullable = false)
     Long productId;
 
@@ -43,5 +45,13 @@ public class InvoiceItemKey implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(invoiceId, productId);
+    }
+
+    @Override
+    public String toString() {
+        return "InvoiceItemKey{" +
+            "invoiceId=" + invoiceId +
+            ", productId=" + productId +
+            '}';
     }
 }

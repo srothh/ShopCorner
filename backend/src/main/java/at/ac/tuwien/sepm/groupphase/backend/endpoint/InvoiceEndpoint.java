@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -39,7 +40,10 @@ public class InvoiceEndpoint {
     @Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
     public DetailedInvoiceDto find(@PathVariable Long id) {
         LOGGER.info("GET /invoice/{}", id);
-        return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOne(id));
+        Invoice i =invoiceService.findOne(id);
+        System.out.printf(i.toString());
+        System.out.println(invoiceMapper.invoiceToDetailedInvoiceDto(i).toString());
+        return invoiceMapper.invoiceToDetailedInvoiceDto(i);
     }
 
     @PermitAll
