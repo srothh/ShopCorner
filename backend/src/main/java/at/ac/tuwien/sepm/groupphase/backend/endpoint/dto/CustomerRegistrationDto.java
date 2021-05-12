@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
+
 import javax.validation.constraints.NotNull;
 
 public class CustomerRegistrationDto {
@@ -13,14 +15,13 @@ public class CustomerRegistrationDto {
     private String name;
     @NotNull(message = "loginName must not be null")
     private String loginName;
-    @NotNull(message = "address must not be null")
-    private Long address;
+    private Address address;
     private String phoneNumber;
 
     public CustomerRegistrationDto() {
     }
 
-    public CustomerRegistrationDto(Long id, String name, String loginName, String password, String email, Long address, String phoneNumber) {
+    public CustomerRegistrationDto(Long id, String name, String loginName, String password, String email, Address address, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -70,11 +71,11 @@ public class CustomerRegistrationDto {
         this.loginName = loginName;
     }
 
-    public Long getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(Long address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 }

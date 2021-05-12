@@ -23,7 +23,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    @Transactional
     public Address addNewAddress(Address address) {
         return addressRepository.save(address);
     }

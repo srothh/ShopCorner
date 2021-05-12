@@ -3,12 +3,14 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -31,17 +33,16 @@ public class Customer {
     @Email
     private String email;
     //TODO: add relation to address
-    // @OneToOne(fetch = FetchType.EAGER)
-    // @JoinColumn(name = "address_id", nullable = false)
-    @Column(name = "address_id")
-    private Long address;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id", nullable = false, referencedColumnName = "id")
+    private Address address;
     @Column(name = "phone_number")
     private String phoneNumber;
 
     public Customer() {
     }
 
-    public Customer(String email, String password, String name, String loginName, Long address, Long id, String phoneNumber) {
+    public Customer(String email, String password, String name, String loginName, Address address, Long id, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -99,11 +100,11 @@ public class Customer {
         this.loginName = loginName;
     }
 
-    public Long getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(Long address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 }

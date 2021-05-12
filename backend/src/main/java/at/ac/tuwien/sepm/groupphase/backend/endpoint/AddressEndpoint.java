@@ -36,7 +36,7 @@ public class AddressEndpoint {
     @PermitAll
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Register a new customer account", security = @SecurityRequirement(name = "apiKey"))
+    @Operation(summary = "Register a new customer account")
     public AddressDto addNewAddress(@Valid @RequestBody AddressDto dto) {
         LOGGER.info("POST /address");
         return addressMapper.addressToAddressDto(addressService.addNewAddress(addressMapper.addressDtoToAddress(dto)));

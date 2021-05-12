@@ -38,9 +38,6 @@ public class Validator {
         if (customer.getEmail().length() > 255) {
             throw new ValidationException("Email exceeds maximum length of 255 characters");
         }
-        if (customer.getAddress() == null) {
-            throw new ValidationException("Address is mandatory");
-        }
         //TODO: check whether address exists
     }
 }

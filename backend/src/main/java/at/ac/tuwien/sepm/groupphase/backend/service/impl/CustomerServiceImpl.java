@@ -1,6 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
@@ -20,20 +23,30 @@ public class CustomerServiceImpl implements CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
     private final CustomerRepository customerRepository;
+    private final AddressRepository addressRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public CustomerServiceImpl(PasswordEncoder passwordEncoder, Validator validator, CustomerRepository customerRepository) {
+    public CustomerServiceImpl(PasswordEncoder passwordEncoder, Validator validator, CustomerRepository customerRepository, AddressRepository addressRepository) {
         this.passwordEncoder = passwordEncoder;
         this.validator = validator;
         this.customerRepository = customerRepository;
+        this.addressRepository = addressRepository;
     }
 
     @Override
-    @Transactional
-    public Customer registerNewCustomer(Customer customer) {
+    public Customer registerNewCustomer(Customer customer, Long addressId) {
         LOGGER.trace("registerNewCustomer({})", customer);
         validator.validateCustomerRegistration(customer);
+        assignAddressToCustomer(customer, addressId);
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        return customerRepository.save(customer);
+        Customer temp = customerRepository.save(customer);
+        temp.setPassword(null);
+        return temp;
+    }
+
+    @Transactional
+    public void assignAddressToCustomer(Customer customer, Long addressId) {
+        Address address = addressRepository.findById(addressId).orElseThrow(() -> new NotFoundException("Could not find address!"));
+        customer.setAddress(address);
     }
 }
