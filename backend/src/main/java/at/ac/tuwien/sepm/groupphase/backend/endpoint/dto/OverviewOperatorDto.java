@@ -4,15 +4,15 @@ public class OverviewOperatorDto {
 
     private long id;
     private String name;
+    private String loginName;
     private String email;
-    //private AddressDto address;
     private String permissions;
 
-    public OverviewOperatorDto(long id, String name, String email, AddressDto address, String permissions) {
+    public OverviewOperatorDto(long id, String name, String loginName, String email, String permissions) {
         this.id = id;
         this.name = name;
+        this.loginName = loginName;
         this.email = email;
-        //this.address = address;
         this.permissions = permissions;
     }
 
@@ -32,6 +32,14 @@ public class OverviewOperatorDto {
         this.name = name;
     }
 
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -39,14 +47,6 @@ public class OverviewOperatorDto {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    /*public AddressDto getAddress() {
-        return address;
-    }
-
-    public void setAddress(AddressDto address) {
-        this.address = address;
-    }*/
 
     public String getPermissions() {
         return permissions;

@@ -1,3 +1,29 @@
-<div>
-  Implement operator account management here
+<div class="container mt-3">
+  <hr>
+  <h2>Betreiber Konten</h2>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Login Name</th>
+      <th scope="col">email</th>
+      <th scope="col">Berechtigunslevel</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let operator of operators">
+      <td><span>{{operator.name}}</span></td>
+      <td><span>{{operator.email}}</span></td>
+      <td><span>{{operator.loginName}}</span></td>
+      <td><span>{{operator.permissions}}</span></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error! </strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>

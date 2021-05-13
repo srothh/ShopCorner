@@ -27,10 +27,12 @@ public class OperatorDataGenerator {
         if (operatorRepository.findAll().size() > 0) {
             LOGGER.debug("operators already generated");
         } else {
-            Operator operator = new Operator(1L, "test", "logTest", "testpassw", "test@gmail.com", Permissions.admin);
+            Operator operator = new Operator(-1L, "test", "logTest", "testpassw", "test@gmail.com", Permissions.admin);
             operatorRepository.save(operator);
-            Operator operator2 = new Operator(2L, "anothertest", "randomLogName", "pspspspps", "best@icloud.com", Permissions.employee);
+            Operator operator2 = new Operator(-2L, "anothertest", "randomLogName", "pspspspps", "best@icloud.com", Permissions.employee);
             operatorRepository.save(operator2);
+            Operator operator3 = new Operator(-3L, "a third one", "CoolGuy", "efefefef", "420BlazeIt@hotmail.at", Permissions.employee);
+            operatorRepository.save(operator3);
         }
     }
 }

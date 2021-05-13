@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping(OperatorEndpoint.BASE_URL)
 public class OperatorEndpoint {
 
-    static final String BASE_URL = "/operators";
+    static final String BASE_URL = "api/v1/operators";
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final OperatorMapper operatorMapper;
     private final OperatorService operatorService;
