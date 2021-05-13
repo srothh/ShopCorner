@@ -1,25 +1,24 @@
-<div class="container mt-3">
-  <hr>
-  <h2>Betreiber Konten</h2>
-  <table class="table">
+<h2>Betreiber Konten</h2>
+<caption style="font-size: 10px">Zeigt 1-10 von 23 (placeholder)</caption>
+<div class="border rounded">
+  <table class="table table-sm table-responsive">
     <thead>
-    <tr>
+    <tr class="table-secondary">
       <th scope="col">Name</th>
       <th scope="col">Login Name</th>
       <th scope="col">email</th>
-      <th scope="col">Berechtigunslevel</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let operator of operators">
       <td><span>{{operator.name}}</span></td>
-      <td><span>{{operator.email}}</span></td>
       <td><span>{{operator.loginName}}</span></td>
-      <td><span>{{operator.permissions}}</span></td>
+      <td><span>{{operator.email}}</span></td>
     </tr>
     </tbody>
   </table>
 </div>
+
 
 <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
   <strong>Error! </strong> {{ errorMessage }}
