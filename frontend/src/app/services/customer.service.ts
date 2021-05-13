@@ -13,9 +13,9 @@ export class CustomerService {
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
-  addCustomer(customer: Customer): Observable<Customer> {
+  addCustomer(customer: Customer, addressId: number): Observable<Customer> {
     console.log('Create new Customer', customer);
-    return this.httpClient.post<Customer>(this.addressBaseUri, customer);
+    return this.httpClient.post<Customer>(this.addressBaseUri + '/' + addressId, customer);
   }
 
 }

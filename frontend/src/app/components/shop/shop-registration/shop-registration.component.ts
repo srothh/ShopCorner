@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../../services/auth.service';
 import {Router} from '@angular/router';
@@ -48,21 +48,20 @@ export class ShopRegistrationComponent {
         this.addressForm.controls.postalCode.value, this.addressForm.controls.houseNumber.value,
         this.addressForm.controls.stairNumber.value, this.addressForm.controls.doorNumber.value);
       this.addressService.addAddress(address).subscribe((add: Address) => {
-        this.addId = add.id;
+        const customer: Customer = new Customer(0, this.registrationForm.controls.loginName.value,
+          this.registrationForm.controls.password.value,
+          this.registrationForm.controls.name.value, this.registrationForm.controls.email.value, 0,
+          this.registrationForm.controls.phoneNumber.value);
+        this.customerService.addCustomer(customer,add.id).subscribe(() => {
+          },
+          error1 => {
+            console.log(error1);
+          }
+        );
       }, error=> {
 console.log(error);
 }
     );
-      const customer: Customer = new Customer(0, this.registrationForm.controls.loginName.value,
-        this.registrationForm.controls.password.value,
-        this.registrationForm.controls.name.value, this.registrationForm.controls.email.value, this.addId,
-        this.registrationForm.controls.phoneNumber.value);
-      this.customerService.addCustomer(customer).subscribe(() => {
-      },
-          error1 => {
-console.log(error1);
-}
-        );
     } else {
       console.log('Invalid input');
     }
