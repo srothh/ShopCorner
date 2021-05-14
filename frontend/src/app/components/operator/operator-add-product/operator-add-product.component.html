@@ -1,39 +1,53 @@
 <div class="operator-add-product-container">
-  <div class="operator-add-product-header mt-3">
+  <div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="operator-add-product-header mt-3" style="display:flex;justify-content: space-between">
     <h3>Produkt hinzufügen</h3>
+    <button class="btn btn-primary" (click)="addProduct(productForm)">Speichern</button>
   </div>
   <hr/>
-  <form class="row g-3">
+  <form #productForm="ngForm" class="row g-3">
     <div class="col-md-6 mt-3">
-      <label for="inputTitle" class="form-label"><b>Titel</b></label>
-      <input type="text" class="form-control" id="inputTitle" required="required"
-             placeholder="Geben Sie einen Namen für ihr Produkt">
+      <label for="inputTitle" class="form-label"><b>Name</b></label>
+      <input type="text" class="form-control" id="inputTitle" #name='ngModel' [(ngModel)]="newProduct.name" name="input1"
+             placeholder="Geben Sie einen Namen für ihr Produkt ein" required>
+      <div [hidden]="name.valid || name.pristine"
+           class="alert alert-danger">
+        Bitte geben Sie einen Namen ein
+      </div>
     </div>
     <div class="col-md-6 mt-3">
       <label for="inputPrice" class="form-label"><b>Preis in €</b></label>
-      <input type="number" class="form-control" min="0.00" max="10000.00" step="0.01" id="inputPrice"
-             placeholder="0.00"/>
+      <input type="number" class="form-control" [(ngModel)]="newProduct.price" min="0.00" max="10000.00" step="0.01" id="inputPrice"
+             name="input2"
+             placeholder="0.00"
+             required
+      />
     </div>
     <div class="col-md-6 mt-3">
       <label for="inputTaxRates" class="form-label"><b>Steuersatz</b></label>
-      <select class="custom-select" name="tax-rates" id="inputTaxRates">
-        <option value="1.10">10%</option>
-        <option value="1.13">13%</option>
-        <option value="1.20">20%</option>
+      <select class="custom-select" name="tax-rates" id="inputTaxRates" [(ngModel)]="newTaxRateId">
+        <option selected disabled value="undefined">Steuersatz auswählen </option>
+        <option *ngFor="let taxRate of this.taxRates" [value]="taxRate.id">{{taxRate.percentage}}</option>
+
       </select>
     </div>
     <div class="col-md-6 mt-3">
       <label for="inputCategories" class="form-label"><b>Kategorie</b></label>
-      <select class="custom-select" name="categories" id="inputCategories">
-        <option value="Cat1">Cat1</option>
-        <option value="Cat2">Cat2</option>
-        <option value="Cat3">Cat3</option>
+      <select class="custom-select" [(ngModel)]="newCategoryId" name="categories" id="inputCategories">
+        <option selected disabled value="undefined">Kategorie auswählen</option>
+        <option *ngFor="let category of this.categories" [value]="category.id">{{category.name}}</option>
+        <option value="null">--keine Kategorie--</option>
       </select>
     </div>
     <div class="col-md-12 mt-3">
       <label for="inputDescription" class="form-label"><b>Beschreibung</b></label>
-      <textarea class="form-control" id="inputDescription" rows="2"
-                placeholder="Beschreiben Sie ihr Produkt"></textarea>
+      <textarea class="form-control" [(ngModel)]="newProduct.description" id="inputDescription" rows="2"
+                name="input4" placeholder="Beschreiben Sie ihr Produkt"></textarea>
     </div>
     <div class="col-md-6 mt-3">
       <div class="custom-file mt-3">

@@ -1,3 +1,8 @@
 .custom-file-input ~ .custom-file-label::after {
   content: "Suchen...";
 }
+.placeholder-text {
+  font-size: 1rem;
+  font-weight: 400;
+  color: blue;
+}
