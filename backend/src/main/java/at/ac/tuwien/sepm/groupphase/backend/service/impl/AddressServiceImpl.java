@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -25,5 +25,10 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Address addNewAddress(Address address) {
         return addressRepository.save(address);
+    }
+
+    @Override
+    public List<Address> getAllAddresses() {
+        return addressRepository.findAll();
     }
 }

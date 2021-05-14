@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -44,9 +45,20 @@ public class CustomerServiceImpl implements CustomerService {
         return temp;
     }
 
+    @Override
+    public List<Customer> getAllCustomers() {
+        List<Customer> customers = customerRepository.findAll();
+        for (Customer customer : customers) {
+            customer.setPassword(null);
+        }
+
+        return customers;
+    }
+
     @Transactional
     public void assignAddressToCustomer(Customer customer, Long addressId) {
         Address address = addressRepository.findById(addressId).orElseThrow(() -> new NotFoundException("Could not find address!"));
         customer.setAddress(address);
     }
+
 }

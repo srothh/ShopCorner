@@ -6,10 +6,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Mapper
 @Component
 public interface CustomerMapper {
     Customer customerDtoToCustomer(CustomerRegistrationDto dto);
 
     CustomerRegistrationDto customerToCustomerDto(Customer customer);
+
+    List<CustomerRegistrationDto> customerListToCustomerDtoList(List<Customer> customers);
 }
