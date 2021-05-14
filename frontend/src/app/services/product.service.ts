@@ -24,7 +24,7 @@ export class ProductService {
    * and the taxRateID
    */
   addProduct(product: Product, categoryId: number, taxRateId: number): Observable<Product> {
-    if (isNaN(categoryId)) {
+    if (isNaN(categoryId)||categoryId == null) {
       return this.httpClient.post<Product>(this.messageBaseUri + '/categories/tax-rates/' + taxRateId, product);
     }else {
       console.log('categorID is: ', categoryId);

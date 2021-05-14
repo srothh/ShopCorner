@@ -52,14 +52,18 @@ export class OperatorAddProductComponent implements OnInit {
     }
   }
   createDefaultProduct(): Product {
-    return new Product(null,'',null,null,null,null);
+    return new Product(null,'',null,null,null,null, null);
   }
   onSelectFile(event) {
     this.fileToUpload = event.target.files.item(0);
     const reader = new FileReader();
     reader.readAsDataURL(this.fileToUpload);
     reader.onload = ((loadEvent) => {
+      //this.fileSource should be string in a base64-encoded format
       this.fileSource = loadEvent.target.result;
+      if (typeof this.fileSource === 'string') {
+        this.newProduct.picture = this.fileSource.split(',')[1];
+      }
     });
   }
   addProduct(productForm: NgForm): void {
@@ -70,17 +74,21 @@ export class OperatorAddProductComponent implements OnInit {
      this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
        this.newProduct.id = data.id;
        this.errorOccurred = false;
-       console.log('new Product added:', this.newProduct);
      }, error => {
        this.errorOccurred = true;
-       console.log('newly product failed while saving', this.newProduct);
-       console.log('new Product could not be saved:', error);
      });
   }
   //client-side validation
-  validateProduct(product: Product): boolean{
+  validateProduct(product: Product): boolean {
+    console.log(product);
+    if (product.name === null){
+      this.errorMessage = 'Der Name muss mindestens 1 Zeichen besitzen';
+      console.log(1);
+      return false;
+    }
     if (product.name.trim().length === 0){
       this.errorMessage = 'Der Name muss mindestens 1 Zeichen besitzen';
+      console.log(2);
       return false;
     }
     product.name = product.name.trim();
@@ -91,7 +99,7 @@ export class OperatorAddProductComponent implements OnInit {
     if (product.price != null){
       product.price = parseFloat(product.price.toFixed(2));
     }
-    if (this.newTaxRateId === undefined){
+    if (this.newTaxRateId === null){
       this.errorMessage = 'Bitte einen Steuersatz auswählen';
       return false;
     }
@@ -107,9 +115,12 @@ export class OperatorAddProductComponent implements OnInit {
   }
   resetState(): void {
     this.errorOccurred = undefined;
+    this.errorMessage = '';
   }
-
-
+  resetForm(form: NgForm){
+    form.resetForm();
+    this.errorOccurred = undefined;
+  }
   clearImage(): void {
     this.fileToUpload = undefined;
     this.fileSource = undefined;

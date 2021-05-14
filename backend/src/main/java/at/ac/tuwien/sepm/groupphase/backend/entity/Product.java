@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -28,10 +29,18 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tax_rate")
     private TaxRate taxRate;
-
-
+    @Lob
+    private byte[] picture;
 
     public Product() {
+    }
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
     }
 
     public Long getId() {

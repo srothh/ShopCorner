@@ -32,9 +32,6 @@ export class OperatorProductComponent implements OnInit {
 
   }
   addNewProduct(): void {
-    console.log('products: ', this.products);
-    console.log('categories', this.categories);
-    console.log('tax-rates:', this.taxRates);
     const currentURL = this.urlSerializer.serialize(this.router.createUrlTree([]));
     const addProductURL = currentURL.replace('products','add-product');
     this.router.navigate([addProductURL],{state: [this.categories,this.taxRates]}).then();

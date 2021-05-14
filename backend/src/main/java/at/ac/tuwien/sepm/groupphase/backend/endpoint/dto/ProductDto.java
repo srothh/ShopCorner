@@ -14,6 +14,15 @@ public class ProductDto {
     private Double price;
     private Category category;
     private TaxRate taxRate;
+    private String picture;
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
 
     public ProductDto() {
     }
