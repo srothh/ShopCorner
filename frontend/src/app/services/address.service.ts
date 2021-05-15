@@ -13,6 +13,11 @@ export class AddressService {
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
+  /**
+   * Adds a new address to persist.
+   *
+   * @param address The address dto to persist.
+   */
   addAddress(address: Address): Observable<Address> {
     console.log('Create new Address', address);
     return this.httpClient.post<Address>(this.addressBaseUri, address);

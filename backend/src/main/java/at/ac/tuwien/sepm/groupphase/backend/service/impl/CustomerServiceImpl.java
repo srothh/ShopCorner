@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,30 +24,32 @@ public class CustomerServiceImpl implements CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
+    private final AddressService addressService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository) {
+    public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService) {
         this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository;
         this.addressRepository = addressRepository;
+        this.addressService = addressService;
     }
 
     /**
      * Registers a new customer and persists its entity in the database.
      *
      * @param customer  The customer entity to save
-     * @param addressId The id referencing the customers address.
      * @return The customer entity added to the database
      * @throws RuntimeException upon errors with the database
      */
+    @Transactional
     @Override
-    public Customer registerNewCustomer(Customer customer, Long addressId) {
-        LOGGER.trace("registerNewCustomer({},{})", customer, addressId);
-        assignAddressToCustomer(customer, addressId);
+    public Customer registerNewCustomer(Customer customer) {
+        LOGGER.trace("registerNewCustomer({})", customer);
+        System.out.println(customer.getPassword());
+        Address address = addressRepository.save(customer.getAddress());
+        assignAddressToCustomer(customer, address.getId());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        Customer temp = customerRepository.save(customer);
-        temp.setPassword(null);
-        return temp;
+        return customerRepository.save(customer);
     }
 
     /**

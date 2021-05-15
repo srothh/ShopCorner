@@ -39,16 +39,17 @@ public class CustomerEndpoint {
      * Adds a new customer to the database.
      *
      * @param dto       The customer dto containing the customer information
-     * @param addressId The id of the customers address
      * @return The response dto containing the added customer
      */
     @PermitAll
-    @PostMapping("/{addressId}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register a new customer account")
-    public CustomerRegistrationDto registerNewCustomer(@Valid @RequestBody CustomerRegistrationDto dto, @PathVariable String addressId) {
-        LOGGER.info("POST api/v1/address");
-        return customerMapper.customerToCustomerDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto), Long.valueOf(addressId)));
+    public CustomerRegistrationDto registerNewCustomer(@Valid @RequestBody CustomerRegistrationDto dto) {
+        LOGGER.info("POST api/v1/customers");
+        CustomerRegistrationDto customer =  customerMapper.customerToCustomerDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto)));
+        customer.setPassword(null);
+        return customer;
     }
 
     /**
@@ -62,7 +63,7 @@ public class CustomerEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "retrieve all customers")
     public List<CustomerRegistrationDto> getAllCustomers() {
-        LOGGER.info("GET api/v1//users");
+        LOGGER.info("GET api/v1/users");
         return customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers());
     }
 }

@@ -12,27 +12,27 @@ public class CustomerRegistrationDto {
     private Long id;
     @NotNull(message = "email must not be null")
     @Email
-    @Size(max=255, message = "House number must not have more than 64 Characters")
+    @Size(max = 255, message = "House number must not have more than 64 Characters")
     private String email;
-    @NotNull(message = "password must not be null")
-    @NotBlank
+    //@NotNull(message = "password must not be null")
+    //@NotBlank
     private String password;
     @NotNull(message = "Name must not be null")
-    @Size(max=255, message = "House number must not have more than 64 Characters")
+    @Size(max = 255, message = "House number must not have more than 64 Characters")
     @NotBlank
     private String name;
     @NotNull(message = "loginName must not be null")
     @NotBlank
-    @Size(max=128, message = "House number must not have more than 64 Characters")
+    @Size(max = 128, message = "House number must not have more than 64 Characters")
     private String loginName;
-    private Address address;
-    @Size(max=128, message = "House number must not have more than 64 Characters")
+    private AddressDto address;
+    @Size(max = 128, message = "House number must not have more than 64 Characters")
     private String phoneNumber;
 
     public CustomerRegistrationDto() {
     }
 
-    public CustomerRegistrationDto(Long id, String name, String loginName, String password, String email, Address address, String phoneNumber) {
+    public CustomerRegistrationDto(Long id, String name, String loginName, String password, String email, AddressDto address, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -82,11 +82,11 @@ public class CustomerRegistrationDto {
         this.loginName = loginName;
     }
 
-    public Address getAddress() {
+    public AddressDto getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(AddressDto address) {
         this.address = address;
     }
 }

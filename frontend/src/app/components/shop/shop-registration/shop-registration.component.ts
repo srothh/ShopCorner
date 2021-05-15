@@ -47,21 +47,11 @@ export class ShopRegistrationComponent {
       const address: Address = new Address(0,this.addressForm.controls.street.value,
         this.addressForm.controls.postalCode.value, this.addressForm.controls.houseNumber.value,
         this.addressForm.controls.stairNumber.value, this.addressForm.controls.doorNumber.value);
-      this.addressService.addAddress(address).subscribe((add: Address) => {
-        const customer: Customer = new Customer(0, this.registrationForm.controls.loginName.value,
-          this.registrationForm.controls.password.value,
-          this.registrationForm.controls.name.value, this.registrationForm.controls.email.value, 0,
-          this.registrationForm.controls.phoneNumber.value);
-        this.customerService.addCustomer(customer,add.id).subscribe(() => {
-          },
-          error1 => {
-            console.log(error1);
-          }
-        );
-      }, error=> {
-console.log(error);
-}
-    );
+      const customer: Customer = new Customer(0, this.registrationForm.controls.loginName.value,
+        this.registrationForm.controls.password.value,
+        this.registrationForm.controls.name.value, this.registrationForm.controls.email.value, address,
+        this.registrationForm.controls.phoneNumber.value);
+      this.customerService.addCustomer(customer).subscribe();
     } else {
       console.log('Invalid input');
     }

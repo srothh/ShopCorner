@@ -22,7 +22,7 @@ public class Address {
     @Column(name = "postal_code", nullable = false)
     @Digits(integer = 4, fraction = 0)
     private int postalCode;
-    @Column(name = "house_number", nullable = false, length=64)
+    @Column(name = "house_number", nullable = false, length = 64)
     @NotBlank
     private String houseNumber;
     @Column(name = "stair_number", columnDefinition = "BIGINT DEFAULT NULL")
@@ -35,6 +35,14 @@ public class Address {
 
     public Address(Long id, String street, int postalCode, String houseNumber, int stairNumber, String doorNumber) {
         this.id = id;
+        this.street = street;
+        this.postalCode = postalCode;
+        this.houseNumber = houseNumber;
+        this.stairNumber = stairNumber;
+        this.doorNumber = doorNumber;
+    }
+
+    public Address(String street, int postalCode, String houseNumber, int stairNumber, String doorNumber) {
         this.street = street;
         this.postalCode = postalCode;
         this.houseNumber = houseNumber;

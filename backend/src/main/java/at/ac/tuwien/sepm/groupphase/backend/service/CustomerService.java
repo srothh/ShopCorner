@@ -7,7 +7,7 @@ import java.util.List;
 /** A service class handling customers.
  */
 public interface CustomerService {
-    Customer registerNewCustomer(Customer customer, Long addressId);
+    Customer registerNewCustomer(Customer customer);
 
     List<Customer> getAllCustomers();
 }

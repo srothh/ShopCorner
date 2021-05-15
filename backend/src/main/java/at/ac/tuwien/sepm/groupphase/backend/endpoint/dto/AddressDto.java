@@ -14,10 +14,10 @@ public class AddressDto {
     @NotNull
     @Digits(integer = 4, fraction = 0)
     private int postalCode;
-    @Size(max=64, message = "House number must not have more than 64 Characters")
+    @Size(max = 64, message = "House number must not have more than 64 Characters")
     private String houseNumber;
     private int stairNumber;
-    @Size(max=64, message = "Door number must not have more than 64 Characters")
+    @Size(max = 64, message = "Door number must not have more than 64 Characters")
     private String doorNumber;
 
     public AddressDto() {

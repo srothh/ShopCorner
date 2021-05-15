@@ -14,8 +14,8 @@ export class AuthInterceptor implements HttpInterceptor {
     const authUri = this.globals.backendUri + '/authentication';
     const registrationUri = this.globals.backendUri + '/users';
     const addressUri = this.globals.backendUri + '/address';
-    const regex = /api\/v1\/users\/\d+/;
-    if (req.url === authUri || regex.test(req.url) || (req.method === 'POST' && req.url === addressUri) ) {
+    if (req.url === authUri || (req.method === 'POST' && req.url === registrationUri)
+      || (req.method === 'POST' && req.url === addressUri)) {
       return next.handle(req);
     }
 
