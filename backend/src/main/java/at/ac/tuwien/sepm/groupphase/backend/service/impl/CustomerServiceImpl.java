@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer registerNewCustomer(Customer customer, Long addressId) {
-        LOGGER.trace("registerNewCustomer({})", customer);
+        LOGGER.trace("registerNewCustomer({},{})", customer,addressId);
         assignAddressToCustomer(customer, addressId);
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         Customer temp = customerRepository.save(customer);
@@ -43,6 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<Customer> getAllCustomers() {
+        LOGGER.trace("getAllCustomers()");
         List<Customer> customers = customerRepository.findAll();
         for (Customer customer : customers) {
             customer.setPassword(null);
@@ -53,6 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     public void assignAddressToCustomer(Customer customer, Long addressId) {
+        LOGGER.trace("assignAddressToCustomer({},{})",customer,addressId);
         Address address = addressRepository.findById(addressId).orElseThrow(() -> new NotFoundException("Could not find address!"));
         customer.setAddress(address);
     }

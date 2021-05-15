@@ -39,7 +39,7 @@ public class AddressEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Add a new address")
     public AddressDto addNewAddress(@Valid @RequestBody AddressDto dto) {
-        LOGGER.info("POST /address");
+        LOGGER.info("POST api/v1/address");
         return addressMapper.addressToAddressDto(addressService.addNewAddress(addressMapper.addressDtoToAddress(dto)));
     }
 
@@ -49,7 +49,7 @@ public class AddressEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "retrieve all addresses")
     public List<AddressDto> getAllAddresses() {
-        LOGGER.info("GET /address");
+        LOGGER.info("GET api/v1/address");
         return addressMapper.addressListToAddressDtoList(addressService.getAllAddresses());
     }
 }

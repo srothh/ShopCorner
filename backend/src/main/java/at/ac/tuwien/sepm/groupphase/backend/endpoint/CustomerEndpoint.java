@@ -40,7 +40,7 @@ public class CustomerEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register a new customer account")
     public CustomerRegistrationDto registerNewCustomer(@Valid @RequestBody CustomerRegistrationDto dto, @PathVariable String addressId) {
-        LOGGER.info("POST /address");
+        LOGGER.info("POST api/v1/address");
         return customerMapper.customerToCustomerDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto), Long.valueOf(addressId)));
     }
 
@@ -50,7 +50,7 @@ public class CustomerEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "retrieve all customers")
     public List<CustomerRegistrationDto> getAllCustomers() {
-        LOGGER.info("GET /users");
+        LOGGER.info("GET api/v1//users");
         return customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers());
     }
 }

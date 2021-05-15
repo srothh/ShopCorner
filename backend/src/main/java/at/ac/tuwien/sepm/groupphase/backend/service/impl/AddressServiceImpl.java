@@ -24,11 +24,13 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address addNewAddress(Address address) {
+        LOGGER.trace("addNewAddress({})",address);
         return addressRepository.save(address);
     }
 
     @Override
     public List<Address> getAllAddresses() {
+        LOGGER.trace("getAllAddresses()");
         return addressRepository.findAll();
     }
 }
