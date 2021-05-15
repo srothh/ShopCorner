@@ -1,17 +1,23 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class AddressDto {
-
     private Long id;
     @NotNull(message = "Street name is mandatory")
     @NotBlank
+    @Size(max = 255, message = "Maximum length for street 255 Characters")
     private String street;
+    @NotNull
+    @Digits(integer = 4, fraction = 0)
     private int postalCode;
+    @Size(max=64, message = "House number must not have more than 64 Characters")
     private String houseNumber;
     private int stairNumber;
+    @Size(max=64, message = "Door number must not have more than 64 Characters")
     private String doorNumber;
 
     public AddressDto() {

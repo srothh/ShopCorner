@@ -6,7 +6,6 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
-import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +21,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
-    private final Validator validator;
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public CustomerServiceImpl(PasswordEncoder passwordEncoder, Validator validator, CustomerRepository customerRepository, AddressRepository addressRepository) {
+    public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository) {
         this.passwordEncoder = passwordEncoder;
-        this.validator = validator;
         this.customerRepository = customerRepository;
         this.addressRepository = addressRepository;
     }
@@ -37,7 +34,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer registerNewCustomer(Customer customer, Long addressId) {
         LOGGER.trace("registerNewCustomer({})", customer);
-        validator.validateCustomerRegistration(customer);
         assignAddressToCustomer(customer, addressId);
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         Customer temp = customerRepository.save(customer);

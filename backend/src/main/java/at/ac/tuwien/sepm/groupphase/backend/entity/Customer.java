@@ -22,19 +22,18 @@ public class Customer {
     @Column(name = "name", nullable = false)
     @NotBlank
     private String name;
-    @Column(name = "login_name", nullable = false, length = 128)
+    @Column(name = "login_name", nullable = false, length = 128, unique = true)
     @NotBlank
     private String loginName;
     @Column(name = "password", nullable = false, length = 60)
     @NotBlank
     private String password;
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     @NotBlank
     @Email
     private String email;
-    //TODO: add relation to address
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "address_id", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "address_id", nullable = false, referencedColumnName = "id", updatable = false)
     private Address address;
     @Column(name = "phone_number")
     private String phoneNumber;
