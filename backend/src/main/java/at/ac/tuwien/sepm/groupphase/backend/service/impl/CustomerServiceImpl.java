@@ -31,9 +31,17 @@ public class CustomerServiceImpl implements CustomerService {
         this.addressRepository = addressRepository;
     }
 
+    /**
+     * Registers a new customer and persists its entity in the database.
+     *
+     * @param customer  The customer entity to save
+     * @param addressId The id referencing the customers address.
+     * @return The customer entity added to the database
+     * @throws RuntimeException upon errors with the database
+     */
     @Override
     public Customer registerNewCustomer(Customer customer, Long addressId) {
-        LOGGER.trace("registerNewCustomer({},{})", customer,addressId);
+        LOGGER.trace("registerNewCustomer({},{})", customer, addressId);
         assignAddressToCustomer(customer, addressId);
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         Customer temp = customerRepository.save(customer);
@@ -41,6 +49,12 @@ public class CustomerServiceImpl implements CustomerService {
         return temp;
     }
 
+    /**
+     * Retrieves all customers from the database.
+     *
+     * @return A list of all found customers
+     * @throws NotFoundException when no customers were found
+     */
     @Override
     public List<Customer> getAllCustomers() {
         LOGGER.trace("getAllCustomers()");
@@ -52,9 +66,17 @@ public class CustomerServiceImpl implements CustomerService {
         return customers;
     }
 
+    /**
+     * Assigns an address to a customer.
+     *
+     * @param customer  The customer to assign the address to
+     * @param addressId The id of the address to assign to the customer
+     * @throws NotFoundException when no address with the id is found
+     * @throws RuntimeException  upon encountering errors with the database
+     */
     @Transactional
     public void assignAddressToCustomer(Customer customer, Long addressId) {
-        LOGGER.trace("assignAddressToCustomer({},{})",customer,addressId);
+        LOGGER.trace("assignAddressToCustomer({},{})", customer, addressId);
         Address address = addressRepository.findById(addressId).orElseThrow(() -> new NotFoundException("Could not find address!"));
         customer.setAddress(address);
     }

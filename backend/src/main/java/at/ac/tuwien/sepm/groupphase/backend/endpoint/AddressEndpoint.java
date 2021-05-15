@@ -43,6 +43,11 @@ public class AddressEndpoint {
         return addressMapper.addressToAddressDto(addressService.addNewAddress(addressMapper.addressDtoToAddress(dto)));
     }
 
+    /**
+     * Retrieves addresses from persistent database.
+     *
+     * @return all addresses from the database
+     */
     //TODO Change to Secured(ROLE_ADMIN)
     @PermitAll
     @GetMapping

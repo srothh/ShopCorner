@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * A repository class for customers.
+ */
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 }

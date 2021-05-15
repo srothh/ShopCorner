@@ -35,6 +35,13 @@ public class CustomerEndpoint {
         this.customerService = customerService;
     }
 
+    /**
+     * Adds a new customer to the database.
+     *
+     * @param dto       The customer dto containing the customer information
+     * @param addressId The id of the customers address
+     * @return The response dto containing the added customer
+     */
     @PermitAll
     @PostMapping("/{addressId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -44,6 +51,11 @@ public class CustomerEndpoint {
         return customerMapper.customerToCustomerDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto), Long.valueOf(addressId)));
     }
 
+    /**
+     * Retrieves all customers from the database.
+     *
+     * @return A list of all the retrieved customers
+     */
     //TODO Change to Secured(ROLE_ADMIN)
     @PermitAll
     @GetMapping

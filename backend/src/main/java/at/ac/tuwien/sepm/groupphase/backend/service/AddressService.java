@@ -4,6 +4,8 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 
 import java.util.List;
 
+/**  A service class handling addresses.
+ */
 public interface AddressService {
     Address addNewAddress(Address address);
 
