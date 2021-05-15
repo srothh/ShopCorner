@@ -1,3 +1,98 @@
-<div>
-  Implement invoice management here
+<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error! </strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="table-view">
+  <div class="container my-4">
+    <p class="font-weight-bold">Rechnung erstellen</p>
+    <hr class="mb-5"/>
+    <div class="border border-light p-3 mb-4">
+      <div class="p-2 bd-highlight col-example">
+        <div class="card">
+          <div class="card-body">
+            <form class="needs-validation" [formGroup]="newInvoiceForm" (ngSubmit)="onSubmit()">
+              <div class="card-body">
+                <h4 class="card-title d-flex justify-content-between">Rechnugs Artikel
+                  <button type="button" class="btn btn-success" (click)="addProductOnClick()">+</button>
+                </h4>
+
+                <div class="row align-items-start">
+                  <div class="col-4 center-block text-center">
+                    <h6>Produkt</h6>
+                  </div>
+                  <div class="col-3 center-block text-center">
+                    <h6>Preis</h6>
+                  </div>
+                  <div class="col-2 center-block text-center">
+                    <h6>Anzahl</h6>
+                  </div>
+                  <div class="col-2 center-block text-center">
+                    <h6>Gesamt Betrag</h6>
+                  </div>
+                  <div class="col-1 center-block text-center">
+
+                  </div>
+                </div>
+                <div *ngFor="let item of t['controls']; let id = index" class="list-group list-group-flush">
+                  <div class="row align-items-start" style="margin-top: 5px" [formGroup]="item" >
+                    <div class="col-4 center-block text-center">
+                      <select class="form-select form-control productName" formControlName="name" id="productName"[ngClass]="{ 'is-invalid': submitted && item.controls.name.errors}">
+                        <option value="" selected>(none)</option>
+                        <option>apple</option>
+                        <option>pear</option>
+                        <option>pineapple</option>
+                        <option>cherry</option>
+                      </select>
+                      <div *ngIf="submitted && item.controls.name.errors" class="invalid-feedback">
+                        <div *ngIf="item.controls.name.errors.required">Wählen sie ein Produkt</div>
+                      </div>
+                    </div>
+                    <div class="col-3 center-block text-center">
+                      <input type="number" class="form-control" formControlName="price" name="price" id="price" [ngClass]="{ 'is-invalid': submitted && item.controls.price.errors}" min="0">
+                      <div *ngIf="submitted && item.controls.price.errors" class="invalid-feedback">
+                        <div *ngIf="item.controls.price.errors.required">Geben sie den Preis ein</div>
+                      </div>
+                    </div>
+                    <div class="col-2 center-block text-center">
+                      <input type="number" class="form-control" formControlName="quantity" name="quantity" id="quantity" [ngClass]="{ 'is-invalid': submitted && this.item.controls.quantity.errors}" min="0">
+                      <div *ngIf="submitted && item.controls.quantity.errors" class="invalid-feedback">
+                        <div *ngIf="item.controls.quantity.errors.required">Geben sie den Anzahl der Produkte an</div>
+                      </div>
+                    </div>
+                    <div class="col-2 text-center align-items-center" style="height: 100%">
+                      <input type="text" class="form-control" name="amount" id="amount" #amount style="border: none"
+                             value="0.0" readonly>
+                    </div>
+                    <div class="col-1 center-block text-center">
+                      <button type="button" class="btn btn-outline-danger" (click)="deleteProduct(id)">-</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="createInvoice">
+                <div class="row">
+                  <div class="col-2">
+                    <button class="btn btn-warning btn-block" type="reset" (click)="onReset()"> Reset Artikel</button>
+                  </div>
+                  <div class="col-3">
+                    <button class="btn btn-info btn-block" type="submit"> PDF download</button>
+                  </div>
+                  <div class="col-3">
+                    <button class="btn btn-info btn-block" type="submit"> PDF drucken</button>
+                  </div>
+                  <div class="col-4">
+                    <button class="btn btn-info btn-block" type="submit"> PDF öffnen</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>

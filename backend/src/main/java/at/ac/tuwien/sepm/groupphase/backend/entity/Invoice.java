@@ -38,6 +38,13 @@ public class Invoice {
         items = new HashSet<>();
     }
 
+    public Invoice(Long id, LocalDateTime date, double amount) {
+        this.id = id;
+        this.date = date;
+        this.amount = amount;
+        items = new HashSet<>();
+    }
+
     public Long getId() {
         return id;
     }
