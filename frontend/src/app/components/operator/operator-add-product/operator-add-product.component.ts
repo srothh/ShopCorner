@@ -83,12 +83,10 @@ export class OperatorAddProductComponent implements OnInit {
     console.log(product);
     if (product.name === null){
       this.errorMessage = 'Der Name muss mindestens 1 Zeichen besitzen';
-      console.log(1);
       return false;
     }
     if (product.name.trim().length === 0){
       this.errorMessage = 'Der Name muss mindestens 1 Zeichen besitzen';
-      console.log(2);
       return false;
     }
     product.name = product.name.trim();
@@ -99,7 +97,7 @@ export class OperatorAddProductComponent implements OnInit {
     if (product.price != null){
       product.price = parseFloat(product.price.toFixed(2));
     }
-    if (this.newTaxRateId === null){
+    if (this.newTaxRateId == null){
       this.errorMessage = 'Bitte einen Steuersatz auswählen';
       return false;
     }

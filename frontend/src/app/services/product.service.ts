@@ -27,7 +27,6 @@ export class ProductService {
     if (isNaN(categoryId)||categoryId == null) {
       return this.httpClient.post<Product>(this.messageBaseUri + '/categories/tax-rates/' + taxRateId, product);
     }else {
-      console.log('categorID is: ', categoryId);
       return this.httpClient.post<Product>(this.messageBaseUri + '/categories/' + categoryId + '/tax-rates/' + taxRateId, product);
     }
   }

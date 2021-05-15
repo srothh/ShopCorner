@@ -10,8 +10,16 @@ import java.util.Set;
 public class TaxRateDto {
     private Long id;
     private Double percentage;
+    private Double calculationFactor;
     private Set<Product> products = new HashSet<>();
 
+    public Double getCalculationFactor() {
+        return calculationFactor;
+    }
+
+    public void setCalculationFactor(Double calculationFactor) {
+        this.calculationFactor = calculationFactor;
+    }
 
     public TaxRateDto(){}
 

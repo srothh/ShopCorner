@@ -38,7 +38,7 @@ const routes: Routes = [
       {path: 'invoices', component: OperatorInvoiceComponent},
       {path: 'orders', component: OperatorOrderComponent},
       {path: 'products', component: OperatorProductComponent},
-      {path: 'add-product', component: OperatorAddProductComponent},
+      {path: 'products/add', component: OperatorAddProductComponent},
       {path: 'promotions', component: OperatorPromotionComponent},
       {path: 'statistics', component: OperatorStatisticComponent},
       {path: 'customers', component: OperatorCustomerComponent},

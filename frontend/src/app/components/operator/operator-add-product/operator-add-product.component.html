@@ -39,7 +39,7 @@
       <label for="inputTaxRates" class="form-label"><b>Steuersatz</b></label>
       <select class="custom-select" name="tax-rates" id="inputTaxRates" [(ngModel)]="newTaxRateId">
         <option selected disabled value="undefined">Steuersatz auswählen </option>
-        <option *ngFor="let taxRate of this.taxRates" [value]="taxRate.id">{{taxRate.percentage}}</option>
+        <option *ngFor="let taxRate of this.taxRates" [value]="taxRate.id">{{taxRate.percentage + '%'}}</option>
 
       </select>
     </div>
