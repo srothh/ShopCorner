@@ -5,6 +5,8 @@ import {Product} from '../../../dtos/product';
 import {Invoice} from '../../../dtos/invoice';
 import {FormBuilder, FormGroup, FormArray, Validators, FormControl} from '@angular/forms';
 import {InvoiceService} from '../../../services/invoice.service';
+import {toString} from '@ng-bootstrap/ng-bootstrap/util/util';
+import {formatDate} from '@angular/common';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -18,8 +20,9 @@ export class OperatorInvoiceComponent implements OnInit {
   submitted = false;
   error = false;
   errorMessage = '';
+  invoiceDto: Invoice;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private invoiceService: InvoiceService, private formBuilder: FormBuilder) {
   }
 
   ngOnInit() {
@@ -27,9 +30,8 @@ export class OperatorInvoiceComponent implements OnInit {
       items: new FormArray([])
     });
     this.addProductOnClick();
-    }
+  }
 
-  // convenience getters for easy access to form fields
   get f() {
     return this.newInvoiceForm.controls;
   }
@@ -48,14 +50,37 @@ export class OperatorInvoiceComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-
-    // stop here if form is invalid
     if (this.newInvoiceForm.invalid) {
       return;
     }
+    this.creatInvoiceDto();
+    this.addInvoice();
+  }
 
-    // display form values on success
-    alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.newInvoiceForm.value, null, 4));
+  addInvoice() {
+    this.invoiceService.createInvoice(this.invoiceDto).subscribe(
+      (invoice: Invoice) => {
+        console.log(invoice);
+      },
+      (error) => {
+        this.defaultServiceErrorHandling(error);
+      });
+  }
+
+  creatInvoiceDto() {
+    this.invoiceDto = new Invoice();
+    let amount = 0;
+    for (const item of this.t.controls) {
+      const product = new Product();
+      for (let j = 0; j < item.value.quantity; j++) {
+        product.name = item.value.name;
+        product.price = item.value.price;
+        this.invoiceDto.invoiceItems.push(product);
+      }
+      amount += item.value.price * item.value.quantity;
+    }
+    this.invoiceDto.amount = amount;
+    this.invoiceDto.date = formatDate(new Date(), 'dd.MM.yyyy HH:mm:ss', 'en');
   }
 
   onReset() {
@@ -63,14 +88,13 @@ export class OperatorInvoiceComponent implements OnInit {
     this.newInvoiceForm.reset();
     this.t.clear();
     this.addProductOnClick();
-
   }
 
   deleteProduct(id: number) {
     if (this.t.length > 1) {
       this.t.removeAt(id);
     } else {
-        this.errorHandling('Es können nicht alle Elemente einer Rechnung gelöscht werden');
+      this.errorHandling('Es können nicht alle Elemente einer Rechnung gelöscht werden');
     }
   }
 
@@ -81,6 +105,7 @@ export class OperatorInvoiceComponent implements OnInit {
   vanishError() {
     this.error = false;
   }
+
   /**
    * @param error
    * @private
@@ -93,4 +118,23 @@ export class OperatorInvoiceComponent implements OnInit {
       this.error = false;
     }
   }
+
+  /**
+   * @param error
+   * @private
+   */
+  private defaultServiceErrorHandling(error: any) {
+    console.log(error);
+    this.error = true;
+    if (error.status === 0) {
+      // If status is 0, the backend is probably down
+      this.errorMessage = 'The backend seems not to be reachable';
+    } else if (error.error.message === 'No message available') {
+      // If no detailed error message is provided, fall back to the simple error name
+      this.errorMessage = error.error.error;
+    } else {
+      this.errorMessage = error.error.message;
+    }
+  }
+
 }

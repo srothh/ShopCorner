@@ -1,4 +1,11 @@
 .createInvoice{
   margin-top: 1rem;
 }
+.btn-primary{
+  background-color: blue;
+  border-color: darkblue;
+}
 
+.btn-primary:hover{
+  background-color: darkblue;
+}

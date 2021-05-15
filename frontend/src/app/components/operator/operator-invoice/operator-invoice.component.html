@@ -56,14 +56,15 @@
                       </div>
                     </div>
                     <div class="col-2 center-block text-center">
-                      <input type="number" class="form-control" formControlName="quantity" name="quantity" id="quantity" [ngClass]="{ 'is-invalid': submitted && this.item.controls.quantity.errors}" min="0">
+                      <input type="number" class="form-control" formControlName="quantity" name="quantity" id="quantity"
+                             [ngClass]="{ 'is-invalid': submitted && this.item.controls.quantity.errors}" min="0">
                       <div *ngIf="submitted && item.controls.quantity.errors" class="invalid-feedback">
                         <div *ngIf="item.controls.quantity.errors.required">Geben sie den Anzahl der Produkte an</div>
                       </div>
                     </div>
                     <div class="col-2 text-center align-items-center" style="height: 100%">
                       <input type="text" class="form-control" name="amount" id="amount" #amount style="border: none"
-                             value="0.0" readonly>
+                             value="0.0" value="{{item.value.price*item.value.quantity}}" readonly>
                     </div>
                     <div class="col-1 center-block text-center">
                       <button type="button" class="btn btn-outline-danger" (click)="deleteProduct(id)">-</button>
@@ -77,13 +78,13 @@
                     <button class="btn btn-warning btn-block" type="reset" (click)="onReset()"> Reset Artikel</button>
                   </div>
                   <div class="col-3">
-                    <button class="btn btn-info btn-block" type="submit"> PDF download</button>
+                    <button class="btn btn-block btn-primary" type="submit"> PDF download</button>
                   </div>
                   <div class="col-3">
-                    <button class="btn btn-info btn-block" type="submit"> PDF drucken</button>
+                    <button class="btn btn-block  btn-primary" type="submit"> PDF drucken</button>
                   </div>
                   <div class="col-4">
-                    <button class="btn btn-info btn-block" type="submit"> PDF öffnen</button>
+                    <button class="btn btn-block btn-primary" type="submit"> PDF öffnen</button>
                   </div>
                 </div>
               </div>
