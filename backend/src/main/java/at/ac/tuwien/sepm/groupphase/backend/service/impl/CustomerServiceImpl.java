@@ -46,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
         System.out.println(customer.getPassword());
-        Address address = addressRepository.save(customer.getAddress());
+        Address address = addressService.addNewAddress(customer.getAddress());
         assignAddressToCustomer(customer, address.getId());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         return customerRepository.save(customer);
