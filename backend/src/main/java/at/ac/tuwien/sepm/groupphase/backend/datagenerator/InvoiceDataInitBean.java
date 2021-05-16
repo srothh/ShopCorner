@@ -24,7 +24,7 @@ public class InvoiceDataInitBean {
     @PostConstruct
     void wipeDatabase() {
         try {
-            ScriptUtils.executeSqlScript(source.getConnection(), new ClassPathResource("sql/initIvoiceDb.sql"));
+            ScriptUtils.executeSqlScript(source.getConnection(), new ClassPathResource("sql/initInvoiceDb.sql"));
         } catch (Exception e) {
             LOGGER.error("Error insert data into database", e);
         }

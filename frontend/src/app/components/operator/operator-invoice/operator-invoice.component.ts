@@ -16,6 +16,9 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   styleUrls: ['./operator-invoice.component.scss']
 })
 export class OperatorInvoiceComponent implements OnInit {
+
+  shopName = 'shopCorner';
+
   newInvoiceForm: FormGroup;
   submitted = false;
   error = false;
@@ -57,8 +60,7 @@ export class OperatorInvoiceComponent implements OnInit {
       return;
     }
     this.creatInvoiceDto();
-    this.generatePdf();
-    // this.generatePdf();
+     this.generatePdf();
     // this.addInvoice();
   }
 
@@ -77,15 +79,17 @@ export class OperatorInvoiceComponent implements OnInit {
     let amount = 0;
     for (const item of this.t.controls) {
       const product = new Product();
-      for (let j = 0; j < item.value.quantity; j++) {
+      const numOfItems = item.value.quantity;
+      for (let j = 0; j < numOfItems ; j++) {
         product.name = item.value.name;
         product.price = item.value.price;
         this.invoiceDto.invoiceItems.push(product);
       }
       amount += item.value.price * item.value.quantity;
       this.mapItem['product'] = product;
-      this.mapItem['quantity'] = item.value.quantity;
+      this.mapItem['quantity'] = numOfItems;
       this.map.push(this.mapItem);
+      this.mapItem = {};
     }
     this.invoiceDto.amount = amount;
     this.invoiceDto.date = formatDate(new Date(), 'dd.MM.yyyy HH:mm:ss', 'en');
@@ -95,18 +99,20 @@ export class OperatorInvoiceComponent implements OnInit {
      const docDefinition = {
        content: [
          {
-           text: 'ELECTRONIC SHOP',
-           fontSize: 16,
+           text: `${this.shopName}`,
+           fontSize: 20,
+           fontStyle: 'Arial',
            alignment: 'center',
-           color: '#047886'
+           color: 'black'
          },
          {
            text: 'INVOICE',
-           fontSize: 20,
+           fontSize: 16,
            bold: true,
            alignment: 'center',
            decoration: 'underline',
-           color: 'skyblue'
+           color: 'black',
+           margin: [0, 10, 0, 0 ]
          },
          {
            text: 'Customer Details',
@@ -115,21 +121,21 @@ export class OperatorInvoiceComponent implements OnInit {
          {
            columns: [
              [
-               {
+               /*{
                  text: 'this.invoice.customerName',
                  bold: true
                },
                { text: 'this.invoice.address' },
                { text: 'this.invoice.email' },
-               { text: 'this.invoice.contactNo' }
+               { text: 'this.invoice.contactNo' }*/
              ],
              [
                {
-                 text: `Date: ${new Date().toLocaleString()}`,
+                 text: `Date: ${this.invoiceDto.date}`,
                  alignment: 'right'
                },
                {
-                 text: `Bill No : ${((Math.random() * 1000).toFixed(0))}`,
+                 text: `Bill No : ${this.invoiceDto.id}`,
                  alignment: 'right'
                }
              ]
@@ -144,24 +150,24 @@ export class OperatorInvoiceComponent implements OnInit {
              headerRows: 1,
              widths: ['*', 'auto', 'auto', 'auto'],
              body: [
-               ['Product', 'Price', 'Quantity', 'Amount'],
-
+               ['Product', 'Price', 'Quantity', 'Amount']/*,
+               [{text: 'Total Amount', colSpan: 3}, '' , '', '']*/
              ]
            }
          },
-         {
+         /*{
            text: 'Additional Details',
            style: 'sectionHeader'
          },
          {
            text: 'this.invoice.additionalDetails',
            margin: [0, 0 , 0, 15]
-         },
+         },*/
          {
            columns: [
-             [{ qr: `www.facebook.com`, fit: '50' }],
-             [{ text: 'Signature', alignment: 'right', italics: true}],
-           ]
+             [{ qr: `https://www.tuwien.at/`, fit: '75' }],
+           ],
+           margin: [0, 15 , 0, 0]
          },
          {
            text: 'Terms and Conditions',
@@ -185,11 +191,18 @@ export class OperatorInvoiceComponent implements OnInit {
        }
      };
 
-
+     let total = 0;
      for (const item of this.map) {
        docDefinition['content'][5].table.body.push([item.product.name, item.product.price,
-         item.quantity, item.product.price * item.quantity]);
+         item.quantity, total += (item.product.price * item.quantity)]);
      }
+     docDefinition['content'][5].table.body.push([ '', '', '', total.toString()]);
+     const index = docDefinition['content'][5].table.body.length;
+     console.log(index, 'index');
+     docDefinition['content'][5].table.body[index - 1][0] = JSON.parse(JSON.stringify({text: 'Gesamt Betrat exkl. mwst', colSpan: 3}));
+     docDefinition['content'][5].table.body[index - 1][3] = total.toString();
+
+     console.log(total);
      pdfMake.createPdf(docDefinition).open();
    }
 
