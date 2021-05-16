@@ -1,7 +1,17 @@
 <h2>Betreiber Konten</h2>
-<caption style="font-size: 10px">Zeigt 1-10 von 23 (placeholder)</caption>
-<div class="border rounded">
-  <table class="table table-sm table-responsive">
+<hr>
+<div>
+  <p style="font-size: 10px; color: gray" *ngIf="(pageSize * page) < collectionSize; else other_content">
+    Zeigt {{1 + (pageSize * (page - 1))}}-{{(pageSize * page)}}
+    von {{collectionSize}}</p>
+  <ng-template #other_content>
+    <p style="font-size: 10px; color: gray">Zeigt {{1 + (pageSize * (page - 1))}}-{{collectionSize}}
+      von {{collectionSize}}</p>
+  </ng-template>
+</div>
+
+<div class="border rounded" style="height: 560px">
+  <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
     <thead>
     <tr class="table-secondary">
       <th scope="col">Name</th>
@@ -10,7 +20,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let operator of operators">
+    <tr *ngFor="let operator of operators | slice: (page-1) * pageSize : page * pageSize">
       <td><span>{{operator.name}}</span></td>
       <td><span>{{operator.loginName}}</span></td>
       <td><span>{{operator.email}}</span></td>
@@ -19,6 +29,10 @@
   </table>
 </div>
 
+<div class="d-flex justify-content-between p-2">
+  <button class="btn btn-dark" (click)="page=page-1">Vorherige Seite</button>
+  <button class="btn btn-dark" (click)="page=page+1">Nächste Seite</button>
+</div>
 
 <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
   <strong>Error! </strong> {{ errorMessage }}

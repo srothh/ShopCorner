@@ -14,6 +14,10 @@ export class OperatorAccountComponent implements OnInit {
   successMessage = '';
   success = false;
   operators: Operator[];
+  page = 1;
+  pageSize = 15;
+  collectionSize = 0;
+
 
   constructor(private operatorService: OperatorService) {
   }
@@ -33,6 +37,7 @@ export class OperatorAccountComponent implements OnInit {
     this.operatorService.getAllOperators().subscribe(
       (operators: Operator[]) => {
         this.operators = operators;
+        this.collectionSize=operators.length;
       },
       error => {
         this.defaultServiceErrorHandling(error);
