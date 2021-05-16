@@ -14,7 +14,9 @@
 
   <div class="operator-add-product-header mt-3" style="display:flex;justify-content: space-between">
     <h3>Produkt hinzufügen</h3>
-    <button class="btn btn-primary" type="submit" [disabled]="!productForm.valid" (click)="myForm.ngSubmit.emit()">Speichern</button>
+    <button class="btn btn-primary" type="submit" [disabled]="!productForm.valid" (click)="myForm.ngSubmit.emit()">
+      Speichern
+    </button>
   </div>
   <hr/>
   <form class="row g-3" [formGroup]="productForm" #myForm="ngForm" (ngSubmit)="addProduct()">
@@ -26,11 +28,18 @@
                placeholder="Geben Sie einen Namen für ihr Produkt ein" required formControlName="name">
         <div *ngIf="productFormControl.name.touched && productFormControl.name.invalid">
           <div class="text-danger" *ngIf="productFormControl.name.errors.required">Geben Sie bitte einen Namen ein</div>
-          <div class="text-danger" *ngIf="productFormControl.name.errors.minlength">Der Name muss mindestens 3 Zeichen besitzen</div>
-          <div class="text-danger" *ngIf="productFormControl.name.hasError('whitespace')">Der Name darf nur aus Zeichen bestehen</div>
+          <div class="text-danger" *ngIf="productFormControl.name.errors.minlength">Der Name muss mindestens 3 Zeichen
+            besitzen
+          </div>
+          <div class="text-danger" *ngIf="productFormControl.name.errors.maxlength">Der Name ist zu lang. Bitte wählen
+            Sie einen kürzeren Namen.
+          </div>
+          <div class="text-danger" *ngIf="productFormControl.name.hasError('whitespace')">Der Name darf nur aus Zeichen
+            bestehen
+          </div>
         </div>
         <div *ngIf="productFormControl.name.touched && productFormControl.name.valid">
-         <div class="text-success">Gültiger Name</div>
+          <div class="text-success">Gültiger Name</div>
         </div>
 
 
@@ -47,7 +56,9 @@
                formControlName="price"
                required="required"/>
         <div *ngIf="productFormControl.price.touched && productFormControl.price.invalid">
-          <div class="text-danger" *ngIf="productFormControl.price.errors.required">Geben Sie bitte einen Preis in EUR ein, zB. 1.20</div>
+          <div class="text-danger" *ngIf="productFormControl.price.errors.required">Geben Sie bitte einen Preis in EUR
+            ein, zB. 1.20
+          </div>
         </div>
         <div *ngIf="productFormControl.price.touched && productFormControl.price.valid">
           <div class="text-success">Gültiger Preis</div>
@@ -64,7 +75,9 @@
           <option *ngFor="let taxRate of this.taxRates" [value]="taxRate.id">{{taxRate.percentage + '%'}}</option>
         </select>
         <div *ngIf="productFormControl.taxRate.touched && productFormControl.taxRate.invalid">
-          <div class="text-danger" *ngIf="productFormControl.taxRate.errors.required">Bitte einen Steuersatz für ihr Pordukt angeben</div>
+          <div class="text-danger" *ngIf="productFormControl.taxRate.errors.required">Bitte einen Steuersatz für ihr
+            Produkt angeben
+          </div>
         </div>
         <div *ngIf="productFormControl.taxRate.touched && productFormControl.taxRate.valid">
           <div class="text-success">Steuersatz gültig</div>
@@ -89,37 +102,44 @@
         <label for="inputDescription" class="form-label"><b>Beschreibung</b></label>
         <textarea class="form-control" id="inputDescription" rows="2"
                   name="input4" placeholder="Beschreiben Sie ihr Produkt" formControlName="description"></textarea>
-      </div>
+        <div *ngIf="productFormControl.description.invalid">
+          <div class="text-danger" *ngIf="productFormControl.description.errors.maxlength">Die Beschreibung ist zu lang. Bitte wählen
+            Sie eine kürzere Beschreibung Namen.
+          </div>
+        </div>
+
+
+        </div>
     </div>
 
     <div class="col-md-6 mt-3">
       <div class="custom-file mt-3">
 
-          <input #fileInput type="file" class="custom-file-input" id="customFile" (change)="onSelectFile($event)"
-          >
+        <input #fileInput type="file" class="custom-file-input" id="customFile" (change)="onSelectFile($event)"
+               accept="image/png, image/jpeg"
+        >
 
-          <label class="custom-file-label" for="customFile">
-            <div *ngIf="fileToUpload; else elseBlock">
-              {{fileToUpload?.name}}
-            </div>
-            <ng-template #elseBlock>Bild auswählen...</ng-template>
-          </label>
-          <div *ngIf="fileSource" class="mt-2">
-            <button type="button" class="btn btn-light" (click)="clearImage()">Entfernen</button>
+        <label class="custom-file-label" for="customFile">
+          <div *ngIf="fileToUpload; else elseBlock">
+            {{fileToUpload?.name}}
           </div>
+          <ng-template #elseBlock>Bild auswählen...</ng-template>
+        </label>
+        <div *ngIf="fileSource" class="mt-2">
+          <button type="button" class="btn btn-light" (click)="clearImage()">Entfernen</button>
+        </div>
 
       </div>
-        </div>
+    </div>
 
 
     <div class="col-md-6 mt-4" style="text-align:center">
 
-        <div *ngIf="fileSource">
-          <img src="{{fileSource}}" alt="" height="250" width="250">
-        </div>
-
+      <div *ngIf="fileSource">
+        <img src="{{fileSource}}" alt="" height="250" width="250">
       </div>
 
+    </div>
 
 
   </form>

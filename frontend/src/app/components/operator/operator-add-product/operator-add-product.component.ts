@@ -48,7 +48,7 @@ export class OperatorAddProductComponent implements OnInit {
   ngOnInit(): void {
     this.productForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.whiteSpaceValidator]],
-      description: [''],
+      description: ['',Validators.maxLength(70)],
       price: ['', Validators.required],
       taxRate: [ null , Validators.required],
       category: [null ]
@@ -81,9 +81,11 @@ export class OperatorAddProductComponent implements OnInit {
       return;
     }
     this.newProduct.name = this.productForm.get('name').value;
+    this.newProduct.name = this.newProduct.name.trim();
     this.newProduct.price = this.productForm.get('price').value;
     this.newTaxRateId = this.productForm.get('taxRate').value;
     this.newProduct.description = this.productForm.get('description').value;
+    this.newProduct.description = this.newProduct.description.trim();
     this.newCategoryId = this.productForm.get('category').value;
 
     this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
