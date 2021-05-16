@@ -95,9 +95,8 @@
     <div class="col-md-6 mt-3">
       <div class="custom-file mt-3">
 
-        <div class="form-group">
           <input #fileInput type="file" class="custom-file-input" id="customFile" (change)="onSelectFile($event)"
-          formControlName="picture">
+          >
 
           <label class="custom-file-label" for="customFile">
             <div *ngIf="fileToUpload; else elseBlock">
@@ -108,7 +107,7 @@
           <div *ngIf="fileSource" class="mt-2">
             <button type="button" class="btn btn-light" (click)="clearImage()">Entfernen</button>
           </div>
-        </div>
+
       </div>
         </div>
 

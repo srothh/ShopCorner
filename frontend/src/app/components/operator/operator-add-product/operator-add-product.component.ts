@@ -51,7 +51,7 @@ export class OperatorAddProductComponent implements OnInit {
       description: [''],
       price: ['', Validators.required],
       taxRate: [ null , Validators.required],
-      category: [null ],
+      category: [null ]
 
     });
     if (this.newProduct === undefined){
@@ -85,6 +85,7 @@ export class OperatorAddProductComponent implements OnInit {
     this.newTaxRateId = this.productForm.get('taxRate').value;
     this.newProduct.description = this.productForm.get('description').value;
     this.newCategoryId = this.productForm.get('category').value;
+
     this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
        this.newProduct.id = data.id;
        this.errorOccurred = false;

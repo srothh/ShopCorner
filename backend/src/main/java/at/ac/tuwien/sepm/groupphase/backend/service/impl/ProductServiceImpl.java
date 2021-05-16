@@ -62,7 +62,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-
     @Override
     public List<Product> getAllProducts() throws Exception {
         return this.productRepository.findAll();
@@ -86,11 +85,10 @@ public class ProductServiceImpl implements ProductService {
 
         }
         if (product.getDescription() != null) {
-            if (product.getDescription().trim().isEmpty()) {
-                throw new Exception("description consist of only whitespaces");
-            }
-            if (product.getDescription().length() > 50) {
-                throw new Exception("description is too long!");
+            if (!product.getDescription().trim().isEmpty()) {
+                if (product.getDescription().length() > 50) {
+                    throw new Exception("description is too long!");
+                }
             }
 
         }
