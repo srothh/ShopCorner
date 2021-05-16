@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {Product} from '../../../dtos/product';
 import {Router} from '@angular/router';
 import {TaxRate} from '../../../dtos/tax-rate';
@@ -20,6 +20,8 @@ export class OperatorAddProductComponent implements OnInit {
   fileInput: ElementRef;
   fileToUpload: File;
   fileSource: string | ArrayBuffer;
+  //Form for creating a new product
+  productForm: FormGroup;
   //properties for the newly to be added product
   newProduct: Product;
   newCategoryId: number;
@@ -33,7 +35,7 @@ export class OperatorAddProductComponent implements OnInit {
   errorMessage: string;
 
   constructor(private router: Router, private categoryService: CategoryService, private taxRateService: TaxRateService,
-  private productService: ProductService) {
+  private productService: ProductService, private formBuilder: FormBuilder) {
     if (router.getCurrentNavigation().extras.state !== undefined) {
       this.categories = this.router.getCurrentNavigation().extras.state[0] as Category[];
       this.taxRates = this.router.getCurrentNavigation().extras.state[1] as TaxRate[];
@@ -44,14 +46,22 @@ export class OperatorAddProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.newProduct === undefined) {
-      this.newProduct = this.createDefaultProduct();
+    this.productForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.whiteSpaceValidator]],
+      description: [''],
+      price: ['', Validators.required],
+      taxRate: [ null , Validators.required],
+      category: [null ],
+
+    });
+    if (this.newProduct === undefined){
+      this.newProduct = this.createNewProduct();
     }
     if (this.shouldFetch === true) {
       this.fetchData();
     }
   }
-  createDefaultProduct(): Product {
+  createNewProduct(): Product {
     return new Product(null,'',null,null,null,null, null);
   }
   onSelectFile(event) {
@@ -59,51 +69,29 @@ export class OperatorAddProductComponent implements OnInit {
     const reader = new FileReader();
     reader.readAsDataURL(this.fileToUpload);
     reader.onload = ((loadEvent) => {
-      //this.fileSource should be string in a base64-encoded format
+      //fileSource should be string in a base64-encoded format
       this.fileSource = loadEvent.target.result;
       if (typeof this.fileSource === 'string') {
         this.newProduct.picture = this.fileSource.split(',')[1];
       }
     });
   }
-  addProduct(productForm: NgForm): void {
-    if (!this.validateProduct(this.newProduct)){
-      this.errorOccurred = true;
+  addProduct(): void {
+    if (this.productForm.invalid){
       return;
     }
-     this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
+    this.newProduct.name = this.productForm.get('name').value;
+    this.newProduct.price = this.productForm.get('price').value;
+    this.newTaxRateId = this.productForm.get('taxRate').value;
+    this.newProduct.description = this.productForm.get('description').value;
+    this.newCategoryId = this.productForm.get('category').value;
+    this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
        this.newProduct.id = data.id;
        this.errorOccurred = false;
      }, error => {
        this.errorOccurred = true;
      });
   }
-  //client-side validation
-  validateProduct(product: Product): boolean {
-    console.log(product);
-    if (product.name === null){
-      this.errorMessage = 'Der Name muss mindestens 1 Zeichen besitzen';
-      return false;
-    }
-    if (product.name.trim().length === 0){
-      this.errorMessage = 'Der Name muss mindestens 1 Zeichen besitzen';
-      return false;
-    }
-    product.name = product.name.trim();
-    if (product.price === null){
-      this.errorMessage = 'Bitte einen Preis in EUR definieren: z.B. 1.20';
-      return false;
-    }
-    if (product.price != null){
-      product.price = parseFloat(product.price.toFixed(2));
-    }
-    if (this.newTaxRateId == null){
-      this.errorMessage = 'Bitte einen Steuersatz auswählen';
-      return false;
-    }
-    return true;
-  }
-
   fetchData(): void {
       forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
         .subscribe(([categoriesData,taxRatesData]) => {
@@ -115,14 +103,35 @@ export class OperatorAddProductComponent implements OnInit {
     this.errorOccurred = undefined;
     this.errorMessage = '';
   }
-  resetForm(form: NgForm){
-    form.resetForm();
+  resetForm(){
+    this.productForm.reset();
     this.errorOccurred = undefined;
+    this.fileToUpload = undefined;
+    this.fileSource = undefined;
   }
   clearImage(): void {
     this.fileToUpload = undefined;
     this.fileSource = undefined;
     this.fileInput.nativeElement.value = '';
   }
+  changeCategory(event){
+    this.productForm.get('category').setValue(event.target.value, {
+      onlySelf: true
+    });
+  }
+  changeTaxRate(event){
+    this.productForm.get('taxRate').setValue(event.target.value, {
+      onlySelf: true
+    });
+  }
+  get productFormControl() {
+    return this.productForm.controls;
+  }
+  whiteSpaceValidator(control: AbstractControl) {
+    const isWhitespace = (control.value || '').trim().length < 3;
+    const isValid = !isWhitespace;
+    return isValid ? null : { whitespace: true };
+  }
+
 
 }
