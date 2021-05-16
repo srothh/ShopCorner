@@ -31,8 +31,28 @@ public class OperatorDataGenerator {
             operatorRepository.save(operator);
             Operator operator2 = new Operator(-2L, "anothertest", "randomLogName", "pspspspps", "best@icloud.com", Permissions.employee);
             operatorRepository.save(operator2);
-            Operator operator3 = new Operator(-3L, "a third one", "CoolGuy", "efefefef", "420BlazeIt@hotmail.at", Permissions.employee);
+            Operator operator3 = new Operator(-3L, "a third one", "Bonus Eventus", "234n3knrk", "AdminAccountus@gmail.com", Permissions.employee);
             operatorRepository.save(operator3);
+            operatorRepository.save(new Operator(-4L, "gre", "Bonus Everegntus", "234n3knrk", "AdminAccountssaus@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-5L, "fsd", "Bonsus Efsdveregntus", "234sdfn3knrk", "AdminAccountssaus@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-6L, "graaa", "Bonegntus", "234nsdf3knrk", "sdf@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-7L, "gsade", "eregntus", "234n3sknrk", "as@gmail.com", Permissions.admin));
+            operatorRepository.save(new Operator(-8L, "ere", "Bondsf", "234n3aknrk", "gdsgs@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-9L, "grdsfe", "213 Everegntus", "121212", "dsf@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-10L, "fsasdd", "Bonsus 2312", "dsf", "dfffsdf@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-11L, "graasdasdaa", "54t4r", "sd", "sasdasddf@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-12L, "gdfasfsade", "fwe", "234n3saasdsknrk", "aasdadv@gmail.com", Permissions.admin));
+            operatorRepository.save(new Operator(-13L, "dsfq", "Bfsdondsf", "asd3d", "fdsfsfsdfdsff@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-14L, "gdfre", "ds Everegntus", "234n3knrk", "AdminAccountssaus@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-15L, "safd", "aaaaa Efsdveregntus", "234sssssdfn3knrk", "AdminAccountssaus@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-16L, "assf", "dg", "234nsdf3kdfsnrk", "sdsdsdsdf@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-17L, "dfe", "eregfdsfsntus", "234ndsf3sknrk", "asdss@gmail.com", Permissions.admin));
+            operatorRepository.save(new Operator(-18L, "dude", "ikikik", "234ndsd3aknrk", "gdsgsds@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-19L, "saa", "213 opl", "121fdsf212", "dssdf@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-20L, "heeer", "ds 2312", "dsfsff", "dfffssddf@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-21L, "kilil", "gggggaaaaa", "sddsdsd", "sasddssdasddf@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator(-22L, "olaf", "scholz", "sf", "aasdsaadv@gmail.com", Permissions.admin));
+            operatorRepository.save(new Operator(-23L, "puioiuoui", "peepee", "asd3sdd", "asadads@gmail.com", Permissions.employee));
         }
     }
 }
