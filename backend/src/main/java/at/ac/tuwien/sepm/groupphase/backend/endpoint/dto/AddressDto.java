@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,7 +14,8 @@ public class AddressDto {
     @Size(max = 255, message = "Maximum length for street 255 Characters")
     private String street;
     @NotNull
-    @Digits(integer = 4, fraction = 0)
+    @Min(value = 1000, message = "Invalid postal code")
+    @Max(value = 9999, message = "Invalid postal code")
     private int postalCode;
     @Size(max = 64, message = "House number must not have more than 64 Characters")
     private String houseNumber;

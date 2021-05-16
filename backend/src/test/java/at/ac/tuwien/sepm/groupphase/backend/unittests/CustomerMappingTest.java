@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
@@ -26,18 +27,20 @@ public class CustomerMappingTest implements TestData {
     private final Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "");
     @Autowired
     private CustomerMapper customerMapper;
+    @Autowired
+    private AddressMapper addressMapper;
 
-    /*@Test
+    @Test
     public void givenNothing_whenMapCustomerToCustomerRegistrationDto_thenEntityHasAllProperties() {
         CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        customerDto.getAddress().setId(0L);
         assertAll(
-            () -> assertEquals(0, customerDto.getId()),
             () -> assertEquals(0, customerDto.getId()),
             () -> assertEquals(TEST_CUSTOMER_EMAIL, customerDto.getEmail()),
             () -> assertEquals(TEST_CUSTOMER_PASSWORD, customerDto.getPassword()),
             () -> assertEquals(TEST_CUSTOMER_NAME, customerDto.getName()),
             () -> assertEquals(TEST_CUSTOMER_LOGINNAME, customerDto.getLoginName()),
-            () -> assertEquals(address, customerDto.getAddress())
+            () -> assertEquals(address, addressMapper.addressDtoToAddress(customerDto.getAddress()))
         );
     }
 
@@ -49,15 +52,15 @@ public class CustomerMappingTest implements TestData {
         List<CustomerRegistrationDto> customerDtos = customerMapper.customerListToCustomerDtoList(customers);
         assertEquals(2, customerDtos.size());
         CustomerRegistrationDto customerDto = customerDtos.get(0);
+        customerDto.getAddress().setId(0L);
         assertAll(
-            () -> assertEquals(0, customerDto.getId()),
             () -> assertEquals(0, customerDto.getId()),
             () -> assertEquals(TEST_CUSTOMER_EMAIL, customerDto.getEmail()),
             () -> assertEquals(TEST_CUSTOMER_PASSWORD, customerDto.getPassword()),
             () -> assertEquals(TEST_CUSTOMER_NAME, customerDto.getName()),
             () -> assertEquals(TEST_CUSTOMER_LOGINNAME, customerDto.getLoginName()),
-            () -> assertEquals(address, customerDto.getAddress())
+            () -> assertEquals(address, addressMapper.addressDtoToAddress(customerDto.getAddress()))
         );
-    }*/
+    }
 
 }

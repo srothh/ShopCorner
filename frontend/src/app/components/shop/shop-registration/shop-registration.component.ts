@@ -21,7 +21,6 @@ export class ShopRegistrationComponent {
   submitted = false;
   error = false;
   errorMessage = '';
-  addId: number;
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router,
               private addressService: AddressService, private customerService: CustomerService) {
@@ -41,6 +40,10 @@ export class ShopRegistrationComponent {
     });
   }
 
+  vanishError() {
+    this.error = false;
+  }
+
   registerUser() {
     this.submitted = true;
     if (this.registrationForm.valid && this.addressForm.valid) {
@@ -54,6 +57,9 @@ export class ShopRegistrationComponent {
       this.customerService.addCustomer(customer).subscribe(() => {
         this.submitted = true;
         this.router.navigate(['/login']);
+      }, error => {
+        this.error = true;
+        this.errorMessage = error;
       });
     } else {
       console.log('Invalid input');

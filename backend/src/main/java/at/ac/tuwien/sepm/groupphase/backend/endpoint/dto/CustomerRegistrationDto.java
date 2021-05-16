@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,8 +15,7 @@ public class CustomerRegistrationDto {
     @Email
     @Size(max = 255, message = "House number must not have more than 64 Characters")
     private String email;
-    //@NotNull(message = "password must not be null")
-    //@NotBlank
+    @NotBlank(message = "Password must not be blank")
     private String password;
     @NotNull(message = "Name must not be null")
     @Size(max = 255, message = "House number must not have more than 64 Characters")
@@ -25,6 +25,7 @@ public class CustomerRegistrationDto {
     @NotBlank
     @Size(max = 128, message = "House number must not have more than 64 Characters")
     private String loginName;
+    @Valid
     private AddressDto address;
     @Size(max = 128, message = "House number must not have more than 64 Characters")
     private String phoneNumber;

@@ -7,7 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 
 @Entity
 @Table(name = "address")
@@ -20,7 +23,8 @@ public class Address {
     @NotBlank
     private String street;
     @Column(name = "postal_code", nullable = false)
-    @Digits(integer = 4, fraction = 0)
+    @Min(value = 1000, message = "Invalid postal code")
+    @Max(value = 9999, message = "Invalid postal code")
     private int postalCode;
     @Column(name = "house_number", nullable = false, length = 64)
     @NotBlank
@@ -96,5 +100,18 @@ public class Address {
 
     public void setDoorNumber(String doorNumber) {
         this.doorNumber = doorNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Address address = (Address) o;
+        return Objects.equals(id, address.id) && Objects.equals(street, address.street) && postalCode == address.postalCode && Objects.equals(houseNumber, address.houseNumber) && stairNumber == address.stairNumber
+            && Objects.equals(doorNumber, address.doorNumber);
     }
 }

@@ -3,14 +3,9 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedMessageDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.MessageInquiryDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.MessageMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Message;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.MessageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +25,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -57,23 +51,23 @@ public class AddressEndpointTest implements TestData {
     @Autowired
     private SecurityProperties securityProperties;
 
-    private final Address address = new Address(0L,TEST_ADDRESS_STREET,TEST_ADDRESS_POSTALCODE,TEST_ADDRESS_HOUSENUMBER,0,"0");
+    private final Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
 
     @BeforeEach
     public void beforeEach() {
         addressRepository.deleteAll();
-        Address address = new Address(TEST_ADDRESS_STREET,TEST_ADDRESS_POSTALCODE,TEST_ADDRESS_HOUSENUMBER,0,"0");
+        Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
     }
 
-    /*@Test
-    public void givenNothing_whenPost_thenMessageWithAllSetPropertiesPlusIdAndPublishedDate() throws Exception {
+    @Test
+    public void givenNothing_whenPost_thenAddressWithAllSetPropertiesPlusId() throws Exception {
         AddressDto addressDto = addressMapper.addressToAddressDto(address);
         String body = objectMapper.writeValueAsString(addressDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(MESSAGE_BASE_URI)
+        MvcResult mvcResult = this.mockMvc.perform(post(ADDRESS_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+        )
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
@@ -88,7 +82,33 @@ public class AddressEndpointTest implements TestData {
         assertNotNull(addressResponse.getHouseNumber());
         addressResponse.setId(null);
         assertEquals(address, addressMapper.addressDtoToAddress(addressResponse));
-    }*/
+    }
+
+    @Test
+    public void givenNothing_whenPostInvalid_then400() throws Exception {
+        address.setStreet(null);
+        address.setHouseNumber(null);
+        AddressDto dto = addressMapper.addressToAddressDto(address);
+        String body = objectMapper.writeValueAsString(dto);
+
+        MvcResult mvcResult = this.mockMvc.perform(post(ADDRESS_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(
+            () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
+            () -> {
+                String content = response.getContentAsString();
+                content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
+                String[] errors = content.split(",");
+                assertEquals(2, errors.length);
+            }
+        );
+    }
 
 
 }

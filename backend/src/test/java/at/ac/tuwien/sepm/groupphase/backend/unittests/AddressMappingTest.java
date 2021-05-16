@@ -28,7 +28,7 @@ public class AddressMappingTest implements TestData {
     @Autowired
     private AddressMapper addressMapper;
 
-    /*@Test
+    @Test
     public void givenNothing_whenMapAddressDtoToEntity_thenEntityHasAllProperties() {
         AddressDto addressDto = addressMapper.addressToAddressDto(address);
         assertAll(
@@ -54,5 +54,5 @@ public class AddressMappingTest implements TestData {
             () -> assertEquals(TEST_ADDRESS_POSTALCODE, addressDto.getPostalCode()),
             () -> assertEquals(TEST_ADDRESS_HOUSENUMBER, addressDto.getHouseNumber())
         );
-    }*/
+    }
 }
