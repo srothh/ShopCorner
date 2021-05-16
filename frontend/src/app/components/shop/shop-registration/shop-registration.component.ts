@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../../services/auth.service';
 import {Router} from '@angular/router';
@@ -44,14 +44,17 @@ export class ShopRegistrationComponent {
   registerUser() {
     this.submitted = true;
     if (this.registrationForm.valid && this.addressForm.valid) {
-      const address: Address = new Address(0,this.addressForm.controls.street.value,
+      const address: Address = new Address(0, this.addressForm.controls.street.value,
         this.addressForm.controls.postalCode.value, this.addressForm.controls.houseNumber.value,
         this.addressForm.controls.stairNumber.value, this.addressForm.controls.doorNumber.value);
       const customer: Customer = new Customer(0, this.registrationForm.controls.loginName.value,
         this.registrationForm.controls.password.value,
         this.registrationForm.controls.name.value, this.registrationForm.controls.email.value, address,
         this.registrationForm.controls.phoneNumber.value);
-      this.customerService.addCustomer(customer).subscribe();
+      this.customerService.addCustomer(customer).subscribe(() => {
+        this.submitted = true;
+        this.router.navigate(['/login']);
+      });
     } else {
       console.log('Invalid input');
     }
