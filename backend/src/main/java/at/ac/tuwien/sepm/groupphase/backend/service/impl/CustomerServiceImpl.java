@@ -45,7 +45,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
-        System.out.println(customer.getPassword());
         Address address = addressService.addNewAddress(customer.getAddress());
         assignAddressToCustomer(customer, address.getId());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));

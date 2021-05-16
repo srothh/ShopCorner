@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
@@ -132,7 +131,7 @@ public class CustomerEndpointTest implements TestData {
             }
         );
     }
-   /* @Test
+    @Test
     public void givenNothing_whenAddressInvalid_then404() throws Exception {
         customer.setAddress(null);
         CustomerRegistrationDto dto = customerMapper.customerToCustomerDto(customer);
@@ -147,8 +146,8 @@ public class CustomerEndpointTest implements TestData {
         MockHttpServletResponse response = mvcResult.getResponse();
 
         assertAll(
-            () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus())
+            () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus())
         );
-    }*/
+    }
 
 }
