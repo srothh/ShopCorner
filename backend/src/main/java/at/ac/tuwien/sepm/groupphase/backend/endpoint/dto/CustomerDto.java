@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class CustomerDto {
-
     private Long id;
     @NotNull(message = "email must not be null")
     @Email

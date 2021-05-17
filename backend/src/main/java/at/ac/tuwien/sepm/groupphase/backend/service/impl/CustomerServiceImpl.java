@@ -85,12 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<Customer> getAllCustomers() {
         LOGGER.trace("getAllCustomers()");
-        List<Customer> customers = customerRepository.findAll();
-        for (Customer customer : customers) {
-            customer.setPassword(null);
-        }
-
-        return customers;
+        return customerRepository.findAll();
     }
 
     /**

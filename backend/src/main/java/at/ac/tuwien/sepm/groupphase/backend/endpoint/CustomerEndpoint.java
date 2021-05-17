@@ -39,7 +39,7 @@ public class CustomerEndpoint {
     /**
      * Adds a new customer to the database.
      *
-     * @param dto       The customer dto containing the customer information
+     * @param dto The customer dto containing the customer information
      * @return The response dto containing the added customer
      */
     @PermitAll
