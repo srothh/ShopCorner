@@ -23,27 +23,12 @@ public class AddressServiceImpl implements AddressService {
         this.addressRepository = addressRepository;
     }
 
-    /**
-     * Adds a new address to the database.
-     *
-     * @param address The address entity to add to the database
-     * @return The added entity
-     * @throws RuntimeException upon errors with the database
-     */
     @Override
     public Address addNewAddress(Address address) {
         LOGGER.trace("addNewAddress({})", address);
         return addressRepository.save(address);
     }
 
-    /**
-     * Returns all addresses from the database.
-     *
-     * @return A list containing all the address entities from the database
-     * @throws NotFoundException when no addresses are found
-     * @throws RuntimeException  upon errors with the database
-     */
-    @Override
     public List<Address> getAllAddresses() {
         LOGGER.trace("getAllAddresses()");
         return addressRepository.findAll();

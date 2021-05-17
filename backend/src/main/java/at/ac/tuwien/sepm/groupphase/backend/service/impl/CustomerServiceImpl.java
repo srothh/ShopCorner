@@ -59,13 +59,6 @@ public class CustomerServiceImpl implements CustomerService {
         throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
     }
 
-    /**
-     * Registers a new customer and persists its entity in the database.
-     *
-     * @param customer The customer entity to save
-     * @return The customer entity added to the database
-     * @throws RuntimeException upon errors with the database
-     */
     @Transactional
     @Override
     public Customer registerNewCustomer(Customer customer) {
@@ -76,26 +69,12 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.save(customer);
     }
 
-    /**
-     * Retrieves all customers from the database.
-     *
-     * @return A list of all found customers
-     * @throws NotFoundException when no customers were found
-     */
     @Override
     public List<Customer> getAllCustomers() {
         LOGGER.trace("getAllCustomers()");
         return customerRepository.findAll();
     }
 
-    /**
-     * Assigns an address to a customer.
-     *
-     * @param customer  The customer to assign the address to
-     * @param addressId The id of the address to assign to the customer
-     * @throws NotFoundException when no address with the id is found
-     * @throws RuntimeException  upon encountering errors with the database
-     */
     @Transactional
     public void assignAddressToCustomer(Customer customer, Long addressId) {
         LOGGER.trace("assignAddressToCustomer({},{})", customer, addressId);
