@@ -22,7 +22,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("api/v1/customers")
 public class CustomerEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -63,7 +63,7 @@ public class CustomerEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "retrieve all customers")
     public List<CustomerRegistrationDto> getAllCustomers() {
-        LOGGER.info("GET api/v1/users");
+        LOGGER.info("GET api/v1/customers");
         return customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers());
     }
 }

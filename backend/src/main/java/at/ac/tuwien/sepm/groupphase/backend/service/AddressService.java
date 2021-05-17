@@ -10,4 +10,6 @@ public interface AddressService {
     Address addNewAddress(Address address);
 
     List<Address> getAllAddresses();
+
+    Address findAddressById(Long id);
 }

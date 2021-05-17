@@ -79,7 +79,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public void assignAddressToCustomer(Customer customer, Long addressId) {
         LOGGER.trace("assignAddressToCustomer({},{})", customer, addressId);
-        Address address = addressRepository.findById(addressId).orElseThrow(() -> new NotFoundException("Could not find address!"));
+        Address address = addressService.findAddressById(addressId);
         customer.setAddress(address);
     }
 

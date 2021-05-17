@@ -8,7 +8,7 @@ import {Customer} from '../dtos/customer';
   providedIn: 'root'
 })
 export class CustomerService {
-  private customerBaseUri: string = this.globals.backendUri + '/users';
+  private customerBaseUri: string = this.globals.backendUri + '/customers';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }

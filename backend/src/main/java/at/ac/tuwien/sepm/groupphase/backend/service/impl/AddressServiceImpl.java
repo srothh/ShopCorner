@@ -48,4 +48,8 @@ public class AddressServiceImpl implements AddressService {
         LOGGER.trace("getAllAddresses()");
         return addressRepository.findAll();
     }
+
+    public Address findAddressById(Long id) {
+        return addressRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find address!"));
+    }
 }

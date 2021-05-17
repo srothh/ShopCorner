@@ -17,7 +17,6 @@ export class ShopRegistrationComponent {
 
   registrationForm: FormGroup;
   addressForm: FormGroup;
-  // After first submission attempt, form validation will start
   submitted = false;
   error = false;
   errorMessage = '';
