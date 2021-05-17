@@ -27,7 +27,7 @@ public class Product {
     private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tax_rate")
+    @JoinColumn(name = "tax_rate", nullable = false)
     private TaxRate taxRate;
     @Lob
     private byte[] picture;

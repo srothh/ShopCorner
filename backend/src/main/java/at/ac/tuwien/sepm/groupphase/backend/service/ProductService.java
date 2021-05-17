@@ -12,9 +12,9 @@ public interface ProductService {
      * @param categoryId assigns a product to its category
      * @param taxRateId assigns a specific tax-rate to a product
      * @return the newly created product
-     * @throws Exception if validation of a product has failed
+     *
      */
-    Product createProduct(Product product, Long categoryId, Long taxRateId) throws Exception;
+    Product createProduct(Product product, Long categoryId, Long taxRateId) ;
 
     /**
      * Gets all products that were previously added in the database.
