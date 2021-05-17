@@ -12,7 +12,7 @@ import {Globals} from '../global/globals';
 })
 export class CustomerAuthService {
 
-  private authBaseUri: string = this.globals.backendUri + '/authentication/customer';
+  private authBaseUri: string = this.globals.backendUri + '/authentication/customers';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }

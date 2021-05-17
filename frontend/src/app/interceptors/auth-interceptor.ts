@@ -7,11 +7,11 @@ import {Globals} from '../global/globals';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private authService: CustomerAuthService, private globals: Globals) {
+  constructor(private customerAuthService: CustomerAuthService, private globals: Globals) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const customerAuthUri = this.globals.backendUri + '/authentication/customer';
+    const customerAuthUri = this.globals.backendUri + '/authentication/customers';
     const registrationUri = this.globals.backendUri + '/customers';
     const addressUri = this.globals.backendUri + '/address';
     if (req.url === customerAuthUri || (req.method === 'POST' && req.url === registrationUri)
@@ -20,7 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     const authReq = req.clone({
-      headers: req.headers.set('Authorization', 'Bearer ' + this.authService.getToken())
+      headers: req.headers.set('Authorization', 'Bearer ' + this.customerAuthService.getToken())
     });
 
     return next.handle(authReq);
