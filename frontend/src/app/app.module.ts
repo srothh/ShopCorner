@@ -9,7 +9,6 @@ import {HeaderComponent} from './components/shop/shop-header/header.component';
 import {FooterComponent} from './components/shop/shop-footer/footer.component';
 import {ShopHomeComponent} from './components/shop/shop-home/shop-home.component';
 import {ShopLoginComponent} from './components/shop/shop-login/shop-login.component';
-import {ShopMessageComponent} from './components/shop/shop-message/shop-message.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {httpInterceptorProviders} from './interceptors';
 import { OperatorComponent } from './components/operator/operator.component';
@@ -34,7 +33,6 @@ import {ShopRegistrationComponent} from './components/shop/shop-registration/sho
     FooterComponent,
     ShopHomeComponent,
     ShopLoginComponent,
-    ShopMessageComponent,
     OperatorComponent,
     OperatorHomeComponent,
     OperatorShopComponent,

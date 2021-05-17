@@ -1,9 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.config;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
-import at.ac.tuwien.sepm.groupphase.backend.security.JwtAuthenticationFilter;
+import at.ac.tuwien.sepm.groupphase.backend.security.CustomerJwtAuthenticationFilter;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtAuthorizationFilter;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
+import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -22,18 +23,18 @@ import java.util.List;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class CustomerSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService userService;
+    private final CustomerService customerService;
     private final PasswordEncoder passwordEncoder;
     private final SecurityProperties securityProperties;
     private final JwtTokenizer jwtTokenizer;
 
     @Autowired
-    public SecurityConfig(UserService userService,
-                          PasswordEncoder passwordEncoder,
-                          SecurityProperties securityProperties, JwtTokenizer jwtTokenizer) {
-        this.userService = userService;
+    public CustomerSecurityConfig(CustomerService customerService,
+                                  PasswordEncoder passwordEncoder,
+                                  SecurityProperties securityProperties, JwtTokenizer jwtTokenizer) {
+        this.customerService = customerService;
         this.securityProperties = securityProperties;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenizer = jwtTokenizer;
@@ -43,13 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
             .csrf().disable()
-            .addFilter(new JwtAuthenticationFilter(authenticationManager(), securityProperties, jwtTokenizer))
+            .addFilter(new CustomerJwtAuthenticationFilter(authenticationManager(), securityProperties, jwtTokenizer))
             .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(customerService).passwordEncoder(passwordEncoder);
     }
 
     @Bean

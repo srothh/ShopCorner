@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {AuthService} from '../../../services/auth.service';
+import {CustomerAuthService} from '../../../services/customer-auth.service';
 import {AuthRequest} from '../../../dtos/auth-request';
 
 
@@ -19,7 +19,7 @@ export class ShopLoginComponent implements OnInit {
   error = false;
   errorMessage = '';
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private authService: CustomerAuthService, private router: Router) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -45,11 +45,11 @@ export class ShopLoginComponent implements OnInit {
    * @param authRequest authentication data from the user login form
    */
   authenticateUser(authRequest: AuthRequest) {
-    console.log('Try to authenticate user: ' + authRequest.email);
+    console.log('Try to authenticate user: ' + authRequest.loginName);
     this.authService.loginUser(authRequest).subscribe(
       () => {
-        console.log('Successfully logged in user: ' + authRequest.email);
-        this.router.navigate(['/message']);
+        console.log('Successfully logged in user: ' + authRequest.loginName);
+        this.router.navigate(['/home']);
       },
       error => {
         console.log('Could not log in due to:');

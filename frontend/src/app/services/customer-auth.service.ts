@@ -10,9 +10,9 @@ import {Globals} from '../global/globals';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class CustomerAuthService {
 
-  private authBaseUri: string = this.globals.backendUri + '/authentication';
+  private authBaseUri: string = this.globals.backendUri + '/authentication/customer';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
