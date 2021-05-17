@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
@@ -49,14 +50,13 @@ public class CustomerMappingTest implements TestData {
         List<Customer> customers = new ArrayList<>();
         customers.add(customer);
         customers.add(customer);
-        List<CustomerRegistrationDto> customerDtos = customerMapper.customerListToCustomerDtoList(customers);
+        List<CustomerDto> customerDtos = customerMapper.customerListToCustomerDtoList(customers);
         assertEquals(2, customerDtos.size());
-        CustomerRegistrationDto customerDto = customerDtos.get(0);
+        CustomerDto customerDto = customerDtos.get(0);
         customerDto.getAddress().setId(0L);
         assertAll(
             () -> assertEquals(0, customerDto.getId()),
             () -> assertEquals(TEST_CUSTOMER_EMAIL, customerDto.getEmail()),
-            () -> assertEquals(TEST_CUSTOMER_PASSWORD, customerDto.getPassword()),
             () -> assertEquals(TEST_CUSTOMER_NAME, customerDto.getName()),
             () -> assertEquals(TEST_CUSTOMER_LOGINNAME, customerDto.getLoginName()),
             () -> assertEquals(address, addressMapper.addressDtoToAddress(customerDto.getAddress()))

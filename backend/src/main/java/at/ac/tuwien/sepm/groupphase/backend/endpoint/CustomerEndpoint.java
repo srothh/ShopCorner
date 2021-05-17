@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
@@ -62,7 +63,7 @@ public class CustomerEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "retrieve all customers")
-    public List<CustomerRegistrationDto> getAllCustomers() {
+    public List<CustomerDto> getAllCustomers() {
         LOGGER.info("GET api/v1/customers");
         return customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers());
     }
