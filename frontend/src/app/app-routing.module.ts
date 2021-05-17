@@ -16,18 +16,24 @@ import {ShopComponent} from './components/shop/shop.component';
 import {ShopProductComponent} from './components/shop/shop-product/shop-product.component';
 import {ShopCartComponent} from './components/shop/shop-cart/shop-cart.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
+import {CustomerAuthGuard} from './guards/customer-auth-guard.service';
+import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
 
 const routes: Routes = [
-  {path: '', component: ShopComponent, children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+  {
+    path: '', component: ShopComponent, children: [
+      {path: '', redirectTo: 'home', pathMatch: 'full'},
       {path: 'home', component: ShopHomeComponent},
       {path: 'login', component: ShopLoginComponent},
       {path: 'products', component: ShopProductComponent},
+      {path: 'account', canActivate: [CustomerAuthGuard], component: ShopAccountComponent},
       {path: 'cart', component: ShopCartComponent},
       {path: 'register', component: ShopRegistrationComponent}
-    ]},
-  {path: 'operator', component: OperatorComponent, children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+    ]
+  },
+  {
+    path: 'operator', component: OperatorComponent, children: [
+      {path: '', redirectTo: 'home', pathMatch: 'full'},
       {path: 'home', component: OperatorHomeComponent},
       {path: 'shop', component: OperatorShopComponent},
       {path: 'invoices', component: OperatorInvoiceComponent},
@@ -37,7 +43,8 @@ const routes: Routes = [
       {path: 'statistics', component: OperatorStatisticComponent},
       {path: 'customers', component: OperatorCustomerComponent},
       {path: 'accounts', component: OperatorAccountComponent},
-    ]},
+    ]
+  },
 ];
 
 @NgModule({
