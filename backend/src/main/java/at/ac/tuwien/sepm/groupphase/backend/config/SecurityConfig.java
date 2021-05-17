@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtAuthenticationFilter;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtAuthorizationFilter;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
-import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;

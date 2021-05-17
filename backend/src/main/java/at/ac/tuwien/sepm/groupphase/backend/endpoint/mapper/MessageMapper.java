@@ -1,9 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedMessageDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.MessageInquiryDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleMessageDto;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Message;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
