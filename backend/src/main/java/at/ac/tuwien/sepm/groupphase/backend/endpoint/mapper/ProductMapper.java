@@ -4,10 +4,12 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
+import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 
 @Mapper
+@Component
 public interface ProductMapper {
     ProductDto entityToDto(Product product);
 
