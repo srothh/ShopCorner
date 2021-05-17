@@ -48,8 +48,8 @@
 </div>
 
 <div class="d-flex justify-content-between p-2">
-  <button class="btn btn-dark" (click)="page=page-1">Vorherige Seite</button>
-  <button class="btn btn-dark" (click)="page=page+1">Nächste Seite</button>
+  <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
+  <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
 </div>
 
 <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
