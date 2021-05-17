@@ -14,10 +14,12 @@ export class OperatorAccountComponent implements OnInit {
   successMessage = '';
   success = false;
   operators: Operator[];
+  admins: Operator[];
+  employees: Operator[];
   page = 1;
   pageSize = 15;
   collectionSize = 0;
-
+  showAdmins = true;
 
   constructor(private operatorService: OperatorService) {
   }
@@ -36,8 +38,9 @@ export class OperatorAccountComponent implements OnInit {
   private loadAllOperators() {
     this.operatorService.getAllOperators().subscribe(
       (operators: Operator[]) => {
-        this.operators = operators;
-        this.collectionSize=operators.length;
+        this.admins = operators.filter(i => i.permissions === 'admin');
+        this.employees = operators.filter(i => i.permissions === 'employee');
+        this.collectionSize=this.admins.length;
       },
       error => {
         this.defaultServiceErrorHandling(error);
