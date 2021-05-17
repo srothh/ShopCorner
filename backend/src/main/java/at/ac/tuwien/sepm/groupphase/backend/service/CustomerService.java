@@ -17,6 +17,7 @@ public interface CustomerService extends UserDetailsService {
      * @param loginName the login name
      * @return a Spring Security user
      * @throws UsernameNotFoundException is thrown if the specified user does not exists
+     * @throws RuntimeException  upon encountering errors with the database
      */
     @Override
     UserDetails loadUserByUsername(String loginName);
@@ -26,6 +27,7 @@ public interface CustomerService extends UserDetailsService {
      *
      * @param loginName the login name
      * @throws NotFoundException when no customer with the id is found
+     * @throws RuntimeException  upon encountering errors with the database
      * @return a customer
      */
     Customer findCustomerByLoginName(String loginName);
@@ -35,7 +37,7 @@ public interface CustomerService extends UserDetailsService {
      *
      * @param customer The customer entity to save
      * @return The customer entity added to the database
-     * @throws RuntimeException upon errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     Customer registerNewCustomer(Customer customer);
 

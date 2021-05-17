@@ -39,7 +39,6 @@ public class CustomerJwtAuthenticationFilter extends UsernamePasswordAuthenticat
         throws AuthenticationException {
         try {
             CustomerLoginDto user = new ObjectMapper().readValue(request.getInputStream(), CustomerLoginDto.class);
-            //Compares the user with CustomUserDetailService#loadUserByUsername and check if the credentials are correct
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 user.getLoginName(),
                 user.getPassword()));
