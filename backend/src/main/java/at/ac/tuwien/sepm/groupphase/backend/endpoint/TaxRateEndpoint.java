@@ -38,9 +38,9 @@ public class TaxRateEndpoint {
     @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)
     public List<TaxRateDto> getAllTaxRates() {
-            return this.taxRateService.getAllTaxRates()
-                .stream()
-                .map(this.taxRateMapper::entityToDto)
-                .collect(Collectors.toList());
+        return this.taxRateService.getAllTaxRates()
+            .stream()
+            .map(this.taxRateMapper::entityToDto)
+            .collect(Collectors.toList());
     }
 }

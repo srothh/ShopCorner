@@ -51,9 +51,9 @@ public class CategoryEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CategoryDto> getAllCategories() {
-            return this.categoryService.getAllCategories()
-                .stream()
-                .map(this.categoryMapper::entityToDto)
-                .collect(Collectors.toList());
+        return this.categoryService.getAllCategories()
+            .stream()
+            .map(this.categoryMapper::entityToDto)
+            .collect(Collectors.toList());
     }
 }

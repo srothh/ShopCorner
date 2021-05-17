@@ -12,7 +12,7 @@ public class CategoryDto {
 
     private Long id;
     @NotBlank
-    @Size(min=3, max=20)
+    @Size(min = 3, max = 20)
     private String name;
     private Set<Product> products = new HashSet<>();
 

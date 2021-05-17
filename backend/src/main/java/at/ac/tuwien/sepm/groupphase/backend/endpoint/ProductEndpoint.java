@@ -40,16 +40,17 @@ public class ProductEndpoint {
     }
 
     @PermitAll
-    @PostMapping({BASE_URL + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL +"categories/tax-rates/{taxRateId}"})
+    @PostMapping({BASE_URL + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "categories/tax-rates/{taxRateId}"})
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductDto createProduct(@RequestBody @Valid ProductDto productDto, @PathVariable Optional<Long> categoryId, @PathVariable Long taxRateId) {
-            System.out.println("productDto is:" + productDto);
-            Long validCategoryId = null;
-            if (categoryId.isPresent()) {
-                validCategoryId = categoryId.get();
-            }
-            return this.productMapper
-                .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto), validCategoryId, taxRateId));
+    public ProductDto createProduct(@RequestBody @Valid ProductDto productDto,
+                                    @PathVariable Optional<Long> categoryId,
+                                    @PathVariable Long taxRateId) {
+        Long validCategoryId = null;
+        if (categoryId.isPresent()) {
+            validCategoryId = categoryId.get();
+        }
+        return this.productMapper
+            .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto), validCategoryId, taxRateId));
 
     }
 
@@ -57,10 +58,10 @@ public class ProductEndpoint {
     @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)
     public List<ProductDto> getAllProducts() {
-            return this.productService.getAllProducts()
-                .stream()
-                .map(this.productMapper::entityToDto)
-                .collect(Collectors.toList());
+        return this.productService.getAllProducts()
+            .stream()
+            .map(this.productMapper::entityToDto)
+            .collect(Collectors.toList());
     }
 
 }

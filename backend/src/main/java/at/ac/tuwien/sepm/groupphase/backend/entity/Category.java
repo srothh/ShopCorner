@@ -22,7 +22,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
-    @Size(min=3, max=20)
+    @Size(min = 3, max = 20)
     private String name;
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     @JsonIgnore

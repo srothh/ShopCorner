@@ -14,7 +14,7 @@ public interface ProductService {
      * @return the newly created product
      *
      */
-    Product createProduct(Product product, Long categoryId, Long taxRateId) ;
+    Product createProduct(Product product, Long categoryId, Long taxRateId);
 
     /**
      * Gets all products that were previously added in the database.

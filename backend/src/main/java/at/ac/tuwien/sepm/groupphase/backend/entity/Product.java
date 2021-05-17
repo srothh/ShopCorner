@@ -19,9 +19,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
-    @Size(min=3,max=20,message = "name should contain at least 3 characters and 20 at most")
+    @Size(min = 3, max = 20, message = "name should contain at least 3 characters and 20 at most")
     private String name;
-    @Size(max=70)
+    @Size(max = 70)
     private String description;
     @DecimalMin("0.0")
     private Double price;

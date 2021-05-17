@@ -110,7 +110,8 @@ public class TaxRate {
             this.percentage = percentage;
             return this;
         }
-        public TaxRateBuilder withCalculationFactor(Double calculationFactor){
+
+        public TaxRateBuilder withCalculationFactor(Double calculationFactor) {
             this.calculationFactor = calculationFactor;
             return this;
         }

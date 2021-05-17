@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 public class TaxRateDataGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final Map<Double, Double> TAX_RATES = Map.of(10.0,1.10,13.00,1.13,20.0,1.20);
+    private static final Map<Double, Double> TAX_RATES = Map.of(10.0, 1.10, 13.00, 1.13, 20.0, 1.20);
     private final TaxRateRepository taxRateRepository;
 
     public TaxRateDataGenerator(TaxRateRepository taxRateRepository) {
@@ -28,15 +28,15 @@ public class TaxRateDataGenerator {
         if (taxRateRepository.findAll().size() > 0) {
             LOGGER.debug("taxes already generated");
         } else {
-                for (Map.Entry<Double, Double> entry : TAX_RATES.entrySet()) {
-                    TaxRate taxRate = TaxRate.TaxRateBuilder.getTaxRateBuilder()
-                        .withPercentage(entry.getKey())
-                        .withCalculationFactor(entry.getValue())
-                        .build();
-                    taxRateRepository.save(taxRate);
-                }
-
+            for (Map.Entry<Double, Double> entry : TAX_RATES.entrySet()) {
+                TaxRate taxRate = TaxRate.TaxRateBuilder.getTaxRateBuilder()
+                    .withPercentage(entry.getKey())
+                    .withCalculationFactor(entry.getValue())
+                    .build();
+                taxRateRepository.save(taxRate);
             }
+
+        }
 
     }
 
