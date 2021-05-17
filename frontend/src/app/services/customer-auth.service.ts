@@ -13,6 +13,7 @@ import {Globals} from '../global/globals';
 export class CustomerAuthService {
 
   private authBaseUri: string = this.globals.backendUri + '/authentication/customers';
+  private authTokenKey = 'customerAuthToken';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
@@ -39,11 +40,11 @@ export class CustomerAuthService {
 
   logoutUser() {
     console.log('Logout');
-    localStorage.removeItem('authToken');
+    localStorage.removeItem(this.authTokenKey);
   }
 
   getToken() {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem(this.authTokenKey);
   }
 
   /**
@@ -61,7 +62,7 @@ export class CustomerAuthService {
   }
 
   private setToken(authResponse: string) {
-    localStorage.setItem('authToken', authResponse);
+    localStorage.setItem(this.authTokenKey, authResponse);
   }
 
   private getTokenExpirationDate(token: string): Date {
