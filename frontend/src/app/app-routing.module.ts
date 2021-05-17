@@ -16,15 +16,16 @@ import {ShopComponent} from './components/shop/shop.component';
 import {ShopProductComponent} from './components/shop/shop-product/shop-product.component';
 import {ShopCartComponent} from './components/shop/shop-cart/shop-cart.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
-import {CustomerAuthGuard} from './guards/customer-auth-guard.service';
+import {CustomerAuthGuard} from './guards/customer-auth.guard';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
+import {PreventLoginGuard} from './guards/prevent-login.guard';
 
 const routes: Routes = [
   {
     path: '', component: ShopComponent, children: [
       {path: '', redirectTo: 'home', pathMatch: 'full'},
       {path: 'home', component: ShopHomeComponent},
-      {path: 'login', component: ShopLoginComponent},
+      {path: 'login', canActivate: [PreventLoginGuard], component: ShopLoginComponent},
       {path: 'products', component: ShopProductComponent},
       {path: 'account', canActivate: [CustomerAuthGuard], component: ShopAccountComponent},
       {path: 'cart', component: ShopCartComponent},

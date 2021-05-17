@@ -25,7 +25,7 @@ import { ShopComponent } from './components/shop/shop.component';
 import { ShopProductComponent } from './components/shop/shop-product/shop-product.component';
 import { ShopCartComponent } from './components/shop/shop-cart/shop-cart.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
-import {ShopAccountComponent} from "./components/shop/shop-account/shop-account.component";
+import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
 
 @NgModule({
   declarations: [
