@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.GlobalExce
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,11 @@ public class ProductEndpoint {
     @PermitAll
     @PostMapping({BASE_URL + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "categories/tax-rates/{taxRateId}"})
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Creates a new product with a given optional category and tax-rate")
     public ProductDto createProduct(@RequestBody @Valid ProductDto productDto,
                                     @PathVariable Optional<Long> categoryId,
                                     @PathVariable Long taxRateId) {
+        LOGGER.info("POST newProduct({}) " + BASE_URL, productDto);
         Long validCategoryId = null;
         if (categoryId.isPresent()) {
             validCategoryId = categoryId.get();
@@ -57,7 +60,9 @@ public class ProductEndpoint {
     @PermitAll
     @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Returns all products that are currently stored in the database")
     public List<ProductDto> getAllProducts() {
+        LOGGER.info("GET " + BASE_URL);
         return this.productService.getAllProducts()
             .stream()
             .map(this.productMapper::entityToDto)

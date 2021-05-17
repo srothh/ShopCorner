@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.TaxRateMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import at.ac.tuwien.sepm.groupphase.backend.service.TaxRateService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,9 @@ public class TaxRateEndpoint {
     @PermitAll
     @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Returns all tax-rates that are currently saved in the database")
     public List<TaxRateDto> getAllTaxRates() {
+        LOGGER.info("GET " + BASE_URL);
         return this.taxRateService.getAllTaxRates()
             .stream()
             .map(this.taxRateMapper::entityToDto)
