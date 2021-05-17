@@ -29,4 +29,6 @@ public class Validator {
 
     }
 
+    //username also unique - UNIQUE annotation?
+
 }

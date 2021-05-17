@@ -17,6 +17,7 @@ import {OperatorAccountComponent} from './components/operator/operator-accounts/
 import {ShopComponent} from './components/shop/shop.component';
 import {ShopProductComponent} from './components/shop/shop-product/shop-product.component';
 import {ShopCartComponent} from './components/shop/shop-cart/shop-cart.component';
+import {OperatorRegistrationComponent} from './components/operator/operator-registration/operator-registration.component';
 
 const routes: Routes = [
   {path: '', component: ShopComponent, children: [
@@ -38,6 +39,7 @@ const routes: Routes = [
       {path: 'statistics', component: OperatorStatisticComponent},
       {path: 'customers', component: OperatorCustomerComponent},
       {path: 'accounts', component: OperatorAccountComponent},
+      {path: 'registration', component: OperatorRegistrationComponent},
     ]},
 ];
 
