@@ -11,7 +11,7 @@ public interface TaxRateService {
      *
      *
      * @return all tax_rates that are currently saved in the database
-     * @throws Exception if something went wrong during during database access
+     *
      */
-    List<TaxRate> getAllTaxRates() throws Exception;
+    List<TaxRate> getAllTaxRates();
 }

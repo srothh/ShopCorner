@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -24,7 +25,7 @@ public class TaxRateServiceImpl implements TaxRateService {
     }
 
     @Override
-    public List<TaxRate> getAllTaxRates() throws Exception {
+    public List<TaxRate> getAllTaxRates() {
         return this.taxRateRepository.getAllTaxRates();
     }
 }

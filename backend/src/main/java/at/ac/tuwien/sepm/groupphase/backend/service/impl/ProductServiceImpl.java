@@ -37,8 +37,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(Product product, Long categoryId, Long taxRateId){
-        validateProduct(product);
+    public Product createProduct(Product product, Long categoryId, Long taxRateId) {
+        if (product.getDescription() != null) {
+            this.validateProperty(product.getDescription());
+        }
         if (categoryId != null) {
             assignProductToCategory(product, categoryId);
 
@@ -63,35 +65,18 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public List<Product> getAllProducts() throws Exception {
+    public List<Product> getAllProducts() {
         return this.productRepository.findAll();
     }
 
-
-    //NOTE: this can be extracted to a validator class -> waiting to see how teammates have implemented this
-    public void validateProduct(Product product){
-        //name is mandatory!
-        if (product.getName() == null) {
-            throw new IllegalArgumentException("name is mandatory");
+    public void validateProperty(String description) {
+        if (description.trim().isEmpty()) {
+            throw new IllegalArgumentException("Only whiteSpace not allowed!");
+        }
+        if (description.trim().length() > 70) {
+            throw new IllegalArgumentException("description is too long");
         }
 
-        //a string with only whitespaces not allowed
-        if (product.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("only whitespace not allowed");
-        }
-        //maximum of characters exceeded!
-        if (product.getName().length() > 20) {
-            throw new IllegalArgumentException("name is too long");
-
-        }
-        if (product.getDescription() != null) {
-            if (!product.getDescription().trim().isEmpty()) {
-                if (product.getDescription().length() > 50) {
-                    throw new IllegalArgumentException("description is too long");
-                }
-            }
-
-        }
 
     }
 }

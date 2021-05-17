@@ -21,7 +21,6 @@ public interface ProductService {
      *
      *
      * @return all products that are currently saved in the database
-     * @throws Exception if something went wrong during during database access
      */
-    List<Product> getAllProducts() throws Exception;
+    List<Product> getAllProducts();
 }

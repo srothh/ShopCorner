@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class TaxRateEndpoint {
-
+    private static final String BASE_URL = "/api/v1/tax-rates";
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final TaxRateService taxRateService;
     private final TaxRateMapper taxRateMapper;
@@ -35,16 +35,12 @@ public class TaxRateEndpoint {
 
 
     @PermitAll
-    @GetMapping("api/v1/tax-rates")
+    @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)
     public List<TaxRateDto> getAllTaxRates() {
-        try {
             return this.taxRateService.getAllTaxRates()
                 .stream()
                 .map(this.taxRateMapper::entityToDto)
                 .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
     }
 }

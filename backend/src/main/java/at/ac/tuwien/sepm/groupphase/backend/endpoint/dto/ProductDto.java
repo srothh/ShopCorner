@@ -3,14 +3,19 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class ProductDto {
     private Long id;
-    @NotNull
+    @NotBlank
+    @Size(min=3,max=20,message = "name should contain at least 3 characters and 20 at most")
     private String name;
+    @Size(max=70)
     private String description;
+    @DecimalMin("0.0")
     private Double price;
     private Category category;
     private TaxRate taxRate;

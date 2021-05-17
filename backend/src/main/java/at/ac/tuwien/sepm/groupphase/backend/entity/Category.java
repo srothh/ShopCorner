@@ -9,6 +9,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
 import javax.persistence.PreRemove;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -19,6 +21,8 @@ public class Category {
     //@SequenceGenerator(name="category_sequence", sequenceName = "category_sequence")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
+    @Size(min=3, max=20)
     private String name;
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     @JsonIgnore

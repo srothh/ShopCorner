@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class ProductEndpoint {
+    private static final String BASE_URL = "/api/v1/products";
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final ProductService productService;
     private final ProductMapper productMapper;
@@ -39,7 +40,7 @@ public class ProductEndpoint {
     }
 
     @PermitAll
-    @PostMapping({"api/v1/products/categories/{categoryId}/tax-rates/{taxRateId}", "api/v1/products/categories/tax-rates/{taxRateId}"})
+    @PostMapping({BASE_URL + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL +"categories/tax-rates/{taxRateId}"})
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDto createProduct(@RequestBody @Valid ProductDto productDto, @PathVariable Optional<Long> categoryId, @PathVariable Long taxRateId) {
             System.out.println("productDto is:" + productDto);
@@ -53,17 +54,13 @@ public class ProductEndpoint {
     }
 
     @PermitAll
-    @GetMapping("api/v1/products")
+    @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)
     public List<ProductDto> getAllProducts() {
-        try {
             return this.productService.getAllProducts()
                 .stream()
                 .map(this.productMapper::entityToDto)
                 .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
     }
 
 }

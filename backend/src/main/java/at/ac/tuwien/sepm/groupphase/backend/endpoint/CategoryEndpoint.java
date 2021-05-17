@@ -51,14 +51,9 @@ public class CategoryEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CategoryDto> getAllCategories() {
-        try {
             return this.categoryService.getAllCategories()
                 .stream()
                 .map(this.categoryMapper::entityToDto)
                 .collect(Collectors.toList());
-
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
     }
 }
