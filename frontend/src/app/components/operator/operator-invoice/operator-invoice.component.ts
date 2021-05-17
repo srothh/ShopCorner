@@ -106,17 +106,17 @@ export class OperatorInvoiceComponent implements OnInit {
            color: 'black'
          },
          {
-           text: 'INVOICE',
+           text: 'Rechnung',
            fontSize: 16,
            bold: true,
            alignment: 'center',
            decoration: 'underline',
            color: 'black',
-           margin: [0, 10, 0, 0 ]
+           margin: [0, 30, 0, 0 ]
          },
-         {
+         {/*
            text: 'Customer Details',
-           style: 'sectionHeader'
+           style: 'sectionHeader'*/
          },
          {
            columns: [
@@ -131,44 +131,42 @@ export class OperatorInvoiceComponent implements OnInit {
              ],
              [
                {
-                 text: `Date: ${this.invoiceDto.date}`,
+                 text: `Rechnungsdatum: ${this.invoiceDto.date}`,
                  alignment: 'right'
                },
                {
-                 text: `Bill No : ${this.invoiceDto.id}`,
+                 text: `Rechnungsnr : ${this.invoiceDto.id}`,
                  alignment: 'right'
-               }
+               },
              ]
-           ]
+           ],
+           margin: [0, 30 , 0, 0]
          },
          {
-           text: 'Order Details',
-           style: 'sectionHeader'
+           text: 'Bestellungsdetails',
+           style: 'sectionHeader',
+           margin: [0, 90 , 0, 0]
          },
          {
+           margin: [0, 15 , 0, 0],
            table: {
+             margin: [0, 15 , 0, 0],
              headerRows: 1,
+             headerFont: 'bold',
              widths: ['*', 'auto', 'auto', 'auto'],
              body: [
-               ['Product', 'Price', 'Quantity', 'Amount']/*,
+               [{ text: 'Produkt', bold: true }, { text: 'Preis', bold: true },
+                 { text: 'Stück', bold: true }, { text: 'Gesamt', bold: true }]/*,
                [{text: 'Total Amount', colSpan: 3}, '' , '', '']*/
              ]
            }
          },
-         /*{
-           text: 'Additional Details',
-           style: 'sectionHeader'
-         },
-         {
-           text: 'this.invoice.additionalDetails',
-           margin: [0, 0 , 0, 15]
-         },*/
          {
            columns: [
              [{ qr: `https://www.tuwien.at/`, fit: '75' }],
            ],
            margin: [0, 15 , 0, 0]
-         },
+         }/*,
          {
            text: 'Terms and Conditions',
            style: 'sectionHeader'
@@ -179,28 +177,49 @@ export class OperatorInvoiceComponent implements OnInit {
              'Warrenty of the product will be subject to the manufacturer terms and conditions.',
              'This is system generated invoice.',
            ],
-         }
+         }*/
        ],
+       footer: {
+         style: 'sectionFooter',
+         columns:
+           [{text: `${this.shopName}` + '\n Gußhausstraße 10 1040 Wien\n e: office@tuwien.at\n t: +431 4000 84808',
+             alignment: 'center', fontSize: 10}],
+       },
        styles: {
          sectionHeader: {
            bold: true,
            decoration: 'underline',
            fontSize: 14,
            margin: [0, 15, 0, 15]
+         },
+         sectionFooter: {
+           fontSize: 10,
+           margin: [0, -30, 0, 30],
+           height: 100
          }
        }
      };
 
      let total = 0;
      for (const item of this.map) {
-       docDefinition['content'][5].table.body.push([item.product.name, item.product.price,
-         item.quantity, total += (item.product.price * item.quantity)]);
+       docDefinition['content'][5].table.body.push([item.product.name, item.product.price + '€',
+         item.quantity, (total += (item.product.price * item.quantity)) + '€']);
      }
-     docDefinition['content'][5].table.body.push([ '', '', '', total.toString()]);
-     const index = docDefinition['content'][5].table.body.length;
-     console.log(index, 'index');
-     docDefinition['content'][5].table.body[index - 1][0] = JSON.parse(JSON.stringify({text: 'Gesamt Betrat exkl. mwst', colSpan: 3}));
-     docDefinition['content'][5].table.body[index - 1][3] = total.toString();
+     const subTotalRow = JSON.parse(JSON.stringify([ {}, {}, {}, total.toString() + '€']));
+     const taxRow = JSON.parse(JSON.stringify([ {}, {}, {}, total.toString() + '€']));
+     const totalRow = JSON.parse(JSON.stringify([ {}, {}, {}, total.toString() + '€']));
+
+     docDefinition['content'][5].table.body.push(subTotalRow);
+     let index = docDefinition['content'][5].table.body.length;
+     docDefinition['content'][5].table.body[index - 1][0] = JSON.parse(JSON.stringify({text: 'Zwischensumme.', colSpan: 3}));
+
+     docDefinition['content'][5].table.body.push(taxRow);
+     index = docDefinition['content'][5].table.body.length;
+     docDefinition['content'][5].table.body[index - 1][0] = JSON.parse(JSON.stringify({text: 'Steuer.', colSpan: 3}));
+
+     docDefinition['content'][5].table.body.push(totalRow);
+     index = docDefinition['content'][5].table.body.length;
+     docDefinition['content'][5].table.body[index - 1][0] = JSON.parse(JSON.stringify({text: 'Gesamtbetrag inklusive MwSt.', colSpan: 3}));
 
      console.log(total);
      pdfMake.createPdf(docDefinition).open();
