@@ -24,12 +24,23 @@ public class CategoryServiceImpl implements CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    /**
+     * Creates a new category that is eventually associated to a product.
+     *
+     * @param category the newly added product
+     * @return the newly created category
+     */
     @Override
     public Category createCategory(Category category) {
         LOGGER.trace("create new Category({})", category);
         return categoryRepository.save(category);
     }
 
+    /**
+     * Gets all Categories that were previously created.
+     *
+     * @return all categories that were previously saved
+     */
     @Override
     public List<Category> getAllCategories() {
         LOGGER.trace("retrieve all categories");

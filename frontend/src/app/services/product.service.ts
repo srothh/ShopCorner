@@ -21,7 +21,7 @@ export class ProductService {
   }
   /**
    * Adds a new Product in the backend and assigns relationship to category with the given categoryId
-   * and the taxRateID
+   * and the taxRateId
    */
   addProduct(product: Product, categoryId: number, taxRateId: number): Observable<Product> {
     if (isNaN(categoryId)||categoryId == null) {

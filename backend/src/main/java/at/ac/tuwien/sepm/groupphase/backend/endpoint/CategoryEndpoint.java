@@ -41,6 +41,13 @@ public class CategoryEndpoint {
         this.categoryMapper = categoryMapper;
     }
 
+    /**
+     * Creates a new category in the database.
+     *
+     * @param categoryDto the category as a dto which contains the given fields to store
+     *
+     * @return the newly added category in a dto - format
+     * */
     @PermitAll
     @PostMapping(BASE_URL)
     @ResponseStatus(HttpStatus.CREATED)
@@ -51,6 +58,11 @@ public class CategoryEndpoint {
             .entityToDto(this.categoryService.createCategory(this.categoryMapper.dtoToEntity(categoryDto)));
     }
 
+    /**
+     * Gets all categories that are currently saved in the database.
+     *
+     * @return all categories in dto format
+     * */
     @PermitAll
     @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)

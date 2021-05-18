@@ -90,7 +90,6 @@ export class OperatorAddProductComponent implements OnInit {
     }
 
     this.newCategoryId = this.productForm.get('category').value;
-    console.log('product to submit', this.newProduct);
 
     this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
        this.newProduct.id = data.id;

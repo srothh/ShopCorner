@@ -34,7 +34,11 @@ public class TaxRateEndpoint {
         this.taxRateMapper = taxRateMapper;
     }
 
-
+    /**
+     * Gets all tax-rates that are currently saved in the database.
+     *
+     * @return all tax-rates currently saved in the database in a dto - format
+     * */
     @PermitAll
     @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)

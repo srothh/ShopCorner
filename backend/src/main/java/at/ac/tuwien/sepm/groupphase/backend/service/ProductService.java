@@ -2,6 +2,9 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import java.util.List;
+/**
+ * Service class handling business logic for products.
+ * */
 
 public interface ProductService {
 

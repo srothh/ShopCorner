@@ -5,6 +5,9 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 
 import java.util.Collection;
 import java.util.List;
+/**
+ * Service class handling business logic for Categories.
+ * */
 
 public interface CategoryService {
     /**
