@@ -7,6 +7,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
+/**
+ * Service class for operators.
+ */
 public interface OperatorService extends UserDetailsService {
 
     /**
