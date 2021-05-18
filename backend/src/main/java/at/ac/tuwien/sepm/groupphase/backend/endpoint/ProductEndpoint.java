@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.GlobalExceptionHandler;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
@@ -41,7 +42,7 @@ public class ProductEndpoint {
     }
 
     @PermitAll
-    @PostMapping({BASE_URL + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "categories/tax-rates/{taxRateId}"})
+    @PostMapping({BASE_URL + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/categories/tax-rates/{taxRateId}"})
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Creates a new product with a given optional category and tax-rate")
     public ProductDto createProduct(@RequestBody @Valid ProductDto productDto,
@@ -66,6 +67,17 @@ public class ProductEndpoint {
         return this.productService.getAllProducts()
             .stream()
             .map(this.productMapper::entityToDto)
+            .collect(Collectors.toList());
+    }
+    @PermitAll
+    @GetMapping(BASE_URL + "/simple")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Returns all products that are currently stored in the database without picture and category")
+    public List<SimpleProductDto> getAllSimpleProducts() {
+        LOGGER.info("GET" + BASE_URL + "/simple") ;
+        return this.productService.getAllProducts()
+            .stream()
+            .map(this.productMapper::simpleProductEntityToDto)
             .collect(Collectors.toList());
     }
 

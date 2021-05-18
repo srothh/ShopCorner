@@ -90,6 +90,7 @@ export class OperatorAddProductComponent implements OnInit {
     }
 
     this.newCategoryId = this.productForm.get('category').value;
+    console.log('product to submit', this.newProduct);
 
     this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
        this.newProduct.id = data.id;
@@ -119,6 +120,7 @@ export class OperatorAddProductComponent implements OnInit {
     this.fileToUpload = undefined;
     this.fileSource = undefined;
     this.fileInput.nativeElement.value = '';
+    this.newProduct.picture = null;
   }
   changeCategory(event){
     this.productForm.get('category').setValue(event.target.value, {
