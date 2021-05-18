@@ -16,7 +16,7 @@ public interface TestData {
     String BASE_URI = "/api/v1";
     String MESSAGE_BASE_URI = BASE_URI + "/messages";
 
-    //TEST PROPERTIES FOR PRODUCTS
+    //TEST PROPERTIES FOR PRODUCTS, TAX-RATES AND CATEGORIES
     String PRODUCTS_BASE_URI = "/api/v1/products";
     Long TEST_PRODUCT_ID = 0L;
     String TEST_PRODUCT_NAME = "Product 1";
@@ -24,6 +24,8 @@ public interface TestData {
     String TEST_PRODUCT_DESCRIPTION = "Description1";
     Double TEST_TAX_RATE_PERCENTAGE = 20.0;
     String TEST_CATEGORY_NAME = "Cat1";
+    Long TEST_CATEGORY_ID = 0L;
+    String CATEGORY_BASE_URI = "/api/v1/categories";
 
 
 

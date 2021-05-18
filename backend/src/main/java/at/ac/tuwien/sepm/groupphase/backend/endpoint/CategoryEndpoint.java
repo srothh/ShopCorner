@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class CategoryEndpoint {
     @PostMapping(BASE_URL)
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Creates a new category that is associated to a product with a given name")
-    public CategoryDto createCategory(@RequestBody CategoryDto categoryDto) {
+    public CategoryDto createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         LOGGER.info("POST newCategory{}" + BASE_URL, categoryDto);
         return this.categoryMapper
             .entityToDto(this.categoryService.createCategory(this.categoryMapper.dtoToEntity(categoryDto)));
