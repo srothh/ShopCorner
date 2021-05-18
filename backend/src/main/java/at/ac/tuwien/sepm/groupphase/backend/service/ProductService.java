@@ -18,6 +18,7 @@ public interface ProductService {
 
     /**
      * Gets all products that were previously added in the database.
+     *
      * @return all products that are currently saved in the database
      */
     List<Product> getAllProducts();

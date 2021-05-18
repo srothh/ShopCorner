@@ -69,12 +69,13 @@ public class ProductEndpoint {
             .map(this.productMapper::entityToDto)
             .collect(Collectors.toList());
     }
+
     @PermitAll
     @GetMapping(BASE_URL + "/simple")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database without picture and category")
     public List<SimpleProductDto> getAllSimpleProducts() {
-        LOGGER.info("GET" + BASE_URL + "/simple") ;
+        LOGGER.info("GET" + BASE_URL + "/simple");
         return this.productService.getAllProducts()
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
