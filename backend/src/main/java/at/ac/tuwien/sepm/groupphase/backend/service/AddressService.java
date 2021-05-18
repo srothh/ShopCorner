@@ -26,7 +26,7 @@ public interface AddressService {
     List<Address> getAllAddresses();
 
     /**
-     * Returns an address based on the id
+     * Returns an address based on the id.
      *
      * @param id the id of the address
      * @return An address with the given id

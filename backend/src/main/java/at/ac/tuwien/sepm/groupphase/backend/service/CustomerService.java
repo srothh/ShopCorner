@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface CustomerService extends UserDetailsService {
     /**
-     * Find a user in the context of Spring Security based on the login name
+     * Find a user in the context of Spring Security based on the login name.
      *
      * @param loginName the login name
      * @return a Spring Security user
@@ -26,9 +26,9 @@ public interface CustomerService extends UserDetailsService {
      * Find a customer based on the login name.
      *
      * @param loginName the login name
+     * @return a customer
      * @throws NotFoundException when no customer with the id is found
      * @throws RuntimeException  upon encountering errors with the database
-     * @return a customer
      */
     Customer findCustomerByLoginName(String loginName);
 
