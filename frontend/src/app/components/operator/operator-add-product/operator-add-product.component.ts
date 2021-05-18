@@ -96,6 +96,8 @@ export class OperatorAddProductComponent implements OnInit {
        this.errorOccurred = false;
      }, error => {
        this.errorOccurred = true;
+       //NOTE: not all error types supported yet because of the way how the interceptor is handling errors
+       this.errorMessage = error;
      });
   }
   fetchData(): void {
@@ -107,7 +109,7 @@ export class OperatorAddProductComponent implements OnInit {
   }
   resetState(): void {
     this.errorOccurred = undefined;
-    this.errorMessage = '';
+    this.errorMessage = undefined;
   }
   resetForm(){
     this.productForm.reset();
