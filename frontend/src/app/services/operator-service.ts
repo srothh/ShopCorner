@@ -13,6 +13,9 @@ export class OperatorService {
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
+  /**
+   * fetches all operator accounts from backend
+   */
   getAllOperators(): Observable<Operator[]> {
     console.log('Get all Operators');
     return this.httpClient.get<Operator[]>(this.operatorBaseUri);

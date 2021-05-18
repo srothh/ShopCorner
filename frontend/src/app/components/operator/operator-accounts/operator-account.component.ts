@@ -35,18 +35,27 @@ export class OperatorAccountComponent implements OnInit {
     this.error = false;
   }
 
+  /**
+   * goes to next page if not on the last page
+   */
   nextPage() {
     if (this.page*this.pageSize<this.collectionSize){
       this.page += 1;
     }
   }
 
+  /**
+   * goes to previous page if not on the first page
+   */
   previousPage() {
     if (this.page>1){
       this.page -= 1;
     }
   }
 
+  /**
+   * calls on Service class to fetch all operator accounts from backend
+   */
   private loadAllOperators() {
     this.operatorService.getAllOperators().subscribe(
       (operators: Operator[]) => {
