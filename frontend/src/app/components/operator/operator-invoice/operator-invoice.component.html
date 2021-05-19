@@ -40,10 +40,7 @@
                     <div class="col-4 center-block text-center">
                       <select class="form-select form-control productName" formControlName="name" id="productName"[ngClass]="{ 'is-invalid': submitted && item.controls.name.errors}">
                         <option value="" selected>(none)</option>
-                        <option>apple</option>
-                        <option>pear</option>
-                        <option>pineapple</option>
-                        <option>cherry</option>
+                        <option  *ngFor="let product of products; let productId = index" value="{{productId}}">{{product.name}}</option>
                       </select>
                       <div *ngIf="submitted && item.controls.name.errors" class="invalid-feedback">
                         <div *ngIf="item.controls.name.errors.required">Wählen sie ein Produkt</div>

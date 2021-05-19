@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Message;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
@@ -10,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -26,17 +29,35 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<Invoice> findAllInvoices() {
         LOGGER.debug("Find all invoices");
-        return invoiceRepository.findAll();
+        return this.invoiceRepository.findAll();
     }
 
     @Override
-    public Invoice findOne(Long id) {
+    public Invoice findOneById(Long id) {
         LOGGER.debug("Find invoices with id {}", id);
-        Optional<Invoice> invoice = invoiceRepository.findById(id);
+        Optional<Invoice> invoice = this.invoiceRepository.findById(id);
         if (invoice.isPresent()) {
             return invoice.get();
         } else {
             throw new NotFoundException(String.format("Could not find message with id %s", id));
         }
     }
+
+    @Override
+    public Invoice findOneByDate(LocalDateTime date) {
+        LOGGER.debug("Find invoices with id {}", date);
+        Invoice invoice = this.invoiceRepository.findByDate(date);
+        if (invoice!=null) {
+            return invoice;
+        } else {
+            throw new NotFoundException(String.format("Could not find message with date %s", date.toString()));
+        }
+    }
+
+    @Override
+    public Invoice creatInvoice(Invoice invoice) {
+        LOGGER.debug("Create invoice {}", invoice);
+        return this.invoiceRepository.save(invoice);
+    }
+
 }

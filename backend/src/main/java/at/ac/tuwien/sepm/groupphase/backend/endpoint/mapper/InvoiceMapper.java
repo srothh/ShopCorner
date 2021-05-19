@@ -21,5 +21,8 @@ public interface InvoiceMapper {
 
     DetailedInvoiceDto invoiceToDetailedInvoiceDto(Invoice invoice);
 
+    //Invoice detailedInvoiceDtoToInvoice(DetailedInvoiceDto invoice);
+    Invoice simpleInvoiceDtoToInvoice(SimpleInvoiceDto invoice);
+
 
 }

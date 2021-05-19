@@ -7,6 +7,8 @@ import {FormBuilder, FormGroup, FormArray, Validators, FormControl} from '@angul
 import {InvoiceService} from '../../../services/invoice.service';
 
 import {formatDate} from '@angular/common';
+import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
+import {InvoiceItem} from '../../../dtos/invoiceItem';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -27,7 +29,7 @@ export class OperatorInvoiceComponent implements OnInit {
 
   mapItem = {};
   map = [];
-
+  products = [];
   constructor(private invoiceService: InvoiceService, private formBuilder: FormBuilder) {
   }
 
@@ -36,6 +38,10 @@ export class OperatorInvoiceComponent implements OnInit {
       items: new FormArray([])
     });
     this.addProductOnClick();
+    this.products.push(new Product(-4, 'apple' , 15));
+    this.products.push(new Product(-3, 'cherry' , 16));
+    this.products.push(new Product(-2, 'pineapple', 17));
+    this.products.push(new Product(-1, 'pear', 18));
   }
 
   get f() {
@@ -60,39 +66,40 @@ export class OperatorInvoiceComponent implements OnInit {
       return;
     }
     this.creatInvoiceDto();
-     this.generatePdf();
-    // this.addInvoice();
+     // this.generatePdf();
+    this.addInvoice();
   }
 
   addInvoice() {
     this.invoiceService.createInvoice(this.invoiceDto).subscribe(
       (invoice: Invoice) => {
-        console.log(invoice);
-      },
+      }/*,
       (error) => {
         this.defaultServiceErrorHandling(error);
-      });
+      }*/);
   }
 
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
     let amount = 0;
     for (const item of this.t.controls) {
-      const product = new Product();
       const numOfItems = item.value.quantity;
-      for (let j = 0; j < numOfItems ; j++) {
-        product.name = item.value.name;
-        product.price = item.value.price;
-        this.invoiceDto.invoiceItems.push(product);
-      }
+      /*for (let j = 0; j < numOfItems ; j++) {
+      }*/
+      const productId = item.value.name;
+      const invItem = new InvoiceItem(new InvoiceItemKey(this.products[productId].id), this.products[productId], numOfItems);
+
+      this.invoiceDto.items.push(invItem);
+
       amount += item.value.price * item.value.quantity;
-      this.mapItem['product'] = product;
+      this.mapItem['product'] = item.value.name;
       this.mapItem['quantity'] = numOfItems;
       this.map.push(this.mapItem);
       this.mapItem = {};
     }
     this.invoiceDto.amount = amount;
-    this.invoiceDto.date = formatDate(new Date(), 'dd.MM.yyyy HH:mm:ss', 'en');
+    this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
+    console.log(JSON.parse(JSON.stringify(this.invoiceDto)));
   }
 
    generatePdf() {
@@ -221,7 +228,6 @@ export class OperatorInvoiceComponent implements OnInit {
      index = docDefinition['content'][5].table.body.length;
      docDefinition['content'][5].table.body[index - 1][0] = JSON.parse(JSON.stringify({text: 'Gesamtbetrag inklusive MwSt.', colSpan: 3}));
 
-     console.log(total);
      pdfMake.createPdf(docDefinition).open();
    }
 

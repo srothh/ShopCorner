@@ -11,6 +11,7 @@ INSERT INTO product(id,name,price) VALUES (-1,'pear',18);
 INSERT INTO invoice_item(invoice_id,product_id,number_of_items) VALUES (-4,-1,3);
 INSERT INTO invoice_item(invoice_id,product_id,number_of_items) VALUES (-3,-2,4);
 INSERT INTO invoice_item(invoice_id,product_id,number_of_items) VALUES (-2,-3,2);
-INSERT INTO invoice_item(invoice_id,product_id,number_of_items) VALUES (-1,-4,1);
+INSERT INTO invoice_item(invoice_id,product_id,number_of_items) VALUES (-1,-4,3);
+INSERT INTO invoice_item(invoice_id,product_id,number_of_items) VALUES (-1,-3,1);
 
 

@@ -2,11 +2,8 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
+
+import javax.persistence.*;
 
 
 @Entity
@@ -15,7 +12,7 @@ public class InvoiceItem {
     private InvoiceItemKey id;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @MapsId("invoiceId")
     @JoinColumn(name = "invoice_id", referencedColumnName = "id")
     private Invoice invoice;
@@ -29,8 +26,13 @@ public class InvoiceItem {
     private int numberOfItems;
 
     public InvoiceItem() {
-        invoice = new Invoice();
-        product = new Product();
+        this.invoice = new Invoice();
+        this.product = new Product();
+    }
+
+    public InvoiceItem(Invoice invoice,Product product) {
+        this.invoice = invoice;
+        this.product = product;
     }
 
     public InvoiceItemKey getId() {

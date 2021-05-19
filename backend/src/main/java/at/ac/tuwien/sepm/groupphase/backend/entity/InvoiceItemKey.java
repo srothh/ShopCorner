@@ -9,7 +9,7 @@ import java.util.Objects;
 @Embeddable
 public class InvoiceItemKey implements Serializable {
 
-    @Column(name = "invoice_id", nullable = false)
+    @Column(name = "invoice_id", nullable = true)
     Long invoiceId;
 
     @Column(name = "product_id", nullable = false)

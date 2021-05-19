@@ -53,5 +53,8 @@ public class SimpleInvoiceDto {
         return Objects.hash(id, date, amount);
     }
 
-
+    @Override
+    public String toString() {
+        return "SimpleInvoiceDto{" + "id=" + id + ", date=" + date + ", amount=" + amount + '}';
+    }
 }

@@ -1,12 +1,13 @@
-import {Product} from './product';
+import {InvoiceItem} from './invoiceItem';
 
 export class Invoice {
   id: number;
   date: string;
   amount: number;
-  invoiceItems: Product[] = [];
+  items: InvoiceItem[];
   constructor(
     ) {
+    this.items = [];
   }
 
 }
