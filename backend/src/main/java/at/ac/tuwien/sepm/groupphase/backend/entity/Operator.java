@@ -21,7 +21,7 @@ public class Operator {
     @NotBlank
     private String name;
 
-    @Column(nullable = false, length = 128)
+    @Column(nullable = false, length = 128, unique = true)
     @NotBlank
     private String loginName;
 
@@ -29,7 +29,7 @@ public class Operator {
     @NotBlank
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Email
     @NotBlank
     private String email;

@@ -38,21 +38,19 @@ public class OperatorController {
         this.operatorMapper = operatorMapper;
     }
 
-    @PermitAll //change to @Secured("ROLE_ADMIN")
+    @PermitAll //TODO change to @Secured("ROLE_ADMIN")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register a new operator account", security = @SecurityRequirement(name = "apiKey"))
     public OperatorDto registerOperator(@Valid @RequestBody OperatorDto newOperator) {
         LOGGER.info("POST " + BASE_URL + "/register body: {}", newOperator);
 
-        try {
-            Operator operator = operatorMapper.dtoToEntity(newOperator);
-            operatorService.save(operator);
-            return operatorMapper.entityToDto(operator);
-        } catch (ValidationException e) {
-            LOGGER.error(e.getMessage(), e.fillInStackTrace());
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
-        }
+        Operator operator = operatorMapper.dtoToEntity(newOperator);
+        operatorService.save(operator);
+        OperatorDto result = operatorMapper.entityToDto(operator);
+        result.setPassword(null);
+        return result;
+
     }
 
 

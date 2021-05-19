@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {OperatorService} from '../../../services/operator.service';
 import {Operator} from '../../../dtos/operator';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../../services/auth.service';
 import {Router} from '@angular/router';
+import {Permissions} from '../../../dtos/permissions.enum';
 
 @Component({
   selector: 'app-operator-registration',
@@ -12,7 +13,8 @@ import {Router} from '@angular/router';
 })
 export class OperatorRegistrationComponent implements OnInit {
 
-  permissions = ['admin', 'employee'];
+  permissions = ['Administrator', 'Mitarbeiter'];
+  permission = Permissions.employee;
 
   registrationForm: FormGroup;
   submitted = false;
@@ -45,17 +47,23 @@ export class OperatorRegistrationComponent implements OnInit {
     register() {
 
       if (this.registrationForm.valid) {
+
+        if(this.registrationForm.controls.permissions.value === 'Administrator') {
+            this.permission = Permissions.admin;
+        }
+
        const operator: Operator = new Operator(0, this.registrationForm.controls.name.value,
           this.registrationForm.controls.loginName.value,
           this.registrationForm.controls.password.value, this.registrationForm.controls.email.value,
-          this.registrationForm.controls.permissions.value);
+          this.permission.toString());
 
         this.operatorService.createOperator(operator).subscribe(() => {
           this.submitted = true;
           this.router.navigate(['/operator/accounts']);
         }, error => {
+          console.log(error);
           this.error = true;
-          this.errorMessage = error;
+          this.errorMessage = error.error;
         });
       } else {
         console.log('Invalid input');

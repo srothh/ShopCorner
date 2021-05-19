@@ -3,29 +3,12 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
-@Component
-public class OperatorMapper {
+@Mapper
+public interface OperatorMapper {
 
-    //replace with automatic mapping
+    OperatorDto entityToDto(Operator operator);
 
-    public OperatorDto entityToDto(Operator operator) {
-        if (operator == null) {
-            return null;
-        }
-
-        return new OperatorDto(operator.getId(), operator.getName(), operator.getLoginName(), null,
-            operator.getEmail(), operator.getPermissions());
-    }
-
-    public Operator dtoToEntity(OperatorDto operatorDto) {
-
-        if (operatorDto == null) {
-            return null;
-        }
-
-        return new Operator(operatorDto.getId(), operatorDto.getName(), operatorDto.getLoginName(), operatorDto.getPassword(),
-            operatorDto.getEmail(), operatorDto.getPermissions());
-    }
+    Operator dtoToEntity(OperatorDto operatorDto);
 }
