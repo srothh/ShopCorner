@@ -1,6 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -8,6 +11,8 @@ import java.util.Set;
 public class CategoryDto {
 
     private Long id;
+    @NotBlank
+    @Size(min = 3, max = 20)
     private String name;
     private Set<Product> products = new HashSet<>();
 

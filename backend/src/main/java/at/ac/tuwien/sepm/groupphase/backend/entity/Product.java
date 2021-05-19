@@ -7,8 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
@@ -16,8 +18,10 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+    @NotBlank
+    @Size(min = 3, max = 20, message = "name should contain at least 3 characters and 20 at most")
     private String name;
+    @Size(max = 70)
     private String description;
     @DecimalMin("0.0")
     private Double price;
@@ -26,12 +30,20 @@ public class Product {
     private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tax_rate")
+    @JoinColumn(name = "tax_rate", nullable = false)
     private TaxRate taxRate;
-
-
+    @Lob
+    private byte[] picture;
 
     public Product() {
+    }
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
     }
 
     public Long getId() {

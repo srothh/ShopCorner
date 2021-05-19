@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.TaxRateMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import at.ac.tuwien.sepm.groupphase.backend.service.TaxRateService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class TaxRateEndpoint {
-
+    private static final String BASE_URL = "/api/v1/tax-rates";
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final TaxRateService taxRateService;
     private final TaxRateMapper taxRateMapper;
@@ -33,18 +34,20 @@ public class TaxRateEndpoint {
         this.taxRateMapper = taxRateMapper;
     }
 
-
+    /**
+     * Gets all tax-rates that are currently saved in the database.
+     *
+     * @return all tax-rates currently saved in the database in a dto - format
+     * */
     @PermitAll
-    @GetMapping("api/v1/tax-rates")
+    @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Returns all tax-rates that are currently saved in the database")
     public List<TaxRateDto> getAllTaxRates() {
-        try {
-            return this.taxRateService.getAllTaxRates()
-                .stream()
-                .map(this.taxRateMapper::entityToDto)
-                .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        LOGGER.info("GET " + BASE_URL);
+        return this.taxRateService.getAllTaxRates()
+            .stream()
+            .map(this.taxRateMapper::entityToDto)
+            .collect(Collectors.toList());
     }
 }

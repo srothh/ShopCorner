@@ -20,10 +20,18 @@ public class TaxRate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Double percentage;
+    private Double calculationFactor;
     @OneToMany(mappedBy = "taxRate", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
+    public Double getCalculationFactor() {
+        return calculationFactor;
+    }
+
+    public void setCalculationFactor(Double calculationFactor) {
+        this.calculationFactor = calculationFactor;
+    }
 
     public TaxRate(){}
 
@@ -85,6 +93,7 @@ public class TaxRate {
     public static final class TaxRateBuilder {
         public Long id;
         public Double percentage;
+        public Double calculationFactor;
 
         public TaxRateBuilder(){}
 
@@ -102,10 +111,16 @@ public class TaxRate {
             return this;
         }
 
+        public TaxRateBuilder withCalculationFactor(Double calculationFactor) {
+            this.calculationFactor = calculationFactor;
+            return this;
+        }
+
         public TaxRate build() {
             TaxRate taxRate = new TaxRate();
             taxRate.setId(id);
             taxRate.setPercentage(percentage);
+            taxRate.setCalculationFactor(calculationFactor);
             return taxRate;
         }
     }

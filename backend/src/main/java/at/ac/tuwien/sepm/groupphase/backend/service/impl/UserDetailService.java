@@ -18,13 +18,13 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 @Service
-public class CustomUserDetailService implements UserService {
+public class UserDetailService implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final UserRepository userRepository;
 
     @Autowired
-    public CustomUserDetailService(UserRepository userRepository) {
+    public UserDetailService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
