@@ -1,3 +1,41 @@
-<div>
-  Implement product management here
+<div class="operator-product-container">
+  <div class="operator-product-header mt-3">
+    <h3>Produkte</h3>
+  </div>
+  <div class="operator-product-body">
+    <button type="button" class="btn btn-primary mb-3" (click)="addNewProduct()">Produkt hinzufügen</button>
+    <table class="table">
+      <thead class="thead-light">
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">MWSt</th>
+        <th scope="col">Kategorie</th>
+        <th scope="col">Preis</th>
+        <th scope="col">Bild</th>
+      </tr>
+      </thead>
+
+
+        <tbody>
+        <tr *ngFor="let product of products">
+
+          <td>{{product.name}}</td>
+          <td>{{(product.taxRate?.percentage + '%') ||'--'}}</td>
+          <td>{{product.category?.name||'--'}}</td>
+          <td>{{product.price}}</td>
+          <td>
+            <div *ngIf="product.picture">
+            <img src="{{'data:image/png;base64,'+product.picture}}" alt="" width="100" height="100">
+            </div>
+          </td>
+        </tr>
+        </tbody>
+
+
+    </table>
+
+  </div>
+
+
 </div>
+
