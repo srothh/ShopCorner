@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthService} from '../../../services/auth.service';
+import {CustomerAuthService} from '../../../services/customer-auth.service';
 import {Router} from '@angular/router';
 import {Address} from '../../../dtos/address';
 import {Customer} from '../../../dtos/customer';
@@ -21,7 +21,7 @@ export class ShopRegistrationComponent {
   error = false;
   errorMessage = '';
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router,
+  constructor(private formBuilder: FormBuilder, private authService: CustomerAuthService, private router: Router,
               private addressService: AddressService, private customerService: CustomerService) {
     this.registrationForm = this.formBuilder.group({
       password: ['', [Validators.required, Validators.minLength(8)]],

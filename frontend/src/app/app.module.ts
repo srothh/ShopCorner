@@ -9,7 +9,6 @@ import {HeaderComponent} from './components/shop/shop-header/header.component';
 import {FooterComponent} from './components/shop/shop-footer/footer.component';
 import {ShopHomeComponent} from './components/shop/shop-home/shop-home.component';
 import {ShopLoginComponent} from './components/shop/shop-login/shop-login.component';
-import {ShopMessageComponent} from './components/shop/shop-message/shop-message.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {httpInterceptorProviders} from './interceptors';
 import { OperatorComponent } from './components/operator/operator.component';
@@ -27,6 +26,7 @@ import { ShopProductComponent } from './components/shop/shop-product/shop-produc
 import { ShopCartComponent } from './components/shop/shop-cart/shop-cart.component';
 import { OperatorAddProductComponent } from './components/operator/operator-add-product/operator-add-product.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
+import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,7 @@ import {ShopRegistrationComponent} from './components/shop/shop-registration/sho
     FooterComponent,
     ShopHomeComponent,
     ShopLoginComponent,
-    ShopMessageComponent,
+    ShopAccountComponent,
     OperatorComponent,
     OperatorHomeComponent,
     OperatorShopComponent,
