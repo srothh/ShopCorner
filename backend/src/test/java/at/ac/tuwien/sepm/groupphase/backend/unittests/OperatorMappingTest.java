@@ -37,7 +37,7 @@ public class OperatorMappingTest implements TestData {
             () -> assertEquals(TEST_ADMIN_NAME, overviewOperatorDto.getName()),
             () -> assertEquals(TEST_ADMIN_LOGINNAME, overviewOperatorDto.getLoginName()),
             () -> assertEquals(TEST_ADMIN_EMAIL, overviewOperatorDto.getEmail()),
-            () -> assertEquals(TEST_ADMIN_PERMISSIONS.name(), overviewOperatorDto.getPermissions())
+            () -> assertEquals(TEST_ADMIN_PERMISSIONS, overviewOperatorDto.getPermissions())
         );
     }
 
@@ -55,7 +55,7 @@ public class OperatorMappingTest implements TestData {
             () -> assertEquals(TEST_ADMIN_NAME, adminDto.getName()),
             () -> assertEquals(TEST_ADMIN_LOGINNAME, adminDto.getLoginName()),
             () -> assertEquals(TEST_ADMIN_EMAIL, adminDto.getEmail()),
-            () -> assertEquals(TEST_ADMIN_PERMISSIONS.name(), adminDto.getPermissions())
+            () -> assertEquals(TEST_ADMIN_PERMISSIONS, adminDto.getPermissions())
         );
         OverviewOperatorDto employeeDto = overviewOperatorDtos.get(1);
         assertAll(
@@ -63,7 +63,7 @@ public class OperatorMappingTest implements TestData {
             () -> assertEquals(TEST_EMPLOYEE_NAME, employeeDto.getName()),
             () -> assertEquals(TEST_EMPLOYEE_LOGINNAME, employeeDto.getLoginName()),
             () -> assertEquals(TEST_EMPLOYEE_EMAIL, employeeDto.getEmail()),
-            () -> assertEquals(TEST_EMPLOYEE_PERMISSIONS.name(), employeeDto.getPermissions())
+            () -> assertEquals(TEST_EMPLOYEE_PERMISSIONS, employeeDto.getPermissions())
         );
     }
 }

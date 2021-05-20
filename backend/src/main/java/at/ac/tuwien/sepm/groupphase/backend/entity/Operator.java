@@ -2,11 +2,11 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -21,7 +21,7 @@ public class Operator {
     @NotBlank
     private String name;
 
-    @Column(nullable = false, length = 128)
+    @Column(nullable = false, length = 128, unique = true)
     @NotBlank
     private String loginName;
 
@@ -29,7 +29,7 @@ public class Operator {
     @NotBlank
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Email
     @NotBlank
     private String email;
@@ -39,6 +39,14 @@ public class Operator {
     private Permissions permissions;
 
     public Operator() {
+    }
+
+    public Operator(String name, String loginName, String password, String email, Permissions permissions) {
+        this.name = name;
+        this.loginName = loginName;
+        this.password = password;
+        this.email = email;
+        this.permissions = permissions;
     }
 
     public Operator(Long id, String name, String loginName, String password, String email, Permissions permissions) {
