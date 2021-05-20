@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {CustomerAuthService} from '../../../services/auth/customer-auth.service';
 import {AuthRequest} from '../../../dtos/auth-request';
-
+import {IAuthService} from '../../../services/auth/interface-auth.service';
 
 @Component({
-  selector: 'app-shop-login',
-  templateUrl: './shop-login.component.html',
-  styleUrls: ['./shop-login.component.scss']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
-export class ShopLoginComponent implements OnInit {
+export class LoginComponent implements OnInit {
+
+  @Input() public authService: IAuthService;
 
   loginForm: FormGroup;
   // After first submission attempt, form validation will start
@@ -19,7 +20,7 @@ export class ShopLoginComponent implements OnInit {
   error = false;
   errorMessage = '';
 
-  constructor(private formBuilder: FormBuilder, public authService: CustomerAuthService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private router: Router) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -73,5 +74,6 @@ export class ShopLoginComponent implements OnInit {
 
   ngOnInit() {
   }
+
 
 }

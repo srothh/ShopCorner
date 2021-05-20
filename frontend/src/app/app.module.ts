@@ -29,6 +29,7 @@ import { OperatorAddProductComponent } from './components/operator/operator-add-
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
 import { OperatorLoginComponent } from './components/operator/operator-login/operator-login.component';
+import { LoginComponent } from './components/common/login/login.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { OperatorLoginComponent } from './components/operator/operator-login/ope
     OperatorAddProductComponent,
     ShopRegistrationComponent,
     OperatorLoginComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

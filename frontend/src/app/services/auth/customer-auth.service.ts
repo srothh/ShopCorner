@@ -1,18 +1,20 @@
-import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Globals} from '../global/globals';
-import {AuthRequest} from '../dtos/auth-request';
+import {Injectable} from '@angular/core';
+import {AuthRequest} from '../../dtos/auth-request';
 import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
+// @ts-ignore
 import jwt_decode from 'jwt-decode';
+import {Globals} from '../../global/globals';
+import {IAuthService} from './interface-auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OperatorAuthService {
+export class CustomerAuthService implements IAuthService {
 
-  private authBaseUri: string = this.globals.backendUri + '/authentication/operators';
-  private authTokenKey = 'operatorAuthToken';
+  private authBaseUri: string = this.globals.backendUri + '/authentication/customers';
+  private authTokenKey = 'customerAuthToken';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
@@ -60,11 +62,11 @@ export class OperatorAuthService {
     return 'UNDEFINED';
   }
 
-  private setToken(authResponse: string) {
+  setToken(authResponse: string) {
     localStorage.setItem(this.authTokenKey, authResponse);
   }
 
-  private getTokenExpirationDate(token: string): Date {
+  getTokenExpirationDate(token: string): Date {
 
     const decoded: any = jwt_decode(token);
     if (decoded.exp === undefined) {

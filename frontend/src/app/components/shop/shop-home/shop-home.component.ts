@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CustomerAuthService} from '../../../services/customer-auth.service';
+import {CustomerAuthService} from '../../../services/auth/customer-auth.service';
 
 @Component({
   selector: 'app-home',

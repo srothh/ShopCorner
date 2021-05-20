@@ -1,19 +1,18 @@
-import {Injectable} from '@angular/core';
-import {AuthRequest} from '../dtos/auth-request';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Globals} from '../../global/globals';
+import {AuthRequest} from '../../dtos/auth-request';
+import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
-// @ts-ignore
 import jwt_decode from 'jwt-decode';
-import {Globals} from '../global/globals';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CustomerAuthService {
+export class OperatorAuthService {
 
-  private authBaseUri: string = this.globals.backendUri + '/authentication/customers';
-  private authTokenKey = 'customerAuthToken';
+  private authBaseUri: string = this.globals.backendUri + '/authentication/operators';
+  private authTokenKey = 'operatorAuthToken';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {CustomerAuthService} from '../services/customer-auth.service';
+import {CustomerAuthService} from '../services/auth/customer-auth.service';
 import {Observable} from 'rxjs';
 import {Globals} from '../global/globals';
 

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {OperatorService} from '../../../services/operator.service';
+import {OperatorService} from '../../../services/auth/operator.service';
 import {Operator} from '../../../dtos/operator';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 

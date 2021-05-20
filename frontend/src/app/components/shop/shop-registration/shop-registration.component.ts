@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CustomerAuthService} from '../../../services/customer-auth.service';
+import {CustomerAuthService} from '../../../services/auth/customer-auth.service';
 import {Router} from '@angular/router';
 import {Address} from '../../../dtos/address';
 import {Customer} from '../../../dtos/customer';

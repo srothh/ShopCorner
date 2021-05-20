@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-shop-account',
   templateUrl: './shop-account.component.html',
   styleUrls: ['./shop-account.component.scss']
 })
