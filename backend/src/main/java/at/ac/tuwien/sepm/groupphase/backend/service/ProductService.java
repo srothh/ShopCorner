@@ -26,5 +26,17 @@ public interface ProductService {
      */
     List<Product> getAllProducts();
 
+    /**
+     * Updates an already existing product in the database.
+     *
+     * @param productId the Id of the product to be updated
+     * @param product the newly updated product entity with the updated fields
+     * @param categoryId an optional categoryId to associate the new product with a category
+     * @param taxRateId a possibly updated taxRateId to associate the new product
+     *
+     */
+    void updateProduct(Long productId, Product product, Long categoryId, Long taxRateId);
+
+
 
 }

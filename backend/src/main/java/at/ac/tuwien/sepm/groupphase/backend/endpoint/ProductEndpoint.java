@@ -12,12 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -42,14 +37,13 @@ public class ProductEndpoint {
     }
 
     /**
-    * Adds a new Product to the database.
-    *
-    * @param productDto the dto class containing all necessary field
-    * @param categoryId optional Id of a category entity that associates a product to a category
-    * @param taxRateId Id of a tax-rate entity that associates a product to a specific tax-rate
-    *
-    * @return the newly added product in a dto - format
-    * */
+     * Adds a new Product to the database.
+     *
+     * @param productDto the dto class containing all necessary field
+     * @param categoryId optional Id of a category entity that associates a product to a category
+     * @param taxRateId  Id of a tax-rate entity that associates a product to a specific tax-rate
+     * @return the newly added product in a dto - format
+     */
     @PermitAll
     @PostMapping({BASE_URL + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/categories/tax-rates/{taxRateId}"})
     @ResponseStatus(HttpStatus.CREATED)
@@ -71,7 +65,7 @@ public class ProductEndpoint {
      * gets all Products form the database.
      *
      * @return all products with all given fields in a dto - format
-     * */
+     */
 
     @PermitAll
     @GetMapping(BASE_URL)
@@ -84,11 +78,12 @@ public class ProductEndpoint {
             .map(this.productMapper::entityToDto)
             .collect(Collectors.toList());
     }
+
     /**
      * Gets all simple products from the database, which omits some fields like picture and category.
      *
      * @return all simple products ( product without picture,category) in a dto - format
-     * */
+     */
 
     @PermitAll
     @GetMapping(BASE_URL + "/simple")
@@ -101,5 +96,26 @@ public class ProductEndpoint {
             .map(this.productMapper::simpleProductEntityToDto)
             .collect(Collectors.toList());
     }
+
+    /**
+     * updates an already existing product from the database
+     */
+
+    @PermitAll
+    @PutMapping({BASE_URL + "/{productId}/" + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/categories/tax-rates/{taxRateId}"})
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProduct(@PathVariable Long productId,
+                              @RequestBody @Valid ProductDto productDto,
+                              @PathVariable Optional<Long> categoryId,
+                              @PathVariable Long taxRateId) {
+        LOGGER.info("PUT Product{}" + BASE_URL, productDto);
+        Long validCategoryId = null;
+        if (categoryId.isPresent()) {
+            validCategoryId = categoryId.get();
+        }
+       this.productService.updateProduct(productId, this.productMapper.dtoToEntity(productDto), validCategoryId, taxRateId);
+
+    }
+
 
 }
