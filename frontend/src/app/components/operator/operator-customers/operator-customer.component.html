@@ -1,3 +1,45 @@
-<div>
-  Implement customer management here
+<div class="container">
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error! </strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <br>
+  <h2>Betreiber Konten</h2>
+  <hr>
+  <div>
+    <p style="font-size: 10px; color: gray">
+      Zeigt {{1 + (pageSize * (page - 1))}}-{{(pageSize * page)}}
+      von {{collectionSize}}</p>
+    <ng-template #other_content>
+      <p style="font-size: 10px; color: gray">Zeigt {{1 + (pageSize * (page - 1))}}-{{collectionSize}}
+        von {{collectionSize}}</p>
+    </ng-template>
+  </div>
+  <div class="border rounded" style="height: 560px">
+    <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
+      <thead>
+      <tr class="table-secondary">
+        <th scope="col">Name</th>
+        <th scope="col">Login Name</th>
+        <th scope="col">E-Mail</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let customer of customers">
+        <td><span>{{customer.name}}</span></td>
+        <td><span>{{customer.loginName}}</span></td>
+        <td><span>{{customer.email}}</span></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between p-2">
+    <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
+    <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+  </div>
+
+
 </div>

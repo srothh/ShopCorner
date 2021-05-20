@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,11 +61,11 @@ public class CustomerEndpoint {
      */
     //TODO Change to Secured(ROLE_ADMIN)
     @PermitAll
-    @GetMapping
+    @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "retrieve all customers")
-    public List<CustomerDto> getAllCustomers() {
+    public List<CustomerDto> getAllCustomers(@RequestParam("page") int page) {
         LOGGER.info("GET api/v1/customers");
-        return customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers());
+        return customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers(page).getContent());
     }
 }

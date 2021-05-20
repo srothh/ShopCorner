@@ -23,4 +23,9 @@ export class CustomerService {
     return this.httpClient.post<Customer>(this.customerBaseUri , customer);
   }
 
+  getAllCustomersForPage(page: number): Observable<Customer[]>{
+    console.log('Get customers for page', page);
+    return this.httpClient.get<Customer[]>(this.customerBaseUri + '?page=' + page);
+  }
+
 }
