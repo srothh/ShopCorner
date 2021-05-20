@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {OperatorService} from '../../../services/operator.service';
 import {Operator} from '../../../dtos/operator';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthService} from '../../../services/auth.service';
+
 import {Router} from '@angular/router';
 import {Permissions} from '../../../dtos/permissions.enum';
 
@@ -22,7 +22,7 @@ export class OperatorRegistrationComponent implements OnInit {
   errorMessage = '';
 
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router,
+  constructor(private formBuilder: FormBuilder, private router: Router,
               private operatorService: OperatorService) {
     this.registrationForm = this.formBuilder.group({
       name: ['', [Validators.required]],
