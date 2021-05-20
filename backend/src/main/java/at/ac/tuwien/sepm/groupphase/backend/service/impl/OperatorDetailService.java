@@ -37,11 +37,7 @@ public class OperatorDetailService implements OperatorService {
         return null;
     }
 
-    /**
-     * Find all operators.
-     *
-     * @return a list of operators
-     */
+
     @Override
     public List<Operator> findAll() {
         LOGGER.trace("findAll()");
@@ -49,12 +45,6 @@ public class OperatorDetailService implements OperatorService {
     }
 
 
-    /**
-     * Saves the specified operator.
-     *
-     * @param operator to be saved
-     * @return the operator that has just been saved.
-     */
     @Override
     public Operator save(Operator operator) {
         LOGGER.trace("save({})", operator);

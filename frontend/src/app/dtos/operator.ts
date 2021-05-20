@@ -1,3 +1,5 @@
+import {Permissions} from './permissions.enum';
+
 export class Operator {
 
   constructor(
@@ -6,7 +8,7 @@ export class Operator {
     public loginName: string,
     public password: string,
     public email: string,
-    public permissions: string) {
+    public permissions: Permissions) {
   }
 
 }

@@ -55,7 +55,7 @@ export class OperatorRegistrationComponent implements OnInit {
        const operator: Operator = new Operator(0, this.registrationForm.controls.name.value,
           this.registrationForm.controls.loginName.value,
           this.registrationForm.controls.password.value, this.registrationForm.controls.email.value,
-          this.permission.toString());
+          this.permission);
 
         this.operatorService.createOperator(operator).subscribe(() => {
           this.submitted = true;
