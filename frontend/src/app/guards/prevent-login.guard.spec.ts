@@ -1,13 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 
-import {PreventLoginGuard} from './prevent-login.guard';
+import {PreventCustomerLoginGuard} from './prevent-customer-login-guard.service';
 
 describe('PreventLoginGuard', () => {
-  let guard: PreventLoginGuard;
+  let guard: PreventCustomerLoginGuard;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    guard = TestBed.inject(PreventLoginGuard);
+    guard = TestBed.inject(PreventCustomerLoginGuard);
   });
 
   it('should be created', () => {

@@ -11,7 +11,7 @@ import {CustomerAuthService} from '../services/customer-auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class PreventLoginGuard implements CanActivate {
+export class PreventCustomerLoginGuard implements CanActivate {
 
   constructor(private customerAuthService: CustomerAuthService,
               private router: Router) {
