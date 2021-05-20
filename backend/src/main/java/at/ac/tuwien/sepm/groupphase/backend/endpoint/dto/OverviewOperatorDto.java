@@ -8,6 +8,9 @@ public class OverviewOperatorDto {
     private String email;
     private String permissions;
 
+    public OverviewOperatorDto(){
+    }
+
     public OverviewOperatorDto(long id, String name, String loginName, String email, String permissions) {
         this.id = id;
         this.name = name;
