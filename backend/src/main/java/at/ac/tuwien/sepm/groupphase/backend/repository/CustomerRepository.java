@@ -12,4 +12,11 @@ import java.util.List;
  */
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
+
+    /**
+     * Finds a Customer based on the login name.
+     *
+     * @return a customer with the login name
+     */
+    Customer findByLoginName(String loginName);
 }
