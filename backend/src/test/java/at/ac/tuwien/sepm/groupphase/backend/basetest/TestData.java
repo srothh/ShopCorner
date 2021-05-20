@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.basetest;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,15 @@ public interface TestData {
 
     String BASE_URI = "/api/v1";
     String MESSAGE_BASE_URI = BASE_URI + "/messages";
+
+    String OPERATOR_BASE_URI = BASE_URI + "/operators/register";
+
+    String TEST_OPERATOR_NAME = "operator";
+    String TEST_OPERATOR_LOGINNAME = "operatorLoginName";
+    String TEST_OPERATOR_PASSWORD = "operatorPassword";
+    String TEST_OPERATOR_EMAIL = "operator@email.com";
+    Permissions TEST_OPERATOR_PERMISSION = Permissions.admin;
+
 
     String ADMIN_USER = "admin@email.com";
     List<String> ADMIN_ROLES = new ArrayList<>() {

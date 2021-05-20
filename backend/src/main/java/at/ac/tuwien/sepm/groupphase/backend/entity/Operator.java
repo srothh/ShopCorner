@@ -41,6 +41,14 @@ public class Operator {
     public Operator() {
     }
 
+    public Operator(String name, String loginName, String password, String email, Permissions permissions) {
+        this.name = name;
+        this.loginName = loginName;
+        this.password = password;
+        this.email = email;
+        this.permissions = permissions;
+    }
+
     public Operator(Long id, String name, String loginName, String password, String email, Permissions permissions) {
         this.id = id;
         this.name = name;
