@@ -12,7 +12,7 @@ import {IAuthService} from '../../../services/auth/interface-auth.service';
 export class BaseLoginComponent implements OnInit {
 
   @Input() public authService: IAuthService;
-  @Input() public showRegistrationButton: boolean = true;
+  @Input() public showRegistrationButton = true;
 
   loginForm: FormGroup;
   // After first submission attempt, form validation will start
