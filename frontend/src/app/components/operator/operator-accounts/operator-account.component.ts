@@ -11,8 +11,6 @@ export class OperatorAccountComponent implements OnInit {
 
   error = false;
   errorMessage = '';
-  successMessage = '';
-  success = false;
   operators: Operator[];
   admins: Operator[];
   employees: Operator[];
