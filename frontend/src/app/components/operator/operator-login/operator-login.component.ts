@@ -18,7 +18,7 @@ export class OperatorLoginComponent implements OnInit {
   error = false;
   errorMessage = '';
 
-  constructor(private formBuilder: FormBuilder, private authService: OperatorAuthService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, public authService: OperatorAuthService, private router: Router) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]]

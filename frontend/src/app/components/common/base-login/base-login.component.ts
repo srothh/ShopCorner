@@ -6,12 +6,13 @@ import {IAuthService} from '../../../services/auth/interface-auth.service';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  templateUrl: './base-login.component.html',
+  styleUrls: ['./base-login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class BaseLoginComponent implements OnInit {
 
   @Input() public authService: IAuthService;
+  @Input() public showRegistrationButton: boolean = true;
 
   loginForm: FormGroup;
   // After first submission attempt, form validation will start

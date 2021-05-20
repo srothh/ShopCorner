@@ -6,9 +6,9 @@ import {CustomerAuthService} from '../services/auth/customer-auth.service';
   providedIn: 'root'
 })
 export class CustomerAuthGuard implements CanActivate {
-
   constructor(private customerAuthService: CustomerAuthService,
-              private router: Router) {}
+              private router: Router) {
+  }
 
   canActivate(): boolean {
     if (this.customerAuthService.isLoggedIn()) {

@@ -5,11 +5,12 @@ import {AuthRequest} from '../../dtos/auth-request';
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
+import {IAuthService} from './interface-auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OperatorAuthService {
+export class OperatorAuthService implements IAuthService {
 
   private authBaseUri: string = this.globals.backendUri + '/authentication/operators';
   private authTokenKey = 'operatorAuthToken';
@@ -60,11 +61,11 @@ export class OperatorAuthService {
     return 'UNDEFINED';
   }
 
-  private setToken(authResponse: string) {
+  setToken(authResponse: string) {
     localStorage.setItem(this.authTokenKey, authResponse);
   }
 
-  private getTokenExpirationDate(token: string): Date {
+  getTokenExpirationDate(token: string): Date {
 
     const decoded: any = jwt_decode(token);
     if (decoded.exp === undefined) {

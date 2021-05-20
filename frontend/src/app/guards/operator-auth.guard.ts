@@ -17,6 +17,5 @@ export class OperatorAuthGuard implements CanActivate {
       this.router.navigate(['/operator/login']);
       return false;
     }
-
   }
 }
