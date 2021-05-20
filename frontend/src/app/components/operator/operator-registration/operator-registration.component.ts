@@ -63,7 +63,11 @@ export class OperatorRegistrationComponent implements OnInit {
         }, error => {
           console.log(error);
           this.error = true;
-          this.errorMessage = error.error;
+          if (typeof error.error === 'object') {
+            this.errorMessage = error.error.error;
+          } else {
+            this.errorMessage = error.error;
+          }
         });
       } else {
         console.log('Invalid input');
