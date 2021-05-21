@@ -3,12 +3,17 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
+import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,24 +42,25 @@ public class OperatorServiceImpl implements OperatorService {
         return null;
     }
 
-    /**
-     * Find all operators.
-     *
-     * @return a list of operators
-     */
+    @Override
+    public Page<Operator> findAll(int page, Permissions permissions) {
+        LOGGER.trace("findAll({})", page);
+        Pageable returnPage = PageRequest.of(page, 15);
+        return operatorRepository.findAll(OperatorSpecifications.hasPermission(permissions), returnPage);
+    }
+
     @Override
     public List<Operator> findAll() {
         LOGGER.trace("findAll()");
         return operatorRepository.findAll();
     }
 
+    @Override
+    public int[] getCollectionSize() {
+        LOGGER.trace("getCollectionsize()");
+        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)), (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
+    }
 
-    /**
-     * Saves the specified operator.
-     *
-     * @param operator to be saved
-     * @return the operator that has just been saved.
-     */
     @Override
     public Operator save(Operator operator) {
         LOGGER.trace("save({})", operator);

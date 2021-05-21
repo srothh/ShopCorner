@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
@@ -32,11 +34,18 @@ public class OperatorEndpoint {
     }
 
     @PermitAll
-    @GetMapping
+    @GetMapping(params = {"page"})
     @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
-    public List<OverviewOperatorDto> getAll() {
-        LOGGER.info("GET /operators");
-        return operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll());
+    public List<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("permissions") Permissions permissions) {
+        LOGGER.info("GET " + BASE_URL + "?{}&{}", page, permissions);
+        return operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, permissions).getContent());
     }
 
+    @PermitAll
+    @GetMapping()
+    @Operation(summary = "Get count of operators", security = @SecurityRequirement(name = "apiKey"))
+    public int[] getCount() {
+        LOGGER.info("GET " + BASE_URL);
+        return operatorService.getCollectionSize();
+    }
 }
