@@ -2,11 +2,15 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
+import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -35,6 +39,21 @@ public class OperatorRepositoryTest implements TestData {
         );
     }
 
+    @Test
+    public void givenNothing_whenSaveTwoOperators_thenFindOperatorsWithPageAndPermissionWithOneElementEachAndFindOperatorById() {
+        operatorRepository.save(admin);
+        operatorRepository.save(employee);
+        Pageable returnPage = PageRequest.of(0, 15);
+
+        assertAll(
+            () -> assertNotNull(operatorRepository.findById(admin.getId())),
+            () -> assertNotNull(operatorRepository.findById(employee.getId())),
+            () -> assertEquals(1, operatorRepository.findAll(OperatorSpecifications.hasPermission(Permissions.admin), returnPage).getContent().size()),
+            () -> assertEquals(1, operatorRepository.findAll(OperatorSpecifications.hasPermission(Permissions.employee), returnPage).getContent().size())
+        );
+    }
+
+    @Test
     public void givenNothing_whenSaveOperator_thenFindOperatorWithOneElementAndFindOperatorById() {
         Operator operator = new Operator(TEST_OPERATOR_NAME, TEST_OPERATOR_LOGINNAME, TEST_OPERATOR_PASSWORD, TEST_OPERATOR_EMAIL, TEST_OPERATOR_PERMISSION);
 
