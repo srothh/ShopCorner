@@ -159,7 +159,7 @@ public class OperatorEndpointTest implements TestData {
 
     @Test
     public void givenNothing_whenFindAll_thenEmptyList() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&permissions=admin")
+        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
@@ -180,7 +180,7 @@ public class OperatorEndpointTest implements TestData {
         operatorRepository.save(admin);
         operatorRepository.save(employee);
 
-        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&permissions=admin")
+        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
