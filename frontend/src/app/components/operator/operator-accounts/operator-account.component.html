@@ -1,62 +1,55 @@
 <div class="container">
-<br>
-<h2>Betreiber Konten</h2>
-<div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
-  <label class="btn btn-light active btn-sm">
-    <input type="radio" name="buttons" id="option1" (click)='showAdmins=true; collectionSize=admins.length'>
-    Admins
-  </label>
-  <label class="btn btn-light btn-sm">
-    <input type="radio" name="buttons" id="option2" (click)='showAdmins=false; collectionSize=employees.length'>
-    Angestellte
-  </label>
-</div>
-<hr>
-<div>
-  <p style="font-size: 10px; color: gray" *ngIf="(pageSize * page) < collectionSize; else other_content">
-    Zeigt {{1 + (pageSize * (page - 1))}}-{{(pageSize * page)}}
-    von {{collectionSize}}</p>
-  <ng-template #other_content>
-    <p style="font-size: 10px; color: gray">Zeigt {{1 + (pageSize * (page - 1))}}-{{collectionSize}}
-      von {{collectionSize}}</p>
-  </ng-template>
-</div>
+  <br>
+  <h2>Betreiber Konten</h2>
+  <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
+    <label class="btn btn-light active btn-sm">
+      <input type="radio" name="buttons" id="option1" (click)=showAdmins()>
+      Admins
+    </label>
+    <label class="btn btn-light btn-sm">
+      <input type="radio" name="buttons" id="option2" (click)=showEmployees()>
+      Angestellte
+    </label>
+  </div>
+  <hr>
+  <div>
+    <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < currentCollectionSize; else other_content">
+      Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
+      von {{currentCollectionSize}}</p>
+    <ng-template #other_content>
+      <p style="font-size: 10px; color: gray">Zeigt {{1 + (pageSize * (page))}}-{{currentCollectionSize}}
+        von {{currentCollectionSize}}</p>
+    </ng-template>
+  </div>
 
-<div class="border rounded" style="height: 560px">
-  <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
-    <thead>
-    <tr class="table-secondary">
-      <th scope="col">Name</th>
-      <th scope="col">Login Name</th>
-      <th scope="col">E-Mail</th>
-    </tr>
-    </thead>
-    <tbody *ngIf="showAdmins===true; else employee_content">
-    <tr *ngFor="let operator of admins | slice: (page-1) * pageSize : page * pageSize">
-      <td><span>{{operator.name}}</span></td>
-      <td><span>{{operator.loginName}}</span></td>
-      <td><span>{{operator.email}}</span></td>
-    </tr>
-    </tbody>
-    <ng-template #employee_content>
-      <tr *ngFor="let operator of employees | slice: (page-1) * pageSize : page * pageSize">
+  <div class="border rounded" style="height: 560px">
+    <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
+      <thead>
+      <tr class="table-secondary">
+        <th scope="col">Name</th>
+        <th scope="col">Login Name</th>
+        <th scope="col">E-Mail</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let operator of operators">
         <td><span>{{operator.name}}</span></td>
         <td><span>{{operator.loginName}}</span></td>
         <td><span>{{operator.email}}</span></td>
       </tr>
-    </ng-template>
-  </table>
-</div>
+      </tbody>
+    </table>
+  </div>
 
-<div class="d-flex justify-content-between p-2">
-  <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
-  <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
-</div>
+  <div class="d-flex justify-content-between p-2">
+    <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
+    <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+  </div>
 
-<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
-  <strong>Error! </strong> {{ errorMessage }}
-  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error! </strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
 </div>

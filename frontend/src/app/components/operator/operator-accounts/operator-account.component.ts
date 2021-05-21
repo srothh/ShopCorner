@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
 import {OperatorService} from '../../../services/operator-service';
+import {Permissions} from '../../../dtos/permissions.enum';
 
 @Component({
   selector: 'app-operator-accounts',
@@ -12,18 +13,19 @@ export class OperatorAccountComponent implements OnInit {
   error = false;
   errorMessage = '';
   operators: Operator[];
-  admins: Operator[];
-  employees: Operator[];
-  page = 1;
+  page = 0;
   pageSize = 15;
-  collectionSize = 0;
-  showAdmins = true;
+  currentCollectionSize = 0;
+  collectionSizeAdmin = 0;
+  collectionSizeEmployee = 0;
+  permissions = Permissions.admin;
 
   constructor(private operatorService: OperatorService) {
   }
 
   ngOnInit(): void {
-    this.loadAllOperators();
+    this.loadOperatorsPage();
+    this.loadOperatorCount();
   }
 
   /**
@@ -34,11 +36,30 @@ export class OperatorAccountComponent implements OnInit {
   }
 
   /**
+   * changes view to employees
+   */
+  showEmployees(): void {
+    this.permissions = Permissions.employee;
+    this.currentCollectionSize = this.collectionSizeEmployee;
+    this.loadOperatorsPage();
+  }
+
+  /**
+   * changes view to admins
+   */
+  showAdmins(): void {
+    this.permissions = Permissions.admin;
+    this.currentCollectionSize = this.collectionSizeAdmin;
+    this.loadOperatorsPage();
+  }
+
+  /**
    * goes to next page if not on the last page
    */
   nextPage() {
-    if (this.page*this.pageSize<this.collectionSize){
+    if ((this.page+1)*this.pageSize<this.currentCollectionSize){
       this.page += 1;
+      this.loadOperatorsPage();
     }
   }
 
@@ -46,20 +67,36 @@ export class OperatorAccountComponent implements OnInit {
    * goes to previous page if not on the first page
    */
   previousPage() {
-    if (this.page>1){
+    if (this.page>0){
       this.page -= 1;
+      this.loadOperatorsPage();
     }
   }
 
   /**
    * calls on Service class to fetch all operator accounts from backend
    */
-  private loadAllOperators() {
-    this.operatorService.getAllOperators().subscribe(
+  private loadOperatorsPage() {
+    this.operatorService.getOperatorsPage(this.page, this.permissions).subscribe(
       (operators: Operator[]) => {
-        this.admins = operators.filter(i => i.permissions === 'admin');
-        this.employees = operators.filter(i => i.permissions === 'employee');
-        this.collectionSize=this.admins.length;
+        this.operators = operators;
+      },
+      error => {
+        this.error = true;
+        this.errorMessage = error.error;
+      }
+    );
+  }
+
+  /**
+   * calls on Service class to fetch operator count from backend
+   */
+  private loadOperatorCount() {
+    this.operatorService.getOperatorCount().subscribe(
+      (count: number[]) => {
+        this.collectionSizeAdmin = count[0];
+        this.collectionSizeEmployee = count[1];
+        this.currentCollectionSize = this.collectionSizeAdmin;
       },
       error => {
         this.error = true;
