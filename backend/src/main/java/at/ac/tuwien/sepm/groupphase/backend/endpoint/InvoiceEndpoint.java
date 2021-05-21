@@ -6,8 +6,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import java.lang.invoke.MethodHandles;
@@ -15,13 +13,19 @@ import java.util.List;
 import java.util.Set;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import javax.annotation.security.PermitAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -52,6 +56,7 @@ public class InvoiceEndpoint {
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
     }
     //@Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
+
     @PermitAll
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "")
@@ -69,12 +74,12 @@ public class InvoiceEndpoint {
     @Operation(summary = "create new invoice")
     public SimpleInvoiceDto createInvoice(@RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("GET /invoices");
-        Invoice invoice =invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
+        Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
 
-        Set<InvoiceItem> items = invoiceItemMapper.dtoToentity(invoiceDto.getItems());
+        Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
         Invoice createdInvoice = invoiceService.creatInvoice(invoice);
         SimpleInvoiceDto newInvoice = invoiceMapper.invoiceToSimpleInvoiceDto(createdInvoice);
-        for (InvoiceItem item: items) {
+        for (InvoiceItem item : items) {
             item.setInvoice(createdInvoice);
             System.out.println(item);
         }
@@ -83,13 +88,5 @@ public class InvoiceEndpoint {
 
     }
 
-   /* @PermitAll
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "")
-    @Operation(summary = "create new invoice")
-    public SimpleInvoiceDto createItems(@RequestBody SimpleInvoiceDto invoiceDto) {
-        LOGGER.info("GET /invoices");
-        Invoice newInvoice =invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
-        return invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.creatInvoice(newInvoice));
-    }*/
+
 }

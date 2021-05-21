@@ -122,43 +122,6 @@ export class OperatorInvoiceComponent implements OnInit {
     this.newInvoiceForm.value.total = this.calcTotal();
     this.newInvoiceForm.value.subtotal = this.calcSubtotal();
     this.newInvoiceForm.value.tax = this.calcTotalTax();
-
-    console.log(this.newInvoiceForm.value);
-
-
-  }
-
-  calcTotal() {
-    let amount = 0;
-    for (const item of this.t.controls) {
-      if (item !== undefined) {
-        const product = item.value.name;
-        amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
-      }
-    }
-    return amount.toFixed(2);
-  }
-
-  calcTotalTax() {
-    let amount = 0;
-    for (const item of this.t.controls) {
-      if (item !== undefined) {
-        const product = item.value.name;
-        amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
-      }
-    }
-    return amount.toFixed(2);
-  }
-
-  calcSubtotal() {
-    let amount = 0;
-    for (const item of this.t.controls) {
-      if (item !== undefined) {
-        const product = item.value.name;
-        amount += product.price * item.value.quantity;
-      }
-    }
-    return amount.toFixed(2);
   }
 
   onReset() {
@@ -215,14 +178,45 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
 
-
-
   private fetchData(): void {
     forkJoin([this.productService.getProducts()])
       .subscribe(([productsData]) => {
         this.products = productsData;
       });
 
+  }
+
+  private calcTotal() {
+    let amount = 0;
+    for (const item of this.t.controls) {
+      if (item !== undefined) {
+        const product = item.value.name;
+        amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
+      }
+    }
+    return amount.toFixed(2);
+  }
+
+  private calcTotalTax() {
+    let amount = 0;
+    for (const item of this.t.controls) {
+      if (item !== undefined) {
+        const product = item.value.name;
+        amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
+      }
+    }
+    return amount.toFixed(2);
+  }
+
+  private calcSubtotal() {
+    let amount = 0;
+    for (const item of this.t.controls) {
+      if (item !== undefined) {
+        const product = item.value.name;
+        amount += product.price * item.value.quantity;
+      }
+    }
+    return amount.toFixed(2);
   }
 
 

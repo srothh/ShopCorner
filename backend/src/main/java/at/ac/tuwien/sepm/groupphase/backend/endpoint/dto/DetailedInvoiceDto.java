@@ -15,7 +15,7 @@ public class DetailedInvoiceDto extends SimpleInvoiceDto {
     }
 
     public void setItems(Set<InvoiceItemDto> invoiceItem) {
-        this.items=invoiceItem;
+        this.items = invoiceItem;
     }
 
 

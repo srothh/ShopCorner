@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Message;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
@@ -14,7 +12,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -47,7 +44,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public Invoice findOneByDate(LocalDateTime date) {
         LOGGER.debug("Find invoices with id {}", date);
         Invoice invoice = this.invoiceRepository.findByDate(date);
-        if (invoice!=null) {
+        if (invoice != null) {
             return invoice;
         } else {
             throw new NotFoundException(String.format("Could not find message with date %s", date.toString()));
