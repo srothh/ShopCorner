@@ -1,7 +1,7 @@
 import {Component, ElementRef, Input,  OnInit, ViewChild} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Product} from '../../../dtos/product';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
 import {ProductService} from '../../../services/product.service';
@@ -43,7 +43,8 @@ export class OperatorProductFormComponent implements OnInit {
   constructor(
     private router: Router,
     private productService: ProductService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private activatedRouter: ActivatedRoute
   ) {
   }
 
@@ -62,24 +63,31 @@ export class OperatorProductFormComponent implements OnInit {
       category: [null ]
     });
     if (this.inAddProduct === false){
+      this.setFormProperties();
       this.productForm.disable();
-      this.productForm.controls['name'].setValue(this.newProduct.name);
-      this.productForm.controls['description'].setValue(this.newProduct.description);
-      this.productForm.controls['price'].setValue(this.newProduct?.price);
-      this.productForm.controls['taxRate'].setValue(this.newProduct.taxRate.id, {onlySelf: true});
-      this.productForm.controls['category'].setValue(this.newProduct.category?.id, {onlySelf: true});
-      this.fileSource = 'data:image/png;base64,'+ this.newProduct.picture;
     }
   }
   createNewProduct(): Product {
     return new Product(null,'',null,null,null,null, null);
   }
+  setFormProperties(): void {
+    if (this.newProduct === undefined){
+      const productId = + this.activatedRouter.snapshot.paramMap.get('id');
+      this.fetchSelectedProduct(productId);
+    } else {
+      this.productForm.controls['name'].setValue(this.newProduct.name);
+      this.productForm.controls['description'].setValue(this.newProduct.description);
+      this.productForm.controls['price'].setValue(this.newProduct?.price);
+      this.productForm.controls['taxRate'].setValue(this.newProduct.taxRate.id, {onlySelf: true});
+      this.productForm.controls['category'].setValue(this.newProduct.category?.id, {onlySelf: true});
+      this.fileSource = 'data:image/png;base64,' + this.newProduct.picture;
+    }
+  }
   addProduct(): void {
     if (this.productForm.invalid){
       return;
     }
-    this.newProduct.name = this.productForm.get('name').value;
-    this.newProduct.name = this.newProduct.name.trim();
+    this.newProduct.name = this.productForm.get('name').value.trim();
     this.newProduct.price = this.productForm.get('price').value;
     this.newTaxRateId = this.productForm.get('taxRate').value;
     if (this.productForm.get('description').value != null) {
@@ -96,6 +104,12 @@ export class OperatorProductFormComponent implements OnInit {
       this.errorOccurred = true;
       //NOTE: not all error types supported yet because of the way how the interceptor is handling errors
       this.errorMessage = error;
+    });
+  }
+  fetchSelectedProduct(id: number){
+    this.productService.getProductById(id).subscribe(productData => {
+      this.newProduct = productData;
+      this.setFormProperties();
     });
   }
   resetState(): void {
