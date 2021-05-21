@@ -195,7 +195,7 @@ public class OperatorEndpointTest implements TestData {
         assertEquals(1, overviewOperatorDtos.size());
         OverviewOperatorDto adminDto = overviewOperatorDtos.get(0);
         assertAll(
-            () -> assertEquals(5L, adminDto.getId()),
+            () -> assertEquals(admin.getId(), adminDto.getId()),
             () -> assertEquals(TEST_ADMIN_NAME, adminDto.getName()),
             () -> assertEquals(TEST_ADMIN_LOGINNAME, adminDto.getLoginName()),
             () -> assertEquals(TEST_ADMIN_EMAIL, adminDto.getEmail()),
