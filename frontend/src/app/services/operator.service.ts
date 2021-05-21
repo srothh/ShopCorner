@@ -3,7 +3,7 @@ import {Operator} from '../dtos/operator';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Permissions} from '../dtos/permissions.enum';
-import {Globals} from "../global/globals";
+import {Globals} from '../global/globals';
 
 
 @Injectable({
