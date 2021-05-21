@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Customer} from '../../../dtos/customer';
 import {CustomerService} from '../../../services/customer.service';
 
@@ -13,7 +13,7 @@ export class OperatorCustomerComponent implements OnInit {
   errorMessage = '';
   customers: Customer[];
   page = 0;
-  pageSize = 10;
+  pageSize = 15;
   collectionSize = 0;
 
   constructor(private customerService: CustomerService) {
@@ -21,6 +21,7 @@ export class OperatorCustomerComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCustomersForPage();
+    this.getCustomerCount();
   }
 
   /**
@@ -34,15 +35,17 @@ export class OperatorCustomerComponent implements OnInit {
    * goes to next page if not on the last page
    */
   nextPage() {
-    this.page += 1;
-    this.loadCustomersForPage();
+    if ((this.page+1)*this.pageSize<this.collectionSize){
+      this.page += 1;
+      this.loadCustomersForPage();
+    }
   }
 
   /**
    * goes to previous page if not on the first page
    */
   previousPage() {
-    if (this.page>0){
+    if (this.page > 0) {
       this.page -= 1;
       this.loadCustomersForPage();
     }
@@ -52,10 +55,23 @@ export class OperatorCustomerComponent implements OnInit {
    * calls on Service class to fetch all operator accounts from backend
    */
   private loadCustomersForPage() {
-    this.customerService.getAllCustomersForPage(this.page).subscribe(
+    this.customerService.getAllCustomersForPage(this.page, this.pageSize).subscribe(
       (customers: Customer[]) => {
         this.customers = customers;
-        this.collectionSize=this.customers.length;
+      },
+      error => {
+        this.error = true;
+        this.errorMessage = error.error;
+      }
+    );
+  }
+
+  private getCustomerCount() {
+    this.customerService.getCustomerCount().subscribe(
+      (count: number) => {
+        this.collectionSize = count;
+        console.log(this.collectionSize);
+
       },
       error => {
         this.error = true;

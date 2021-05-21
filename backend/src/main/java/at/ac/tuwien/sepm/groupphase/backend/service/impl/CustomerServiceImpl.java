@@ -73,9 +73,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Page<Customer> getAllCustomers(int page) {
+    public Page<Customer> getAllCustomers(int page, int pageCount) {
         LOGGER.trace("getAllCustomers()");
-        Pageable returnPage = PageRequest.of(page, 10);
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable returnPage = PageRequest.of(page, pageCount);
         return customerRepository.findAll(returnPage);
     }
 
@@ -84,6 +89,11 @@ public class CustomerServiceImpl implements CustomerService {
         LOGGER.trace("assignAddressToCustomer({},{})", customer, addressId);
         Address address = addressService.findAddressById(addressId);
         customer.setAddress(address);
+    }
+
+    @Override
+    public long getCustomerCount() {
+        return customerRepository.count();
     }
 
 }

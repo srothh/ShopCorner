@@ -47,7 +47,7 @@ public interface CustomerService extends UserDetailsService {
      *
      * @return A list of all found customers
      */
-    Page<Customer> getAllCustomers(int page);
+    Page<Customer> getAllCustomers(int page, int pageCount);
 
     /**
      * Assigns an address to a customer.
@@ -58,4 +58,7 @@ public interface CustomerService extends UserDetailsService {
      * @throws RuntimeException  upon encountering errors with the database
      */
     void assignAddressToCustomer(Customer customer, Long addressId);
+
+    long getCustomerCount();
+
 }
