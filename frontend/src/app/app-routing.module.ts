@@ -21,6 +21,7 @@ import {ShopRegistrationComponent} from './components/shop/shop-registration/sho
 import {CustomerAuthGuard} from './guards/customer-auth.guard';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
 import {PreventLoginGuard} from './guards/prevent-login.guard';
+import {OperatorEditAccountComponent} from "./components/operator/operator-edit-account/operator-edit-account.component";
 
 const routes: Routes = [
   {
@@ -48,6 +49,7 @@ const routes: Routes = [
       {path: 'customers', component: OperatorCustomerComponent},
       {path: 'accounts', component: OperatorAccountComponent},
       {path: 'registration', component: OperatorRegistrationComponent},
+      {path: 'account/edit', component: OperatorEditAccountComponent},
     ]},
 ];
 

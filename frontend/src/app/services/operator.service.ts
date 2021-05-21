@@ -26,4 +26,16 @@ export class OperatorService {
     );
   }
 
+  /**
+   * Updates the specified operator in the backend.
+   *
+   * @param operator to be updated
+   */
+  updateOperator(operator: Operator): Observable<any> {
+    console.log('Update operator', operator);
+    return this.httpClient.put<Operator>(
+      baseUri + '/' + operator.id,  operator
+    );
+  }
+
 }

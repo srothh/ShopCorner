@@ -62,7 +62,6 @@ public class OperatorDetailService implements OperatorService {
         String password = passwordEncoder.encode(operator.getPassword());
         operator.setPassword(password);
         return operatorRepository.save(operator);
-
     }
 
 }

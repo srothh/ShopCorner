@@ -28,6 +28,7 @@ import { OperatorRegistrationComponent } from './components/operator/operator-re
 import { OperatorAddProductComponent } from './components/operator/operator-add-product/operator-add-product.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
+import { OperatorEditAccountComponent } from './components/operator/operator-edit-account/operator-edit-account.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import {ShopAccountComponent} from './components/shop/shop-account/shop-account.
     OperatorRegistrationComponent,
     OperatorAddProductComponent,
     ShopRegistrationComponent,
+    OperatorEditAccountComponent,
   ],
   imports: [
     BrowserModule,
