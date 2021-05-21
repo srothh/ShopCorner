@@ -38,5 +38,17 @@ public interface ProductService {
     void updateProduct(Long productId, Product product, Long categoryId, Long taxRateId);
 
 
+    /**
+     * Gets a specific product with the given productId.
+     *
+     * @param productId the is to search in the database
+     *
+     * @return the product entity with the given product Id
+     *
+     * */
+    Product getProductById(Long productId);
+
+
+
 
 }

@@ -116,6 +116,20 @@ public class ProductEndpoint {
        this.productService.updateProduct(productId, this.productMapper.dtoToEntity(productDto), validCategoryId, taxRateId);
 
     }
+    /**
+     * gets a specific product with the given id.
+     *
+     * @param productId the id to search in the database and retrieve the associated product entity
+     *
+     * @return the product entity with the associated Id
+     * */
+    @PermitAll
+    @GetMapping(BASE_URL + "/{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductDto getProductById(@PathVariable Long productId) {
+        LOGGER.info("GET Product with id{}" + BASE_URL, productId);
+        return this.productMapper.entityToDto(this.productService.getProductById(productId));
+    }
 
 
 }

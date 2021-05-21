@@ -144,4 +144,10 @@ public class ProductServiceImpl implements ProductService {
         assignProductToTaxRate(updateProduct, taxRateId);
         this.productRepository.save(updateProduct);
     }
+
+    public Product getProductById(Long productId){
+        return productRepository.findById(productId)
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find product %s", productId)));
+    }
+
 }
