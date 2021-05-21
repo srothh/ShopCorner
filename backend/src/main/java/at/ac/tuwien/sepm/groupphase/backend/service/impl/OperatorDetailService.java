@@ -54,4 +54,15 @@ public class OperatorDetailService implements OperatorService {
         return operatorRepository.save(operator);
     }
 
+    @Override
+    public Operator update(Operator operator) {
+        LOGGER.trace("update({})", operator);
+        validator.validateUpdatedOperator(operator, this);
+        //can password be updated (this easily)?
+        String password = passwordEncoder.encode(operator.getPassword());
+        operator.setPassword(password);
+        return operatorRepository.save(operator);
+
+    }
+
 }

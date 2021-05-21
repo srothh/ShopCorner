@@ -30,7 +30,22 @@ public class Validator {
                 throw new ValidationException("Account already exists");
             }
         }
+    }
 
+    public void validateUpdatedOperator(Operator operator, OperatorService operatorService) {
+        LOGGER.trace("validateUpdatedOperator({})", operator);
+
+        List<Operator> operators = operatorService.findAll();
+        for (Operator op : operators) {
+
+            if (!op.getId().equals(operator.getId()) && op.getEmail().equals(operator.getEmail())) {
+                throw new ValidationException("Account already exists");
+            }
+
+            if (!op.getId().equals(operator.getId()) && op.getLoginName().equals(operator.getLoginName())) {
+                throw new ValidationException("Account already exists");
+            }
+        }
     }
 
 }

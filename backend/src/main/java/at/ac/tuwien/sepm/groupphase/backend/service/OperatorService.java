@@ -35,4 +35,13 @@ public interface OperatorService extends UserDetailsService {
      */
     Operator save(Operator operator);
 
+
+    /**
+     * Updates the specified operator.
+     *
+     * @param operator to be updated
+     * @return the operator that has just been updated.
+     */
+    Operator update(Operator operator);
+
 }

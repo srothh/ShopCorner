@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -11,12 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
@@ -46,8 +47,21 @@ public class OperatorController {
         LOGGER.info("POST " + BASE_URL + "/register body: {}", newOperator);
 
         Operator operator = operatorMapper.dtoToEntity(newOperator);
-        operatorService.save(operator);
-        OperatorDto result = operatorMapper.entityToDto(operator);
+        OperatorDto result = operatorMapper.entityToDto(operatorService.save(operator));
+        result.setPassword(null);
+        return result;
+
+    }
+
+    @PermitAll
+    @PutMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Edit an existing operator account", security = @SecurityRequirement(name = "apiKey"))
+    public OperatorDto editOperator(@Valid @PathVariable("id") Long id, @RequestBody OperatorDto operatorDto) {
+        LOGGER.info("PUT " + BASE_URL + "/{}", id);
+
+        Operator operator = operatorMapper.dtoToEntity(operatorDto);
+        OperatorDto result = operatorMapper.entityToDto(operatorService.update(operator));
         result.setPassword(null);
         return result;
 
