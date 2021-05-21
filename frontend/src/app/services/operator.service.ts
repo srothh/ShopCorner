@@ -31,9 +31,10 @@ export class OperatorService {
   /**
    * fetches all operator accounts from backend
    */
-  getOperatorsPage(page: number, permissions: Permissions): Observable<Operator[]> {
+  getOperatorsPage(page: number, pageCount: number, permissions: Permissions): Observable<Operator[]> {
     console.log('Get Operators with permission: ', permissions, ' for page: ', page);
-    return this.httpClient.get<Operator[]>(this.operatorBaseUri + '?page=' + page + '&permissions=' + permissions);
+    return this.httpClient.get<Operator[]>(this.operatorBaseUri + '?page=' + page + '&page_count=' + pageCount +
+      '&permissions=' + permissions);
   }
 
   /**

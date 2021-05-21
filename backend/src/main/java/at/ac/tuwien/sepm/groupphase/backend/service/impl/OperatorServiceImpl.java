@@ -43,9 +43,14 @@ public class OperatorServiceImpl implements OperatorService {
     }
 
     @Override
-    public Page<Operator> findAll(int page, Permissions permissions) {
+    public Page<Operator> findAll(int page, int pageCount, Permissions permissions) {
         LOGGER.trace("findAll({})", page);
-        Pageable returnPage = PageRequest.of(page, 15);
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable returnPage = PageRequest.of(page, pageCount);
         return operatorRepository.findAll(OperatorSpecifications.hasPermission(permissions), returnPage);
     }
 

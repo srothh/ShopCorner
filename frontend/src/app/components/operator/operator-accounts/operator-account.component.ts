@@ -77,7 +77,7 @@ export class OperatorAccountComponent implements OnInit {
    * calls on Service class to fetch all operator accounts from backend
    */
   private loadOperatorsPage() {
-    this.operatorService.getOperatorsPage(this.page, this.permissions).subscribe(
+    this.operatorService.getOperatorsPage(this.page, this.pageSize, this.permissions).subscribe(
       (operators: Operator[]) => {
         this.operators = operators;
       },

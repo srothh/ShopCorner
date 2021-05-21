@@ -44,15 +44,16 @@ public class OperatorEndpoint {
      * Get all operators with certain permission for certain page.
      *
      * @param page which should be fetched
+     * @param pageCount amount per page
      * @param permissions of needed operators
      * @return List with all needed operators
      */
     @PermitAll
     @GetMapping(params = {"page"})
     @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
-    public List<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("permissions") Permissions permissions) {
-        LOGGER.info("GET " + BASE_URL + "?{}&{}", page, permissions);
-        return operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, permissions).getContent());
+    public List<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam("permissions") Permissions permissions) {
+        LOGGER.info("GET " + BASE_URL + "?{}&{}&{}", page, pageCount, permissions);
+        return operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, pageCount, permissions).getContent());
     }
 
     /**
