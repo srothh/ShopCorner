@@ -36,4 +36,9 @@ export class OperatorProductComponent implements OnInit {
     const addProductURL = currentURL.replace('products','products/add');
     this.router.navigate([addProductURL],{state: [this.categories,this.taxRates]}).then();
   }
+  goToProductDetails(selectedProduct: Product){
+    console.log('product selected', selectedProduct);
+    const currentUri = this.urlSerializer.serialize(this.router.createUrlTree([]));
+    this.router.navigate([currentUri + '/' + selectedProduct.id], {state: [this.categories, this.taxRates, selectedProduct]}).then();
+  }
 }
