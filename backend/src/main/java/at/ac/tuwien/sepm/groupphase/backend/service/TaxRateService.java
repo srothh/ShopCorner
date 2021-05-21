@@ -12,9 +12,7 @@ public interface TaxRateService {
     /**
      * Gets all tax_rates that were previously added in the database.
      *
-     *
      * @return all tax_rates that are currently saved in the database.
-     *
      */
     List<TaxRate> getAllTaxRates();
 }

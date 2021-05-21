@@ -13,7 +13,6 @@ import java.util.List;
  * Service class for operators.
  */
 public interface OperatorService extends UserDetailsService {
-
     /**
      * Find a user in the context of Spring Security based on the email address.
      *
