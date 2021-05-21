@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import org.junit.jupiter.api.Test;
@@ -16,14 +17,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
+
 public class OperatorMappingTest implements TestData {
 
     private final Operator admin = new Operator(0L, TEST_ADMIN_NAME, TEST_ADMIN_LOGINNAME, TEST_ADMIN_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PERMISSIONS);
     private final Operator employee = new Operator(1L, TEST_EMPLOYEE_NAME, TEST_EMPLOYEE_LOGINNAME, TEST_EMPLOYEE_PASSWORD, TEST_EMPLOYEE_EMAIL, TEST_EMPLOYEE_PERMISSIONS);
+    private final Operator operator = new Operator(0L, TEST_OPERATOR_NAME, TEST_OPERATOR_LOGINNAME, TEST_OPERATOR_PASSWORD, TEST_OPERATOR_EMAIL, TEST_OPERATOR_PERMISSION);
 
     @Autowired
     private OperatorMapper operatorMapper;
@@ -63,6 +67,18 @@ public class OperatorMappingTest implements TestData {
             () -> assertEquals(TEST_EMPLOYEE_LOGINNAME, employeeDto.getLoginName()),
             () -> assertEquals(TEST_EMPLOYEE_EMAIL, employeeDto.getEmail()),
             () -> assertEquals(TEST_EMPLOYEE_PERMISSIONS, employeeDto.getPermissions())
+        );
+    }
+
+    public void givenNothing_whenMapOperatorDtoToEntity_thenEntityHasAllProperties() {
+        OperatorDto operatorDto = operatorMapper.entityToDto(operator);
+        assertAll(
+            () -> assertEquals(0L, operatorDto.getId()),
+            () -> assertEquals(TEST_OPERATOR_NAME, operatorDto.getName()),
+            () -> assertEquals(TEST_OPERATOR_LOGINNAME, operatorDto.getLoginName()),
+            () -> assertEquals(TEST_OPERATOR_PASSWORD, operatorDto.getPassword()),
+            () -> assertEquals(TEST_OPERATOR_EMAIL, operatorDto.getEmail()),
+            () -> assertEquals(TEST_OPERATOR_PERMISSION, operatorDto.getPermissions())
         );
     }
 }

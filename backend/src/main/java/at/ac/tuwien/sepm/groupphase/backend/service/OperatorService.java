@@ -54,5 +54,4 @@ public interface OperatorService extends UserDetailsService {
      * @return the operator that has just been saved.
      */
     Operator save(Operator operator);
-
 }

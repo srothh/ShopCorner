@@ -35,4 +35,14 @@ public class OperatorRepositoryTest implements TestData {
         );
     }
 
+    public void givenNothing_whenSaveOperator_thenFindOperatorWithOneElementAndFindOperatorById() {
+        Operator operator = new Operator(TEST_OPERATOR_NAME, TEST_OPERATOR_LOGINNAME, TEST_OPERATOR_PASSWORD, TEST_OPERATOR_EMAIL, TEST_OPERATOR_PERMISSION);
+
+        operatorRepository.save(operator);
+
+        assertAll(
+            () -> assertEquals(1, operatorRepository.findAll().size()),
+            () -> assertNotNull(operatorRepository.findById(operator.getId()))
+        );
+    }
 }

@@ -1,0 +1,22 @@
+.custom-file-input ~ .custom-file-label::after {
+  content: "Suchen...";
+}
+.placeholder-text {
+  font-size: 1rem;
+  font-weight: 400;
+  color: blue;
+}
+input.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+input.ng-valid.ng-touched {
+  border: 1px solid #78faaa;
+}
+select.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+select.ng-valid.ng-touched {
+  border: 1px solid #78faaa;
+}
+
+

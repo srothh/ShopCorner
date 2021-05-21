@@ -23,7 +23,11 @@ public class Validator {
         for (Operator op : operators) {
 
             if (op.getEmail().equals(operator.getEmail())) {
-                throw new ValidationException("Operator already exists!");
+                throw new ValidationException("Account already exists");
+            }
+
+            if (op.getLoginName().equals(operator.getLoginName())) {
+                throw new ValidationException("Account already exists");
             }
         }
 
