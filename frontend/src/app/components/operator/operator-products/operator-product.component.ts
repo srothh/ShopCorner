@@ -24,16 +24,17 @@ export class OperatorProductComponent implements OnInit {
   }
   fetchData(): void {
     forkJoin([this.productService.getProducts(), this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
-      .subscribe(([productsData, categoriesData,taxRatesData]) => {
+      .subscribe(([productsData, categoriesData, taxRatesData]) => {
         this.products = productsData;
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
       });
 
   }
+
   addNewProduct(): void {
     const currentURL = this.urlSerializer.serialize(this.router.createUrlTree([]));
-    const addProductURL = currentURL.replace('products','products/add');
-    this.router.navigate([addProductURL],{state: [this.categories,this.taxRates]}).then();
+    const addProductURL = currentURL.replace('products', 'products/add');
+    this.router.navigate([addProductURL], {state: [this.categories, this.taxRates]}).then();
   }
 }

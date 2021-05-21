@@ -9,6 +9,13 @@ import {InvoiceService} from '../../../services/invoice.service';
 import {formatDate} from '@angular/common';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {InvoiceItem} from '../../../dtos/invoiceItem';
+import {Category} from '../../../dtos/category';
+import {TaxRate} from '../../../dtos/tax-rate';
+import {ProductService} from '../../../services/product.service';
+import {Router, UrlSerializer} from '@angular/router';
+import {CategoryService} from '../../../services/category.service';
+import {TaxRateService} from '../../../services/tax-rate.service';
+import {forkJoin} from 'rxjs';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -26,22 +33,31 @@ export class OperatorInvoiceComponent implements OnInit {
   error = false;
   errorMessage = '';
   invoiceDto: Invoice;
-
   mapItem = {};
   map = [];
-  products = [];
-  constructor(private invoiceService: InvoiceService, private formBuilder: FormBuilder) {
+  products: Product[];
+
+  subtotal = 0;
+  total = 0;
+  tax = 0;
+
+
+  constructor(private invoiceService: InvoiceService, private productService: ProductService,
+              private taxRateService: TaxRateService, private formBuilder: FormBuilder, private urlSerializer: UrlSerializer) {
   }
+
 
   ngOnInit() {
     this.newInvoiceForm = this.formBuilder.group({
-      items: new FormArray([])
+      items: new FormArray([]),
+      subtotal: [''],
+      tax: [''],
+      total: ['']
     });
+    this.fetchData();
     this.addProductOnClick();
-    this.products.push(new Product(-4, 'apple' , 15));
-    this.products.push(new Product(-3, 'cherry' , 16));
-    this.products.push(new Product(-2, 'pineapple', 17));
-    this.products.push(new Product(-1, 'pear', 18));
+
+
   }
 
   get f() {
@@ -52,11 +68,13 @@ export class OperatorInvoiceComponent implements OnInit {
     return this.f.items as FormArray;
   }
 
+
   addProductOnClick() {
     this.t.push(this.formBuilder.group({
       name: ['', Validators.required],
-      price: ['', [Validators.required]],
-      quantity: ['', [Validators.required]]
+      price: [''],
+      quantity: ['', [Validators.required]],
+      amount: ['']
     }));
   }
 
@@ -71,167 +89,77 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
   addInvoice() {
-    this.invoiceService.createInvoice(this.invoiceDto).subscribe(
-      (invoice: Invoice) => {
-      }/*,
-      (error) => {
-        this.defaultServiceErrorHandling(error);
-      }*/);
+    this.invoiceService.createInvoice(this.invoiceDto);
   }
 
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
-    let amount = 0;
     for (const item of this.t.controls) {
-      const numOfItems = item.value.quantity;
-      /*for (let j = 0; j < numOfItems ; j++) {
-      }*/
-      const productId = item.value.name;
-      const invItem = new InvoiceItem(new InvoiceItemKey(this.products[productId].id), this.products[productId], numOfItems);
+      if (item !== undefined) {
 
-      this.invoiceDto.items.push(invItem);
+        const numOfItems = item.value.quantity;
+        const product = item.value.name;
+        const invItem = new InvoiceItem(new InvoiceItemKey(product.id), product, numOfItems);
 
-      amount += item.value.price * item.value.quantity;
-      this.mapItem['product'] = item.value.name;
-      this.mapItem['quantity'] = numOfItems;
-      this.map.push(this.mapItem);
-      this.mapItem = {};
+        this.invoiceDto.items.push(invItem);
+        this.subtotal += product.price * item.value.quantity;
+        this.tax += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
+        this.total = this.subtotal + this.tax;
+
+        this.mapItem['product'] = item.value.name;
+        this.mapItem['quantity'] = numOfItems;
+        this.map.push(this.mapItem);
+        this.mapItem = {};
+      }
     }
-    this.invoiceDto.amount = amount;
+    this.invoiceDto.amount = +this.total.toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
-    console.log(JSON.parse(JSON.stringify(this.invoiceDto)));
+    console.log(this.invoiceDto);
   }
 
-   generatePdf() {
-     const docDefinition = {
-       content: [
-         {
-           text: `${this.shopName}`,
-           fontSize: 20,
-           fontStyle: 'Arial',
-           alignment: 'center',
-           color: 'black'
-         },
-         {
-           text: 'Rechnung',
-           fontSize: 16,
-           bold: true,
-           alignment: 'center',
-           decoration: 'underline',
-           color: 'black',
-           margin: [0, 30, 0, 0 ]
-         },
-         {/*
-           text: 'Customer Details',
-           style: 'sectionHeader'*/
-         },
-         {
-           columns: [
-             [
-               /*{
-                 text: 'this.invoice.customerName',
-                 bold: true
-               },
-               { text: 'this.invoice.address' },
-               { text: 'this.invoice.email' },
-               { text: 'this.invoice.contactNo' }*/
-             ],
-             [
-               {
-                 text: `Rechnungsdatum: ${this.invoiceDto.date}`,
-                 alignment: 'right'
-               },
-               {
-                 text: `Rechnungsnr : ${this.invoiceDto.id}`,
-                 alignment: 'right'
-               },
-             ]
-           ],
-           margin: [0, 30 , 0, 0]
-         },
-         {
-           text: 'Bestellungsdetails',
-           style: 'sectionHeader',
-           margin: [0, 90 , 0, 0]
-         },
-         {
-           margin: [0, 15 , 0, 0],
-           table: {
-             margin: [0, 15 , 0, 0],
-             headerRows: 1,
-             headerFont: 'bold',
-             widths: ['*', 'auto', 'auto', 'auto'],
-             body: [
-               [{ text: 'Produkt', bold: true }, { text: 'Preis', bold: true },
-                 { text: 'Stück', bold: true }, { text: 'Gesamt', bold: true }]/*,
-               [{text: 'Total Amount', colSpan: 3}, '' , '', '']*/
-             ]
-           }
-         },
-         {
-           columns: [
-             [{ qr: `https://www.tuwien.at/`, fit: '75' }],
-           ],
-           margin: [0, 15 , 0, 0]
-         }/*,
-         {
-           text: 'Terms and Conditions',
-           style: 'sectionHeader'
-         },
-         {
-           ul: [
-             'Order can be return in max 10 days.',
-             'Warrenty of the product will be subject to the manufacturer terms and conditions.',
-             'This is system generated invoice.',
-           ],
-         }*/
-       ],
-       footer: {
-         style: 'sectionFooter',
-         columns:
-           [{text: `${this.shopName}` + '\n Gußhausstraße 10 1040 Wien\n e: office@tuwien.at\n t: +431 4000 84808',
-             alignment: 'center', fontSize: 10}],
-       },
-       styles: {
-         sectionHeader: {
-           bold: true,
-           decoration: 'underline',
-           fontSize: 14,
-           margin: [0, 15, 0, 15]
-         },
-         sectionFooter: {
-           fontSize: 10,
-           margin: [0, -30, 0, 30],
-           height: 100
-         }
-       }
-     };
+  calculateAmount() {
 
-     let total = 0;
-     for (const item of this.map) {
-       docDefinition['content'][5].table.body.push([item.product.name, item.product.price + '€',
-         item.quantity, (total += (item.product.price * item.quantity)) + '€']);
-     }
-     const subTotalRow = JSON.parse(JSON.stringify([ {}, {}, {}, total.toString() + '€']));
-     const taxRow = JSON.parse(JSON.stringify([ {}, {}, {}, total.toString() + '€']));
-     const totalRow = JSON.parse(JSON.stringify([ {}, {}, {}, total.toString() + '€']));
+    this.newInvoiceForm.value.total = this.calcTotal();
+    this.newInvoiceForm.value.subtotal = this.calcSubtotal();
+    this.newInvoiceForm.value.tax = this.calcTotalTax();
 
-     docDefinition['content'][5].table.body.push(subTotalRow);
-     let index = docDefinition['content'][5].table.body.length;
-     docDefinition['content'][5].table.body[index - 1][0] = JSON.parse(JSON.stringify({text: 'Zwischensumme.', colSpan: 3}));
-
-     docDefinition['content'][5].table.body.push(taxRow);
-     index = docDefinition['content'][5].table.body.length;
-     docDefinition['content'][5].table.body[index - 1][0] = JSON.parse(JSON.stringify({text: 'Steuer.', colSpan: 3}));
-
-     docDefinition['content'][5].table.body.push(totalRow);
-     index = docDefinition['content'][5].table.body.length;
-     docDefinition['content'][5].table.body[index - 1][0] = JSON.parse(JSON.stringify({text: 'Gesamtbetrag inklusive MwSt.', colSpan: 3}));
-
-     pdfMake.createPdf(docDefinition).open();
-   }
+    console.log(this.newInvoiceForm.value);
 
 
+  }
+
+  calcTotal() {
+    let amount = 0;
+    for (const item of this.t.controls) {
+      if (item !== undefined) {
+        const product = item.value.name;
+        amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
+      }
+    }
+    return amount.toFixed(2);
+  }
+
+  calcTotalTax() {
+    let amount = 0;
+    for (const item of this.t.controls) {
+      if (item !== undefined) {
+        const product = item.value.name;
+        amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
+      }
+    }
+    return amount.toFixed(2);
+  }
+
+  calcSubtotal() {
+    let amount = 0;
+    for (const item of this.t.controls) {
+      if (item !== undefined) {
+        const product = item.value.name;
+        amount += product.price * item.value.quantity;
+      }
+    }
+    return amount.toFixed(2);
+  }
 
   onReset() {
     this.submitted = false;
@@ -285,5 +213,17 @@ export class OperatorInvoiceComponent implements OnInit {
       this.errorMessage = error.error.message;
     }
   }
+
+
+
+
+  private fetchData(): void {
+    forkJoin([this.productService.getProducts()])
+      .subscribe(([productsData]) => {
+        this.products = productsData;
+      });
+
+  }
+
 
 }

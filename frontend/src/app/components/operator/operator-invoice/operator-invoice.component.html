@@ -36,38 +36,77 @@
                   </div>
                 </div>
                 <div *ngFor="let item of t['controls']; let id = index" class="list-group list-group-flush">
-                  <div class="row align-items-start" style="margin-top: 5px" [formGroup]="item" >
+                  <div class="row align-items-start" [formGroup]="item">
                     <div class="col-4 center-block text-center">
-                      <select class="form-select form-control productName" formControlName="name" id="productName"[ngClass]="{ 'is-invalid': submitted && item.controls.name.errors}">
-                        <option value="" selected>(none)</option>
-                        <option  *ngFor="let product of products; let productId = index" value="{{productId}}">{{product.name}}</option>
+                      <select class="form-select form-control productName" formControlName="name" id="productName"
+                              [ngClass]="{ 'is-invalid': submitted && item.controls.name.errors}"
+                              (change)="calculateAmount()">
+                        <option value="" selected disabled>(none)</option>
+                        <option *ngFor="let product of products; let i = index;"
+                                [ngValue]="product">{{product.name}}</option>
                       </select>
+
                       <div *ngIf="submitted && item.controls.name.errors" class="invalid-feedback">
                         <div *ngIf="item.controls.name.errors.required">Wählen sie ein Produkt</div>
                       </div>
                     </div>
                     <div class="col-3 center-block text-center">
-                      <input type="number" class="form-control" formControlName="price" name="price" id="price" [ngClass]="{ 'is-invalid': submitted && item.controls.price.errors}" min="0">
-                      <div *ngIf="submitted && item.controls.price.errors" class="invalid-feedback">
-                        <div *ngIf="item.controls.price.errors.required">Geben sie den Preis ein</div>
-                      </div>
+                      <input type="number" class="form-control" formControlName="price" name="price" id="price"
+                             value="{{item.value.name!==null?item.value.name.price:0}}" #price readonly>
                     </div>
                     <div class="col-2 center-block text-center">
                       <input type="number" class="form-control" formControlName="quantity" name="quantity" id="quantity"
-                             [ngClass]="{ 'is-invalid': submitted && this.item.controls.quantity.errors}" min="0">
+                             (change)="calculateAmount()"
+                             [ngClass]="{ 'is-invalid': submitted && this.item.controls.quantity.errors}" min="1"
+                      >
                       <div *ngIf="submitted && item.controls.quantity.errors" class="invalid-feedback">
                         <div *ngIf="item.controls.quantity.errors.required">Geben sie den Anzahl der Produkte an</div>
                       </div>
                     </div>
-                    <div class="col-2 text-center align-items-center" style="height: 100%">
-                      <input type="text" class="form-control" name="amount" id="amount" #amount style="border: none"
-                             value="0.0" value="{{item.value.price*item.value.quantity}}" readonly>
+                    <div class="col-2 text-center align-items-center">
+                      <input type="text" class="form-control" formControlName="amount" name="amount" id="amount"
+                             value="0.0"
+                             value="{{item.value.name!==null&&item.value.name.price!==undefined?item.value.name.price*item.value.quantity:0}}"
+                             readonly>
                     </div>
                     <div class="col-1 center-block text-center">
-                      <button type="button" class="btn btn-outline-danger" (click)="deleteProductFromInvoice(id)">-</button>
+                      <button type="button" class="btn btn-outline-danger" (click)="deleteProductFromInvoice(id)">-
+                      </button>
                     </div>
                   </div>
                 </div>
+                  <div class="row align-items-start">
+                    <div class="col-9 center-block text-center">
+                      <span class="form-control" style="border: none; text-align: right">Netto:</span>
+                    </div>
+                    <div class="col-3 center-block text-center" >
+
+                      <input class="form-control" id="netAmount" style="border: none;background-color:white; text-align: center"
+                             formControlName="subtotal" name="subtotal" id="subtotal" readonly value="{{newInvoiceForm.value.subtotal}}">
+
+                    </div>
+
+                  </div>
+                  <div class="row align-items-start">
+                    <div class="col-9 center-block text-center">
+                      <span class="form-control" style="border: none; text-align: right">Steuern:</span>
+                    </div>
+                    <div class="col-3 center-block text-center">
+                      <input class="form-control" id="taxAmount" style="border: none;background-color:white; text-align: center"
+                             formControlName="tax" name="tax" id="tax" readonly value="{{newInvoiceForm.value.tax}}">
+                    </div>
+
+                  </div>
+                  <div class="row align-items-start">
+                    <div class="col-9 center-block text-center">
+                      <span class="form-control" style="border: none;  text-align: right">Gesamtbetrag:</span>
+                    </div>
+                    <div class="col-3 center-block text-center">
+                      <input class="form-control" id="totalAmount" style="border: none;background-color:white; text-align: center"
+                             formControlName="total" name="total" id="total" readonly value="{{newInvoiceForm.value.total}}">
+                    </div>
+
+                  </div>
               </div>
               <div class="createInvoice">
                 <div class="row">
