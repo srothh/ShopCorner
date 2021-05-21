@@ -40,6 +40,13 @@ public class OperatorEndpoint {
         this.operatorService = operatorService;
     }
 
+    /**
+     * Get all operators with certain permission for certain page.
+     *
+     * @param page which should be fetched
+     * @param permissions of needed operators
+     * @return List with all needed operators
+     */
     @PermitAll
     @GetMapping(params = {"page"})
     @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
@@ -48,6 +55,11 @@ public class OperatorEndpoint {
         return operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, permissions).getContent());
     }
 
+    /**
+     * Get count of admins and employees.
+     *
+     * @return Array where [0] is count of admins and [1] is count of employees
+     */
     @PermitAll
     @GetMapping()
     @Operation(summary = "Get count of operators", security = @SecurityRequirement(name = "apiKey"))
@@ -56,6 +68,12 @@ public class OperatorEndpoint {
         return operatorService.getCollectionSize();
     }
 
+    /**
+     * Save a new Operator.
+     *
+     * @param newOperator Operator that should be saved
+     * @return saved operator
+     */
     @PermitAll //TODO change to @Secured("ROLE_ADMIN")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
