@@ -49,7 +49,7 @@ public class ProductEndpoint {
     * @param taxRateId Id of a tax-rate entity that associates a product to a specific tax-rate
     *
     * @return the newly added product in a dto - format
-    * */
+    */
     @PermitAll
     @PostMapping({BASE_URL + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/categories/tax-rates/{taxRateId}"})
     @ResponseStatus(HttpStatus.CREATED)
@@ -71,8 +71,7 @@ public class ProductEndpoint {
      * gets all Products form the database.
      *
      * @return all products with all given fields in a dto - format
-     * */
-
+     */
     @PermitAll
     @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)
@@ -84,12 +83,12 @@ public class ProductEndpoint {
             .map(this.productMapper::entityToDto)
             .collect(Collectors.toList());
     }
+
     /**
      * Gets all simple products from the database, which omits some fields like picture and category.
      *
      * @return all simple products ( product without picture,category) in a dto - format
-     * */
-
+     */
     @PermitAll
     @GetMapping(BASE_URL + "/simple")
     @ResponseStatus(HttpStatus.OK)
@@ -101,5 +100,4 @@ public class ProductEndpoint {
             .map(this.productMapper::simpleProductEntityToDto)
             .collect(Collectors.toList());
     }
-
 }

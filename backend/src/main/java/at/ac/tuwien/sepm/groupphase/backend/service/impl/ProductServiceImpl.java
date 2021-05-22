@@ -35,16 +35,6 @@ public class ProductServiceImpl implements ProductService {
         this.taxRateRepository = taxRateRepository;
     }
 
-
-    /**
-     * Creates a new product.
-     *
-     * @param product the newly added product
-     * @param categoryId assigns a product to its category
-     * @param taxRateId assigns a specific tax-rate to a product
-     * @return the newly created product
-     *
-     */
     @Override
     public Product createProduct(Product product, Long categoryId, Long taxRateId) {
         LOGGER.trace("create new Product({})" + "  category({})"  + " taxRateId({})", product, categoryId, taxRateId);
@@ -59,14 +49,6 @@ public class ProductServiceImpl implements ProductService {
         return this.productRepository.save(product);
     }
 
-    /**
-     * assigns a product to a category.
-     *
-     * @param product the product that will set its category-relationship to valid category
-     * @param categoryId the id of a category to find the entity in the repository
-     *
-     * @throws NotFoundException if the id of the category is not found in the database
-     * */
     @Transactional
     public void assignProductToCategory(Product product, Long categoryId) {
         LOGGER.trace("assigning categoryId({}) to  product", categoryId);
@@ -75,15 +57,6 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category);
     }
 
-    /**
-     * assigns a product to a tax-rate.
-     *
-     * @param product the product that will set its tax-rate-relationship to valid tax-rate
-     * @param taxRateId the id of a tax-rate to find the entity in the repository
-     *
-     * @throws NotFoundException if the id of the tax-rate is not found in the database
-     * */
-
     private void assignProductToTaxRate(Product product, Long taxRateId) {
         LOGGER.trace("assigning taxRateId({}) to  product", taxRateId);
         TaxRate taxRate = taxRateRepository.findById(taxRateId)
@@ -91,23 +64,11 @@ public class ProductServiceImpl implements ProductService {
         product.setTaxRate(taxRate);
     }
 
-    /**
-     * Gets all products that were previously added in the database.
-     *
-     * @return all products that are currently saved in the database
-     */
-
     @Override
     public List<Product> getAllProducts() {
         LOGGER.trace("retrieving all products");
         return this.productRepository.findAll();
     }
-    /**
-     * validates a property of product -> NOTE: this was implemented because annotations do not support optional parameters that is necessary
-     * for some properties.
-     *
-     * @param description check if the trimmed string is not empty and the size does not exceed 70 characters
-     * */
 
     public void validateProperty(String description) {
         LOGGER.trace("validate property({}) for a product", description);
@@ -117,7 +78,5 @@ public class ProductServiceImpl implements ProductService {
         if (description.trim().length() > 70) {
             throw new IllegalArgumentException("description is too long");
         }
-
-
     }
 }

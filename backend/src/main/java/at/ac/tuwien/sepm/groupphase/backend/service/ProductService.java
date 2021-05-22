@@ -7,7 +7,6 @@ import java.util.List;
  * */
 
 public interface ProductService {
-
     /**
      * Creates a new product.
      *

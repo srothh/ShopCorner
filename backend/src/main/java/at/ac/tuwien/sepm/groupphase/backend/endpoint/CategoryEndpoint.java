@@ -47,7 +47,7 @@ public class CategoryEndpoint {
      * @param categoryDto the category as a dto which contains the given fields to store
      *
      * @return the newly added category in a dto - format
-     * */
+     */
     @PermitAll
     @PostMapping(BASE_URL)
     @ResponseStatus(HttpStatus.CREATED)
@@ -62,7 +62,7 @@ public class CategoryEndpoint {
      * Gets all categories that are currently saved in the database.
      *
      * @return all categories in dto format
-     * */
+     */
     @PermitAll
     @GetMapping(BASE_URL)
     @ResponseStatus(HttpStatus.OK)
