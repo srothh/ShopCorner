@@ -62,6 +62,7 @@ export class OperatorProductFormComponent implements OnInit {
       this.addProductEnabled = false;
       this.inEditMode = true;
     }
+    //build form
     this.productForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.whiteSpaceValidator]],
       description: [null, Validators.maxLength(70)],
@@ -146,7 +147,7 @@ export class OperatorProductFormComponent implements OnInit {
   enableEditing(): void {
     this.productForm.enable();
     this.addProductEnabled = true;
-    this.inEditMode = false;
+    //this.inEditMode = false;
   }
 
   resetState(): void {
