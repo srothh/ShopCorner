@@ -68,9 +68,14 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void assignProductToCategory(Product product, Long categoryId) {
         LOGGER.trace("assigning categoryId({}) to  product", categoryId);
-        Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new NotFoundException("Could not find category!"));
-        product.setCategory(category);
+        if (categoryId == null) {
+            product.setCategory(null);
+        } else {
+            Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Could not find category!"));
+            product.setCategory(category);
+
+        }
     }
 
     /**
@@ -120,11 +125,10 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Updates an already existing product in the database.
      *
-     * @param productId the Id of the product to be updated
-     * @param product the newly updated product entity with the updated fields
+     * @param productId  the Id of the product to be updated
+     * @param product    the newly updated product entity with the updated fields
      * @param categoryId an optional categoryId to associate the new product with a category
-     * @param taxRateId a possibly updated taxRateId to associate the new product
-     *
+     * @param taxRateId  a possibly updated taxRateId to associate the new product
      */
 
     public void updateProduct(Long productId, Product product, Long categoryId, Long taxRateId) {
@@ -137,15 +141,14 @@ public class ProductServiceImpl implements ProductService {
         updateProduct.setName(product.getName());
         updateProduct.setDescription(product.getDescription());
         updateProduct.setPrice(product.getPrice());
+        updateProduct.setPicture(product.getPicture());
 
-        if (categoryId != null) {
-            assignProductToCategory(updateProduct, categoryId);
-        }
+        assignProductToCategory(updateProduct, categoryId);
         assignProductToTaxRate(updateProduct, taxRateId);
         this.productRepository.save(updateProduct);
     }
 
-    public Product getProductById(Long productId){
+    public Product getProductById(Long productId) {
         return productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find product %s", productId)));
     }

@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input,  OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Product} from '../../../dtos/product';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -39,7 +39,9 @@ export class OperatorProductFormComponent implements OnInit {
   shouldFetch: boolean;
   errorOccurred: boolean;
   errorMessage: string;
-  inAddProduct: boolean;
+  addProductEnabled: boolean;
+  inEditMode: boolean;
+
   constructor(
     private router: Router,
     private productService: ProductService,
@@ -49,30 +51,38 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.newProduct === undefined && this.router.url.includes('add')){
+    if (this.newProduct === undefined && this.router.url.includes('add')) {
       this.newProduct = this.createNewProduct();
-      this.inAddProduct = true;
+      //keeping track of which type of form we are currently in
+      // in this case we are currently trying to save a brand new product entity
+      this.addProductEnabled = true;
+      this.inEditMode = false;
     } else {
-      this.inAddProduct = false;
+      //in this case we are trying to edit a existing product entity
+      this.addProductEnabled = false;
+      this.inEditMode = true;
     }
     this.productForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.whiteSpaceValidator]],
-      description: [null,Validators.maxLength(70)],
+      description: [null, Validators.maxLength(70)],
       price: ['', Validators.required],
-      taxRate: [ null , Validators.required],
-      category: [null ]
+      taxRate: [null, Validators.required],
+      category: [null]
     });
-    if (this.inAddProduct === false){
+    // if the form is a 'edit-product-form' then set all properties in the form and make them readonly
+    if (this.addProductEnabled === false) {
       this.setFormProperties();
       this.productForm.disable();
     }
   }
+
   createNewProduct(): Product {
-    return new Product(null,'',null,null,null,null, null);
+    return new Product(null, '', null, null, null, null, null);
   }
+
   setFormProperties(): void {
-    if (this.newProduct === undefined){
-      const productId = + this.activatedRouter.snapshot.paramMap.get('id');
+    if (this.newProduct === undefined) {
+      const productId = +this.activatedRouter.snapshot.paramMap.get('id');
       this.fetchSelectedProduct(productId);
     } else {
       this.productForm.controls['name'].setValue(this.newProduct.name);
@@ -80,11 +90,14 @@ export class OperatorProductFormComponent implements OnInit {
       this.productForm.controls['price'].setValue(this.newProduct?.price);
       this.productForm.controls['taxRate'].setValue(this.newProduct.taxRate.id, {onlySelf: true});
       this.productForm.controls['category'].setValue(this.newProduct.category?.id, {onlySelf: true});
-      this.fileSource = 'data:image/png;base64,' + this.newProduct.picture;
+      if (this.newProduct.picture != null) {
+        this.fileSource = 'data:image/png;base64,' + this.newProduct.picture;
+      }
     }
   }
+
   addProduct(): void {
-    if (this.productForm.invalid){
+    if (this.productForm.invalid) {
       return;
     }
     this.newProduct.name = this.productForm.get('name').value.trim();
@@ -94,34 +107,60 @@ export class OperatorProductFormComponent implements OnInit {
       this.newProduct.description = this.productForm.get('description').value;
       this.newProduct.description = this.newProduct.description.trim();
     }
-
     this.newCategoryId = this.productForm.get('category').value;
-
-    this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
-      this.newProduct.id = data.id;
-      this.errorOccurred = false;
-    }, error => {
-      this.errorOccurred = true;
-      //NOTE: not all error types supported yet because of the way how the interceptor is handling errors
-      this.errorMessage = error;
-    });
+    if (this.router.url.includes('add')) {
+      const baseURL = this.router.url.substring(0, this.router.url.lastIndexOf('/'));
+      this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
+        this.newProduct.id = data.id;
+        this.errorOccurred = false;
+        this.router.navigate([baseURL + '/' + this.newProduct.id]).then();
+      }, error => {
+        this.errorOccurred = true;
+        //NOTE: not all error types supported yet because of the way how the interceptor is handling errors
+        this.errorMessage = error;
+      });
+    } else {
+      this.updateProduct();
+    }
   }
-  fetchSelectedProduct(id: number){
+
+  updateProduct() {
+    this.productService.updateProduct(this.newProduct.id,this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(response => {
+      this.inEditMode = true;
+      this.addProductEnabled = false;
+      this.productForm.disable();
+      }, error => {
+        this.errorOccurred = true;
+        this.errorMessage = error;
+      }
+    );
+  }
+
+  fetchSelectedProduct(id: number) {
     this.productService.getProductById(id).subscribe(productData => {
       this.newProduct = productData;
       this.setFormProperties();
     });
   }
+
+  enableEditing(): void {
+    this.productForm.enable();
+    this.addProductEnabled = true;
+    this.inEditMode = false;
+  }
+
   resetState(): void {
     this.errorOccurred = undefined;
     this.errorMessage = undefined;
   }
-  resetForm(){
+
+  resetForm() {
     this.productForm.reset();
     this.errorOccurred = undefined;
     this.fileToUpload = undefined;
     this.fileSource = undefined;
   }
+
   onSelectFile(event) {
     this.fileToUpload = event.target.files.item(0);
     const reader = new FileReader();
@@ -134,29 +173,34 @@ export class OperatorProductFormComponent implements OnInit {
       }
     });
   }
+
   clearImage(): void {
     this.fileToUpload = undefined;
     this.fileSource = undefined;
     this.fileInput.nativeElement.value = '';
     this.newProduct.picture = null;
   }
-  changeCategory(event){
+
+  changeCategory(event) {
     this.productForm.get('category').setValue(event.target.value, {
       onlySelf: true
     });
   }
-  changeTaxRate(event){
+
+  changeTaxRate(event) {
     this.productForm.get('taxRate').setValue(event.target.value, {
       onlySelf: true
     });
   }
+
   get productFormControl() {
     return this.productForm.controls;
   }
+
   whiteSpaceValidator(control: AbstractControl) {
     const isWhitespace = (control.value || '').trim().length < 3;
     const isValid = !isWhitespace;
-    return isValid ? null : { whitespace: true };
+    return isValid ? null : {whitespace: true};
   }
 
 }

@@ -36,6 +36,21 @@ export class ProductService {
       return this.httpClient.post<Product>(this.messageBaseUri + '/categories/' + categoryId + '/tax-rates/' + taxRateId, product);
     }
   }
+  /**
+   * updates an existing product in the backend and assigns relationship to a category with the given categoryId
+   * and the tax-rate with the given taxRateId
+   */
+  updateProduct(productId: number,product: Product, categoryId: number, taxRateId: number): Observable<void> {
+    if (isNaN(categoryId)||categoryId == null) {
+      console.log('categoryId', categoryId);
+      return this.httpClient.put<void>(this.messageBaseUri +'/' + productId + '/categories/tax-rates/' + taxRateId, product);
+    }else {
+      console.log('categoryId', categoryId);
+      return this.httpClient.put<void>(this.messageBaseUri + '/'+ productId+ '/categories/' + categoryId + '/tax-rates/' +
+        taxRateId, product);
+    }
+  }
+
 
 
 

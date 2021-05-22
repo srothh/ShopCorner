@@ -12,7 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -98,11 +104,11 @@ public class ProductEndpoint {
     }
 
     /**
-     * updates an already existing product from the database
+     * updates an already existing product from the database.
      */
 
     @PermitAll
-    @PutMapping({BASE_URL + "/{productId}/" + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/categories/tax-rates/{taxRateId}"})
+    @PutMapping({BASE_URL + "/{productId}/" + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/{productId}/" + "/categories/tax-rates/{taxRateId}"})
     @ResponseStatus(HttpStatus.OK)
     public void updateProduct(@PathVariable Long productId,
                               @RequestBody @Valid ProductDto productDto,
@@ -113,16 +119,16 @@ public class ProductEndpoint {
         if (categoryId.isPresent()) {
             validCategoryId = categoryId.get();
         }
-       this.productService.updateProduct(productId, this.productMapper.dtoToEntity(productDto), validCategoryId, taxRateId);
+        this.productService.updateProduct(productId, this.productMapper.dtoToEntity(productDto), validCategoryId, taxRateId);
 
     }
+
     /**
      * gets a specific product with the given id.
      *
      * @param productId the id to search in the database and retrieve the associated product entity
-     *
      * @return the product entity with the associated Id
-     * */
+     */
     @PermitAll
     @GetMapping(BASE_URL + "/{productId}")
     @ResponseStatus(HttpStatus.OK)
