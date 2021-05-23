@@ -106,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * validates a property of product -> NOTE: this was implemented because annotations do not support optional parameters that is necessary
+     * validates a property of product -> NOTE: this was implemented because annotations do not support the validation of optional parameters that is necessary
      * for some properties.
      *
      * @param description check if the trimmed string is not empty and the size does not exceed 70 characters

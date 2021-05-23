@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -108,7 +109,7 @@ public class ProductEndpoint {
      */
 
     @PermitAll
-    @PutMapping({BASE_URL + "/{productId}/" + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/{productId}/" + "/categories/tax-rates/{taxRateId}"})
+    @PutMapping(value = {BASE_URL + "/{productId}/" + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/{productId}/" + "/categories/tax-rates/{taxRateId}"})
     @ResponseStatus(HttpStatus.OK)
     public void updateProduct(@PathVariable Long productId,
                               @RequestBody @Valid ProductDto productDto,

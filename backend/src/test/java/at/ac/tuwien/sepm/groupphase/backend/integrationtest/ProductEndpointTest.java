@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
@@ -10,6 +11,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
@@ -27,8 +29,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(SpringExtension.class)
@@ -168,5 +172,85 @@ public class ProductEndpointTest implements TestData {
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
     }
+    @Test
+    public void givenACategoryAndATaxRate_whenPut_thenVerifyProductChanged() throws Exception {
+        categoryRepository.save(category);
+        taxRateRepository.save(taxRate);
+        product.setCategory(category);
+        product.setTaxRate(taxRate);
+        Product newProduct = productRepository.save(product);
+        newProduct.setName("ChangedName");
+        ProductDto productDto = productMapper.entityToDto(newProduct);
+        String body = objectMapper.writeValueAsString(productDto);
+
+        ResultActions mvcResult = this.mockMvc.perform(
+            put(PRODUCTS_BASE_URI +"/"+newProduct.getId()
+                + "/categories/"
+                + category.getId()
+                + "/tax-rates/"
+                + taxRate.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andExpect(status().isOk());
+
+        MockHttpServletResponse response = mvcResult.andReturn().getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        Product updatedProduct = this.productRepository.findById(productDto.getId()).orElseThrow(()-> new NotFoundException("Error"));
+
+        assertAll(
+            () -> assertEquals(newProduct.getName(), updatedProduct.getName()),
+            () -> assertEquals(newProduct.getDescription(), updatedProduct.getDescription()),
+            () -> assertEquals(newProduct.getPrice(), updatedProduct.getPrice()),
+            () -> assertEquals(newProduct.getTaxRate(), updatedProduct.getTaxRate()),
+            () -> assertEquals(newProduct.getCategory(), updatedProduct.getCategory())
+        );
+    }
+    @Test
+    public void givenATaxRate_whenPutByNonExistingId_then404() throws Exception {
+        taxRateRepository.save(taxRate);
+        ProductDto productDto = productMapper.entityToDto(product);
+        String body = objectMapper.writeValueAsString(productDto);
+
+        ResultActions mvcResult = this.mockMvc.perform(
+            put(PRODUCTS_BASE_URI +"/100"
+                + "/categories/"
+                + category.getId()
+                + "/tax-rates/"
+                + taxRate.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andExpect(status().isNotFound());
+
+    }
+    @Test
+    public void givenACategoryAndATaxRate_whenPutIllegalArgument_then400() throws Exception {
+        categoryRepository.save(category);
+        taxRateRepository.save(taxRate);
+        product.setCategory(category);
+        product.setTaxRate(taxRate);
+        Product newProduct = productRepository.save(product);
+        newProduct.setName("           ");
+        ProductDto productDto = productMapper.entityToDto(newProduct);
+        String body = objectMapper.writeValueAsString(productDto);
+
+        ResultActions mvcResult = this.mockMvc.perform(
+            put(PRODUCTS_BASE_URI +"/"+newProduct.getId()
+                + "/categories/"
+                + category.getId()
+                + "/tax-rates/"
+                + taxRate.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andExpect(status().isBadRequest());
+
+        MockHttpServletResponse response = mvcResult.andReturn().getResponse();
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+    }
+
+
+
+
 
 }
