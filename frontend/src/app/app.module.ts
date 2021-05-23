@@ -24,6 +24,7 @@ import { OperatorAccountComponent } from './components/operator/operator-account
 import { ShopComponent } from './components/shop/shop.component';
 import { ShopProductComponent } from './components/shop/shop-product/shop-product.component';
 import { ShopCartComponent } from './components/shop/shop-cart/shop-cart.component';
+import { OperatorRegistrationComponent } from './components/operator/operator-registration/operator-registration.component';
 import { OperatorAddProductComponent } from './components/operator/operator-add-product/operator-add-product.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
@@ -51,6 +52,7 @@ import { OperatorProductFormComponent } from './components/operator/operator-pro
     ShopComponent,
     ShopProductComponent,
     ShopCartComponent,
+    OperatorRegistrationComponent,
     OperatorAddProductComponent,
     ShopRegistrationComponent,
     OperatorProductDetailsComponent,

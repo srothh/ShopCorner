@@ -23,11 +23,6 @@ public class TaxRateServiceImpl implements TaxRateService {
     public TaxRateServiceImpl(TaxRateRepository taxRateRepository) {
         this.taxRateRepository = taxRateRepository;
     }
-    /**
-     * Gets all tax-rates that are currently saved in the database.
-     *
-     * @return gets all tax-rates that are currently saved in the database
-     * */
 
     @Override
     public List<TaxRate> getAllTaxRates() {
