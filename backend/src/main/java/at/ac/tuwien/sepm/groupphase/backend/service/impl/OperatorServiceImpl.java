@@ -63,7 +63,8 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public int[] getCollectionSize() {
         LOGGER.trace("getCollectionsize()");
-        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)), (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
+        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)),
+            (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
     }
 
     @Override
@@ -75,4 +76,9 @@ public class OperatorServiceImpl implements OperatorService {
         return operatorRepository.save(operator);
     }
 
+    @Override
+    public void delete(Long id) {
+        LOGGER.trace("delete({})", id);
+        operatorRepository.deleteById(id);
+    }
 }
