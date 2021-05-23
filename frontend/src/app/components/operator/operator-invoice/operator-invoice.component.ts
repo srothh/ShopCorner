@@ -3,17 +3,14 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import {Product} from '../../../dtos/product';
 import {Invoice} from '../../../dtos/invoice';
-import {FormBuilder, FormGroup, FormArray, Validators, FormControl} from '@angular/forms';
+import {FormBuilder, FormGroup, FormArray, Validators} from '@angular/forms';
 import {InvoiceService} from '../../../services/invoice.service';
 
 import {formatDate} from '@angular/common';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {InvoiceItem} from '../../../dtos/invoiceItem';
-import {Category} from '../../../dtos/category';
-import {TaxRate} from '../../../dtos/tax-rate';
 import {ProductService} from '../../../services/product.service';
-import {Router, UrlSerializer} from '@angular/router';
-import {CategoryService} from '../../../services/category.service';
+import {UrlSerializer} from '@angular/router';
 import {TaxRateService} from '../../../services/tax-rate.service';
 import {forkJoin} from 'rxjs';
 
@@ -56,8 +53,6 @@ export class OperatorInvoiceComponent implements OnInit {
     });
     this.fetchData();
     this.addProductOnClick();
-
-
   }
 
   get f() {
@@ -84,13 +79,25 @@ export class OperatorInvoiceComponent implements OnInit {
       return;
     }
     this.creatInvoiceDto();
-     // this.generatePdf();
     this.addInvoice();
   }
 
   addInvoice() {
     this.invoiceService.createInvoice(this.invoiceDto);
   }
+
+  getInvoice() {
+    let invoiceTest: string;
+    console.log(this.invoiceService.getInvoiceAsPdf(-1).subscribe(
+      (sport: string) => {
+        invoiceTest = sport;
+      },
+      error => {
+        this.defaultServiceErrorHandling(error);
+      }
+    ));
+  }
+
 
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
@@ -191,7 +198,9 @@ export class OperatorInvoiceComponent implements OnInit {
     for (const item of this.t.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
+        if (product.taxRate.percentage !== undefined) {
+          amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
+        }
       }
     }
     return amount.toFixed(2);
@@ -202,7 +211,9 @@ export class OperatorInvoiceComponent implements OnInit {
     for (const item of this.t.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
+        if (product.taxRate.percentage !== undefined) {
+          amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
+        }
       }
     }
     return amount.toFixed(2);

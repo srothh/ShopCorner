@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <style type="text/css">
+        body {
+            font-family: Arial;
+            padding: 0px;
+            padding-left: 5rem;
+            padding-right: 5rem;
+            margin: 0px auto;
+        }
+
+        .center {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .right {
+            text-align: right;
+            justify-content: right;
+
+        }
+
+        .left {
+            text-align: left;
+            justify-content: left;
+        }
+
+        .underline {
+            text-decoration: underline black;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .product {
+            width: 40%;
+
+        }
+
+        .price, .quantity {
+            width: 15%;
+
+        }
+
+        .tax {
+            width: 10%;
+
+        }
+
+        .amount {
+            width: 20%;
+        }
+
+
+    </style>
+</head>
+<body>
+<table width="100%" border="0">
+    <tr>
+        <td class="center" colspan="3">
+            <img src="https://i.imgur.com/zMBx1FY.png" alt="Logo">
+        </td>
+    </tr>
+    <tr>
+        <td class="center" colspan="3">
+            <h2>Rechnung</h2>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="right" style="width: 100%"></td>
+        <td class="right" style="width: 100%"></td>
+        <td class="right">
+            <table class="right" border="0">
+                <tr>
+                    <td class="right">
+                        <a>Date</a>
+                    </td>
+                    <td class="left invoice-date">
+                        <a>{{invoiceDate}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right">
+                        <a>Rechnungsnummer</a>
+                    </td>
+                    <td class="left invoice-number">
+                        <a>{{invoiceNumber}}</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr style="width: 100%;">
+        <td class="center article" style="width: 100%;" colspan="3">
+            <table class="center" style="width: 100%;">
+                <tr>
+                    <td class="center underline">
+                        <h4>Bestellte Artikel</h4>
+                    </td>
+                </tr>
+                <tr class="border">
+                    <td class="center product">
+                        <a>Produkt</a>
+                    </td>
+                    <td class="center price">
+                        <a>Preis</a>
+                    </td>
+                    <td class="center quantity">
+                        <a>Anzahl</a>
+                    </td>
+                    <td class="center tax">
+                        <a>Steuer</a>
+                    </td>
+                    <td class="center amount">
+                        <a>Betrag</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

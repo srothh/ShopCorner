@@ -25,7 +25,16 @@ export class InvoiceService {
    * Loads invoice by id from the backend
    */
   getInvoiceById(id: number): Observable<Invoice> {
+    console.log('Load invoice by ' + id);
     return this.httpClient.get<Invoice>(this.invoiceBaseUri + '/' + id);
+  }
+
+  /**
+   * Loads invoice by id from the backend
+   */
+  getInvoiceAsPdf(id: number): Observable<string> {
+    console.log('Load invoice by ' + id);
+    return this.httpClient.get<string>(this.invoiceBaseUri + '/getinvoicepdf/' + -1);
   }
 
   createInvoice(invoice: Invoice): Observable<Invoice> {
