@@ -13,7 +13,7 @@
   </div>
   <div class="float-right" style="margin-top: 10px;">
     <div *ngIf="selected.length > 0; else disabled_button">
-      <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteOperator()">Auswahl löschen</button>
+      <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteCommit">Auswahl löschen</button>
     </div>
     <ng-template #disabled_button>
       <button type="button" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
@@ -70,4 +70,25 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
+
+  <div class="modal fade" id="deleteCommit" tabindex="-1" role="dialog" aria-labelledby="deleteCommitLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Löschen</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Wollen sie die Accounts von {{selected.length}} Angestellten löschen?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Abbrechen</button>
+          <button type="button" class="btn btn-outline-danger" (click)="deleteOperator()" data-dismiss="modal">Löschen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
