@@ -33,7 +33,7 @@ export class OperatorInvoiceComponent implements OnInit {
   mapItem = {};
   map = [];
   products: Product[];
-
+  selectedProducts: Product[];
   subtotal = 0;
   total = 0;
   tax = 0;
@@ -57,6 +57,7 @@ export class OperatorInvoiceComponent implements OnInit {
     });
     this.fetchData();
     this.addProductOnClick();
+    this.selectedProducts = [];
   }
 
   get f() {
@@ -133,7 +134,7 @@ export class OperatorInvoiceComponent implements OnInit {
     this.newInvoiceForm.value.tax = this.calcTotalTax();
   }
 
-  isNotaNumber(e){
+  isNotaNumber(e) {
     return isNaN(e);
   }
 
@@ -142,6 +143,16 @@ export class OperatorInvoiceComponent implements OnInit {
     this.newInvoiceForm.reset();
     this.t.clear();
     this.addProductOnClick();
+  }
+
+  updateProducts() {
+    this.selectedProducts = [];
+    for (const item of this.t.controls) {
+      /*const index = this.products.indexOf(item.value.name);
+      this.selectedProducts.push(this.products[index]);
+      this.products = this.products.filter(items => this.selectedProducts.indexOf(items) < 0);*/
+      console.log(this.selectedProducts.indexOf(item.value.name));
+    }
   }
 
   deleteProductFromInvoice(id: number) {
@@ -167,6 +178,8 @@ export class OperatorInvoiceComponent implements OnInit {
       link.href = downloadURL;
       link.download = 'invoice_' + this.invoiceDto.date + '.pdf';
       link.click();
+    }, (error) => {
+      this.defaultServiceErrorHandling(error);
     });
   }
 
@@ -175,6 +188,8 @@ export class OperatorInvoiceComponent implements OnInit {
       const newBlob  = new Blob([data], {type: 'application/pdf'});
       const blobURL = URL.createObjectURL(newBlob);
       window.open(blobURL);
+    }, (error) => {
+      this.defaultServiceErrorHandling(error);
     });
   }
 
@@ -187,6 +202,8 @@ export class OperatorInvoiceComponent implements OnInit {
       link.href = downloadURL;
       link.download = 'invoice_' + this.invoiceDto.date + '_' + id + '.pdf';
       link.click();
+    }, (error) => {
+      this.defaultServiceErrorHandling(error);
     });
   }
 
@@ -195,6 +212,8 @@ export class OperatorInvoiceComponent implements OnInit {
       const newBlob  = new Blob([data], {type: 'application/pdf'});
       const blobURL = URL.createObjectURL(newBlob);
       window.open(blobURL);
+    }, (error) => {
+      this.defaultServiceErrorHandling(error);
     });
   }
 
@@ -222,7 +241,7 @@ export class OperatorInvoiceComponent implements OnInit {
     if (error.status === 0) {
       // If status is 0, the backend is probably down
       this.errorMessage = 'The backend seems not to be reachable';
-    } else if (error.error.message === 'No message available') {
+    } else if (error.error !== undefined && error.error.message === 'No message available') {
       // If no detailed error message is provided, fall back to the simple error name
       this.errorMessage = error.error.error;
     } else {

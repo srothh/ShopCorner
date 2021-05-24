@@ -4,6 +4,11 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
+
+
+
+
+
 <div class="table-view">
   <div class="container my-4">
     <p class="font-weight-bold">Rechnung erstellen</p>
@@ -40,12 +45,11 @@
                     <div class="col-4 center-block text-center">
                       <select class="form-select form-control productName" formControlName="name" id="productName"
                               [ngClass]="{ 'is-invalid': submitted && item.controls.name.errors}"
-                              (change)="calculateAmount()">
+                              (change)="calculateAmount(); updateProducts()">
                         <option value="" selected disabled>(none)</option>
                         <option *ngFor="let product of products; let i = index;"
                                 [ngValue]="product">{{product.name}}</option>
                       </select>
-
                       <div *ngIf="submitted && item.controls.name.errors" class="invalid-feedback">
                         <div *ngIf="item.controls.name.errors.required">Wählen sie ein Produkt</div>
                       </div>
@@ -113,13 +117,13 @@
                     <button class="btn btn-warning btn-block" type="reset" (click)="onReset()"> Reset Artikel</button>
                   </div>
                   <div class="col-3">
-                    <button class="btn btn-block btn-primary" type="submit" (click)="download=true"> PDF download</button>
+                    <button class="btn btn-block btn-dark" type="submit" (click)="download=true"> PDF download</button>
                   </div>
                   <div class="col-3">
-                    <button class="btn btn-block  btn-primary" type="submit" (click)="print=true"> PDF drucken</button>
+                    <button class="btn btn-block  btn-dark" type="submit" (click)="print=true"> PDF drucken</button>
                   </div>
                   <div class="col-4">
-                    <button class="btn btn-block btn-primary" type="submit" (click)="show=true"> PDF öffnen</button>
+                    <button class="btn btn-block btn-dark" type="submit" (click)="show=true"> PDF öffnen</button>
                   </div>
                 </div>
               </div>

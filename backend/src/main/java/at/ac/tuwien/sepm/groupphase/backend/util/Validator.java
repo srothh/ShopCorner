@@ -55,7 +55,7 @@ public class Validator {
 
 
     /**
-     * Is not neccessery because of the hashSet
+     *  Is not neccessery because of the hashSet.
      */
     public void validateNewInvoiceItem(Set<InvoiceItem> items) {
         LOGGER.trace("validateNewInvoiceItem({})", items);

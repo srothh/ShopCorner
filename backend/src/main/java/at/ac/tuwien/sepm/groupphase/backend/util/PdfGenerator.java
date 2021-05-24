@@ -39,8 +39,16 @@ public class PdfGenerator {
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
             document.body().select(".invoice-date").html(invoice.getDate().format(dateFormatter));
             document.body().select(".invoice-number").html(invoice.getId() + "");
-            Element tableArticle = document.body().select(".article").first();
-            String tableAsString = "<tr ><th class=\"center product\"><span>Produkt</span></th><th class=\"center price\"><span>Preis</span></th><th class=\"center quantity\"><span>Anzahl</span></th><th class=\"center tax\"><span>Steuer</span></th><th class=\"center amount\"><span>Betrag</span></th></tr>";
+
+            final Element tableArticle = document.body().select(".article").first();
+
+            String tableAsString = "<tr >";
+            tableAsString = tableAsString + "<th class=\"center product\"><span>Produkt</span></th>";
+            tableAsString = tableAsString + "<th class=\"center price\"><span>Preis</span></th>";
+            tableAsString = tableAsString + "<th class=\"center quantity\"><span>Anzahl</span></th>";
+            tableAsString = tableAsString + "<th class=\"center tax\"><span>Steuer</span></th>";
+            tableAsString = tableAsString + "<th class=\"center amount\"><span>Betrag</span></th>";
+            tableAsString = tableAsString + "</tr>";
             double total = 0;
             double subtotal = 0;
             double tax = 0;
@@ -69,9 +77,17 @@ public class PdfGenerator {
             tableAsString = "";
 
             final Element tableAmount = document.body().select(".total").first();
-            tableAsString = tableAsString + String.format("<tr ><td class=\"right span\" colspan=\"3\"></td>\n<td class=\"right total-text none-border\"><span>Zwischensumme</span></td><td class=\"center none-border\"><span>%1.2f €</span></td></tr>", subtotal);
-            tableAsString = tableAsString + String.format("<tr ><td class=\"right span\" colspan=\"3\"><td class=\"right total-text none-border\"><span>Steuer</span></td><td class=\"center none-border\"><span>%1.2f €</span></td></tr>", tax);
-            tableAsString = tableAsString + String.format("<tr ><td class=\"right span\" colspan=\"3\"><td class=\"right total-text\"><span>Summe</span></td><td class=\"center\"><span>%1.2f €</span></td></tr>", total);
+            tableAsString = tableAsString + "<tr ><td class=\"right span\" colspan=\"3\"></td>";
+            tableAsString = tableAsString + "<td class=\"right total-text none-border\"><span>Zwischensumme</span></td>";
+            tableAsString = tableAsString + String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", subtotal);
+
+            tableAsString = tableAsString + "<tr ><td class=\"right span\" colspan=\"3\"></td>";
+            tableAsString = tableAsString + "<td class=\"right total-text none-border\"><span>Steuer</span></td>";
+            tableAsString = tableAsString + String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", tax);
+
+            tableAsString = tableAsString + "<tr ><td class=\"right span\" colspan=\"3\"></td>";
+            tableAsString = tableAsString + "<td class=\"right total-text\"><span>Summe</span></td>";
+            tableAsString = tableAsString + String.format("<td class=\"center\"><span>%1.2f €</span></td></tr>", total);
             tableAsString = tableAsString + "</table>";
             tableAmount.html(tableAsString);
 

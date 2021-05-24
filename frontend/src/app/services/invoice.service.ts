@@ -23,6 +23,9 @@ export class InvoiceService {
 
   /**
    * Loads invoice by id from the backend
+   *
+   * @param id of the invoice
+   * @return invoice
    */
   getInvoiceById(id: number): Observable<Invoice> {
     console.log('Load invoice by ' + id);
@@ -30,7 +33,10 @@ export class InvoiceService {
   }
 
   /**
-   * Loads invoice by id from the backend
+   * Loads invoice pdf by id from the backend
+   *
+   * @param id of the invoice
+   * @return pdf generated from the invoice entry
    */
   getInvoiceAsPdfById(id: number): Observable<any> {
     const httpOptions = {
@@ -44,6 +50,13 @@ export class InvoiceService {
     return this.httpClient.post<Invoice>(this.invoiceBaseUri, invoice);
   }
 
+
+  /**
+   * Creates a new invoice entry and a pdf in the backend.
+   *
+   * @param invoice to be created
+   * @return pdf generated from the given invoice and invoice entry
+   */
   createInvoiceAsPdf(invoice: Invoice): Observable<any> {
     const httpOptions = {
       responseType: 'blob' as 'json',
