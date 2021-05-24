@@ -64,8 +64,6 @@ public class Validator {
         } else {
             List<Product> productList = new ArrayList<>();
             for (InvoiceItem item : items) {
-                System.out.println(item.toString());
-                System.out.println(productList.contains(item.getProduct()));
 
                 if (item.getInvoice() == null) {
                     throw new ValidationException("Creating item entries without invoice");

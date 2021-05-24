@@ -1,10 +1,16 @@
 package at.ac.tuwien.sepm.groupphase.backend.basetest;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public interface TestData {
 
@@ -77,5 +83,17 @@ public interface TestData {
             add("ROLE_USER");
         }
     };
+
+    //TEST PROPERTIES FOR INVOICE_ITEM
+    InvoiceItemKey TEST_INVOICE_ITEM_ID = new InvoiceItemKey(0L, 0L);
+    Product TEST_INVOICE_ITEM_PRODUCT = new Product();
+    Invoice TEST_INVOICE_ITEM_INVOICE = new Invoice();
+
+    //TEST PROPERTIES FOR INVOICE
+    Long TEST_INVOICE_ID = 0L;
+    LocalDateTime TEST_INVOICE_DATE = LocalDateTime.now();
+    double TEST_INVOICE_AMOUNT = 0L;
+
+
 
 }

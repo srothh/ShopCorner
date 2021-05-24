@@ -9,10 +9,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.validation.constraints.NotNull;
 
 
 @Entity
 public class InvoiceItem {
+
+    @NotNull
     @EmbeddedId
     private InvoiceItemKey id;
 

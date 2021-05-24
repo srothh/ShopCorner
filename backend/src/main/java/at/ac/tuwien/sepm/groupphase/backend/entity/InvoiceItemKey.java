@@ -3,19 +3,27 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
 public class InvoiceItemKey implements Serializable {
 
+    @NotNull
     @Column(name = "invoice_id", nullable = true)
     Long invoiceId;
 
+    @NotNull
     @Column(name = "product_id", nullable = false)
     Long productId;
 
     public InvoiceItemKey() {
+    }
+
+    public InvoiceItemKey(Long invoiceId, Long productId) {
+        this.invoiceId = invoiceId;
+        this.productId = productId;
     }
 
     public Long getInvoiceId() {

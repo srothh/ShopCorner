@@ -38,11 +38,19 @@ public class Invoice {
         items = new HashSet<>();
     }
 
+
     public Invoice(Long id, LocalDateTime date, double amount) {
         this.id = id;
         this.date = date;
         this.amount = amount;
         items = new HashSet<>();
+    }
+
+
+    public Invoice(LocalDateTime date, double amount, Set<InvoiceItem> items) {
+        this.date = date;
+        this.amount = amount;
+        this.items = items;
     }
 
     public Long getId() {
