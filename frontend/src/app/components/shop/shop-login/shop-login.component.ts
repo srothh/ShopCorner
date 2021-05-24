@@ -11,19 +11,10 @@ import {AuthRequest} from '../../../dtos/auth-request';
   styleUrls: ['./shop-login.component.scss']
 })
 export class ShopLoginComponent implements OnInit {
-  loginForm: FormGroup;
-
   // Redirect path after successful login
   redirectPath = '/home';
 
-  // After first submission attempt, form validation will start
-  submitted = false;
-
-  constructor(private formBuilder: FormBuilder, public authService: CustomerAuthService, private router: Router) {
-    this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
-    });
+  constructor(public authService: CustomerAuthService) {
   }
 
   ngOnInit() {

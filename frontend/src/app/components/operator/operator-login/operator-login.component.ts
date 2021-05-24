@@ -1,7 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {AuthRequest} from '../../../dtos/auth-request';
+import {Component, OnInit} from '@angular/core';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 
 @Component({
@@ -10,19 +7,10 @@ import {OperatorAuthService} from '../../../services/auth/operator-auth.service'
   styleUrls: ['./operator-login.component.scss']
 })
 export class OperatorLoginComponent implements OnInit {
-  loginForm: FormGroup;
-
   // Redirect path after successful login
   redirectPath = '/operator/home';
 
-  // After first submission attempt, form validation will start
-  submitted = false;
-
-  constructor(private formBuilder: FormBuilder, public authService: OperatorAuthService, private router: Router) {
-    this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
-    });
+  constructor(public authService: OperatorAuthService) {
   }
 
   ngOnInit() {
