@@ -21,12 +21,15 @@
   </div>
   <hr>
   <div>
-    <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < currentCollectionSize; else other_content">
+    <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < currentCollectionSize; else last_page">
       Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
       von {{currentCollectionSize}}</p>
-    <ng-template #other_content>
-      <p style="font-size: 10px; color: gray">Zeigt {{1 + (pageSize * (page))}}-{{currentCollectionSize}}
+    <ng-template #last_page>
+      <p style="font-size: 10px; color: gray" *ngIf="currentCollectionSize > 0; else empty">Zeigt {{1 + (pageSize * (page))}}-{{currentCollectionSize}}
         von {{currentCollectionSize}}</p>
+    </ng-template>
+    <ng-template #empty>
+      <p style="font-size: 10px; color: gray">Keine Angestellten gespeichtert</p>
     </ng-template>
   </div>
 
