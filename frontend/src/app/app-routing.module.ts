@@ -20,9 +20,10 @@ import {OperatorAddProductComponent} from './components/operator/operator-add-pr
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {CustomerAuthGuard} from './guards/customer-auth.guard';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
-import {PreventCustomerLoginGuard} from './guards/prevent-customer-login-guard.service';
+import {PreventCustomerLoginGuard} from './guards/prevent-customer-login.guard';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorAuthGuard} from './guards/operator-auth.guard';
+import {PreventOperatorLoginGuard} from './guards/prevent-operator-login.guard';
 
 const routes: Routes = [
   {
@@ -52,7 +53,7 @@ const routes: Routes = [
       {path: 'registration', component: OperatorRegistrationComponent},
     ],
   },
-  {path: 'operator/login', component: OperatorLoginComponent}
+  {path: 'operator/login', canActivate: [PreventOperatorLoginGuard], component: OperatorLoginComponent}
 ];
 
 @NgModule({
