@@ -54,8 +54,11 @@ export class OperatorAuthService implements IAuthService {
     if (this.getToken() != null) {
       const decoded: any = jwt_decode(this.getToken());
       const authInfo: string[] = decoded.rol;
-      if (authInfo.includes('ROLE_CUSTOMER')) {
-        return 'CUSTOMER';
+      if (authInfo.includes('ROLE_ADMIN')) {
+        return 'ADMIN';
+      }
+      if (authInfo.includes('ROLE_EMPLOYEE')) {
+        return 'EMPLOYEE';
       }
     }
     return 'UNDEFINED';
