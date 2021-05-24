@@ -99,7 +99,8 @@ export class OperatorAccountComponent implements OnInit {
       this.operatorService.deleteOperator(operator.id).subscribe(
         () => {
           if (this.selected.indexOf(operator) === this.selected.length-1) {
-            if ((this.page+1)*this.pageSize >= this.currentCollectionSize && this.operators.length === this.selected.length){
+            if ((this.page+1)*this.pageSize >= this.currentCollectionSize && this.operators.length === this.selected.length
+              && this.page > 0){
               this.previousPage();
             } else {
               this.loadOperatorsPage();
