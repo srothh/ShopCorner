@@ -1,3 +1,7 @@
 <div class="container">
-  <app-login [authService]="this.authService" [showRegistrationButton]=false></app-login>
+  <app-login
+    [authService]="this.authService"
+    [showRegistrationButton]=false
+    [redirectPath]="redirectPath"
+  ></app-login>
 </div>

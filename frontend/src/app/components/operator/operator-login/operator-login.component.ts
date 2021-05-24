@@ -10,10 +10,14 @@ import {OperatorAuthService} from '../../../services/auth/operator-auth.service'
   styleUrls: ['./operator-login.component.scss']
 })
 export class OperatorLoginComponent implements OnInit {
-
   loginForm: FormGroup;
+
+  // Redirect path after successful login
+  redirectPath = '/operator/home';
+
   // After first submission attempt, form validation will start
   submitted = false;
+
   // Error flag
   error = false;
   errorMessage = '';

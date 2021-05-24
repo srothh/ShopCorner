@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {Route, Router} from '@angular/router';
 import {AuthRequest} from '../../../dtos/auth-request';
 import {IAuthService} from '../../../services/auth/interface-auth.service';
 
@@ -13,6 +13,7 @@ export class BaseLoginComponent implements OnInit {
 
   @Input() public authService: IAuthService;
   @Input() public showRegistrationButton = true;
+  @Input() public redirectPath = '';
 
   loginForm: FormGroup;
   // After first submission attempt, form validation will start
@@ -51,7 +52,7 @@ export class BaseLoginComponent implements OnInit {
     this.authService.loginUser(authRequest).subscribe(
       () => {
         console.log('Successfully logged in user: ' + authRequest.loginName);
-        this.router.navigate(['/home']);
+        this.router.navigate([this.redirectPath]);
       },
       error => {
         console.log('Could not log in due to:');

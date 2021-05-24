@@ -11,10 +11,14 @@ import {AuthRequest} from '../../../dtos/auth-request';
   styleUrls: ['./shop-login.component.scss']
 })
 export class ShopLoginComponent implements OnInit {
-
   loginForm: FormGroup;
+
+  // Redirect path after successful login
+  redirectPath = '/home';
+
   // After first submission attempt, form validation will start
   submitted = false;
+
   // Error flag
   error = false;
   errorMessage = '';
