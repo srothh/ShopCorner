@@ -99,7 +99,14 @@ export class OperatorAccountComponent implements OnInit {
       this.operatorService.deleteOperator(operator.id).subscribe(
         () => {
           if (this.selected.indexOf(operator) === this.selected.length-1) {
-            this.loadOperatorsPage();
+            if ((this.page+1)*this.pageSize >= this.currentCollectionSize && this.operators.length === this.selected.length){
+              this.previousPage();
+            } else {
+              this.loadOperatorsPage();
+            }
+            this.collectionSizeEmployee -= this.selected.length;
+            this.currentCollectionSize = this.collectionSizeEmployee;
+            this.selected = [];
           }
         },
         error => {
@@ -108,9 +115,6 @@ export class OperatorAccountComponent implements OnInit {
         }
       );
     }
-    this.collectionSizeEmployee -= this.selected.length;
-    this.currentCollectionSize = this.collectionSizeEmployee;
-    this.selected = [];
   }
 
   /**
@@ -118,8 +122,8 @@ export class OperatorAccountComponent implements OnInit {
    */
   private loadOperatorsPage() {
     this.operatorService.getOperatorsPage(this.page, this.pageSize, this.permissions).subscribe(
-      (operators: Operator[]) => {
-        this.operators = operators;
+      (page: Operator[]) => {
+        this.operators = page;
       },
       error => {
         this.error = true;
