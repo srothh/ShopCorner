@@ -105,5 +105,4 @@ public class Operator {
     public void setPermissions(Permissions permissions) {
         this.permissions = permissions;
     }
-
 }

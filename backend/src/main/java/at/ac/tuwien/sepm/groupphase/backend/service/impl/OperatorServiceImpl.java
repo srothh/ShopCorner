@@ -3,13 +3,18 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
+import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -22,7 +27,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 @Service
-public class OperatorDetailService implements OperatorService {
+public class OperatorServiceImpl implements OperatorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -31,7 +36,7 @@ public class OperatorDetailService implements OperatorService {
     private final Validator validator;
 
     @Autowired
-    public OperatorDetailService(OperatorRepository operatorRepository, EncoderConfig encoderConfig, Validator validator) {
+    public OperatorServiceImpl(OperatorRepository operatorRepository, EncoderConfig encoderConfig, Validator validator) {
         this.operatorRepository = operatorRepository;
         this.passwordEncoder = encoderConfig.passwordEncoder();
         this.validator = validator;
@@ -70,6 +75,17 @@ public class OperatorDetailService implements OperatorService {
         throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
     }
 
+    @Override
+    public Page<Operator> findAll(int page, int pageCount, Permissions permissions) {
+        LOGGER.trace("findAll({})", page);
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable returnPage = PageRequest.of(page, pageCount);
+        return operatorRepository.findAll(OperatorSpecifications.hasPermission(permissions), returnPage);
+    }
 
     @Override
     public List<Operator> findAll() {
@@ -77,6 +93,11 @@ public class OperatorDetailService implements OperatorService {
         return operatorRepository.findAll();
     }
 
+    @Override
+    public int[] getCollectionSize() {
+        LOGGER.trace("getCollectionsize()");
+        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)), (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
+    }
 
     @Override
     public Operator save(Operator operator) {

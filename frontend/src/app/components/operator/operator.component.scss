@@ -7,6 +7,15 @@
   min-width: 18rem;
 }
 
+#wrapper {
+  overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+  min-height: 100vh;
+  min-width: 18rem;
+}
+
 #wrapper.toggled #sidebar-wrapper {
   margin-left: 0;
 }

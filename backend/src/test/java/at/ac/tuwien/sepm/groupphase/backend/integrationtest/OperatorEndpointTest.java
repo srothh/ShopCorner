@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
@@ -22,6 +23,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 
-public class OperatorEndpointTest implements TestData{
+public class OperatorEndpointTest implements TestData {
 
     @Autowired
     private MockMvc mockMvc;
@@ -55,11 +62,15 @@ public class OperatorEndpointTest implements TestData{
     private OperatorMapper operatorMapper;
 
 
+    private final Operator admin = new Operator(TEST_ADMIN_NAME, TEST_ADMIN_LOGINNAME, TEST_ADMIN_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PERMISSIONS);
+    private final Operator employee = new Operator(TEST_EMPLOYEE_NAME, TEST_EMPLOYEE_LOGINNAME, TEST_EMPLOYEE_PASSWORD, TEST_EMPLOYEE_EMAIL, TEST_EMPLOYEE_PERMISSIONS);
     private final Operator operator = new Operator(TEST_OPERATOR_NAME, TEST_OPERATOR_LOGINNAME, TEST_OPERATOR_PASSWORD, TEST_OPERATOR_EMAIL, TEST_OPERATOR_PERMISSION);
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         operatorRepository.deleteAll();
+        Operator admin = new Operator(TEST_ADMIN_NAME, TEST_ADMIN_LOGINNAME, TEST_ADMIN_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PERMISSIONS);
+        Operator employee = new Operator(TEST_EMPLOYEE_NAME, TEST_EMPLOYEE_LOGINNAME, TEST_EMPLOYEE_PASSWORD, TEST_EMPLOYEE_EMAIL, TEST_EMPLOYEE_PERMISSIONS);
         Operator operator = new Operator(TEST_OPERATOR_NAME, TEST_OPERATOR_LOGINNAME, TEST_OPERATOR_PASSWORD, TEST_OPERATOR_EMAIL, TEST_OPERATOR_PERMISSION);
     }
 
@@ -146,6 +157,74 @@ public class OperatorEndpointTest implements TestData{
         );
     }
 
+    @Test
+    public void givenNothing_whenFindAll_thenEmptyList() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
 
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
+        List<OverviewOperatorDto> overviewOperatorDtos = Arrays.asList(objectMapper.readValue(response.getContentAsString(),
+            OverviewOperatorDto[].class));
+
+        assertEquals(0, overviewOperatorDtos.size());
+    }
+
+    @Test
+    public void givenTwoOperators_whenFindAllWithPageAndPermission_thenListWithSizeOneAndOverviewOperatorsWithAllPropertiesExceptPassword()
+        throws Exception {
+        operatorRepository.save(admin);
+        operatorRepository.save(employee);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        List<OverviewOperatorDto> overviewOperatorDtos = Arrays.asList(objectMapper.readValue(response.getContentAsString(),
+            OverviewOperatorDto[].class));
+
+        assertEquals(1, overviewOperatorDtos.size());
+        OverviewOperatorDto adminDto = overviewOperatorDtos.get(0);
+        assertAll(
+            () -> assertEquals(admin.getId(), adminDto.getId()),
+            () -> assertEquals(TEST_ADMIN_NAME, adminDto.getName()),
+            () -> assertEquals(TEST_ADMIN_LOGINNAME, adminDto.getLoginName()),
+            () -> assertEquals(TEST_ADMIN_EMAIL, adminDto.getEmail()),
+            () -> assertEquals(TEST_ADMIN_PERMISSIONS, adminDto.getPermissions())
+        );
+    }
+
+    @Test
+    public void givenTwoOperators_whenGetCount_thenArrayWithTwoOnes()
+        throws Exception {
+        operatorRepository.save(admin);
+        operatorRepository.save(employee);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        int[] count = (objectMapper.readValue(response.getContentAsString(), int[].class));
+
+        assertEquals(2, count.length);
+        int adminCount = count[0];
+        assertEquals(1, adminCount);
+        int employeeCount = count[1];
+        assertEquals(1, employeeCount);
+    }
 }
+
