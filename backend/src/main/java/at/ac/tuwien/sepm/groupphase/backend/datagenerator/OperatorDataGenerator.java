@@ -49,6 +49,7 @@ public class OperatorDataGenerator {
             operatorRepository.save(new Operator("kilil", "gggggaaaaa", "sddsdsd", "sasddssdasddf@gmail.com", Permissions.employee));
             operatorRepository.save(new Operator("olaf", "scholz", "sf", "aasdssssaadv@gmail.com", Permissions.admin));
             operatorRepository.save(new Operator("puioiuoui", "peepee", "asd3sdd", "asadfdfads@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator("Sandro", "Sandman", "Sandman", "sandman@gmail.com", Permissions.employee));
         }
     }
 }
