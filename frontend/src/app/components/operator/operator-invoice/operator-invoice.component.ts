@@ -38,6 +38,10 @@ export class OperatorInvoiceComponent implements OnInit {
   total = 0;
   tax = 0;
 
+  download = false;
+  show = false;
+  print = false;
+
 
   constructor(private invoiceService: InvoiceService, private productService: ProductService,
               private taxRateService: TaxRateService, private formBuilder: FormBuilder, private urlSerializer: UrlSerializer) {
@@ -83,21 +87,9 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
   addInvoice() {
-    this.invoiceService.createInvoice(this.invoiceDto);
-  }
+    const id = this.invoiceService.createInvoice(this.invoiceDto);
 
-  getInvoice() {
-    let invoiceTest: string;
-    console.log(this.invoiceService.getInvoiceAsPdf(-1).subscribe(
-      (sport: string) => {
-        invoiceTest = sport;
-      },
-      error => {
-        this.defaultServiceErrorHandling(error);
-      }
-    ));
   }
-
 
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
@@ -152,6 +144,48 @@ export class OperatorInvoiceComponent implements OnInit {
   vanishError() {
     this.error = false;
   }
+
+  downloadInvoice(id: number) {
+    this.invoiceService.getInvoiceAsPdfById(-1).subscribe((data) => {
+      const newBlob  = new Blob([data], {type: 'application/pdf'});
+      const downloadURL = window.URL.createObjectURL(data);
+      const link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = 'invoice_'; // + this.invoiceDto.date + '_' + id + '.pdf';
+      link.click();
+    });
+  }
+
+  showInvoice(id: number) {
+    this.invoiceService.getInvoiceAsPdfById(-1).subscribe((data) => {
+      const newBlob  = new Blob([data], {type: 'application/pdf'});
+      const blobURL = URL.createObjectURL(newBlob);
+      window.open(blobURL);
+    });
+  }
+
+
+  downloadInvoiceById(id: number) {
+    this.invoiceService.getInvoiceAsPdfById(-1).subscribe((data) => {
+      const newBlob  = new Blob([data], {type: 'application/pdf'});
+      const downloadURL = window.URL.createObjectURL(data);
+      const link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = 'invoice_' + this.invoiceDto.date + '_' + id + '.pdf';
+      link.click();
+    });
+  }
+
+  showInvoiceById(id: number) {
+    this.invoiceService.getInvoiceAsPdfById(-1).subscribe((data) => {
+      const newBlob  = new Blob([data], {type: 'application/pdf'});
+      const blobURL = URL.createObjectURL(newBlob);
+      window.open(blobURL);
+    });
+  }
+
+
+
 
   /**
    * @param error

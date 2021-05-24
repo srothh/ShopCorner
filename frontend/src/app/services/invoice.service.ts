@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
 import {Invoice} from '../dtos/invoice';
@@ -32,9 +32,13 @@ export class InvoiceService {
   /**
    * Loads invoice by id from the backend
    */
-  getInvoiceAsPdf(id: number): Observable<string> {
-    console.log('Load invoice by ' + id);
-    return this.httpClient.get<string>(this.invoiceBaseUri + '/getinvoicepdf/' + -1);
+  getInvoiceAsPdfById(id: number): Observable<any> {
+
+    const httpOptions = {
+      responseType: 'blob' as 'json',
+      headers: new HttpHeaders().set('Accept', 'application/pdf'),
+    };
+    return this.httpClient.get(this.invoiceBaseUri + '/getinvoicepdf/' + id, httpOptions);
   }
 
   createInvoice(invoice: Invoice): Observable<Invoice> {

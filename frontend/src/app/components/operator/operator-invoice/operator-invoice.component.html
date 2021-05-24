@@ -114,13 +114,13 @@
                     <button class="btn btn-warning btn-block" type="reset" (click)="onReset()"> Reset Artikel</button>
                   </div>
                   <div class="col-3">
-                    <button class="btn btn-block btn-primary" type="button" (click)="getInvoice()"> PDF download</button>
+                    <button class="btn btn-block btn-primary" type="submit" (click)="downloadInvoice(-1)"> PDF download</button>
                   </div>
                   <div class="col-3">
                     <button class="btn btn-block  btn-primary" type="submit"> PDF drucken</button>
                   </div>
                   <div class="col-4">
-                    <button class="btn btn-block btn-primary" type="submit"> PDF öffnen</button>
+                    <button class="btn btn-block btn-primary" type="submit"(click)="showInvoice(-1)"> PDF öffnen</button>
                   </div>
                 </div>
               </div>

@@ -3,67 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice</title>
-    <style type="text/css">
-        body {
-            font-family: Arial;
-            padding: 0px;
-            padding-left: 5rem;
-            padding-right: 5rem;
-            margin: 0px auto;
-        }
+    <link rel="stylesheet" type="text/css" href="invoiceTempalte_v1.css">
 
-        .center {
-            text-align: center;
-            justify-content: center;
-        }
-
-        .right {
-            text-align: right;
-            justify-content: right;
-
-        }
-
-        .left {
-            text-align: left;
-            justify-content: left;
-        }
-
-        .underline {
-            text-decoration: underline black;
-        }
-
-        .footer {
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
-        }
-
-        .product {
-            width: 40%;
-
-        }
-
-        .price, .quantity {
-            width: 15%;
-
-        }
-
-        .tax {
-            width: 10%;
-
-        }
-
-        .amount {
-            width: 20%;
-        }
-
-
-    </style>
 </head>
 <body>
-<table width="100%" border="0">
+<table width="100%" border="0" class="table-grid">
     <tr>
         <td class="center" colspan="3">
             <img src="https://i.imgur.com/zMBx1FY.png" alt="Logo">
@@ -81,16 +25,16 @@
         <td class="right">
             <table class="right" border="0">
                 <tr>
-                    <td class="right">
-                        <a>Date</a>
+                    <td class="left">
+                        <a>Date: </a>
                     </td>
                     <td class="left invoice-date">
                         <a>{{invoiceDate}}</a>
                     </td>
                 </tr>
                 <tr>
-                    <td class="right">
-                        <a>Rechnungsnummer</a>
+                    <td class="left">
+                        <a>Rechnungsnummer: </a>
                     </td>
                     <td class="left invoice-number">
                         <a>{{invoiceNumber}}</a>
@@ -100,34 +44,94 @@
         </td>
     </tr>
 
+    <tr>
+        <td class="left underline" colspan="3">
+            <h4>Bestellte Artikel</h4>
+        </td>
+    </tr>
+
     <tr style="width: 100%;">
-        <td class="center article" style="width: 100%;" colspan="3">
-            <table class="center" style="width: 100%;">
+        <td class="center" style="width: 100%;" colspan="3">
+            <table class="center table-grid article" style="width: 100%;">
                 <tr>
-                    <td class="center underline">
-                        <h4>Bestellte Artikel</h4>
-                    </td>
-                </tr>
-                <tr class="border">
-                    <td class="center product">
+                    <th class="center product">
                         <a>Produkt</a>
-                    </td>
-                    <td class="center price">
+                    </th>
+                    <th class="center price">
                         <a>Preis</a>
-                    </td>
-                    <td class="center quantity">
+                    </th>
+                    <th class="center quantity">
                         <a>Anzahl</a>
-                    </td>
-                    <td class="center tax">
+                    </th>
+                    <th class="center tax">
                         <a>Steuer</a>
-                    </td>
-                    <td class="center amount">
+                    </th>
+                    <th class="center amount">
                         <a>Betrag</a>
-                    </td>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="center product">
+                        <a>Produkt</a>
+                    </th>
+                    <th class="center price">
+                        <a>Preis</a>
+                    </th>
+                    <th class="center quantity">
+                        <a>Anzahl</a>
+                    </th>
+                    <th class="center tax">
+                        <a>Steuer</a>
+                    </th>
+                    <th class="center amount">
+                        <a>Betrag</a>
+                    </th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr style="width: 100%;">
+        <td class="center" style="width: 100%;" colspan="3">
+            <table class="center total none-table-grid" style="width: 100%;">
+                <tr>
+                    <td class="right span none-border" colspan="3"></td>
+                    <td class="right total-text none-border"><span>Zwischensumme</span></td>
+                    <td class="center none-border"><span>hallo</span></td>
+                </tr>
+                <tr>
+                    <td class="right span none-border" colspan="3"></td>
+                    <td class="right total-text none-border"><span>Zwischensumme</span></td>
+                    <td class="center none-border"><span>hallo</span></td>
+                </tr>
+                <tr>
+                    <td class="right span" colspan="3"></td>
+                    <td class="right total-text"><span>Zwischensumme</span></td>
+                    <td class="center"><span>hallo</span></td>
                 </tr>
             </table>
         </td>
     </tr>
 </table>
+<div>
+
+</div>
+<footer class="footer">
+    <table style="width: 100%">
+        <tr>
+            <td class="right name" style="width: 50%">{{companyName}}</td>
+            <td class="left qr" style="width: 50%" rowspan="4"> Nein</td>
+        <tr>
+            <td class="right address" style="width: 50%">{{companyAddress}}</td>
+        <tr>
+            <td class="right phone" style="width: 50%">{{companyPhone}}</td>
+        <tr>
+            <td class="right email" style="width: 50%">{{companyEmail}}</td>
+        </tr>
+
+
+
+    </table>
+
+</footer>
 </body>
 </html>
