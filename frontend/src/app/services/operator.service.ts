@@ -30,6 +30,10 @@ export class OperatorService {
 
   /**
    * fetches all operator accounts from backend
+   *
+   * @param page that is needed
+   * @param pageCount amount of operators per page
+   * @param permissions of needed operators
    */
   getOperatorsPage(page: number, pageCount: number, permissions: Permissions): Observable<Operator[]> {
     console.log('Get Operators with permission: ', permissions, ' for page: ', page);
@@ -43,5 +47,15 @@ export class OperatorService {
   getOperatorCount(): Observable<number[]> {
     console.log('Get count of Operators');
     return this.httpClient.get<number[]>(this.operatorBaseUri);
+  }
+
+  /**
+   * sends delete request with id to backend
+   *
+   * @param id of operator that should be deleted
+   */
+  deleteOperator(id: number): Observable<void> {
+    console.log('Delete operator with id: ' + id);
+    return this.httpClient.delete<void>(this.operatorBaseUri + '/' + id);
   }
 }

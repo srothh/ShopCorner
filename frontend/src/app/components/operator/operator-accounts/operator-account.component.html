@@ -36,6 +36,9 @@
         <td><span>{{operator.name}}</span></td>
         <td><span>{{operator.loginName}}</span></td>
         <td><span>{{operator.email}}</span></td>
+        <td *ngIf="operator.permissions === 'employee'"><span>
+          <button type="button" class="btn btn-danger btn-sm" (click)="deleteOperator(operator)">delete</button>
+        </span></td>
       </tr>
       </tbody>
     </table>

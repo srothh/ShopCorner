@@ -74,6 +74,25 @@ export class OperatorAccountComponent implements OnInit {
   }
 
   /**
+   * calls on service to delete operator with id
+   *
+   * @param operator that should be deleted
+   */
+  deleteOperator(operator: Operator) {
+    this.operatorService.deleteOperator(operator.id).subscribe(
+      () => {
+        this.loadOperatorsPage();
+      },
+      error => {
+        this.error = true;
+        this.errorMessage = error.error;
+      }
+    );
+    this.collectionSizeEmployee -= 1;
+    this.currentCollectionSize = this.collectionSizeEmployee;
+  }
+
+  /**
    * calls on Service class to fetch all operator accounts from backend
    */
   private loadOperatorsPage() {
