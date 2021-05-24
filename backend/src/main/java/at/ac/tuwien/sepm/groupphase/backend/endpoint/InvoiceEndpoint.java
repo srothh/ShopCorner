@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
+import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Document;
@@ -43,6 +44,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,6 +64,7 @@ public class InvoiceEndpoint {
     private final InvoiceService invoiceService;
     private final InvoiceItemService invoiceItemService;
     private final InvoiceItemMapper invoiceItemMapper;
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     @Autowired
     public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService, InvoiceItemService invoiceItemService) {
@@ -99,7 +102,7 @@ public class InvoiceEndpoint {
     @PostMapping(value = "")
     @Operation(summary = "create new invoice")
     public SimpleInvoiceDto createInvoice(@RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("GET /invoices");
+        LOGGER.info("Create /invoices {}",invoiceDto);
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
 
         Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
@@ -113,79 +116,33 @@ public class InvoiceEndpoint {
 
     }
 
-    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
+    @PermitAll
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/getinvoicepdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
-    public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
+    public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) throws IOException {
+        LOGGER.info("Get /invoices/getinvoicepdf/{}",id);
         Invoice invoice = invoiceService.findOneById(id);
-        ConverterProperties properties = new ConverterProperties();
-        properties.setBaseUri("htmlToPdfTemplate/");
+        PdfGenerator pdf = new PdfGenerator();
+        byte[] contents = pdf.generatePdfAsByteArray(invoice);
 
-        String fileOutput = String.format("invoices/invoice_%s_%s.pdf", invoice.getDate().format(dateFormatter), invoice.getId());
-        ResponseEntity<byte[]> response;
-        try {
-            String html = new String(Files.readAllBytes(Paths.get("htmlToPdfTemplate/invoiceTemplate_v1.html")));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        String filename = "output.pdf";
+        headers.setContentDispositionFormData(filename, filename);
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
-            final Document document = Jsoup.parse(html);
-            document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-            document.body().select(".invoice-date").html(invoice.getDate().format(dateFormatter));
-            document.body().select(".invoice-number").html(invoice.getId() + "");
-            Element tableArticle = document.body().select(".article").first();
-            String tableAsString = "<tr ><th class=\"center product\"><span>Produkt</span></th><th class=\"center price\"><span>Preis</span></th><th class=\"center quantity\"><span>Anzahl</span></th><th class=\"center tax\"><span>Steuer</span></th><th class=\"center amount\"><span>Betrag</span></th></tr>";
-            double total = 0;
-            double subtotal = 0;
-            double tax = 0;
-
-            for (InvoiceItem i : invoice.getItems()) {
-                Product p = i.getProduct();
-                TaxRate t = p.getTaxRate();
-                double subtotalPerProduct = p.getPrice() * i.getNumberOfItems();
-                double taxPerProduct = p.getPrice() * i.getNumberOfItems() * ((t.getPercentage() / 100));
-                double totalPerProduct = subtotalPerProduct + taxPerProduct;
-                subtotal = subtotal + subtotalPerProduct;
-                tax = tax + taxPerProduct;
-                total = total + totalPerProduct;
-                tableAsString = tableAsString + String.format("<tr ><td class=\"center product\"><span>%s</span></td><td class=\"center price\"><span>%s</span></td><td class=\"center quantity\"><span>%s</span></td><td class=\"center tax\"><span>%s</span></td><td class=\"center amount\"><span>%s</span></td></tr>",
-                    p.getName(), p.getPrice() + " €", i.getNumberOfItems(), t.getPercentage() + "%", totalPerProduct + " €");
-            }
-            tableAsString = tableAsString + "</table>";
-            tableArticle.html(tableAsString);
-            tableAsString = "";
-
-            Element tableAmount = document.body().select(".total").first();
-            tableAsString = tableAsString + String.format("<tr ><td class=\"right span\" colspan=\"3\"></td>\n<td class=\"right total-text none-border\"><span>Zwischensumme</span></td><td class=\"center none-border\"><span>%s</span></td></tr>",subtotal + " €");
-            tableAsString = tableAsString + String.format("<tr ><td class=\"right span\" colspan=\"3\"><td class=\"right total-text none-border\"><span>Steuer</span></td><td class=\"center none-border\"><span>%s</span></td></tr>",tax + " €");
-            tableAsString = tableAsString + String.format("<tr ><td class=\"right span\" colspan=\"3\"><td class=\"right total-text\"><span>Summe</span></td><td class=\"center\"><span>%s</span></td></tr>",total + " €");
-            tableAsString = tableAsString + "</table>";
-            tableAmount.html(tableAsString);
-
-            document.body().select(".name").html("ShopCorner");
-            document.body().select(".address").html("Favoritenstraße 9/11, 1040 Wien");
-            document.body().select(".phone").html("01 5880119501");
-            document.body().select(".email").html("admin@shop-corner.at");
-
-
-            HtmlConverter.convertToPdf(document.html(), new FileOutputStream(fileOutput), properties);
-            System.out.println(fileOutput);
-
-            Path pdfFile = Paths.get(fileOutput);
-            byte[] contents = Files.readAllBytes(pdfFile);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            String filename = "output.pdf";
-            headers.setContentDispositionFormData(filename, filename);
-            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-            response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
-
-
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-            throw new ServiceException(e.getMessage(), e);
-        }
-        return response;
+        return new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);
     }
 
+
+    @PermitAll
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
+    @Operation(summary = "create new invoice")
+    public ResponseEntity<byte[]> createInvoiceAsPdf(@RequestBody DetailedInvoiceDto invoiceDto) throws IOException {
+        LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
+        return this.getInvoiceAsPdf(this.createInvoice(invoiceDto).getId());
+
+    }
 
 }

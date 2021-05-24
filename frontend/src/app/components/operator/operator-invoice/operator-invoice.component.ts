@@ -83,7 +83,15 @@ export class OperatorInvoiceComponent implements OnInit {
       return;
     }
     this.creatInvoiceDto();
-    this.addInvoice();
+    if (this.print) {
+    } else if (this.show) {
+      this.showInvoice();
+    } else if (this.download) {
+      this.downloadInvoice();
+    }
+    this.show = false;
+    this.print = false;
+    this.download = false;
   }
 
   addInvoice() {
@@ -144,19 +152,19 @@ export class OperatorInvoiceComponent implements OnInit {
     this.error = false;
   }
 
-  downloadInvoice(id: number) {
-    this.invoiceService.getInvoiceAsPdfById(-1).subscribe((data) => {
+  downloadInvoice() {
+    this.invoiceService.createInvoiceAsPdf(this.invoiceDto).subscribe((data) => {
       const newBlob  = new Blob([data], {type: 'application/pdf'});
       const downloadURL = window.URL.createObjectURL(data);
       const link = document.createElement('a');
       link.href = downloadURL;
-      link.download = 'invoice_'; // + this.invoiceDto.date + '_' + id + '.pdf';
+      link.download = 'invoice_' + this.invoiceDto.date + '.pdf';
       link.click();
     });
   }
 
-  showInvoice(id: number) {
-    this.invoiceService.getInvoiceAsPdfById(-1).subscribe((data) => {
+  showInvoice() {
+    this.invoiceService.createInvoiceAsPdf(this.invoiceDto).subscribe((data) => {
       const newBlob  = new Blob([data], {type: 'application/pdf'});
       const blobURL = URL.createObjectURL(newBlob);
       window.open(blobURL);

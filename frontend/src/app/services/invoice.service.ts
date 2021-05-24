@@ -44,11 +44,11 @@ export class InvoiceService {
     return this.httpClient.post<Invoice>(this.invoiceBaseUri, invoice);
   }
 
-  createInvoiceAsPdfById(invoice: Invoice): Observable<any> {
+  createInvoiceAsPdf(invoice: Invoice): Observable<any> {
     const httpOptions = {
       responseType: 'blob' as 'json',
       headers: new HttpHeaders().set('Accept', 'application/pdf'),
     };
-    return this.httpClient.post(this.invoiceBaseUri, invoice , httpOptions);
+    return this.httpClient.post(this.invoiceBaseUri + '/createinvoicepdf', invoice , httpOptions);
   }
 }
