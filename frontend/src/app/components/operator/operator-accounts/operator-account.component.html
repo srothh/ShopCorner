@@ -2,7 +2,7 @@
   <br>
   <h2>Betreiber Konten</h2>
   <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
-    <label class="btn btn-light active btn-sm">
+    <label class="btn btn-light btn-sm active">
       <input type="radio" name="buttons" id="option1" (click)=showAdmins()>
       Admins
     </label>
@@ -13,10 +13,10 @@
   </div>
   <div class="float-right" style="margin-top: 10px;">
     <div *ngIf="selected.length > 0; else disabled_button">
-      <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteOperator()">delete</button>
+      <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteOperator()">Auswahl löschen</button>
     </div>
     <ng-template #disabled_button>
-      <button type="button" class="btn btn-outline-danger btn-sm" disabled>delete</button>
+      <button type="button" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
     </ng-template>
   </div>
   <hr>
