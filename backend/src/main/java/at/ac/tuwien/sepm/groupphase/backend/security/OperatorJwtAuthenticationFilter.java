@@ -32,7 +32,6 @@ public class OperatorJwtAuthenticationFilter extends UsernamePasswordAuthenticat
                                            JwtTokenizer jwtTokenizer) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenizer = jwtTokenizer;
-        System.out.println("I AM HERE: " + securityProperties.getLoginUriOperator());
         setFilterProcessesUrl(securityProperties.getLoginUriOperator());
     }
 

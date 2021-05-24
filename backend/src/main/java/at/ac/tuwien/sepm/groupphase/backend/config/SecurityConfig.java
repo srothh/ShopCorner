@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -29,46 +30,6 @@ import java.util.List;
 public class SecurityConfig {
     @Configuration
     @Order(1)
-    public static class CustomerSecurityConfig extends WebSecurityConfigurerAdapter {
-
-        private final CustomerService customerService;
-        private final PasswordEncoder passwordEncoder;
-        private final SecurityProperties securityProperties;
-        private final JwtTokenizer jwtTokenizer;
-
-        @Autowired
-        public CustomerSecurityConfig(CustomerService customerService,
-                                      OperatorService operatorService,
-                                      PasswordEncoder passwordEncoder,
-                                      SecurityProperties securityProperties, JwtTokenizer jwtTokenizer) {
-            this.customerService = customerService;
-            this.securityProperties = securityProperties;
-            this.passwordEncoder = passwordEncoder;
-            this.jwtTokenizer = jwtTokenizer;
-        }
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.cors().and()
-                .csrf().disable()
-                .antMatcher("/api/v1/authentication/customers")
-                .addFilter(new CustomerJwtAuthenticationFilter(authenticationManager(), securityProperties, jwtTokenizer))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
-        }
-
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(customerService).passwordEncoder(passwordEncoder);
-        }
-
-        @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
-            return getCorsConfigurationSource();
-        }
-    }
-
-    @Configuration
-    @Order(2)
     public static class OperatorSecurityConfig extends WebSecurityConfigurerAdapter {
         private final OperatorService operatorService;
         private final PasswordEncoder passwordEncoder;
@@ -100,6 +61,45 @@ public class SecurityConfig {
         }
     }
 
+    @Configuration
+    @Order(2)
+    @EnableGlobalMethodSecurity(securedEnabled = true)
+    public static class CustomerSecurityConfig extends WebSecurityConfigurerAdapter {
+
+        private final CustomerService customerService;
+        private final PasswordEncoder passwordEncoder;
+        private final SecurityProperties securityProperties;
+        private final JwtTokenizer jwtTokenizer;
+
+        @Autowired
+        public CustomerSecurityConfig(CustomerService customerService,
+                                      PasswordEncoder passwordEncoder,
+                                      SecurityProperties securityProperties, JwtTokenizer jwtTokenizer) {
+            this.customerService = customerService;
+            this.securityProperties = securityProperties;
+            this.passwordEncoder = passwordEncoder;
+            this.jwtTokenizer = jwtTokenizer;
+        }
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.cors().and()
+                .csrf().disable()
+                .addFilter(new CustomerJwtAuthenticationFilter(authenticationManager(), securityProperties, jwtTokenizer))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
+        }
+
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(customerService).passwordEncoder(passwordEncoder);
+        }
+
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+            return getCorsConfigurationSource();
+        }
+    }
+
     private static CorsConfigurationSource getCorsConfigurationSource() {
         final List<String> permitAll = Collections.singletonList("*");
         final List<String> permitMethods = List.of(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
@@ -113,5 +113,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
