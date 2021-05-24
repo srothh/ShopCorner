@@ -84,7 +84,7 @@
           Wollen sie die Accounts von {{selected.length}} Angestellten löschen?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Abbrechen</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="selected=[]" data-dismiss="modal">Abbrechen</button>
           <button type="button" class="btn btn-outline-danger" (click)="deleteOperator()" data-dismiss="modal">Löschen</button>
         </div>
       </div>
