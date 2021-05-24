@@ -44,7 +44,7 @@ export class OperatorInvoiceComponent implements OnInit {
 
 
   constructor(private invoiceService: InvoiceService, private productService: ProductService,
-              private taxRateService: TaxRateService, private formBuilder: FormBuilder, private urlSerializer: UrlSerializer) {
+              private taxRateService: TaxRateService, private formBuilder: FormBuilder) {
   }
 
 
@@ -87,8 +87,7 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
   addInvoice() {
-    const id = this.invoiceService.createInvoice(this.invoiceDto);
-
+    this.invoiceService.createInvoice(this.invoiceDto);
   }
 
   creatInvoiceDto() {
@@ -183,8 +182,6 @@ export class OperatorInvoiceComponent implements OnInit {
       window.open(blobURL);
     });
   }
-
-
 
 
   /**

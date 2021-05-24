@@ -33,7 +33,6 @@ export class InvoiceService {
    * Loads invoice by id from the backend
    */
   getInvoiceAsPdfById(id: number): Observable<any> {
-
     const httpOptions = {
       responseType: 'blob' as 'json',
       headers: new HttpHeaders().set('Accept', 'application/pdf'),
@@ -43,5 +42,13 @@ export class InvoiceService {
 
   createInvoice(invoice: Invoice): Observable<Invoice> {
     return this.httpClient.post<Invoice>(this.invoiceBaseUri, invoice);
+  }
+
+  createInvoiceAsPdfById(invoice: Invoice): Observable<any> {
+    const httpOptions = {
+      responseType: 'blob' as 'json',
+      headers: new HttpHeaders().set('Accept', 'application/pdf'),
+    };
+    return this.httpClient.post(this.invoiceBaseUri, invoice , httpOptions);
   }
 }
