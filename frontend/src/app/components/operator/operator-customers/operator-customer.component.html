@@ -10,7 +10,7 @@
   <hr>
   <div>
     <p style="font-size: 10px; color: gray">
-      Zeigt {{1 + (pageSize  * (page ))}}-{{(pageSize * (page + 1))}}
+      Zeigt {{1 + (pageSize  * (page ))}}-{{pageMax}}
       von {{collectionSize}}</p>
     <ng-template #other_content>
       <p style="font-size: 10px; color: gray">Zeigt {{1 + (pageSize * (page - 1))}}-{{collectionSize}}
