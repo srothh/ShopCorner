@@ -52,7 +52,7 @@ export class OperatorCustomerComponent implements OnInit {
   }
 
   /**
-   * calls on Service class to fetch all operator accounts from backend
+   * calls on Service class to fetch all customer accounts from backend
    */
   private loadCustomersForPage() {
     this.customerService.getAllCustomersForPage(this.page, this.pageSize).subscribe(
@@ -66,6 +66,9 @@ export class OperatorCustomerComponent implements OnInit {
     );
   }
 
+  /**
+   * calls on Service class to fetch amount of registered customers from backend
+   */
   private getCustomerCount() {
     this.customerService.getCustomerCount().subscribe(
       (count: number) => {

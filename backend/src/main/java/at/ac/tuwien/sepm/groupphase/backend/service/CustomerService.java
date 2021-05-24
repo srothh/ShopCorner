@@ -7,9 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.List;
-
-/** A service class handling customers.
+/**
+ * A service class handling customers.
  */
 public interface CustomerService extends UserDetailsService {
     /**
@@ -18,7 +17,7 @@ public interface CustomerService extends UserDetailsService {
      * @param loginName the login name
      * @return a Spring Security user
      * @throws UsernameNotFoundException is thrown if the specified user does not exists
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException          upon encountering errors with the database
      */
     @Override
     UserDetails loadUserByUsername(String loginName);
@@ -43,9 +42,11 @@ public interface CustomerService extends UserDetailsService {
     Customer registerNewCustomer(Customer customer);
 
     /**
-     * Retrieves all customers from the database.
+     * Retrieves a page customers from the database.
      *
-     * @return A list of all found customers
+     * @param page      The number of the page to retrieve
+     * @param pageCount The size of the page to retrieve
+     * @return A page containing the customers retrieved
      */
     Page<Customer> getAllCustomers(int page, int pageCount);
 
@@ -59,6 +60,11 @@ public interface CustomerService extends UserDetailsService {
      */
     void assignAddressToCustomer(Customer customer, Long addressId);
 
+    /**
+     * Returns amount of customers in the database.
+     *
+     * @return The amount of customers in the database
+     */
     long getCustomerCount();
 
 }

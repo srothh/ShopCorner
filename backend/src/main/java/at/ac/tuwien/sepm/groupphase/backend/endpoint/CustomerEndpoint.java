@@ -63,12 +63,17 @@ public class CustomerEndpoint {
     @PermitAll
     @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "retrieve all customers", security = @SecurityRequirement(name = "apiKey"))
+    @Operation(summary = "Retrieve all customers", security = @SecurityRequirement(name = "apiKey"))
     public List<CustomerDto> getAllCustomers(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
         LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
         return customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers(page, pageCount).getContent());
     }
 
+    /**
+     * Retrieves the amount of customers in the database.
+     *
+     * @return The amount of customers in the database
+     */
     //TODO Change to Secured(ROLE_ADMIN)
     @PermitAll
     @GetMapping

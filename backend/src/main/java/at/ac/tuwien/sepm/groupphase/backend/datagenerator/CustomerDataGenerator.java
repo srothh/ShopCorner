@@ -26,7 +26,7 @@ public class CustomerDataGenerator {
 
     @PostConstruct
     public void generateOperators() {
-        if (false) {
+        if (customerRepository.findAll().size() > 0) {
             LOGGER.debug("customers already generated");
         } else {
             Address address = addressRepository.save(new Address(-1L, "teststreet", 1000, "1a", 1, "1"));
