@@ -102,7 +102,7 @@ public class InvoiceEndpoint {
     @PostMapping(value = "")
     @Operation(summary = "create new invoice")
     public SimpleInvoiceDto createInvoice(@RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("Create /invoices {}",invoiceDto);
+        LOGGER.info("Create /invoices {}", invoiceDto);
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
 
         Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
@@ -120,10 +120,10 @@ public class InvoiceEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/getinvoicepdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) throws IOException {
-        LOGGER.info("Get /invoices/getinvoicepdf/{}",id);
+        LOGGER.info("Get /invoices/getinvoicepdf/{}", id);
         Invoice invoice = invoiceService.findOneById(id);
         PdfGenerator pdf = new PdfGenerator();
-        byte[] contents = pdf.generatePdfAsByteArray(invoice);
+        final byte[] contents = pdf.generatePdfAsByteArray(invoice);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
