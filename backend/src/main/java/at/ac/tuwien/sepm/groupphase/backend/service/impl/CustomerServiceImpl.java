@@ -39,7 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public UserDetails loadUserByUsername(String loginName) {
-        LOGGER.trace("loadUserByUsername({})", loginName);
+        LOGGER.trace("loadCustomerByUsername({})", loginName);
         try {
             Customer customer = this.findCustomerByLoginName(loginName);
             List<GrantedAuthority> grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_CUSTOMER");

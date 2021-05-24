@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.security;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerLoginDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorLoginDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,25 +23,24 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CustomerJwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class OperatorJwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter  {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final AuthenticationManager authenticationManager;
     private final JwtTokenizer jwtTokenizer;
 
-    public CustomerJwtAuthenticationFilter(AuthenticationManager authenticationManager, SecurityProperties securityProperties,
+    public OperatorJwtAuthenticationFilter(AuthenticationManager authenticationManager, SecurityProperties securityProperties,
                                            JwtTokenizer jwtTokenizer) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenizer = jwtTokenizer;
-        System.out.println("I AM HERE: " + securityProperties.getLoginUriCustomer());
-
-        setFilterProcessesUrl(securityProperties.getLoginUriCustomer());
+        System.out.println("I AM HERE: " + securityProperties.getLoginUriOperator());
+        setFilterProcessesUrl(securityProperties.getLoginUriOperator());
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
         throws AuthenticationException {
         try {
-            CustomerLoginDto user = new ObjectMapper().readValue(request.getInputStream(), CustomerLoginDto.class);
+            OperatorLoginDto user = new ObjectMapper().readValue(request.getInputStream(), OperatorLoginDto.class);
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 user.getLoginName(),
                 user.getPassword()));
@@ -73,4 +73,5 @@ public class CustomerJwtAuthenticationFilter extends UsernamePasswordAuthenticat
         response.getWriter().write(jwtTokenizer.getAuthToken(user.getUsername(), roles));
         LOGGER.info("Successfully authenticated user {}", user.getUsername());
     }
+
 }
