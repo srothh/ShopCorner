@@ -13,6 +13,7 @@ export class OperatorAccountComponent implements OnInit {
   error = false;
   errorMessage = '';
   operators: Operator[];
+  selected: Operator;
   page = 0;
   pageSize = 15;
   currentCollectionSize = 0;
@@ -26,6 +27,7 @@ export class OperatorAccountComponent implements OnInit {
   ngOnInit(): void {
     this.loadOperatorsPage();
     this.loadOperatorCount();
+    this.selected = new Operator(null,null,null,null,null,null);
   }
 
   /**
@@ -39,6 +41,7 @@ export class OperatorAccountComponent implements OnInit {
    * changes view to employees
    */
   showEmployees(): void {
+    this.selected = new Operator(null,null,null,null,null,null);
     this.permissions = Permissions.employee;
     this.currentCollectionSize = this.collectionSizeEmployee;
     this.loadOperatorsPage();
@@ -48,6 +51,7 @@ export class OperatorAccountComponent implements OnInit {
    * changes view to admins
    */
   showAdmins(): void {
+    this.selected = new Operator(null,null,null,null,null,null);
     this.permissions = Permissions.admin;
     this.currentCollectionSize = this.collectionSizeAdmin;
     this.loadOperatorsPage();
