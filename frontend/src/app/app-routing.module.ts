@@ -15,6 +15,7 @@ import {OperatorAccountComponent} from './components/operator/operator-accounts/
 import {ShopComponent} from './components/shop/shop.component';
 import {ShopProductComponent} from './components/shop/shop-product/shop-product.component';
 import {ShopCartComponent} from './components/shop/shop-cart/shop-cart.component';
+import {OperatorRegistrationComponent} from './components/operator/operator-registration/operator-registration.component';
 import {OperatorAddProductComponent} from './components/operator/operator-add-product/operator-add-product.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {CustomerAuthGuard} from './guards/customer-auth.guard';
@@ -46,8 +47,8 @@ const routes: Routes = [
       {path: 'statistics', component: OperatorStatisticComponent},
       {path: 'customers', component: OperatorCustomerComponent},
       {path: 'accounts', component: OperatorAccountComponent},
-    ]
-  },
+      {path: 'registration', component: OperatorRegistrationComponent},
+    ]},
 ];
 
 @NgModule({

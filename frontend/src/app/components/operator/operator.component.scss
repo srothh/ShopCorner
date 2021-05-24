@@ -7,23 +7,21 @@
   min-width: 18rem;
 }
 
-#page-content-wrapper {
-  min-width: 100vw;
+#wrapper {
+  overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+  min-height: 100vh;
+  min-width: 18rem;
 }
 
 #wrapper.toggled #sidebar-wrapper {
   margin-left: 0;
 }
 
-@media (min-width: 768px) {
-  #sidebar-wrapper {
-    margin-left: 0;
-    min-width: 25%;
-  }
-
-  #page-content-wrapper {
-    min-width: 0;
-  }
+#page-content-wrapper {
+  min-width: 40%;
 }
 
 @media (min-width: 768px) {
@@ -33,13 +31,17 @@
   }
 
   #page-content-wrapper {
-    min-width: 0;
+    min-width: 75%;
   }
 }
 
 @media (min-width: 1200px) {
   #sidebar-wrapper {
     min-width: 20%;
+  }
+
+  #page-content-wrapper {
+    min-width: 80%;
   }
 }
 
