@@ -11,6 +11,7 @@ export class OperatorAuthGuard implements CanActivate {
   }
 
   canActivate(): boolean {
+    console.log(this.operatorAuthService.isLoggedIn());
     if (this.operatorAuthService.isLoggedIn()) {
       return true;
     } else {
