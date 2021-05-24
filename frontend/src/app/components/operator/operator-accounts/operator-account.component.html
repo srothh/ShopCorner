@@ -12,8 +12,8 @@
     </label>
   </div>
   <div class="float-right" style="margin-top: 10px;">
-    <div *ngIf="selected.permissions === 'employee'; else disabled_button">
-      <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteOperator(selected)">delete</button>
+    <div *ngIf="selected.length > 0; else disabled_button">
+      <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteOperator()">delete</button>
     </div>
     <ng-template #disabled_button>
       <button type="button" class="btn btn-outline-danger btn-sm" disabled>delete</button>
@@ -40,8 +40,8 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let operator of operators" (click)="selected = operator">
-        <ng-container *ngIf="selected===operator; else not_selected">
+      <tr *ngFor="let operator of operators" (click)="selectOperator(operator)">
+        <ng-container *ngIf="selected.includes(operator); else not_selected">
           <td style="background: darkgray"><span>{{operator.name}}</span></td>
           <td style="background: darkgray"><span>{{operator.loginName}}</span></td>
           <td style="background: darkgray"><span>{{operator.email}}</span></td>

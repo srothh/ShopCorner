@@ -13,7 +13,7 @@ export class OperatorAccountComponent implements OnInit {
   error = false;
   errorMessage = '';
   operators: Operator[];
-  selected: Operator;
+  selected: Operator[];
   page = 0;
   pageSize = 15;
   currentCollectionSize = 0;
@@ -25,9 +25,9 @@ export class OperatorAccountComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.selected = [];
     this.loadOperatorsPage();
     this.loadOperatorCount();
-    this.selected = new Operator(null,null,null,null,null,null);
   }
 
   /**
@@ -41,7 +41,7 @@ export class OperatorAccountComponent implements OnInit {
    * changes view to employees
    */
   showEmployees(): void {
-    this.selected = new Operator(null,null,null,null,null,null);
+    this.selected = [];
     this.permissions = Permissions.employee;
     this.currentCollectionSize = this.collectionSizeEmployee;
     this.loadOperatorsPage();
@@ -51,7 +51,7 @@ export class OperatorAccountComponent implements OnInit {
    * changes view to admins
    */
   showAdmins(): void {
-    this.selected = new Operator(null,null,null,null,null,null);
+    this.selected = [];
     this.permissions = Permissions.admin;
     this.currentCollectionSize = this.collectionSizeAdmin;
     this.loadOperatorsPage();
@@ -78,22 +78,39 @@ export class OperatorAccountComponent implements OnInit {
   }
 
   /**
-   * calls on service to delete operator with id
+   * selects or deselects employee
    *
-   * @param operator that should be deleted
+   * @param operator that should be selescted or deselected
    */
-  deleteOperator(operator: Operator) {
-    this.operatorService.deleteOperator(operator.id).subscribe(
-      () => {
-        this.loadOperatorsPage();
-      },
-      error => {
-        this.error = true;
-        this.errorMessage = error.error;
-      }
-    );
-    this.collectionSizeEmployee -= 1;
+  selectOperator(operator: Operator) {
+    if (this.selected.includes(operator)) {
+      const index = this.selected.indexOf(operator, 0);
+      this.selected.splice(index, 1);
+    } else if (operator.permissions === 'employee') {
+      this.selected.push(operator);
+    }
+  }
+
+  /**
+   * calls on service to delete selected operators
+   */
+  deleteOperator() {
+    for (const operator of this.selected) {
+      this.operatorService.deleteOperator(operator.id).subscribe(
+        () => {
+          if (this.selected.indexOf(operator) === this.selected.length-1) {
+            this.loadOperatorsPage();
+          }
+        },
+        error => {
+          this.error = true;
+          this.errorMessage = error.error;
+        }
+      );
+    }
+    this.collectionSizeEmployee -= this.selected.length;
     this.currentCollectionSize = this.collectionSizeEmployee;
+    this.selected = [];
   }
 
   /**
