@@ -74,7 +74,12 @@ public class InvoiceEndpoint {
         this.invoiceItemService = invoiceItemService;
     }
 
-    //@Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
+    /**
+     * Get all information for specific invoice.
+     *
+     * @param id is the id of the invoice
+     * @return DetailedInvoiceDto with all given information of the invoice
+     */
     @PermitAll
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
@@ -84,19 +89,27 @@ public class InvoiceEndpoint {
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
 
     }
-    //@Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
 
+    /**
+     * Get overviewing information for all invoices.
+     *
+     * @return List with all SimpleInvoices
+     */
     @PermitAll
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "")
-    @Operation(summary = "Get information for specific invoice")
+    @Operation(summary = "Get overviewing information for all invoices")
     public List<SimpleInvoiceDto> findAll() {
         LOGGER.info("GET /invoices");
         return invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.findAllInvoices());
     }
 
-
-    //@Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
+    /**
+     * Create new invoice.
+     *
+     * @param invoiceDto which should be saved in the database
+     * @return List with all SimpleInvoices
+     */
     @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "")
@@ -113,9 +126,15 @@ public class InvoiceEndpoint {
         }
         invoiceItemService.creatInvoiceItem(items);
         return newInvoice;
-
     }
 
+
+    /**
+     * Finds an invoice and generates a PDF from it.
+     *
+     * @param id id of the invoice
+     * @return ResponseEntity with the generated pdf
+     */
     @PermitAll
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/getinvoicepdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
@@ -134,7 +153,12 @@ public class InvoiceEndpoint {
         return new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);
     }
 
-
+    /**
+     * Creates a database entry and generates a pdf.
+     *
+     * @param invoiceDto which should be saved in the database
+     * @return ResponseEntity with the generated pdf
+     */
     @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")

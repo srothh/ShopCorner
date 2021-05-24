@@ -4,18 +4,26 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 
 public class InvoiceItemDto {
 
+    @NotNull(message = "InvoiceItemKey is mandatory")
     private InvoiceItemKey id;
 
-
+    @NotNull(message = "Invoice is mandatory")
     private Invoice invoice;
 
+    @NotNull(message = "Product is mandatory")
     private Product product;
 
+    @NotNull(message = "Number of Items is mandatory")
+    @NotBlank
+    @Min(value = 1, message = "Minimum number of items is 1")
     private int numberOfItems;
 
     public InvoiceItemDto() {

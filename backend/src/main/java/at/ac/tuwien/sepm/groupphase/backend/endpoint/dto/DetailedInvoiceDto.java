@@ -1,12 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class DetailedInvoiceDto extends SimpleInvoiceDto {
+
+    @NotNull
     private Set<InvoiceItemDto> items;
 
 

@@ -92,6 +92,10 @@ export class OperatorInvoiceComponent implements OnInit {
     this.show = false;
     this.print = false;
     this.download = false;
+    this.newInvoiceForm.reset();
+    this.vanishError();
+    this.submitted = false;
+    this.onReset();
   }
 
   addInvoice() {
@@ -120,14 +124,17 @@ export class OperatorInvoiceComponent implements OnInit {
     }
     this.invoiceDto.amount = +this.total.toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
-    console.log(this.invoiceDto);
   }
 
-  calculateAmount() {
 
+  calculateAmount() {
     this.newInvoiceForm.value.total = this.calcTotal();
     this.newInvoiceForm.value.subtotal = this.calcSubtotal();
     this.newInvoiceForm.value.tax = this.calcTotalTax();
+  }
+
+  isNotaNumber(e){
+    return isNaN(e);
   }
 
   onReset() {
@@ -229,7 +236,6 @@ export class OperatorInvoiceComponent implements OnInit {
       .subscribe(([productsData]) => {
         this.products = productsData;
       });
-
   }
 
   private calcTotal() {
@@ -237,7 +243,7 @@ export class OperatorInvoiceComponent implements OnInit {
     for (const item of this.t.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        if (product.taxRate.percentage !== undefined) {
+        if (product.taxRate !== undefined) {
           amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
         }
       }
@@ -250,7 +256,7 @@ export class OperatorInvoiceComponent implements OnInit {
     for (const item of this.t.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        if (product.taxRate.percentage !== undefined) {
+        if (product.taxRate !== undefined) {
           amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
         }
       }

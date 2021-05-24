@@ -12,6 +12,7 @@ import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
 import org.hibernate.service.spi.ServiceException;
 
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +26,10 @@ public class PdfGenerator {
 
     public String generatePdf(Invoice invoice) {
         String fileOutput = String.format("invoices/invoice_%s_%s.pdf", invoice.getDate().format(dateFormatter), invoice.getId());
+        File f = new File(fileOutput);
+        if (f.exists()) {
+            return fileOutput;
+        }
         ConverterProperties properties = new ConverterProperties();
         properties.setBaseUri(htmlUri);
         try {
@@ -49,8 +54,15 @@ public class PdfGenerator {
                 subtotal = subtotal + subtotalPerProduct;
                 tax = tax + taxPerProduct;
                 total = total + totalPerProduct;
-                tableAsString = tableAsString + String.format("<tr ><td class=\"center product\"><span>%s</span></td><td class=\"center price\"><span>%s</span></td><td class=\"center quantity\"><span>%s</span></td><td class=\"center tax\"><span>%s</span></td><td class=\"center amount\"><span>%s</span></td></tr>",
-                    p.getName(), p.getPrice() + " €", i.getNumberOfItems(), t.getPercentage() + "%", totalPerProduct + " €");
+                // Tabel header
+                tableAsString = tableAsString + "<tr>";
+                tableAsString = tableAsString + String.format("<td class=\"center product\"><span>%s</span></td>", p.getName());
+                tableAsString = tableAsString + String.format("<td class=\"center price\"><span>%s</span></td>", p.getPrice() + " €");
+                tableAsString = tableAsString + String.format("<td class=\"center quantity\"><span>%s</span></td>", i.getNumberOfItems());
+                tableAsString = tableAsString + String.format("<td class=\"center tax\"><span>%s</span></td>", t.getPercentage() + "%");
+                tableAsString = tableAsString + String.format("<td class=\"center amount\"><span>%s</span></td>", totalPerProduct + " €");
+                tableAsString = tableAsString + "</tr>";
+
             }
             tableAsString = tableAsString + "</table>";
             tableArticle.html(tableAsString);

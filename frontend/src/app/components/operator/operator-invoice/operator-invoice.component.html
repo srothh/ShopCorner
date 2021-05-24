@@ -57,8 +57,7 @@
                     <div class="col-2 center-block text-center">
                       <input type="number" class="form-control" formControlName="quantity" name="quantity" id="quantity"
                              (change)="calculateAmount()"
-                             [ngClass]="{ 'is-invalid': submitted && this.item.controls.quantity.errors}" min="1"
-                      >
+                             [ngClass]="{ 'is-invalid': submitted && this.item.controls.quantity.errors}" min="1">
                       <div *ngIf="submitted && item.controls.quantity.errors" class="invalid-feedback">
                         <div *ngIf="item.controls.quantity.errors.required">Geben sie den Anzahl der Produkte an</div>
                       </div>
@@ -82,7 +81,7 @@
                     <div class="col-3 center-block text-center" >
 
                       <input class="form-control" id="netAmount" style="border: none;background-color:white; text-align: center"
-                             formControlName="subtotal" name="subtotal" id="subtotal" readonly value="{{newInvoiceForm.value.subtotal}}">
+                             formControlName="subtotal" name="subtotal" id="subtotal" readonly value="{{isNotaNumber(newInvoiceForm.value.subtotal)?'0.00':newInvoiceForm.value.subtotal}}">
 
                     </div>
 
