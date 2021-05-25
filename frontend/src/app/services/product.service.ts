@@ -40,6 +40,13 @@ export class ProductService {
       return this.httpClient.put<void>(this.messageBaseUri + '/'+ productId, product);
   }
 
+  /**
+   * Loads all simple products from the backend
+   */
+  getSimpleProducts(): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(this.messageBaseUri + '/simple/');
+  }
+
 
 
 

@@ -26,10 +26,11 @@ export class OperatorProductComponent implements OnInit {
     this.fetchData();
   }
   fetchData(): void {
-    forkJoin([this.productService.getProducts(this.page), this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
-      .subscribe(([productsData, categoriesData,taxRatesData]) => {
+    forkJoin([this.productService.getProducts(this.page), this.categoryService.getCategories(), this.taxRateService.getTaxRates(),
+      this.productService.getSimpleProducts()])
+      .subscribe(([productsData, categoriesData,taxRatesData, simpleProductsData]) => {
         this.products = productsData;
-        this.collectionSize = this.products.length;
+        this.collectionSize = simpleProductsData.length;
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
       });
@@ -41,7 +42,6 @@ export class OperatorProductComponent implements OnInit {
     this.router.navigate([addProductURL],{state: [this.categories,this.taxRates]}).then();
   }
   goToProductDetails(selectedProduct: Product){
-    console.log('product selected', selectedProduct);
     const currentUri = this.urlSerializer.serialize(this.router.createUrlTree([]));
     this.router.navigate([currentUri + '/' + selectedProduct.id], {state: [this.categories, this.taxRates, selectedProduct]}).then();
   }

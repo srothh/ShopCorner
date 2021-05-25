@@ -71,10 +71,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProducts(int page) {
-        LOGGER.trace("retrieving all products");
+    public Page<Product> getAllProductsPerPage(int page) {
+        LOGGER.trace("retrieving all products in a paginated manner");
         Pageable pages = PageRequest.of(page, 5);
         return this.productRepository.findAll(pages);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        LOGGER.trace("retrieving all products");
+        return this.productRepository.findAll();
     }
 
     public void validateProperty(String description) {

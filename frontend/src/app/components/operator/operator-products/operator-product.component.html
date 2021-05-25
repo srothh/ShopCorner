@@ -9,7 +9,7 @@
         Zeigt {{1+(pageSize * page)}}-{{(pageSize * (page+1))}}
         von {{collectionSize}}</p>
       <ng-template #other_content>
-        <p style="font-size: 10px; color: gray">Zeigt {{(pageSize * (page + 1))}}-{{collectionSize}}
+        <p style="font-size: 10px; color: gray">Zeigt {{(1 + (pageSize * page))}}-{{collectionSize}}
           von {{collectionSize}}</p>
       </ng-template>
     </div>

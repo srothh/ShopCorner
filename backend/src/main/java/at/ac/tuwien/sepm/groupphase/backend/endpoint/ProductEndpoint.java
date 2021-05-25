@@ -3,11 +3,13 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,28 +68,46 @@ public class ProductEndpoint {
     @Operation(summary = "Returns all products that are currently stored in the database")
     public List<ProductDto> getAllProducts(@RequestParam("page") int page) {
         LOGGER.info("GET " + BASE_URL);
-        return this.productService.getAllProducts(page).getContent()
+        return this.productService.getAllProductsPerPage(page).getContent()
             .stream()
             .map(this.productMapper::entityToDto)
             .collect(Collectors.toList());
     }
 
     /**
-     * Gets all simple products from the database, which omits some fields like picture and category.
+     * Gets all simple products from the database, which omits some fields like picture and category in a PAGINATED form.
      *
      * @return all simple products ( product without picture,category) in a dto - format
      */
     @PermitAll
-    @GetMapping("/simple")
+    @GetMapping("/simple-page")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database without picture and category")
-    public List<SimpleProductDto> getAllSimpleProducts(@RequestParam("page") int page) {
+    public List<SimpleProductDto> getAllSimpleProductsPerPage(@RequestParam("page") int page) {
         LOGGER.info("GET" + BASE_URL + "/simple");
-        return this.productService.getAllProducts(page)
+        return this.productService.getAllProductsPerPage(page)
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
             .collect(Collectors.toList());
     }
+    /**
+     * Gets all simple products from the database, which omits some fields like picture and category.
+     *
+     * @return all simple products ( product without picture,category) in a dto - format
+     */
+
+    @PermitAll
+    @GetMapping("/simple")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Returns all products that are currently stored in the database without picture and category")
+    public List<SimpleProductDto> getAllSimpleProducts() {
+        LOGGER.info("GET" + BASE_URL + "/simple");
+        return this.productService.getAllProducts()
+            .stream()
+            .map(this.productMapper::simpleProductEntityToDto)
+            .collect(Collectors.toList());
+    }
+
 
     /**
      * updates an already existing product from the database.

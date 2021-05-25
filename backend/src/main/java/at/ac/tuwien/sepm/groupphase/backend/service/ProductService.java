@@ -19,11 +19,18 @@ public interface ProductService {
     Product createProduct(Product product);
 
     /**
-     * Gets all products that were previously added in the database.
+     * Gets all products per page that were previously added in the database.
      *
      * @return all products that are currently saved in the database
      */
-    Page<Product> getAllProducts(int page);
+    Page<Product> getAllProductsPerPage(int page);
+
+    /**
+     * Gets all products  that were previously added in the database.
+     *
+     * @return all products that are currently saved in the database
+     */
+    List<Product> getAllProducts();
 
     /**
      * Updates an already existing product in the database.
