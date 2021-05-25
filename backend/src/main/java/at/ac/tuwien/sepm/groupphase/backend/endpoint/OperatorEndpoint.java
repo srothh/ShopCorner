@@ -24,8 +24,8 @@ import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 
 @RestController
-@RequestMapping(OperatorController.BASE_URL)
-public class OperatorController {
+@RequestMapping(OperatorEndpoint.BASE_URL)
+public class OperatorEndpoint {
 
     static final String BASE_URL = "/api/v1/operators";
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -34,7 +34,7 @@ public class OperatorController {
     private final OperatorMapper operatorMapper;
 
     @Autowired
-    public OperatorController(OperatorService operatorService, OperatorMapper operatorMapper) {
+    public OperatorEndpoint(OperatorService operatorService, OperatorMapper operatorMapper) {
         this.operatorService = operatorService;
         this.operatorMapper = operatorMapper;
     }
