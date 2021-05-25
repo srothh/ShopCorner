@@ -2,15 +2,17 @@ import { Injectable } from '@angular/core';
 import {Operator} from '../dtos/operator';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import {Permissions} from '../dtos/permissions.enum';
+import {Globals} from '../global/globals';
 
-const baseUri = 'http://localhost:8080/api/v1/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OperatorService {
+  private operatorBaseUri: string = this.globals.backendUri + '/operators';
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
 
@@ -22,7 +24,7 @@ export class OperatorService {
   createOperator(operator: Operator): Observable<Operator> {
     console.log('Create new operator account', operator);
     return this.httpClient.post<Operator>(
-      baseUri + '/register',  operator
+      this.operatorBaseUri + '/register',  operator
     );
   }
 
@@ -34,8 +36,25 @@ export class OperatorService {
   updateOperator(operator: Operator): Observable<any> {
     console.log('Update operator', operator);
     return this.httpClient.put<Operator>(
-      baseUri + '/' + operator.id,  operator
+      this.operatorBaseUri + '/' + operator.id,  operator
     );
+  }
+
+  /**
+   * fetches all operator accounts from backend
+   */
+  getOperatorsPage(page: number, pageCount: number, permissions: Permissions): Observable<Operator[]> {
+    console.log('Get Operators with permission: ', permissions, ' for page: ', page);
+    return this.httpClient.get<Operator[]>(this.operatorBaseUri + '?page=' + page + '&page_count=' + pageCount +
+      '&permissions=' + permissions);
+  }
+
+  /**
+   * fetches count of Operators from backend
+   */
+  getOperatorCount(): Observable<number[]> {
+    console.log('Get count of Operators');
+    return this.httpClient.get<number[]>(this.operatorBaseUri);
   }
 
 }
