@@ -10,7 +10,7 @@
   <hr>
   <div>
     <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
-      Keine Kund_innen gefunden
+      Keine Kund_innen gespeichert.
     </p>
     <ng-template #not_empty>
       <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content" >
