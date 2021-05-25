@@ -2,19 +2,15 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
-import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,11 +96,11 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPost_thenAddressWithAllSetPropertiesPlusId() throws Exception {
+    public void givenNothing_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(ADDRESS_BASE_URI)
+        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
         )
@@ -132,7 +128,7 @@ public class InvoiceEndpointTest implements TestData {
         DetailedInvoiceDto dto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         String body = objectMapper.writeValueAsString(dto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(ADDRESS_BASE_URI)
+        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -146,7 +142,7 @@ public class InvoiceEndpointTest implements TestData {
                 String content = response.getContentAsString();
                 content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
                 String[] errors = content.split(",");
-                assertEquals(2, errors.length);
+                assertEquals(3, errors.length);
             }
         );
     }

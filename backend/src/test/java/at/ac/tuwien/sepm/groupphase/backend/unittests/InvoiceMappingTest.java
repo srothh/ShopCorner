@@ -1,12 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,22 +29,12 @@ public class InvoiceMappingTest implements TestData {
     public void givenNothing_whenMapSimpleInvoiceDtoToEntity_thenEntityHasAllProperties() {
         SimpleInvoiceDto invoiceDto = invoiceMapping.invoiceToDetailedInvoiceDto(invoice);
         assertAll(
-            () -> assertEquals(0, invoiceDto.getId()),
-            () -> assertEquals(TEST_ADDRESS_STREET, invoiceDto.getDate()),
-            () -> assertEquals(TEST_ADDRESS_POSTALCODE, invoiceDto.getAmount())
+            () -> assertEquals(TEST_INVOICE_ID, invoiceDto.getId()),
+            () -> assertEquals(TEST_INVOICE_DATE, invoiceDto.getDate()),
+            () -> assertEquals(TEST_INVOICE_AMOUNT, invoiceDto.getAmount())
         );
     }
 
-    @Test
-    public void givenNothing_whenMapDetailedInvoiceDtoToEntity_thenEntityHasAllProperties() {
-        DetailedInvoiceDto invoiceDto = invoiceMapping.invoiceToDetailedInvoiceDto(invoice);
-        assertAll(
-            () -> assertEquals(0, invoiceDto.getId()),
-            () -> assertEquals(TEST_ADDRESS_STREET, invoiceDto.getDate()),
-            () -> assertEquals(TEST_ADDRESS_POSTALCODE, invoiceDto.getAmount()),
-            () -> assertEquals(TEST_ADDRESS_HOUSENUMBER, invoiceDto.getItems())
-        );
-    }
 
     @Test
     public void givenNothing_whenMapListWithTwoSimpleInvoiceDtoToDto_thenGetListWithSizeTwoAndAllProperties() {
@@ -60,9 +46,9 @@ public class InvoiceMappingTest implements TestData {
         assertEquals(2, simpleInvoiceDtos.size());
         SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtos.get(0);
         assertAll(
-            () -> assertEquals(0, simpleInvoiceDto.getId()),
-            () -> assertEquals(TEST_ADDRESS_STREET, simpleInvoiceDto.getDate()),
-            () -> assertEquals(TEST_ADDRESS_POSTALCODE, simpleInvoiceDto.getAmount())
+            () -> assertEquals(TEST_INVOICE_ID, simpleInvoiceDto.getId()),
+            () -> assertEquals(TEST_INVOICE_DATE, simpleInvoiceDto.getDate()),
+            () -> assertEquals(TEST_INVOICE_AMOUNT, simpleInvoiceDto.getAmount())
         );
     }
 

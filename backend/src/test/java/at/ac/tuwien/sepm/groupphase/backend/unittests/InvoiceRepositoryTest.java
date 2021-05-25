@@ -1,9 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,13 +22,13 @@ public class InvoiceRepositoryTest implements TestData {
     private InvoiceRepository invoiceRepository;
 
     @Test
-    public void givenNothing_whenSaveAddress_thenFindListWithOneAddressAndFindElementById() {
-        Invoice address = new Invoice();
-        invoiceRepository.save(address);
+    public void givenNothing_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
+        Invoice invoice = new Invoice();
+        invoiceRepository.save(invoice);
         assertAll(
             () -> assertEquals(1, invoiceRepository.findAll().size()),
-            () -> assertNotNull(invoiceRepository.findById(address.getId())),
-            () -> assertNotNull(invoiceRepository.findByDate(address.getDate()))
+            () -> assertNotNull(invoiceRepository.findById(invoice.getId())),
+            () -> assertNotNull(invoiceRepository.findByDate(invoice.getDate()))
         );
     }
 }
