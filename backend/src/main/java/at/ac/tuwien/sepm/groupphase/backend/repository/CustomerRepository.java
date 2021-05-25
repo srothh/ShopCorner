@@ -19,4 +19,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
      * @return a customer with the login name
      */
     Customer findByLoginName(String loginName);
+
 }
