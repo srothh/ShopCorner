@@ -5,11 +5,6 @@ import {Observable} from 'rxjs';
 import {Globals} from '../global/globals';
 import {OperatorAuthService} from '../services/auth/operator-auth.service';
 
-enum AuthActor {
-  operator,
-  customer
-}
-
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 

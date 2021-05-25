@@ -34,9 +34,10 @@ export class CustomerService {
    */
   getAllCustomersForPage(page: number, pageCount: number): Observable<Customer[]> {
     console.log('Get customers for page', page);
-    const httpHeaders = new HttpHeaders()
-      .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
-    return this.httpClient.get<Customer[]>(this.customerBaseUri + '?page=' + page + '&page_count=' + pageCount, {headers: httpHeaders});
+    return this.httpClient.get<Customer[]>(
+      this.customerBaseUri + '?page=' + page + '&page_count=' + pageCount,
+      {headers: this.getHeadersForOperator()}
+    );
   }
 
   /**
@@ -46,8 +47,11 @@ export class CustomerService {
    */
   getCustomerCount(): Observable<number> {
     console.log('Get customer count');
-    const httpHeaders = new HttpHeaders()
+    return this.httpClient.get<number>(this.customerBaseUri + '/count', {headers: this.getHeadersForOperator()});
+  }
+
+  private getHeadersForOperator(): HttpHeaders {
+    return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
-    return this.httpClient.get<number>(this.customerBaseUri + '/count', {headers: httpHeaders});
   }
 }
