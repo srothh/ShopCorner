@@ -2,8 +2,18 @@ import {AuthRequest} from '../../dtos/auth-request';
 import {Observable} from 'rxjs';
 
 export interface IAuthService {
+  /**
+   * Saves the token locally, usually in localStorage
+   *
+   * @param authResponse the authResponse from requesting an access token
+   */
   setToken(authResponse: string): void;
 
+  /**
+   * Gets the expiration date
+   *
+   * @param token the saved access token
+   */
   getTokenExpirationDate(token: string): Date;
 
   /**
@@ -18,8 +28,14 @@ export interface IAuthService {
    */
   isLoggedIn(): void;
 
+  /**
+   * Logs out the user
+   */
   logoutUser(): void;
 
+  /**
+   * Gets the current saved token
+   */
   getToken(): string;
 
   /**
