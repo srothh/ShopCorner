@@ -3,11 +3,19 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {CustomerAuthService} from '../services/auth/customer-auth.service';
 import {Observable} from 'rxjs';
 import {Globals} from '../global/globals';
+import {OperatorAuthService} from '../services/auth/operator-auth.service';
+
+enum AuthActor {
+  operator,
+  customer
+}
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private customerAuthService: CustomerAuthService, private globals: Globals) {
+  constructor(private customerAuthService: CustomerAuthService,
+              private operatorAuthService: OperatorAuthService,
+              private globals: Globals) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -18,11 +26,6 @@ export class AuthInterceptor implements HttpInterceptor {
       || (req.method === 'POST' && req.url === addressUri)) {
       return next.handle(req);
     }
-
-    const authReq = req.clone({
-      headers: req.headers.set('Authorization', 'Bearer ' + this.customerAuthService.getToken())
-    });
-
-    return next.handle(authReq);
+    return next.handle(req);
   }
 }
