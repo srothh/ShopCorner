@@ -179,7 +179,7 @@ public class ProductEndpointTest implements TestData {
         String body = objectMapper.writeValueAsString(productDto);
 
         ResultActions mvcResult = this.mockMvc.perform(
-            put(PRODUCTS_BASE_URI)
+            put(PRODUCTS_BASE_URI + '/'+newProduct.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
             .andExpect(status().isOk());
@@ -205,7 +205,7 @@ public class ProductEndpointTest implements TestData {
         String body = objectMapper.writeValueAsString(productDto);
 
         ResultActions mvcResult = this.mockMvc.perform(
-            put(PRODUCTS_BASE_URI)
+            put(PRODUCTS_BASE_URI+"/"+ product.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
             .andExpect(status().isNotFound());
@@ -223,7 +223,7 @@ public class ProductEndpointTest implements TestData {
         String body = objectMapper.writeValueAsString(productDto);
 
         ResultActions mvcResult = this.mockMvc.perform(
-            put(PRODUCTS_BASE_URI )
+            put(PRODUCTS_BASE_URI + "/"+ newProduct.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
             .andExpect(status().isBadRequest());

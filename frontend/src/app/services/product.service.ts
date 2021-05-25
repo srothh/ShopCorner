@@ -36,8 +36,8 @@ export class ProductService {
    * updates an existing product in the backend and assigns relationship to a category with the given categoryId
    * and the tax-rate with the given taxRateId
    */
-  updateProduct(product: Product): Observable<void> {
-      return this.httpClient.put<void>(this.messageBaseUri , product);
+  updateProduct(productId: number, product: Product): Observable<void> {
+      return this.httpClient.put<void>(this.messageBaseUri + '/'+ productId, product);
   }
 
 

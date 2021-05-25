@@ -26,10 +26,11 @@ public interface ProductService {
     /**
      * Updates an already existing product in the database.
      *
+     * @param productId the Id of the product to update
      * @param product the newly updated product entity with the updated fields
      *
      */
-    void updateProduct(Product product);
+    void updateProduct(Long productId, Product product);
 
     /**
      * Gets a specific product with the given productId.

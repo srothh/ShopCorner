@@ -85,13 +85,13 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public void updateProduct(Product product) {
+    public void updateProduct(Long productId, Product product) {
         LOGGER.trace("update Product with({})", product);
         if (product.getDescription() != null) {
             this.validateProperty(product.getDescription());
         }
         Product updateProduct = this.productRepository
-            .findById(product.getId()).orElseThrow(() -> new NotFoundException("Could not find product with Id:" + product.getId()));
+            .findById(productId).orElseThrow(() -> new NotFoundException("Could not find product with Id:" + productId));
         updateProduct.setName(product.getName());
         updateProduct.setDescription(product.getDescription());
         updateProduct.setPrice(product.getPrice());

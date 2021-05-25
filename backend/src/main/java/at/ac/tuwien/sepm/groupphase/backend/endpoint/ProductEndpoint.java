@@ -93,11 +93,11 @@ public class ProductEndpoint {
      */
 
     @PermitAll
-    @PutMapping()
+    @PutMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateProduct(@RequestBody @Valid ProductDto productDto) {
-        LOGGER.info("PUT Product{}" + BASE_URL, productDto);
-        this.productService.updateProduct(this.productMapper.dtoToEntity(productDto));
+    public void updateProduct(@PathVariable Long productId, @RequestBody @Valid ProductDto productDto) {
+        LOGGER.info("PUT Product{} with Id{}" + BASE_URL, productDto, productId);
+        this.productService.updateProduct(productId, this.productMapper.dtoToEntity(productDto));
     }
 
     /**
