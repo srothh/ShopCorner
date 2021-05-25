@@ -57,4 +57,11 @@ public interface CustomerService extends UserDetailsService {
      * @throws RuntimeException  upon encountering errors with the database
      */
     void assignAddressToCustomer(Customer customer, Long addressId);
+
+    /**
+     * Retrieves all customers from the database.
+     *
+     * @return A list of all found customers
+     */
+    List<Customer> findAll();
 }
