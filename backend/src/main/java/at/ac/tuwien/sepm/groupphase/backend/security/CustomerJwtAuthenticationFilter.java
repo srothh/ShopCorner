@@ -31,8 +31,6 @@ public class CustomerJwtAuthenticationFilter extends UsernamePasswordAuthenticat
                                            JwtTokenizer jwtTokenizer) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenizer = jwtTokenizer;
-        System.out.println("I AM HERE: " + securityProperties.getLoginUriCustomer());
-
         setFilterProcessesUrl(securityProperties.getLoginUriCustomer());
     }
 
