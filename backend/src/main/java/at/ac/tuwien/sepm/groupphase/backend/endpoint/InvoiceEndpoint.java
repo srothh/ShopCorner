@@ -6,51 +6,36 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
-import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
 import java.lang.invoke.MethodHandles;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
 import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
-import com.itextpdf.html2pdf.ConverterProperties;
-import com.itextpdf.html2pdf.HtmlConverter;
-import com.itextpdf.styledxmlparser.jsoup.nodes.Document;
-import com.itextpdf.styledxmlparser.jsoup.Jsoup;
-import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
 import io.swagger.v3.oas.annotations.Operation;
 
 import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
 
 
-import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.InputStreamResource;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -114,7 +99,7 @@ public class InvoiceEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "")
     @Operation(summary = "create new invoice")
-    public SimpleInvoiceDto createInvoice(@RequestBody DetailedInvoiceDto invoiceDto) {
+    public SimpleInvoiceDto createInvoice(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices {}", invoiceDto);
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
 
@@ -137,7 +122,7 @@ public class InvoiceEndpoint {
      */
     @PermitAll
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/getinvoicepdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
+    @GetMapping(value = "/getinvoicepdf/{id}", produces = "application/pdf")
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
         LOGGER.info("Get /invoices/getinvoicepdf/{}", id);
         Invoice invoice = invoiceService.findOneById(id);
@@ -163,7 +148,7 @@ public class InvoiceEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
     @Operation(summary = "create new invoice")
-    public ResponseEntity<byte[]> createInvoiceAsPdf(@RequestBody DetailedInvoiceDto invoiceDto) {
+    public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid  @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
         return this.getInvoiceAsPdf(this.createInvoice(invoiceDto).getId());
 
