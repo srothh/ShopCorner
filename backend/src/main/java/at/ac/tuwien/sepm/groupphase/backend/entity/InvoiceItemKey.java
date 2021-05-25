@@ -10,11 +10,11 @@ import java.util.Objects;
 @Embeddable
 public class InvoiceItemKey implements Serializable {
 
-    @NotNull
+    @NotNull(message = "InvoiceItemKey invoiceId can not be null")
     @Column(name = "invoice_id", nullable = true)
     Long invoiceId;
 
-    @NotNull
+    @NotNull(message = "InvoiceItemKey productId can not be null")
     @Column(name = "product_id", nullable = false)
     Long productId;
 

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class InvoiceItem {
 
-    @NotNull
+    @NotNull(message = "InvoiceItemKey can not be null")
     @EmbeddedId
     private InvoiceItemKey id;
 

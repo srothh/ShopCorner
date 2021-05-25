@@ -7,8 +7,8 @@ import java.util.Set;
 
 public class DetailedInvoiceDto extends SimpleInvoiceDto {
 
-    @NotNull
-    private Set<InvoiceItemDto> items;
+    @NotNull(message = "Set<InvoiceItemDto> can not be null")
+    private Set<InvoiceItemDto> items = new HashSet<>();
 
 
     public Set<InvoiceItemDto> getItems() {

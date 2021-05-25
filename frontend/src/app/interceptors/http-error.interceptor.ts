@@ -13,6 +13,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           if (error.status === 0) {
             return throwError('backend unreachable');
           } else {
+            console.log(error);
             let message = error.error.replace(/[a-zA-Z]*\.[a-zA-Z]*\s/, ' ');
             message = message.replace(/{Validation errors=\[/, '');
             message = message.slice(0, -2);

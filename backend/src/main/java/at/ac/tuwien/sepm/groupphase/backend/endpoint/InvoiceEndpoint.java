@@ -49,7 +49,6 @@ public class InvoiceEndpoint {
     private final InvoiceService invoiceService;
     private final InvoiceItemService invoiceItemService;
     private final InvoiceItemMapper invoiceItemMapper;
-    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     @Autowired
     public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService, InvoiceItemService invoiceItemService) {
@@ -148,7 +147,7 @@ public class InvoiceEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
     @Operation(summary = "create new invoice")
-    public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid  @RequestBody DetailedInvoiceDto invoiceDto) {
+    public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
         return this.getInvoiceAsPdf(this.createInvoice(invoiceDto).getId());
 

@@ -1,21 +1,17 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SimpleInvoiceDto {
 
-    @NotBlank
     private Long id;
 
-    @NotBlank
+    @NotNull(message = "LocalDateTime can not be null")
     private LocalDateTime date;
 
-    @NotBlank
-    @NotNull
     @DecimalMin(value = "0.01", message = "The amount can not be smaller den 0.01")
     private double amount;
 

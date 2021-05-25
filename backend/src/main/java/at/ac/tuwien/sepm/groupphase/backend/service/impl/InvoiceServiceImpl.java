@@ -28,7 +28,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         this.validator = validator;
     }
 
-    @Transactional
+
     @Override
     public List<Invoice> findAllInvoices() {
         LOGGER.trace("Find all invoices");
@@ -39,7 +39,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
     }
 
-    @Transactional
+
     @Override
     public Invoice findOneById(Long id) {
         LOGGER.trace("Find invoices with id {}", id);
@@ -55,7 +55,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     }
 
-    @Transactional
+
     @Override
     public Invoice findOneByDate(LocalDateTime date) {
         LOGGER.trace("Find invoices with id {}", date);

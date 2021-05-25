@@ -22,7 +22,6 @@ public class InvoiceItemDto {
     private Product product;
 
     @NotNull(message = "Number of Items is mandatory")
-    @NotBlank
     @Min(value = 1, message = "Minimum number of items is 1")
     private int numberOfItems;
 

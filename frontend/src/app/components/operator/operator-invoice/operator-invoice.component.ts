@@ -179,7 +179,9 @@ export class OperatorInvoiceComponent implements OnInit {
       link.download = 'invoice_' + this.invoiceDto.date + '.pdf';
       link.click();
     }, (error) => {
-      this.defaultServiceErrorHandling(error);
+      // this.defaultServiceErrorHandling(error);
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -189,7 +191,9 @@ export class OperatorInvoiceComponent implements OnInit {
       const blobURL = URL.createObjectURL(newBlob);
       window.open(blobURL);
     }, (error) => {
-      this.defaultServiceErrorHandling(error);
+      // this.defaultServiceErrorHandling(error);
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -203,7 +207,9 @@ export class OperatorInvoiceComponent implements OnInit {
       link.download = 'invoice_' + this.invoiceDto.date + '_' + id + '.pdf';
       link.click();
     }, (error) => {
-      this.defaultServiceErrorHandling(error);
+      // this.defaultServiceErrorHandling(error);
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -213,7 +219,9 @@ export class OperatorInvoiceComponent implements OnInit {
       const blobURL = URL.createObjectURL(newBlob);
       window.open(blobURL);
     }, (error) => {
-      this.defaultServiceErrorHandling(error);
+      // this.defaultServiceErrorHandling(error);
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -235,7 +243,7 @@ export class OperatorInvoiceComponent implements OnInit {
    * @param error
    * @private
    */
-  private defaultServiceErrorHandling(error: any) {
+  /*private defaultServiceErrorHandling(error: any) {
     console.log(error);
     this.error = true;
     if (error.status === 0) {
@@ -247,7 +255,7 @@ export class OperatorInvoiceComponent implements OnInit {
     } else {
       this.errorMessage = error.error.message;
     }
-  }
+  }*/
 
 
   private fetchData(): void {
