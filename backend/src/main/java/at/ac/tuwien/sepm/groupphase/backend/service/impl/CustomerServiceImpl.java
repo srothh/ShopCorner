@@ -7,10 +7,12 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
-import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -31,13 +33,11 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final AddressService addressService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private final Validator validator;
 
-    public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService, Validator validator) {
+    public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService) {
         this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository;
         this.addressService = addressService;
-        this.validator = validator;
     }
 
     @Override
@@ -66,7 +66,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
-        validator.validateNewCustomer(customer, this);
         Address address = addressService.addNewAddress(customer.getAddress());
         assignAddressToCustomer(customer, address.getId());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
@@ -74,9 +73,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> getAllCustomers() {
+    public Page<Customer> getAllCustomers(int page, int pageCount) {
         LOGGER.trace("getAllCustomers()");
-        return customerRepository.findAll();
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable returnPage = PageRequest.of(page, pageCount);
+        return customerRepository.findAll(returnPage);
     }
 
     @Transactional
@@ -87,8 +92,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> findAll() {
-        LOGGER.trace("findAll()");
-        return customerRepository.findAll();
+    public long getCustomerCount() {
+        return customerRepository.count();
     }
+
 }
