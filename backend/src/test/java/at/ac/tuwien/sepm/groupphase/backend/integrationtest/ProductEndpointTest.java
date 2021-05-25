@@ -82,14 +82,13 @@ public class ProductEndpointTest implements TestData {
     public void givenACategoryAndATaxRate_whenPost_thenProductWithAllSetPropertiesPlusId() throws Exception {
         categoryRepository.save(category);
         taxRateRepository.save(taxRate);
+        product.setTaxRate(taxRate);
+        product.setCategory(category);
         ProductDto productDto = productMapper.entityToDto(product);
         String body = objectMapper.writeValueAsString(productDto);
 
         MvcResult mvcResult = this.mockMvc.perform(
-            post(PRODUCTS_BASE_URI + "/categories/"
-                + category.getId()
-                + "/tax-rates/"
-                + taxRate.getId())
+            post(PRODUCTS_BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body)
         )
@@ -110,8 +109,7 @@ public class ProductEndpointTest implements TestData {
         assertNotNull(productResponse.getCategory());
 
         productResponse.setId(null);
-        productResponse.setCategory(null);
-        productResponse.setTaxRate(null);
+
 
         assertAll(
             () -> assertEquals(product.getName(), productMapper.dtoToEntity(productResponse).getName()),
@@ -133,10 +131,7 @@ public class ProductEndpointTest implements TestData {
         ProductDto productDto = productMapper.entityToDto(product);
         String body = objectMapper.writeValueAsString(productDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(PRODUCTS_BASE_URI + "/categories/"
-            + category.getId()
-            + "/tax-rates/"
-            + taxRate.getId())
+        MvcResult mvcResult = this.mockMvc.perform(post(PRODUCTS_BASE_URI )
             .contentType(MediaType.APPLICATION_JSON)
             .content(body))
             .andDo(print())
@@ -158,13 +153,13 @@ public class ProductEndpointTest implements TestData {
     @Test
     public void givenATaxRate_whenPostByNonExistingId_then404() throws Exception {
         taxRateRepository.save(taxRate);
+        product.setTaxRate(taxRate);
+        category.setId(-1L);
+        product.setCategory(category);
         ProductDto productDto = productMapper.entityToDto(product);
         String body = objectMapper.writeValueAsString(productDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(PRODUCTS_BASE_URI + "/categories/"
-            + "/{categoryId}"
-            + "/tax-rates/"
-            + taxRate.getId(), -1L)
+        MvcResult mvcResult = this.mockMvc.perform(post(PRODUCTS_BASE_URI )
             .contentType(MediaType.APPLICATION_JSON)
             .content(body))
             .andDo(print())
@@ -184,11 +179,7 @@ public class ProductEndpointTest implements TestData {
         String body = objectMapper.writeValueAsString(productDto);
 
         ResultActions mvcResult = this.mockMvc.perform(
-            put(PRODUCTS_BASE_URI +"/"+newProduct.getId()
-                + "/categories/"
-                + category.getId()
-                + "/tax-rates/"
-                + taxRate.getId())
+            put(PRODUCTS_BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
             .andExpect(status().isOk());
@@ -209,15 +200,12 @@ public class ProductEndpointTest implements TestData {
     @Test
     public void givenATaxRate_whenPutByNonExistingId_then404() throws Exception {
         taxRateRepository.save(taxRate);
+        product.setId(1000L);
         ProductDto productDto = productMapper.entityToDto(product);
         String body = objectMapper.writeValueAsString(productDto);
 
         ResultActions mvcResult = this.mockMvc.perform(
-            put(PRODUCTS_BASE_URI +"/100"
-                + "/categories/"
-                + category.getId()
-                + "/tax-rates/"
-                + taxRate.getId())
+            put(PRODUCTS_BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
             .andExpect(status().isNotFound());
@@ -235,11 +223,7 @@ public class ProductEndpointTest implements TestData {
         String body = objectMapper.writeValueAsString(productDto);
 
         ResultActions mvcResult = this.mockMvc.perform(
-            put(PRODUCTS_BASE_URI +"/"+newProduct.getId()
-                + "/categories/"
-                + category.getId()
-                + "/tax-rates/"
-                + taxRate.getId())
+            put(PRODUCTS_BASE_URI )
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
             .andExpect(status().isBadRequest());

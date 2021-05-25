@@ -78,7 +78,13 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   createNewProduct(): Product {
-    return new Product(null, '', null, null, null, null, null);
+    return new Product(null,
+      '',
+      null,
+      null,
+      new Category(null, null),
+      new TaxRate(null, null, null),
+      null);
   }
 
   setFormProperties(): void {
@@ -91,6 +97,9 @@ export class OperatorProductFormComponent implements OnInit {
       this.productForm.controls['price'].setValue(this.newProduct?.price);
       this.productForm.controls['taxRate'].setValue(this.newProduct.taxRate.id, {onlySelf: true});
       this.productForm.controls['category'].setValue(this.newProduct.category?.id, {onlySelf: true});
+      if (this.newProduct.category == null){
+        this.newProduct.category = new Category(null, null);
+      }
       if (this.newProduct.picture != null) {
         this.fileSource = 'data:image/png;base64,' + this.newProduct.picture;
       }
@@ -103,15 +112,18 @@ export class OperatorProductFormComponent implements OnInit {
     }
     this.newProduct.name = this.productForm.get('name').value.trim();
     this.newProduct.price = this.productForm.get('price').value;
-    this.newTaxRateId = this.productForm.get('taxRate').value;
+    this.newProduct.taxRate.id = this.productForm.get('taxRate')?.value;
     if (this.productForm.get('description').value != null) {
       this.newProduct.description = this.productForm.get('description').value;
       this.newProduct.description = this.newProduct.description.trim();
     }
-    this.newCategoryId = this.productForm.get('category').value;
+    if (this.productForm.get('category').value != null) {
+      console.log(this.productForm.get('category')?.value);
+      this.newProduct.category.id = this.productForm.get('category')?.value;
+    }
     if (this.router.url.includes('add')) {
       const baseURL = this.router.url.substring(0, this.router.url.lastIndexOf('/'));
-      this.productService.addProduct(this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(data => {
+      this.productService.addProduct(this.newProduct).subscribe(data => {
         this.newProduct.id = data.id;
         this.errorOccurred = false;
         this.router.navigate([baseURL + '/' + this.newProduct.id]).then();
@@ -126,10 +138,10 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   updateProduct() {
-    this.productService.updateProduct(this.newProduct.id,this.newProduct, this.newCategoryId, this.newTaxRateId).subscribe(response => {
-      this.inEditMode = true;
-      this.addProductEnabled = false;
-      this.productForm.disable();
+    this.productService.updateProduct(this.newProduct).subscribe(response => {
+        this.inEditMode = true;
+        this.addProductEnabled = false;
+        this.productForm.disable();
       }, error => {
         this.errorOccurred = true;
         this.errorMessage = error;
@@ -147,7 +159,6 @@ export class OperatorProductFormComponent implements OnInit {
   enableEditing(): void {
     this.productForm.enable();
     this.addProductEnabled = true;
-    //this.inEditMode = false;
   }
 
   resetState(): void {

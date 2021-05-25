@@ -11,12 +11,10 @@ public interface ProductService {
      * Creates a new product.
      *
      * @param product the newly added product
-     * @param categoryId assigns a product to its category
-     * @param taxRateId assigns a specific tax-rate to a product
      * @return the newly created product
      *
      */
-    Product createProduct(Product product, Long categoryId, Long taxRateId);
+    Product createProduct(Product product);
 
     /**
      * Gets all products that were previously added in the database.
@@ -28,14 +26,10 @@ public interface ProductService {
     /**
      * Updates an already existing product in the database.
      *
-     * @param productId the Id of the product to be updated
      * @param product the newly updated product entity with the updated fields
-     * @param categoryId an optional categoryId to associate the new product with a category
-     * @param taxRateId a possibly updated taxRateId to associate the new product
      *
      */
-    void updateProduct(Long productId, Product product, Long categoryId, Long taxRateId);
-
+    void updateProduct(Product product);
 
     /**
      * Gets a specific product with the given productId.
@@ -45,7 +39,9 @@ public interface ProductService {
      * @return the product entity with the given product Id
      *
      * */
-    Product getProductById(Long productId);
+    Product findById(Long productId);
+
+
 
 
 

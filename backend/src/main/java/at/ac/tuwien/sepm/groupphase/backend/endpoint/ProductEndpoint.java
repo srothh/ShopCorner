@@ -10,24 +10,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-
-
+import org.springframework.web.bind.annotation.PathVariable;
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(ProductEndpoint.BASE_URL)
 public class ProductEndpoint {
-    private static final String BASE_URL = "/api/v1/products";
+    static final String BASE_URL = "/api/v1/products";
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final ProductService productService;
     private final ProductMapper productMapper;
@@ -42,24 +41,16 @@ public class ProductEndpoint {
      * Adds a new Product to the database.
      *
      * @param productDto the dto class containing all necessary field
-     * @param categoryId optional Id of a category entity that associates a product to a category
-     * @param taxRateId  Id of a tax-rate entity that associates a product to a specific tax-rate
      * @return the newly added product in a dto - format
      */
     @PermitAll
-    @PostMapping({BASE_URL + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/categories/tax-rates/{taxRateId}"})
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Creates a new product with a given optional category and tax-rate")
-    public ProductDto createProduct(@RequestBody @Valid ProductDto productDto,
-                                    @PathVariable Optional<Long> categoryId,
-                                    @PathVariable Long taxRateId) {
+    public ProductDto createProduct(@RequestBody @Valid ProductDto productDto) {
         LOGGER.info("POST newProduct({}) " + BASE_URL, productDto);
-        Long validCategoryId = null;
-        if (categoryId.isPresent()) {
-            validCategoryId = categoryId.get();
-        }
         return this.productMapper
-            .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto), validCategoryId, taxRateId));
+            .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto)));
 
     }
 
@@ -69,7 +60,7 @@ public class ProductEndpoint {
      * @return all products with all given fields in a dto - format
      */
     @PermitAll
-    @GetMapping(BASE_URL)
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database")
     public List<ProductDto> getAllProducts() {
@@ -86,7 +77,7 @@ public class ProductEndpoint {
      * @return all simple products ( product without picture,category) in a dto - format
      */
     @PermitAll
-    @GetMapping(BASE_URL + "/simple")
+    @GetMapping("/simple")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database without picture and category")
     public List<SimpleProductDto> getAllSimpleProducts() {
@@ -102,19 +93,11 @@ public class ProductEndpoint {
      */
 
     @PermitAll
-    @PutMapping(value = {BASE_URL + "/{productId}/" + "/categories/{categoryId}/tax-rates/{taxRateId}", BASE_URL + "/{productId}/" + "/categories/tax-rates/{taxRateId}"})
+    @PutMapping()
     @ResponseStatus(HttpStatus.OK)
-    public void updateProduct(@PathVariable Long productId,
-                              @RequestBody @Valid ProductDto productDto,
-                              @PathVariable Optional<Long> categoryId,
-                              @PathVariable Long taxRateId) {
+    public void updateProduct(@RequestBody @Valid ProductDto productDto) {
         LOGGER.info("PUT Product{}" + BASE_URL, productDto);
-        Long validCategoryId = null;
-        if (categoryId.isPresent()) {
-            validCategoryId = categoryId.get();
-        }
-        this.productService.updateProduct(productId, this.productMapper.dtoToEntity(productDto), validCategoryId, taxRateId);
-
+        this.productService.updateProduct(this.productMapper.dtoToEntity(productDto));
     }
 
     /**
@@ -124,11 +107,11 @@ public class ProductEndpoint {
      * @return the product entity with the associated Id
      */
     @PermitAll
-    @GetMapping(BASE_URL + "/{productId}")
+    @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public ProductDto getProductById(@PathVariable Long productId) {
         LOGGER.info("GET Product with id{}" + BASE_URL, productId);
-        return this.productMapper.entityToDto(this.productService.getProductById(productId));
+        return this.productMapper.entityToDto(this.productService.findById(productId));
     }
 
 
