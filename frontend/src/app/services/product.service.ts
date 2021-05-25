@@ -16,8 +16,8 @@ export class ProductService {
   /**
    * Loads all products from the backend
    */
-  getProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.messageBaseUri);
+  getProducts(page: number): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(this.messageBaseUri + '/?page='+ page);
   }
   /**
    * Loads a product with the given Id, if it's present in the backend

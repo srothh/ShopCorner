@@ -17,13 +17,16 @@ export class OperatorProductComponent implements OnInit {
   products: Product[];
   categories: Category[];
   taxRates: TaxRate[];
+  page = 0;
+  pageSize = 5;
+  collectionSize = 0;
   constructor(private productService: ProductService, private router: Router, private urlSerializer: UrlSerializer,
               private categoryService: CategoryService, private taxRateService: TaxRateService) { }
   ngOnInit(): void {
     this.fetchData();
   }
   fetchData(): void {
-    forkJoin([this.productService.getProducts(), this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
+    forkJoin([this.productService.getProducts(this.page), this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
       .subscribe(([productsData, categoriesData,taxRatesData]) => {
         this.products = productsData;
         this.categories = categoriesData;

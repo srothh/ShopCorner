@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 /**
  * Service class handling business logic for products.
@@ -21,7 +23,7 @@ public interface ProductService {
      *
      * @return all products that are currently saved in the database
      */
-    List<Product> getAllProducts();
+    Page<Product> getAllProducts(int page);
 
     /**
      * Updates an already existing product in the database.

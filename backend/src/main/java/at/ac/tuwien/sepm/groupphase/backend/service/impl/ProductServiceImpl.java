@@ -11,6 +11,9 @@ import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -68,9 +71,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public Page<Product> getAllProducts(int page) {
         LOGGER.trace("retrieving all products");
-        return this.productRepository.findAll();
+        Pageable pages = PageRequest.of(page, 10);
+        return this.productRepository.findAll(pages);
     }
 
     public void validateProperty(String description) {

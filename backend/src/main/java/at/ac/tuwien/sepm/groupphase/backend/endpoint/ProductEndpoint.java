@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
@@ -60,12 +61,12 @@ public class ProductEndpoint {
      * @return all products with all given fields in a dto - format
      */
     @PermitAll
-    @GetMapping()
+    @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database")
-    public List<ProductDto> getAllProducts() {
+    public List<ProductDto> getAllProducts(@RequestParam("page") int page) {
         LOGGER.info("GET " + BASE_URL);
-        return this.productService.getAllProducts()
+        return this.productService.getAllProducts(page).getContent()
             .stream()
             .map(this.productMapper::entityToDto)
             .collect(Collectors.toList());
@@ -80,9 +81,9 @@ public class ProductEndpoint {
     @GetMapping("/simple")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database without picture and category")
-    public List<SimpleProductDto> getAllSimpleProducts() {
+    public List<SimpleProductDto> getAllSimpleProducts(@RequestParam("page") int page) {
         LOGGER.info("GET" + BASE_URL + "/simple");
-        return this.productService.getAllProducts()
+        return this.productService.getAllProducts(page)
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
             .collect(Collectors.toList());
