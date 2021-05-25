@@ -42,7 +42,6 @@ export class OperatorInvoiceComponent implements OnInit {
   show = false;
   print = false;
 
-
   constructor(private invoiceService: InvoiceService, private productService: ProductService,
               private taxRateService: TaxRateService, private formBuilder: FormBuilder) {
   }
@@ -148,10 +147,8 @@ export class OperatorInvoiceComponent implements OnInit {
   updateProducts() {
     this.selectedProducts = [];
     for (const item of this.t.controls) {
-      /*const index = this.products.indexOf(item.value.name);
+      const index = this.products.indexOf(item.value.name);
       this.selectedProducts.push(this.products[index]);
-      this.products = this.products.filter(items => this.selectedProducts.indexOf(items) < 0);*/
-      console.log(this.selectedProducts.indexOf(item.value.name));
     }
   }
 

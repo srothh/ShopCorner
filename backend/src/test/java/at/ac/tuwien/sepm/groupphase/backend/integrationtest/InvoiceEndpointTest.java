@@ -95,7 +95,7 @@ public class InvoiceEndpointTest implements TestData {
 
     }
 
-   /* @Test
+    @Test
     public void givenNothing_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
@@ -117,7 +117,7 @@ public class InvoiceEndpointTest implements TestData {
         assertNotNull(invoiceDtoResponse.getAmount());
         invoiceDtoResponse.setId(null);
         assertEquals(invoice, invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDtoResponse));
-    }*/
+    }
 
     @Test
     public void givenNothing_whenPostInvalid_then400() throws Exception {

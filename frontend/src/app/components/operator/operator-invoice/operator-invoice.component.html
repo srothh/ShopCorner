@@ -6,9 +6,6 @@
 </div>
 
 
-
-
-
 <div class="table-view">
   <div class="container my-4">
     <p class="font-weight-bold">Rechnung erstellen</p>
@@ -47,8 +44,7 @@
                               [ngClass]="{ 'is-invalid': submitted && item.controls.name.errors}"
                               (change)="calculateAmount(); updateProducts()">
                         <option value="" selected disabled>(none)</option>
-                        <option *ngFor="let product of products; let i = index;"
-                                [ngValue]="product">{{product.name}}</option>
+                        <option *ngFor="let product of products; let i = index;" [ngValue]="product" [class.hidden]="selectedProducts.includes(product)">{{product.name}}</option>
                       </select>
                       <div *ngIf="submitted && item.controls.name.errors" class="invalid-feedback">
                         <div *ngIf="item.controls.name.errors.required">Wählen sie ein Produkt</div>
@@ -78,38 +74,43 @@
                     </div>
                   </div>
                 </div>
-                  <div class="row align-items-start">
-                    <div class="col-9 center-block text-center">
-                      <span class="form-control" style="border: none; text-align: right">Netto:</span>
-                    </div>
-                    <div class="col-3 center-block text-center" >
+                <div class="row align-items-start">
+                  <div class="col-9 center-block text-center">
+                    <span class="form-control" style="border: none; text-align: right">Netto:</span>
+                  </div>
+                  <div class="col-3 center-block text-center">
 
-                      <input class="form-control" id="netAmount" style="border: none;background-color:white; text-align: center"
-                             formControlName="subtotal" name="subtotal" id="subtotal" readonly value="{{isNotaNumber(newInvoiceForm.value.subtotal)?'0.00':newInvoiceForm.value.subtotal}}">
-
-                    </div>
+                    <input class="form-control" id="netAmount"
+                           style="border: none;background-color:white; text-align: center"
+                           formControlName="subtotal" name="subtotal" id="subtotal" readonly
+                           value="{{isNotaNumber(newInvoiceForm.value.subtotal)?'0.00':newInvoiceForm.value.subtotal}}">
 
                   </div>
-                  <div class="row align-items-start">
-                    <div class="col-9 center-block text-center">
-                      <span class="form-control" style="border: none; text-align: right">Steuern:</span>
-                    </div>
-                    <div class="col-3 center-block text-center">
-                      <input class="form-control" id="taxAmount" style="border: none;background-color:white; text-align: center"
-                             formControlName="tax" name="tax" id="tax" readonly value="{{newInvoiceForm.value.tax}}">
-                    </div>
 
+                </div>
+                <div class="row align-items-start">
+                  <div class="col-9 center-block text-center">
+                    <span class="form-control" style="border: none; text-align: right">Steuern:</span>
                   </div>
-                  <div class="row align-items-start">
-                    <div class="col-9 center-block text-center">
-                      <span class="form-control" style="border: none;  text-align: right">Gesamtbetrag:</span>
-                    </div>
-                    <div class="col-3 center-block text-center">
-                      <input class="form-control" id="totalAmount" style="border: none;background-color:white; text-align: center"
-                             formControlName="total" name="total" id="total" readonly value="{{newInvoiceForm.value.total}}">
-                    </div>
+                  <div class="col-3 center-block text-center">
+                    <input class="form-control" id="taxAmount"
+                           style="border: none;background-color:white; text-align: center"
+                           formControlName="tax" name="tax" id="tax" readonly value="{{newInvoiceForm.value.tax}}">
+                  </div>
 
+                </div>
+                <div class="row align-items-start">
+                  <div class="col-9 center-block text-center">
+                    <span class="form-control" style="border: none;  text-align: right">Gesamtbetrag:</span>
                   </div>
+                  <div class="col-3 center-block text-center">
+                    <input class="form-control" id="totalAmount"
+                           style="border: none;background-color:white; text-align: center"
+                           formControlName="total" name="total" id="total" readonly
+                           value="{{newInvoiceForm.value.total}}">
+                  </div>
+
+                </div>
               </div>
               <div class="createInvoice">
                 <div class="row">
