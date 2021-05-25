@@ -4,7 +4,17 @@
   </div>
   <div class="operator-product-body">
     <button type="button" class="btn btn-primary mb-3" (click)="addNewProduct()">Produkt hinzufügen</button>
-    <table class="table table-hover">
+    <div>
+      <p style="font-size: 10px; color: gray">
+        Zeigt {{1+(pageSize * page)}}-{{(pageSize * (page+1))}}
+        von {{collectionSize}}</p>
+      <ng-template #other_content>
+        <p style="font-size: 10px; color: gray">Zeigt {{(pageSize * (page + 1))}}-{{collectionSize}}
+          von {{collectionSize}}</p>
+      </ng-template>
+    </div>
+
+    <table class="table table-hover table-sm" data-pagination="true" data-page-list="[1,2]">
       <thead class="thead-light">
       <tr>
         <th scope="col">Name</th>
@@ -16,20 +26,20 @@
       </thead>
 
 
-        <tbody>
-        <tr *ngFor="let product of products" style="cursor: pointer" (click)="goToProductDetails(product)">
+      <tbody>
+      <tr *ngFor="let product of products" style="cursor: pointer" (click)="goToProductDetails(product)">
 
-          <td>{{product.name}}</td>
-          <td>{{(product.taxRate?.percentage + '%') ||'--'}}</td>
-          <td>{{product.category?.name||'--'}}</td>
-          <td>{{product.price}}</td>
-          <td>
-            <div *ngIf="product.picture">
+        <td>{{product.name}}</td>
+        <td>{{(product.taxRate?.percentage + '%') || '--'}}</td>
+        <td>{{product.category?.name || '--'}}</td>
+        <td>{{product.price}}</td>
+        <td>
+          <div *ngIf="product.picture">
             <img src="{{'data:image/png;base64,'+product.picture}}" alt="" width="100" height="100">
-            </div>
-          </td>
-        </tr>
-        </tbody>
+          </div>
+        </td>
+      </tr>
+      </tbody>
 
 
     </table>

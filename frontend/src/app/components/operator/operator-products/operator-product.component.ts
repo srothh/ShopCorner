@@ -29,6 +29,7 @@ export class OperatorProductComponent implements OnInit {
     forkJoin([this.productService.getProducts(this.page), this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
       .subscribe(([productsData, categoriesData,taxRatesData]) => {
         this.products = productsData;
+        this.collectionSize = this.products.length;
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
       });
