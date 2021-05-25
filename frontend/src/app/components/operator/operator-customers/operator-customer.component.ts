@@ -15,7 +15,6 @@ export class OperatorCustomerComponent implements OnInit {
   page = 0;
   pageSize = 15;
   collectionSize = 0;
-  pageMax = this.pageSize;
 
   constructor(private customerService: CustomerService) {
   }
@@ -39,7 +38,6 @@ export class OperatorCustomerComponent implements OnInit {
     if ((this.page + 1) * this.pageSize < this.collectionSize) {
       this.page += 1;
       this.loadCustomersForPage();
-      this.getCurrentPageMax();
     }
   }
 
@@ -50,7 +48,6 @@ export class OperatorCustomerComponent implements OnInit {
     if (this.page > 0) {
       this.page -= 1;
       this.loadCustomersForPage();
-      this.getCurrentPageMax();
     }
   }
 
@@ -84,13 +81,6 @@ export class OperatorCustomerComponent implements OnInit {
         this.errorMessage = error.error;
       }
     );
-  }
-
-  /**
-   * calculates the upper limit of pages currently shown
-   */
-  private getCurrentPageMax() {
-    this.pageMax = Math.min(this.pageSize * (this.page + 1), this.collectionSize);
   }
 
 }

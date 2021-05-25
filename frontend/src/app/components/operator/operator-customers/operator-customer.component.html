@@ -9,13 +9,19 @@
   <h2>Kund_innen Konten</h2>
   <hr>
   <div>
-    <p style="font-size: 10px; color: gray">
-      Zeigt {{1 + (pageSize  * (page ))}}-{{pageMax}}
-      von {{collectionSize}}</p>
-    <ng-template #other_content>
-      <p style="font-size: 10px; color: gray">Zeigt {{1 + (pageSize * (page - 1))}}-{{collectionSize}}
+    <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
+      Keine Kund_innen gefunden
+    </p>
+    <ng-template #not_empty>
+      <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content" >
+        Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
         von {{collectionSize}}</p>
     </ng-template>
+    <ng-template #other_content>
+      <p style="font-size: 10px; color: gray">Zeigt {{1 + (pageSize * (page))}}-{{collectionSize}}
+        von {{collectionSize}}</p>
+    </ng-template>
+
   </div>
   <div class="border rounded" style="height: 560px">
     <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">

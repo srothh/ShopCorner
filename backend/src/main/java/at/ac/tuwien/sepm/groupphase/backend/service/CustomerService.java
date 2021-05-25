@@ -64,6 +64,7 @@ public interface CustomerService extends UserDetailsService {
      * Returns amount of customers in the database.
      *
      * @return The amount of customers in the database
+     * @throws RuntimeException  upon encountering errors with the database
      */
     long getCustomerCount();
 
