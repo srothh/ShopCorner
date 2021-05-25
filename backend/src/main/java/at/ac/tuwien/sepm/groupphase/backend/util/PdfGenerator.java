@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.styledxmlparser.jsoup.Jsoup;
@@ -104,9 +105,15 @@ public class PdfGenerator {
         return fileOutput;
     }
 
-    public byte[] generatePdfAsByteArray(Invoice invoice) throws IOException {
+    public byte[] generatePdfAsByteArray(Invoice invoice) {
         String fileOutput = generatePdf(invoice);
         Path pdfFile = Paths.get(fileOutput);
-        return Files.readAllBytes(pdfFile);
+        byte[] pdfAsBytes;
+        try {
+            pdfAsBytes = Files.readAllBytes(pdfFile);
+        } catch (IOException  e) {
+            throw new NotFoundException(String.format("File %s not Found", pdfFile), e);
+        }
+        return pdfAsBytes;
     }
 }

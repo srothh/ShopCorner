@@ -84,7 +84,7 @@ public class InvoiceEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
     @Operation(summary = "Get information for specific invoice")
-    public DetailedInvoiceDto find(@PathVariable Long id) throws IOException {
+    public DetailedInvoiceDto find(@PathVariable Long id) {
         LOGGER.info("GET /invoice/{}", id);
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
 
@@ -138,7 +138,7 @@ public class InvoiceEndpoint {
     @PermitAll
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/getinvoicepdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
-    public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) throws IOException {
+    public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
         LOGGER.info("Get /invoices/getinvoicepdf/{}", id);
         Invoice invoice = invoiceService.findOneById(id);
         PdfGenerator pdf = new PdfGenerator();
@@ -163,10 +163,9 @@ public class InvoiceEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
     @Operation(summary = "create new invoice")
-    public ResponseEntity<byte[]> createInvoiceAsPdf(@RequestBody DetailedInvoiceDto invoiceDto) throws IOException {
+    public ResponseEntity<byte[]> createInvoiceAsPdf(@RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
         return this.getInvoiceAsPdf(this.createInvoice(invoiceDto).getId());
 
     }
-
 }

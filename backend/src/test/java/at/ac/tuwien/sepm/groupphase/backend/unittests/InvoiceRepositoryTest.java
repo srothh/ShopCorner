@@ -21,7 +21,7 @@ public class InvoiceRepositoryTest implements TestData {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    @Test
+/*    @Test
     public void givenNothing_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
         Invoice invoice = new Invoice();
         invoiceRepository.save(invoice);
@@ -30,5 +30,5 @@ public class InvoiceRepositoryTest implements TestData {
             () -> assertNotNull(invoiceRepository.findById(invoice.getId())),
             () -> assertNotNull(invoiceRepository.findByDate(invoice.getDate()))
         );
-    }
+    }*/
 }
