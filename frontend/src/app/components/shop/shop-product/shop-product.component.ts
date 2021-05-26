@@ -10,8 +10,7 @@ import {Product} from '../../../dtos/product';
 export class ShopProductComponent implements OnInit {
   products: Product[];
   page = 0;
-  pageSize = 6;
-  fileSource: string | ArrayBuffer;
+  pageSize = 15;
   collectionSize = 0;
 
   constructor(private productService: ProductService) {
@@ -32,6 +31,7 @@ export class ShopProductComponent implements OnInit {
     if (product.picture != null) {
       return 'data:image/png;base64,' + product.picture;
     }
+    return '../../../../assets/stock-productimage-unavailable.jpg';
   }
 
   /**
