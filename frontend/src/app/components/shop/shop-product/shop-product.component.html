@@ -1,1 +1,25 @@
-<p>shop-product works!</p>
+<main role="main" class="mx-5">
+  <div class="album py-5 bg-light">
+    <div class="row">
+      <div class="col-md-5" *ngFor="let product of products">
+        <div class="card mb-4">
+          <img class="card-img-top" src="{{getImageSource(product)}}" width="125px" height="200px"
+               alt="produkt">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <p>{{product.name}}</p>
+              <p>€ {{product.price}}</p>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-primary">Zum Warenkorb hinzufügen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between p-2">
+      <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
+      <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+    </div>
+  </div>
+</main>
