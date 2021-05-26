@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
 import {Invoice} from '../dtos/invoice';
+import {Product} from '../dtos/product';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import {Invoice} from '../dtos/invoice';
 export class InvoiceService {
 
   private invoiceBaseUri: string = this.globals.backendUri + '/invoice';
+  private productBaseUri: string = this.globals.backendUri + '/products';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
@@ -20,6 +22,14 @@ export class InvoiceService {
   getInvoice(): Observable<Invoice[]> {
     return this.httpClient.get<Invoice[]>(this.invoiceBaseUri);
   }
+
+  /**
+   * Loads all simple products from the backend
+   */
+  getProducts(): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(this.productBaseUri + '/simple');
+  }
+
 
   /**
    * Loads invoice by id from the backend

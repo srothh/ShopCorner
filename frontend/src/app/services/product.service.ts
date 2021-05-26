@@ -19,6 +19,7 @@ export class ProductService {
   getProducts(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.messageBaseUri);
   }
+
   /**
    * Adds a new Product in the backend and assigns relationship to category with the given categoryId
    * and the taxRateId
