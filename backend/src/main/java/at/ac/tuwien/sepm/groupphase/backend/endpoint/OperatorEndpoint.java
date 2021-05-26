@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,8 +51,8 @@ public class OperatorEndpoint {
      * @param permissions of needed operators
      * @return List with all needed operators
      */
-    @PermitAll
-    @GetMapping(params = {"page"})
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping
     @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
     public List<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam("permissions") Permissions permissions) {
         LOGGER.info("GET " + BASE_URL + "?{}&{}&{}", page, pageCount, permissions);
@@ -63,11 +64,11 @@ public class OperatorEndpoint {
      *
      * @return Array where [0] is count of admins and [1] is count of employees
      */
-    @PermitAll
-    @GetMapping()
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping("/count")
     @Operation(summary = "Get count of operators", security = @SecurityRequirement(name = "apiKey"))
     public int[] getCount() {
-        LOGGER.info("GET " + BASE_URL);
+        LOGGER.info("GET " + BASE_URL + "/count");
         return operatorService.getCollectionSize();
     }
 
@@ -95,7 +96,7 @@ public class OperatorEndpoint {
      *
      * @param id of operator that should be deleted
      */
-    @PermitAll //TODO change to @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
