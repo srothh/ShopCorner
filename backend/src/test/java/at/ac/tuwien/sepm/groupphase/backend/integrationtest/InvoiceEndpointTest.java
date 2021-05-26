@@ -81,8 +81,11 @@ public class InvoiceEndpointTest implements TestData {
 
     @BeforeEach
     public void beforeEach() {
-        invoiceRepository.deleteAll();
+        categoryRepository.deleteAll();
+        taxRateRepository.deleteAll();
         productRepository.deleteAll();
+        invoiceRepository.deleteAll();
+
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
