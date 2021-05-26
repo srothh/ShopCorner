@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
@@ -58,9 +59,11 @@ public class ProductEndpoint {
     }
 
     /**
-     * gets all Products form the database.
+     * gets all products form the database in a paginated manner.
+     * @param page describes the number of the page
+     * @param pageCount the number of entries in each page
      *
-     * @return all products with all given fields in a dto - format
+     * @return all products with all given fields in a dto - format and paginated specified by page and pageCount
      */
     @PermitAll
     @GetMapping(params = {"page"})
@@ -75,9 +78,9 @@ public class ProductEndpoint {
     }
 
     /**
-     * Gets all simple products from the database, which omits some fields like picture and category in a PAGINATED form.
+     * Gets the number of all added products.
      *
-     * @return all simple products ( product without picture,category) in a dto - format PAGNITED
+     * @return the number of all products
      */
     @PermitAll
     @GetMapping()
@@ -132,5 +135,18 @@ public class ProductEndpoint {
         return this.productMapper.entityToDto(this.productService.findById(productId));
     }
 
+    /**
+     * deletes a specific product with the given id.
+     *
+     * @param productId the id to search in the database and retrieve the associated product entity
+     *
+     */
+    @PermitAll
+    @DeleteMapping("/{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteProductById(@PathVariable Long productId) {
+        LOGGER.info("DELETE Product with id{}" + BASE_URL, productId);
+        this.productService.deleteProductById(productId);
+    }
 
 }

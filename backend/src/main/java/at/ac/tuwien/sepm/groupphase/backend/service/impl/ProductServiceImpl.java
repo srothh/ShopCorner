@@ -119,12 +119,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Product findById(Long productId) {
+        LOGGER.trace("find product with Id{}",productId);
         return productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find product %s", productId)));
     }
 
     @Override
     public int getProductsCount() {
+        LOGGER.trace("get the number of products");
         return productRepository.findAll().size();
     }
+
+    @Override
+    public void deleteProductById(Long productId) {
+        LOGGER.trace("DELETE Product with Id{}", productId);
+        if (findById(productId)!= null) {
+            productRepository.deleteById(productId);
+        }
+    }
+
+
 }

@@ -19,7 +19,9 @@ public interface ProductService {
     Product createProduct(Product product);
 
     /**
-     * Gets all products per page that were previously added in the database.
+     * Gets all products per page that were previously added in the database in a paginated manner.
+     * @param page describes the number of the page
+     * @param pageCount the number of entries each page holds
      *
      * @return all products that are currently saved in the database
      */
@@ -59,6 +61,15 @@ public interface ProductService {
      *
      * */
     int getProductsCount();
+
+    /**
+     * Deletes a specific product with the given productId.
+     *
+     * @param productId the is to search in the database
+     *
+     *
+     * */
+    void deleteProductById(Long productId);
 
 
 
