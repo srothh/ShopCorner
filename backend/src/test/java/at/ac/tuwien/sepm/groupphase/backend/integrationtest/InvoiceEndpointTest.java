@@ -86,11 +86,17 @@ public class InvoiceEndpointTest implements TestData {
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
         product.setPrice(TEST_PRODUCT_PRICE);
 
-        invoiceItemKey.setInvoiceId(invoice.getId());
+        taxRateRepository.save(taxRate);
+
+        product.setCategory(null);
+        product.setTaxRate(taxRate);
+
+
+       // invoiceItemKey.setInvoiceId(invoice.getId());
         invoiceItemKey.setProductId(product.getId());
 
         invoiceItem.setId(invoiceItemKey);
-        invoiceItem.setInvoice(invoice);
+        // invoiceItem.setInvoice(invoice);
         invoiceItem.setProduct(product);
         invoiceItem.setNumberOfItems(0);
 
@@ -101,11 +107,8 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenAProductAndCategoryAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
-        taxRateRepository.save(taxRate);
+    public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
 
-        product.setCategory(null);
-        product.setTaxRate(taxRate);
 
         productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
@@ -127,7 +130,7 @@ public class InvoiceEndpointTest implements TestData {
         assertNotNull(invoiceDtoResponse.getId());
         assertNotNull(invoiceDtoResponse.getDate());
         assertNotNull(invoiceDtoResponse.getAmount());
-        invoiceDtoResponse.setId(null);
+        //invoiceDtoResponse.setId(null);
         assertEquals(invoice, invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDtoResponse));
     }
 
