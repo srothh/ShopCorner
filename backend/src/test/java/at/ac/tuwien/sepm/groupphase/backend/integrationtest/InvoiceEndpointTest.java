@@ -97,6 +97,13 @@ public class InvoiceEndpointTest implements TestData {
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);;
 
+        categoryRepository.save(category);
+        taxRateRepository.save(taxRate);
+
+        product.setCategory(category);
+        product.setTaxRate(taxRate);
+
+
         invoiceItemKey.setInvoiceId(invoice.getId());
         invoiceItemKey.setProductId(product.getId());
 
@@ -113,8 +120,7 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenAProductAndCategoryAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
-        categoryRepository.save(category);
-        taxRateRepository.save(taxRate);
+
         productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
 
