@@ -96,7 +96,7 @@ public class InvoiceEndpoint {
      */
     @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "")
+    @PostMapping(value = "",produces = "application/json")
     @Operation(summary = "create new invoice")
     public SimpleInvoiceDto createInvoice(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices {}", invoiceDto);
@@ -111,6 +111,23 @@ public class InvoiceEndpoint {
         invoiceItemService.creatInvoiceItem(items);
         return newInvoice;
     }
+
+    /**
+     * Creates a database entry and generates a pdf.
+     *
+     * @param invoiceDto which should be saved in the database
+     * @return ResponseEntity with the generated pdf
+     */
+    @PermitAll
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
+    @Operation(summary = "create new invoice")
+    public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
+        LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
+        return this.getInvoiceAsPdf(this.createInvoice(invoiceDto).getId());
+
+    }
+
 
 
     /**
@@ -137,19 +154,5 @@ public class InvoiceEndpoint {
         return new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);
     }
 
-    /**
-     * Creates a database entry and generates a pdf.
-     *
-     * @param invoiceDto which should be saved in the database
-     * @return ResponseEntity with the generated pdf
-     */
-    @PermitAll
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
-    @Operation(summary = "create new invoice")
-    public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
-        return this.getInvoiceAsPdf(this.createInvoice(invoiceDto).getId());
 
-    }
 }

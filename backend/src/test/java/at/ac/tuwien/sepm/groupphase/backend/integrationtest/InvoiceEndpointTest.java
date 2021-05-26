@@ -133,7 +133,7 @@ public class InvoiceEndpointTest implements TestData {
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
-        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+        assertEquals(MediaType.TEXT_PLAIN_VALUE, response.getContentType());
 
         SimpleInvoiceDto invoiceDtoResponse = objectMapper.readValue(response.getContentAsString(), SimpleInvoiceDto.class);
 
