@@ -28,10 +28,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -225,6 +223,46 @@ public class OperatorEndpointTest implements TestData {
         assertEquals(1, adminCount);
         int employeeCount = count[1];
         assertEquals(1, employeeCount);
+    }
+
+    @Test
+    public void givenOneOperator_whenDelete_findAllAfterDeleteReturnsEmptyList()
+        throws Exception {
+        operatorRepository.save(admin);
+
+        MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + admin.getId())
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseDelete = mvcResultDelete.getResponse();
+
+        assertEquals(HttpStatus.NO_CONTENT.value(), responseDelete.getStatus());
+
+        MvcResult mvcResultGet = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseGet = mvcResultGet.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responseGet.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseGet.getContentType());
+
+        List<OverviewOperatorDto> overviewOperatorDtos = Arrays.asList(objectMapper.readValue(responseGet.getContentAsString(),
+            OverviewOperatorDto[].class));
+
+        assertEquals(0, overviewOperatorDtos.size());
+    }
+
+    @Test
+    public void givenNothing_whenDelete_thenNotFoundResponse()
+        throws Exception {
+        MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + 100)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseDelete = mvcResultDelete.getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseDelete.getStatus());
     }
 }
 
