@@ -10,6 +10,9 @@ import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -70,9 +73,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> getAllCustomers() {
+    public Page<Customer> getAllCustomers(int page, int pageCount) {
         LOGGER.trace("getAllCustomers()");
-        return customerRepository.findAll();
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable returnPage = PageRequest.of(page, pageCount);
+        return customerRepository.findAll(returnPage);
     }
 
     @Transactional
@@ -81,4 +90,10 @@ public class CustomerServiceImpl implements CustomerService {
         Address address = addressService.findAddressById(addressId);
         customer.setAddress(address);
     }
+
+    @Override
+    public long getCustomerCount() {
+        return customerRepository.count();
+    }
+
 }
