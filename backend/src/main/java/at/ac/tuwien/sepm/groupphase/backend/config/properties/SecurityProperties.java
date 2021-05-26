@@ -25,8 +25,12 @@ public class SecurityProperties {
         return auth.getPrefix();
     }
 
-    public String getLoginUri() {
+    public String getLoginUriCustomer() {
         return auth.getLoginUriCustomer();
+    }
+
+    public String getLoginUriOperator() {
+        return auth.getLoginUriOperator();
     }
 
     public String getJwtSecret() {
@@ -65,6 +69,7 @@ public class SecurityProperties {
         private String header;
         private String prefix;
         private String loginUriCustomer;
+        private String loginUriOperator;
 
         public String getHeader() {
             return header;
@@ -88,6 +93,14 @@ public class SecurityProperties {
 
         public void setLoginUriCustomer(String loginUriCustomer) {
             this.loginUriCustomer = loginUriCustomer;
+        }
+
+        public String getLoginUriOperator() {
+            return loginUriOperator;
+        }
+
+        public void setLoginUriOperator(String loginUriOperator) {
+            this.loginUriOperator = loginUriOperator;
         }
     }
 

@@ -244,7 +244,7 @@ public class CustomerEndpointTest implements TestData {
             .andReturn();
         MockHttpServletResponse responseGet2 = mvcResultGet1.getResponse();
         MockHttpServletResponse responseGet1 = mvcResultGet2.getResponse();
-        MvcResult mvcResultGet = this.mockMvc.perform(get(CUSTOMER_BASE_URI)
+        MvcResult mvcResultGet = this.mockMvc.perform(get(CUSTOMER_BASE_URI + "/count")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();

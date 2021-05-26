@@ -20,15 +20,18 @@ import {OperatorAddProductComponent} from './components/operator/operator-add-pr
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {CustomerAuthGuard} from './guards/customer-auth.guard';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
-import {PreventLoginGuard} from './guards/prevent-login.guard';
 import {OperatorProductDetailsComponent} from './components/operator/operator-product-details/operator-product-details.component';
+import {PreventCustomerLoginGuard} from './guards/prevent-customer-login.guard';
+import {OperatorAuthGuard} from './guards/operator-auth.guard';
+import {PreventOperatorLoginGuard} from './guards/prevent-operator-login.guard';
+import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 
 const routes: Routes = [
   {
     path: '', component: ShopComponent, children: [
       {path: '', redirectTo: 'home', pathMatch: 'full'},
       {path: 'home', component: ShopHomeComponent},
-      {path: 'login', canActivate: [PreventLoginGuard], component: ShopLoginComponent},
+      {path: 'login', canActivate: [PreventCustomerLoginGuard], component: ShopLoginComponent},
       {path: 'products', component: ShopProductComponent},
       {path: 'account', canActivate: [CustomerAuthGuard], component: ShopAccountComponent},
       {path: 'cart', component: ShopCartComponent},
@@ -36,7 +39,7 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'operator', component: OperatorComponent, children: [
+    path: 'operator', canActivate: [OperatorAuthGuard], component: OperatorComponent, children: [
       {path: '', redirectTo: 'home', pathMatch: 'full'},
       {path: 'home', component: OperatorHomeComponent},
       {path: 'shop', component: OperatorShopComponent},
@@ -50,7 +53,9 @@ const routes: Routes = [
       {path: 'customers', component: OperatorCustomerComponent},
       {path: 'accounts', component: OperatorAccountComponent},
       {path: 'registration', component: OperatorRegistrationComponent},
-    ]},
+    ],
+  },
+  {path: 'operator/login', canActivate: [PreventOperatorLoginGuard], component: OperatorLoginComponent}
 ];
 
 @NgModule({

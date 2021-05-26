@@ -45,9 +45,14 @@ li:hover:not(.is-active) {
   border-radius: 6px;
 }
 
+.btn-custom-primary {
+  background-color: #5469d4;
+  color: white;
+}
+
 .is-active {
   background-color: lightgray;
   border-radius: 6px;
   font-weight: bold;
-  color: darkblue;
+  color: #007bff;
 }

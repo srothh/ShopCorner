@@ -1,19 +1,19 @@
-import {Injectable} from '@angular/core';
-import {AuthRequest} from '../dtos/auth-request';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Globals} from '../../global/globals';
+import {AuthRequest} from '../../dtos/auth-request';
+import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
-// @ts-ignore
 import jwt_decode from 'jwt-decode';
-import {Globals} from '../global/globals';
+import {IAuthService} from './interface-auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CustomerAuthService {
+export class OperatorAuthService implements IAuthService {
 
-  private authBaseUri: string = this.globals.backendUri + '/authentication/customers';
-  private authTokenKey = 'customerAuthToken';
+  private authBaseUri: string = this.globals.backendUri + '/authentication/operators';
+  private authTokenKey = 'operatorAuthToken';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
@@ -54,18 +54,21 @@ export class CustomerAuthService {
     if (this.getToken() != null) {
       const decoded: any = jwt_decode(this.getToken());
       const authInfo: string[] = decoded.rol;
-      if (authInfo.includes('ROLE_CUSTOMER')) {
-        return 'CUSTOMER';
+      if (authInfo.includes('ROLE_ADMIN')) {
+        return 'ADMIN';
+      }
+      if (authInfo.includes('ROLE_EMPLOYEE')) {
+        return 'EMPLOYEE';
       }
     }
     return 'UNDEFINED';
   }
 
-  private setToken(authResponse: string) {
+  setToken(authResponse: string) {
     localStorage.setItem(this.authTokenKey, authResponse);
   }
 
-  private getTokenExpirationDate(token: string): Date {
+  getTokenExpirationDate(token: string): Date {
 
     const decoded: any = jwt_decode(token);
     if (decoded.exp === undefined) {
