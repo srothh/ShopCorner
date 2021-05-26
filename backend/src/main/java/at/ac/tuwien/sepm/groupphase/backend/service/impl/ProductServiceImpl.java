@@ -71,9 +71,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProductsPerPage(int page) {
+    public Page<Product> getAllProductsPerPage(int page, int pageCount) {
         LOGGER.trace("retrieving all products in a paginated manner");
-        Pageable pages = PageRequest.of(page, 5);
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable pages = PageRequest.of(page, pageCount);
         return this.productRepository.findAll(pages);
     }
 
@@ -116,5 +121,10 @@ public class ProductServiceImpl implements ProductService {
     public Product findById(Long productId) {
         return productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find product %s", productId)));
+    }
+
+    @Override
+    public int getProductsCount() {
+        return productRepository.findAll().size();
     }
 }

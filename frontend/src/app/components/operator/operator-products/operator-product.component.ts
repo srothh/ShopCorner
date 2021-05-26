@@ -18,7 +18,7 @@ export class OperatorProductComponent implements OnInit {
   categories: Category[];
   taxRates: TaxRate[];
   page = 0;
-  pageSize = 5;
+  pageSize = 15;
   collectionSize = 0;
   constructor(private productService: ProductService, private router: Router, private urlSerializer: UrlSerializer,
               private categoryService: CategoryService, private taxRateService: TaxRateService) { }
@@ -26,15 +26,21 @@ export class OperatorProductComponent implements OnInit {
     this.fetchData();
   }
   fetchData(): void {
-    forkJoin([this.productService.getProducts(this.page), this.categoryService.getCategories(), this.taxRateService.getTaxRates(),
-      this.productService.getSimpleProducts()])
-      .subscribe(([productsData, categoriesData,taxRatesData, simpleProductsData]) => {
+    forkJoin([this.productService.getProducts(this.page, this.pageSize),
+      this.categoryService.getCategories(), this.taxRateService.getTaxRates(),
+      this.productService.getNumberOfProducts()])
+      .subscribe(([productsData, categoriesData,taxRatesData, numberOfProducts]) => {
         this.products = productsData;
-        this.collectionSize = simpleProductsData.length;
+        this.collectionSize = numberOfProducts;
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
       });
 
+  }
+  fetchProducts(): void{
+    this.productService.getProducts(this.page, this.pageSize).subscribe((productData) => {
+      this.products = productData;
+    });
   }
   addNewProduct(): void {
     const currentURL = this.urlSerializer.serialize(this.router.createUrlTree([]));
@@ -44,5 +50,17 @@ export class OperatorProductComponent implements OnInit {
   goToProductDetails(selectedProduct: Product){
     const currentUri = this.urlSerializer.serialize(this.router.createUrlTree([]));
     this.router.navigate([currentUri + '/' + selectedProduct.id], {state: [this.categories, this.taxRates, selectedProduct]}).then();
+  }
+  previousPage(): void {
+    if (this.page > 0) {
+      this.page -= 1;
+      this.fetchProducts();
+    }
+  }
+  nextPage(): void {
+    if ((this.page + 1) * this.pageSize < this.collectionSize) {
+      this.page += 1;
+      this.fetchProducts();
+    }
   }
 }

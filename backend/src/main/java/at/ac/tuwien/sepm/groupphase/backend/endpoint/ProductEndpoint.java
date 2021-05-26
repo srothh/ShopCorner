@@ -66,9 +66,9 @@ public class ProductEndpoint {
     @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database")
-    public List<ProductDto> getAllProducts(@RequestParam("page") int page) {
+    public List<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
         LOGGER.info("GET " + BASE_URL);
-        return this.productService.getAllProductsPerPage(page).getContent()
+        return this.productService.getAllProductsPerPage(page, pageCount).getContent()
             .stream()
             .map(this.productMapper::entityToDto)
             .collect(Collectors.toList());
@@ -77,23 +77,20 @@ public class ProductEndpoint {
     /**
      * Gets all simple products from the database, which omits some fields like picture and category in a PAGINATED form.
      *
-     * @return all simple products ( product without picture,category) in a dto - format
+     * @return all simple products ( product without picture,category) in a dto - format PAGNITED
      */
     @PermitAll
-    @GetMapping("/simple-page")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Returns all products that are currently stored in the database without picture and category")
-    public List<SimpleProductDto> getAllSimpleProductsPerPage(@RequestParam("page") int page) {
-        LOGGER.info("GET" + BASE_URL + "/simple");
-        return this.productService.getAllProductsPerPage(page)
-            .stream()
-            .map(this.productMapper::simpleProductEntityToDto)
-            .collect(Collectors.toList());
+    @Operation(summary = "Returns all products that are currently stored in the database without picture and category in a paginated manner")
+    public int getProductsCount() {
+        LOGGER.info("GET" + BASE_URL + "/count");
+        return this.productService.getProductsCount();
     }
     /**
      * Gets all simple products from the database, which omits some fields like picture and category.
      *
-     * @return all simple products ( product without picture,category) in a dto - format
+     * @return all simple products ( product without picture,category) in a dto - format NOT PAGINATED
      */
 
     @PermitAll

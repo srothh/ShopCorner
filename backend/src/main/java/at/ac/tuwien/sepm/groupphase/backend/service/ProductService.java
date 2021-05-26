@@ -23,7 +23,7 @@ public interface ProductService {
      *
      * @return all products that are currently saved in the database
      */
-    Page<Product> getAllProductsPerPage(int page);
+    Page<Product> getAllProductsPerPage(int page, int pageCount);
 
     /**
      * Gets all products  that were previously added in the database.
@@ -50,6 +50,15 @@ public interface ProductService {
      *
      * */
     Product findById(Long productId);
+
+
+    /**
+     * Retrieve the number of all added products.
+     *
+     * @return retrieves the number of all added products
+     *
+     * */
+    int getProductsCount();
 
 
 

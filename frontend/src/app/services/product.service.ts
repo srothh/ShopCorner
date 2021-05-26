@@ -16,8 +16,8 @@ export class ProductService {
   /**
    * Loads all products from the backend
    */
-  getProducts(page: number): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.messageBaseUri + '/?page='+ page);
+  getProducts(page: number, pageCount): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(this.messageBaseUri + '/?page='+ page + '&page_count='+pageCount);
   }
   /**
    * Loads a product with the given Id, if it's present in the backend
@@ -41,10 +41,10 @@ export class ProductService {
   }
 
   /**
-   * Loads all simple products from the backend
+   * retrieves the total number of products
    */
-  getSimpleProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.messageBaseUri + '/simple/');
+  getNumberOfProducts(): Observable<number> {
+    return this.httpClient.get<number>(this.messageBaseUri);
   }
 
 
