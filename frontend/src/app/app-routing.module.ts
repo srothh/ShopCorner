@@ -20,10 +20,11 @@ import {OperatorAddProductComponent} from './components/operator/operator-add-pr
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {CustomerAuthGuard} from './guards/customer-auth.guard';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
+import {OperatorProductDetailsComponent} from './components/operator/operator-product-details/operator-product-details.component';
 import {PreventCustomerLoginGuard} from './guards/prevent-customer-login.guard';
-import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorAuthGuard} from './guards/operator-auth.guard';
 import {PreventOperatorLoginGuard} from './guards/prevent-operator-login.guard';
+import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 
 const routes: Routes = [
   {
@@ -46,6 +47,7 @@ const routes: Routes = [
       {path: 'orders', component: OperatorOrderComponent},
       {path: 'products', component: OperatorProductComponent},
       {path: 'products/add', component: OperatorAddProductComponent},
+      {path: 'products/:id', component: OperatorProductDetailsComponent},
       {path: 'promotions', component: OperatorPromotionComponent},
       {path: 'statistics', component: OperatorStatisticComponent},
       {path: 'customers', component: OperatorCustomerComponent},
