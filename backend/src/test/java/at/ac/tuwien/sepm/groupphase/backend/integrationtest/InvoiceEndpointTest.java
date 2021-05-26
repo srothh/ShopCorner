@@ -121,9 +121,6 @@ public class InvoiceEndpointTest implements TestData {
         detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
 
 
-
-
-
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
         MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
@@ -136,7 +133,8 @@ public class InvoiceEndpointTest implements TestData {
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
 
-        assertNotNull(objectMapper.readValue(response.getContentAsString(), SimpleInvoiceDto.class));
+        ResponseEntity  responseEntity = objectMapper.readValue(response.getContentAsString(), ResponseEntity.class);
+        assertNotNull(responseEntity);
     }
 
     @Test
