@@ -72,7 +72,7 @@ public class OperatorServiceImpl implements OperatorService {
         if (operator != null) {
             return operator;
         }
-        throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
+        throw new NotFoundException(String.format("Could not find the operator with the login name %s", loginName));
     }
 
     @Override
