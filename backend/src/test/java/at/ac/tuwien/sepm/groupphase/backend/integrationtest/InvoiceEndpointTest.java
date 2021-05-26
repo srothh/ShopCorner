@@ -97,11 +97,11 @@ public class InvoiceEndpointTest implements TestData {
         product.setCategory(null);
         product.setTaxRate(taxRate);
 
-       // invoiceItemKey.setInvoiceId(invoice.getId());
+        invoiceItemKey.setInvoiceId(invoice.getId());
         invoiceItemKey.setProductId(product.getId());
-
         invoiceItem.setId(invoiceItemKey);
-        // invoiceItem.setInvoice(invoice);
+        invoiceItem.setInvoice(invoice);
+
         invoiceItem.setProduct(product);
         invoiceItem.setNumberOfItems(0);
 
