@@ -49,15 +49,12 @@ public class ProductRepositoryTest implements TestData {
         product.setCategory(newCategory);
         product.setTaxRate(newTaxRate);
 
-        System.out.println(product);
-
         productRepository.save(product);
 
         assertAll(
             () -> assertEquals(1, productRepository.findAll().size()),
             () -> assertNotNull(productRepository.findById(product.getId()))
         );
-
     }
 
 }

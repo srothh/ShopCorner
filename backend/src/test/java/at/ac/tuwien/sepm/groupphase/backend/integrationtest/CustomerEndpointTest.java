@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
@@ -25,9 +26,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -61,9 +66,10 @@ public class CustomerEndpointTest implements TestData {
 
     private final Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
     private final Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
-    private final Customer customer2 = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "");
+    private final Customer customer2 = new Customer("mail@gmail.com", TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, "login", address, 0L, "");
+
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         customerRepository.deleteAll();
         Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
     }
@@ -131,6 +137,7 @@ public class CustomerEndpointTest implements TestData {
             }
         );
     }
+
     @Test
     public void givenNothing_whenAddressInvalid_then404() throws Exception {
         customer.setAddress(null);
@@ -148,6 +155,109 @@ public class CustomerEndpointTest implements TestData {
         assertAll(
             () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus())
         );
+    }
+
+    @Test
+    public void givenNothing_whenFindAllCustomers_thenEmptyList() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get(CUSTOMER_BASE_URI + "?page=0&page_count=1")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        List<CustomerDto> customerDtos = Arrays.asList(objectMapper.readValue(response.getContentAsString(),
+            CustomerDto[].class));
+
+        assertEquals(0, customerDtos.size());
+    }
+
+    @Test
+    public void givenTwoCustomers_whenFindAllWithPage_thenListWithSizeOneCustomersWithAllPropertiesExceptPassword()
+        throws Exception {
+        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        String body = objectMapper.writeValueAsString(customerDto);
+        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerDto(customer);
+        String body2 = objectMapper.writeValueAsString(customerDto2);
+
+        this.mockMvc.perform(post(CUSTOMER_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        this.mockMvc.perform(post(CUSTOMER_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body2)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+
+        MvcResult mvcResultGet = this.mockMvc.perform(get(CUSTOMER_BASE_URI + "?page=0&page_count=10")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseGet = mvcResultGet.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responseGet.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseGet.getContentType());
+
+        List<CustomerDto> customerDtos = Arrays.asList(objectMapper.readValue(responseGet.getContentAsString(),
+            CustomerDto[].class));
+
+        assertEquals(1, customerDtos.size());
+        CustomerDto customerDtoCheck = customerDtos.get(0);
+        Address addressCheck = addressMapper.addressDtoToAddress(customerDtoCheck.getAddress());
+        assertAll(
+            () -> assertEquals(TEST_CUSTOMER_NAME, customerDtoCheck.getName()),
+            () -> assertEquals(TEST_CUSTOMER_LOGINNAME, customerDtoCheck.getLoginName()),
+            () -> assertEquals(address.getStreet(), addressCheck.getStreet()),
+            () -> assertEquals(address.getDoorNumber(), addressCheck.getDoorNumber()),
+            () -> assertEquals(address.getHouseNumber(), addressCheck.getHouseNumber()),
+            () -> assertEquals(address.getPostalCode(), addressCheck.getPostalCode()),
+            () -> assertEquals(address.getStairNumber(), addressCheck.getStairNumber()),
+            () -> assertEquals(TEST_CUSTOMER_EMAIL, customerDtoCheck.getEmail())
+        );
+    }
+
+    @Test
+    public void givenTwoCustomers_whenGetCount_thenArrayWithTwo()
+        throws Exception {
+
+        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        String body = objectMapper.writeValueAsString(customerDto);
+        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerDto(customer2);
+        String body2 = objectMapper.writeValueAsString(customerDto2);
+        MvcResult mvcResultGet1 = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MvcResult mvcResultGet2 = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body2)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseGet2 = mvcResultGet1.getResponse();
+        MockHttpServletResponse responseGet1 = mvcResultGet2.getResponse();
+        MvcResult mvcResultGet = this.mockMvc.perform(get(CUSTOMER_BASE_URI + "/count")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseGet = mvcResultGet.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), responseGet1.getStatus());
+        assertEquals(HttpStatus.CREATED.value(), responseGet2.getStatus());
+
+        assertEquals(HttpStatus.OK.value(), responseGet.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseGet.getContentType());
+
+        long count = (objectMapper.readValue(responseGet.getContentAsString(), long.class));
+        assertEquals(2, count);
+
     }
 
 }

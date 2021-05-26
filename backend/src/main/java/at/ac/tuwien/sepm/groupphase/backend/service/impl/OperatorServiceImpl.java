@@ -15,7 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +43,36 @@ public class OperatorServiceImpl implements OperatorService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
-        return null;
+    public UserDetails loadUserByUsername(String loginName) {
+        LOGGER.trace("loadOperatorByUsername({})", loginName);
+        try {
+            Operator operator = this.findOperatorByLoginName(loginName);
+            String authority = "";
+            switch (operator.getPermissions()) {
+                case admin:
+                    authority = "ROLE_ADMIN";
+                    break;
+                case employee:
+                    authority = "ROLE_EMPLOYEE";
+                    break;
+                default:
+                    break;
+            }
+            List<GrantedAuthority> grantedAuthorities = AuthorityUtils.createAuthorityList(authority);
+            return new User(operator.getLoginName(), operator.getPassword(), grantedAuthorities);
+        } catch (NotFoundException e) {
+            throw new UsernameNotFoundException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Operator findOperatorByLoginName(String loginName) {
+        LOGGER.trace("findOperatorByLoginName({})", loginName);
+        Operator operator = operatorRepository.findByLoginName(loginName);
+        if (operator != null) {
+            return operator;
+        }
+        throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
     }
 
     @Override
