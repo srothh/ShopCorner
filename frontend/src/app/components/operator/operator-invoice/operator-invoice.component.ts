@@ -42,8 +42,7 @@ export class OperatorInvoiceComponent implements OnInit {
   show = false;
   print = false;
 
-  constructor(private invoiceService: InvoiceService, private productService: ProductService,
-              private taxRateService: TaxRateService, private formBuilder: FormBuilder) {
+  constructor(private invoiceService: InvoiceService, private formBuilder: FormBuilder) {
   }
 
 
