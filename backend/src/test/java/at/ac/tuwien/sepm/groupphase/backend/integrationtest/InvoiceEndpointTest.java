@@ -78,7 +78,6 @@ public class InvoiceEndpointTest implements TestData {
     private final InvoiceItem invoiceItem = new InvoiceItem();
     private final Invoice invoice = new Invoice();
     private final Product product = new Product();
-    private final TaxRate taxRate = new TaxRate();
 
     @BeforeEach
     public void beforeEach() {
@@ -115,7 +114,6 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
-        taxRateRepository.save(taxRate);
         productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
