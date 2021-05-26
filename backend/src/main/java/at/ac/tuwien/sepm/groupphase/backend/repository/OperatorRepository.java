@@ -10,4 +10,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface OperatorRepository extends JpaRepository<Operator, Long>, JpaSpecificationExecutor<Operator> {
+    /**
+     * Finds an operator based on the login name.
+     *
+     * @return an operator with the login name
+     */
+    Operator findByLoginName(String loginName);
 }

@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Globals} from '../global/globals';
 import {Customer} from '../dtos/customer';
+import {OperatorAuthService} from './auth/operator-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import {Customer} from '../dtos/customer';
 export class CustomerService {
   private customerBaseUri: string = this.globals.backendUri + '/customers';
 
-  constructor(private httpClient: HttpClient, private globals: Globals) {
+  constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
 
   /**
@@ -33,7 +34,10 @@ export class CustomerService {
    */
   getAllCustomersForPage(page: number, pageCount: number): Observable<Customer[]> {
     console.log('Get customers for page', page);
-    return this.httpClient.get<Customer[]>(this.customerBaseUri + '?page=' + page + '&page_count=' + pageCount);
+    return this.httpClient.get<Customer[]>(
+      this.customerBaseUri + '?page=' + page + '&page_count=' + pageCount,
+      {headers: this.getHeadersForOperator()}
+    );
   }
 
   /**
@@ -43,6 +47,11 @@ export class CustomerService {
    */
   getCustomerCount(): Observable<number> {
     console.log('Get customer count');
-    return this.httpClient.get<number>(this.customerBaseUri);
+    return this.httpClient.get<number>(this.customerBaseUri + '/count', {headers: this.getHeadersForOperator()});
+  }
+
+  private getHeadersForOperator(): HttpHeaders {
+    return new HttpHeaders()
+      .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
 }

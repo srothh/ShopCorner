@@ -10,13 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
@@ -55,16 +56,16 @@ public class CustomerEndpoint {
     }
 
     /**
-     * Retrieves all customers from the database.
+     * Retrieves a page of customers from the database.
      *
      * @return A list of all the retrieved customers
      */
-    //TODO Change to Secured(ROLE_ADMIN)
-    @PermitAll
-    @GetMapping(params = {"page"})
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all customers", security = @SecurityRequirement(name = "apiKey"))
-    public List<CustomerDto> getAllCustomers(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
+    public List<CustomerDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "1") Integer page,
+                                             @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
         LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
         return customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers(page, pageCount).getContent());
     }
@@ -74,9 +75,8 @@ public class CustomerEndpoint {
      *
      * @return The amount of customers in the database
      */
-    //TODO Change to Secured(ROLE_ADMIN)
-    @PermitAll
-    @GetMapping
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping("/count")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve count of customers", security = @SecurityRequirement(name = "apiKey"))
     public long getCustomerCount() {
