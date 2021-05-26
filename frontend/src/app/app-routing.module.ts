@@ -21,6 +21,7 @@ import {ShopRegistrationComponent} from './components/shop/shop-registration/sho
 import {CustomerAuthGuard} from './guards/customer-auth.guard';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
 import {PreventLoginGuard} from './guards/prevent-login.guard';
+import {OperatorProductDetailsComponent} from './components/operator/operator-product-details/operator-product-details.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,7 @@ const routes: Routes = [
       {path: 'orders', component: OperatorOrderComponent},
       {path: 'products', component: OperatorProductComponent},
       {path: 'products/add', component: OperatorAddProductComponent},
+      {path: 'products/:id', component: OperatorProductDetailsComponent},
       {path: 'promotions', component: OperatorPromotionComponent},
       {path: 'statistics', component: OperatorStatisticComponent},
       {path: 'customers', component: OperatorCustomerComponent},
