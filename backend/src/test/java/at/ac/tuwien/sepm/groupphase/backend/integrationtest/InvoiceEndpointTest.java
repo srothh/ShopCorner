@@ -107,7 +107,6 @@ public class InvoiceEndpointTest implements TestData {
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
 
-        invoice.setId(TEST_INVOICE_ID);
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
         invoice.setItems(items);
