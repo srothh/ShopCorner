@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -56,6 +60,11 @@ public class OperatorEndpoint {
     @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
     public List<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam("permissions") Permissions permissions) {
         LOGGER.info("GET " + BASE_URL + "?{}&{}&{}", page, pageCount, permissions);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        if (authorities.toString().equals("[ROLE_EMPLOYEE]") && permissions == Permissions.admin) {
+            return null;
+        }
         return operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, pageCount, permissions).getContent());
     }
 
