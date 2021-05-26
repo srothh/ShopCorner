@@ -78,7 +78,6 @@ public class InvoiceEndpointTest implements TestData {
     private final Invoice invoice = new Invoice(TEST_INVOICE_ID, TEST_INVOICE_DATE, TEST_INVOICE_AMOUNT);
     private final Product product = new Product();
     private final TaxRate taxRate = new TaxRate();
-    private Set<InvoiceItemDto> invoiceItemDtoSet = new HashSet<>();
 
     @BeforeEach
     public void beforeEach() {
@@ -92,7 +91,6 @@ public class InvoiceEndpointTest implements TestData {
 
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
-
 
         product.setCategory(null);
         product.setTaxRate(taxRate);
@@ -109,15 +107,16 @@ public class InvoiceEndpointTest implements TestData {
         items.add(invoiceItem);
 
         invoice.setItems(items);
-        invoiceItemDtoSet = invoiceItemMapper.entityToDto(invoice.getItems());
+
     }
 
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
         taxRateRepository.save(taxRate);
         productRepository.save(product);
+
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
-        detailedInvoiceDto.setItems(this.invoiceItemDtoSet);
+        detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
 
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
