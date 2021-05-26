@@ -45,7 +45,7 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
         //Set<InvoiceItem> newInvoiceItems = new HashSet<>();
         try {
             for (InvoiceItem item : invoiceItems) {
-                if (item != null) {
+                if (item != null || item.getId() !=null) {
                     //invoiceItem.add(this.invoiceItemRepository.save(item));
                     this.invoiceItemRepository.save(item);
                 }
