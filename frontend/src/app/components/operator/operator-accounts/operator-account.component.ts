@@ -92,7 +92,7 @@ export class OperatorAccountComponent implements OnInit {
   }
 
   /**
-   * calls on service to delete selected operators
+   * calls on service to delete selected operators and after last delete reloads page
    */
   deleteOperator() {
     for (const operator of this.selected) {
