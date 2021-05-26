@@ -152,11 +152,13 @@ export class OperatorAccountComponent implements OnInit {
   private loadOperatorCount() {
     this.operatorService.getOperatorCount().subscribe(
       (count: number[]) => {
-        this.collectionSizeEmployee = count[1];
         if (this.authService.getUserRole() === 'ADMIN') {
           this.collectionSizeAdmin = count[0];
+          this.collectionSizeEmployee = count[1];
           this.currentCollectionSize = this.collectionSizeAdmin;
         } else {
+          this.collectionSizeEmployee = count[0];
+          this.currentCollectionSize = this.collectionSizeAdmin;
           this.currentCollectionSize = this.collectionSizeEmployee;
         }
       },
