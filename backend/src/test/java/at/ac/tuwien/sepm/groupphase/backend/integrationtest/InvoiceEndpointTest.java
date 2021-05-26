@@ -108,8 +108,8 @@ public class InvoiceEndpointTest implements TestData {
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
 
-        //invoice.setItems(items);
-        invoiceItemDtoSet = invoiceItemMapper.entityToDto(items);
+        invoice.setItems(items);
+        invoiceItemDtoSet = invoiceItemMapper.entityToDto(invoice.getItems());
     }
 
     @Test
