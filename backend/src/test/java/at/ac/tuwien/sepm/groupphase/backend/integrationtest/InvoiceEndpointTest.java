@@ -133,7 +133,7 @@ public class InvoiceEndpointTest implements TestData {
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
 
-        ResponseEntity  responseEntity = objectMapper.readValue(response.getContentAsString(), ResponseEntity.class);
+        ResponseEntity  responseEntity = objectMapper.readValue(response.getContentAsByteArray(), ResponseEntity.class);
         assertNotNull(responseEntity);
     }
 
