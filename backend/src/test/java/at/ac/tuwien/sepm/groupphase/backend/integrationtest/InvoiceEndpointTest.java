@@ -3,7 +3,9 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvoiceItemDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
@@ -63,6 +65,9 @@ public class InvoiceEndpointTest implements TestData {
     private InvoiceMapper invoiceMapper;
 
     @Autowired
+    private InvoiceItemMapper invoiceItemMapper;
+
+    @Autowired
     private JwtTokenizer jwtTokenizer;
 
     @Autowired
@@ -73,6 +78,7 @@ public class InvoiceEndpointTest implements TestData {
     private final Invoice invoice = new Invoice(TEST_INVOICE_ID, TEST_INVOICE_DATE, TEST_INVOICE_AMOUNT);
     private final Product product = new Product();
     private final TaxRate taxRate = new TaxRate();
+    private Set<InvoiceItemDto> invoiceItemDtoSet = new HashSet<>();
 
     @BeforeEach
     public void beforeEach() {
@@ -103,14 +109,19 @@ public class InvoiceEndpointTest implements TestData {
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
 
-        invoice.setItems(items);
-
+        //invoice.setItems(items);
+        invoiceItemDtoSet = invoiceItemMapper.entityToDto(items);
     }
 
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
         productRepository.save(product);
-        DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
+        SimpleInvoiceDto simpleInvoiceDto = invoiceMapper.invoiceToSimpleInvoiceDto(invoice);
+        DetailedInvoiceDto detailedInvoiceDto = new DetailedInvoiceDto();
+        detailedInvoiceDto.setId(simpleInvoiceDto.getId());
+        detailedInvoiceDto.setDate(simpleInvoiceDto.getDate());
+        detailedInvoiceDto.setAmount(simpleInvoiceDto.getAmount());
+        detailedInvoiceDto.setItems(this.invoiceItemDtoSet);
 
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 

@@ -10,7 +10,6 @@ public class DetailedInvoiceDto extends SimpleInvoiceDto {
     @NotNull(message = "Set<InvoiceItemDto> can not be null")
     private Set<InvoiceItemDto> items = new HashSet<>();
 
-
     public Set<InvoiceItemDto> getItems() {
         return items;
     }
