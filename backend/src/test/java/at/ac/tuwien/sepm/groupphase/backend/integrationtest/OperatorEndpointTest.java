@@ -207,7 +207,7 @@ public class OperatorEndpointTest implements TestData {
         operatorRepository.save(admin);
         operatorRepository.save(employee);
 
-        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI)
+        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "/count")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
