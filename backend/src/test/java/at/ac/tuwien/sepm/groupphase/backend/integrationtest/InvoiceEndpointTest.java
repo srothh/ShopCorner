@@ -32,6 +32,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -57,9 +58,6 @@ public class InvoiceEndpointTest implements TestData {
 
 
     @Autowired
-    private TaxRateRepository taxRateRepository;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -76,7 +74,7 @@ public class InvoiceEndpointTest implements TestData {
 
     private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
     private final InvoiceItem invoiceItem = new InvoiceItem();
-    private final Invoice invoice = new Invoice(TEST_INVOICE_ID, TEST_INVOICE_DATE, TEST_INVOICE_AMOUNT);
+    private final Invoice invoice = new Invoice();
     private final Product product = new Product();
     private final TaxRate taxRate = new TaxRate();
 
@@ -90,11 +88,9 @@ public class InvoiceEndpointTest implements TestData {
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
         product.setPrice(TEST_PRODUCT_PRICE);
 
-        taxRate.setId(1L);
-        taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
 
         product.setCategory(null);
-        product.setTaxRate(taxRate);
+        product.setTaxRate(null);
 
         invoiceItemKey.setInvoiceId(invoice.getId());
         invoiceItemKey.setProductId(product.getId());
@@ -102,24 +98,23 @@ public class InvoiceEndpointTest implements TestData {
         invoiceItem.setInvoice(invoice);
 
         invoiceItem.setProduct(product);
-        invoiceItem.setNumberOfItems(1);
+        invoiceItem.setNumberOfItems(10);
 
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
 
+        invoice.setId(TEST_INVOICE_ID);
+        invoice.setDate(LocalDateTime.now());
+        invoice.setAmount(TEST_INVOICE_AMOUNT);
         invoice.setItems(items);
 
     }
 
-
-
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
-        taxRateRepository.save(taxRate);
         productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
-
 
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 

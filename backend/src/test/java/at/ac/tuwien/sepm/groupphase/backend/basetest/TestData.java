@@ -90,7 +90,7 @@ public interface TestData {
 
     //TEST PROPERTIES FOR INVOICE
     Long TEST_INVOICE_ID = 0L;
-    LocalDateTime TEST_INVOICE_DATE = LocalDateTime.now();
+    LocalDateTime TEST_INVOICE_DATE = null;
     Double TEST_INVOICE_AMOUNT = 20.0;
 
 

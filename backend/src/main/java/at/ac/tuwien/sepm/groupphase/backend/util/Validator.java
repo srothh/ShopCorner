@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +46,28 @@ public class Validator {
         LOGGER.trace("validateNewInvoice({})", invoice);
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime yesterday = today.minus(1, ChronoUnit.DAYS);
+
+        /*int yearToday = today.getYear();
+        int yearYesterday = today.getYear();
+        int monthToday = today.getMonthValue();
+        int monthYesterday = today.getMonthValue();
+        int dayToday = today.getDayOfMonth();
+        int dayYesterday = today.getDayOfMonth();*/
+
         if (invoice.getAmount() <= 0) {
             throw new ValidationException("Something went wrong with the total calculation");
         }
-        if (invoice.getDate() == null || invoice.getDate().isBefore(yesterday) || invoice.getDate().isAfter(today)) {
+        /*if (invoice.getDate() == null || invoice.getDate().isBefore(yesterday) || invoice.getDate().isAfter(today)) {
             throw new ValidationException("The invoice date is not valid");
+        }*/
+        if (invoice.getDate() == null) {
+            throw new ValidationException("The invoice date is not valid");
+        }
+        if (invoice.getDate().isBefore(yesterday)) {
+            throw new ValidationException("The invoice date isBefore is not valid");
+        }
+        if (invoice.getDate().isAfter(today)) {
+            throw new ValidationException("The invoice date isAfter is not valid");
         }
     }
 
