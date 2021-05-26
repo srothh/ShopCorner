@@ -96,7 +96,7 @@ public class InvoiceEndpoint {
      */
     @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "",produces = "application/json")
+    @PostMapping(value = "",produces = { "application/json"})
     @Operation(summary = "create new invoice")
     public SimpleInvoiceDto createInvoice(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices {}", invoiceDto);

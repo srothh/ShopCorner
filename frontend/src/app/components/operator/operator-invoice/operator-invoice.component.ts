@@ -83,6 +83,7 @@ export class OperatorInvoiceComponent implements OnInit {
       return;
     }
     this.creatInvoiceDto();
+    // this.invoiceService.createInvoice(this.invoiceDto);
     if (this.print) {
     } else if (this.show) {
       this.showInvoice();

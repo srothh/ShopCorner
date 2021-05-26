@@ -25,6 +25,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -125,7 +126,7 @@ public class InvoiceEndpointTest implements TestData {
 
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)
+        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
         )
@@ -133,16 +134,9 @@ public class InvoiceEndpointTest implements TestData {
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
-        assertEquals(MediaType.TEXT_PLAIN_VALUE, response.getContentType());
+        assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
 
-        SimpleInvoiceDto invoiceDtoResponse = objectMapper.readValue(response.getContentAsString(), SimpleInvoiceDto.class);
-
-        assertNotNull(invoiceDtoResponse.getId());
-        assertNotNull(invoiceDtoResponse.getDate());
-        assertNotNull(invoiceDtoResponse.getAmount());
-        assertEquals(invoice.getId(), invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDtoResponse).getId());
-        assertEquals(invoice.getDate(), invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDtoResponse).getDate());
-        assertEquals(invoice.getAmount(), invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDtoResponse).getAmount());
+        assertNotNull(objectMapper.readValue(response.getContentAsString(), SimpleInvoiceDto.class));
     }
 
     @Test

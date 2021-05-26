@@ -46,6 +46,12 @@ export class InvoiceService {
     return this.httpClient.get(this.invoiceBaseUri + '/getinvoicepdf/' + id, httpOptions);
   }
 
+  /**
+   * Creates a new invoice entry and a pdf in the backend.
+   *
+   * @param invoice to be created
+   * @return invoice generated from the given invoice and invoice entry
+   */
   createInvoice(invoice: Invoice): Observable<Invoice> {
     return this.httpClient.post<Invoice>(this.invoiceBaseUri, invoice);
   }
