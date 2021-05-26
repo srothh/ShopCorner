@@ -11,7 +11,10 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +52,15 @@ public class InvoiceEndpointTest implements TestData {
     private InvoiceRepository invoiceRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private TaxRateRepository taxRateRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -70,6 +82,7 @@ public class InvoiceEndpointTest implements TestData {
     @BeforeEach
     public void beforeEach() {
         invoiceRepository.deleteAll();
+        productRepository.deleteAll();
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -79,7 +92,7 @@ public class InvoiceEndpointTest implements TestData {
         category.setName(TEST_CATEGORY_NAME);
 
         taxRate.setId(1L);
-        taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
+        taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);;
 
         invoiceItemKey.setInvoiceId(invoice.getId());
         invoiceItemKey.setProductId(product.getId());
@@ -96,8 +109,12 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
+    public void givenAProductAndCategoryAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
+        categoryRepository.save(category);
+        taxRateRepository.save(taxRate);
+        productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
+
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
         MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)

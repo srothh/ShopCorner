@@ -96,6 +96,7 @@ export class OperatorInvoiceComponent implements OnInit {
     this.vanishError();
     this.submitted = false;
     this.onReset();
+    this.updateProducts();
   }
 
   addInvoice() {
@@ -142,6 +143,7 @@ export class OperatorInvoiceComponent implements OnInit {
     this.newInvoiceForm.reset();
     this.t.clear();
     this.addProductOnClick();
+    this.updateProducts();
   }
 
   updateProducts() {
@@ -158,6 +160,7 @@ export class OperatorInvoiceComponent implements OnInit {
     } else {
       this.errorHandling('Es können nicht alle Elemente einer Rechnung gelöscht werden');
     }
+    this.updateProducts();
   }
 
   /**
