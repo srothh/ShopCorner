@@ -120,7 +120,7 @@ public class InvoiceEndpoint {
      */
     @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "", produces = "application/pdf")
+    @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
     @Operation(summary = "create new invoice")
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
