@@ -97,7 +97,6 @@ public class InvoiceEndpointTest implements TestData {
 
         // invoiceItem
         invoiceItem.setId(invoiceItemKey);
-        invoiceItem.setInvoice(invoice);
         invoiceItem.setProduct(product);
         invoiceItem.setNumberOfItems(10);
 
@@ -114,7 +113,7 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
-        detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
+        //detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
 
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
