@@ -60,6 +60,7 @@ public class ProductEndpoint {
 
     /**
      * gets all products form the database in a paginated manner.
+     *
      * @param page describes the number of the page
      * @param pageCount the number of entries in each page
      *

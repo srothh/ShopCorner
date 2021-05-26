@@ -20,6 +20,7 @@ public interface ProductService {
 
     /**
      * Gets all products per page that were previously added in the database in a paginated manner.
+     *
      * @param page describes the number of the page
      * @param pageCount the number of entries each page holds
      *
