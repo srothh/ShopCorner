@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
@@ -58,6 +57,9 @@ public class InvoiceEndpointTest implements TestData {
 
 
     @Autowired
+    private TaxRateRepository taxRateRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -82,24 +84,26 @@ public class InvoiceEndpointTest implements TestData {
     public void beforeEach() {
         invoiceRepository.deleteAll();
         productRepository.deleteAll();
-
+        taxRateRepository.deleteAll();
+        // product
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
         product.setPrice(TEST_PRODUCT_PRICE);
-
-
         product.setCategory(null);
         product.setTaxRate(null);
 
+        // invoiceItemKey
         invoiceItemKey.setInvoiceId(invoice.getId());
         invoiceItemKey.setProductId(product.getId());
+
+        // invoiceItem
         invoiceItem.setId(invoiceItemKey);
         invoiceItem.setInvoice(invoice);
-
         invoiceItem.setProduct(product);
         invoiceItem.setNumberOfItems(10);
 
+        // invoiceItem to invoice
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
 
@@ -112,6 +116,7 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
+        taxRateRepository.save(taxRate);
         productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
