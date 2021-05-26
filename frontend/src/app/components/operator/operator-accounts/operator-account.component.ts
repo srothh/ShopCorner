@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
 import {OperatorService} from '../../../services/operator.service';
 import {Permissions} from '../../../dtos/permissions.enum';
+import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 
 @Component({
   selector: 'app-operator-accounts',
@@ -21,7 +22,7 @@ export class OperatorAccountComponent implements OnInit {
   collectionSizeEmployee = 0;
   permissions = Permissions.admin;
 
-  constructor(private operatorService: OperatorService) {
+  constructor(private authService: OperatorAuthService, private operatorService: OperatorService) {
   }
 
   ngOnInit(): void {
@@ -35,6 +36,15 @@ export class OperatorAccountComponent implements OnInit {
    */
   vanishError() {
     this.error = false;
+  }
+
+  /**
+   * calls on authentication service to return permission of logged in operator
+   *
+   * @return string role of logged in operator
+   */
+  getPermission(): string {
+    return this.authService.getUserRole();
   }
 
   /**

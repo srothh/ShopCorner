@@ -12,7 +12,7 @@
     </label>
   </div>
   <div class="float-right" style="margin-top: 10px;">
-    <div *ngIf="selected.length > 0; else disabled_button">
+    <div *ngIf="selected.length > 0 && getPermission() === 'ADMIN'; else disabled_button">
       <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteCommit">Auswahl löschen</button>
     </div>
     <ng-template #disabled_button>
