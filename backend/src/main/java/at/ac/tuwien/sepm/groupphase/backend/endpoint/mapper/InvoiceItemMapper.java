@@ -15,4 +15,11 @@ public interface InvoiceItemMapper {
 
     @IterableMapping(qualifiedByName = "toEntity")
     Set<InvoiceItem> dtoToEntity(Set<InvoiceItemDto> invoiceItemDtoSet);
+
+    @Named("entityToDto")
+    InvoiceItemDto entityToDto(InvoiceItem invoiceItem);
+
+    @IterableMapping(qualifiedByName = "entityToDto")
+    Set<InvoiceItemDto> entityToDto(Set<InvoiceItem> invoiceItemSet);
+
 }

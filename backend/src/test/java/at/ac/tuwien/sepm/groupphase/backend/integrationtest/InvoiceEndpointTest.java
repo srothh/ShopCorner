@@ -77,8 +77,8 @@ public class InvoiceEndpointTest implements TestData {
     @BeforeEach
     public void beforeEach() {
         invoiceRepository.deleteAll();
-
         productRepository.deleteAll();
+
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -109,8 +109,6 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
-
-
         productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
 

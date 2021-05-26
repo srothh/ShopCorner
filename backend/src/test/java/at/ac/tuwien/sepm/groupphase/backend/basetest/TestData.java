@@ -83,9 +83,10 @@ public interface TestData {
     };
 
     //TEST PROPERTIES FOR INVOICE_ITEM
-    InvoiceItemKey TEST_INVOICE_ITEM_ID = new InvoiceItemKey(0L, 0L);
-    Product TEST_INVOICE_ITEM_PRODUCT = new Product();
-    Invoice TEST_INVOICE_ITEM_INVOICE = new Invoice();
+
+    Long TEST_INVOICE_INVOICE_ID = 0L;
+    Long TEST_INVOICE_PRODUCT_ID = 0L;
+
 
     //TEST PROPERTIES FOR INVOICE
     Long TEST_INVOICE_ID = 0L;
