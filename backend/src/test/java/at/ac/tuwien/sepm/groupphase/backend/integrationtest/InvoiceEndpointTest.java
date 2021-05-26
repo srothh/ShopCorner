@@ -116,7 +116,7 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
         productRepository.save(product);
-        SimpleInvoiceDto simpleInvoiceDto = invoiceMapper.invoiceToSimpleInvoiceDto(invoice);
+        SimpleInvoiceDto simpleInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         DetailedInvoiceDto detailedInvoiceDto = new DetailedInvoiceDto();
         detailedInvoiceDto.setId(simpleInvoiceDto.getId());
         detailedInvoiceDto.setDate(simpleInvoiceDto.getDate());
