@@ -47,27 +47,18 @@ public class Validator {
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime yesterday = today.minus(1, ChronoUnit.DAYS);
 
-        /*int yearToday = today.getYear();
-        int yearYesterday = today.getYear();
-        int monthToday = today.getMonthValue();
-        int monthYesterday = today.getMonthValue();
-        int dayToday = today.getDayOfMonth();
-        int dayYesterday = today.getDayOfMonth();*/
 
         if (invoice.getAmount() <= 0) {
             throw new ValidationException("Something went wrong with the total calculation");
         }
-        /*if (invoice.getDate() == null || invoice.getDate().isBefore(yesterday) || invoice.getDate().isAfter(today)) {
-            throw new ValidationException("The invoice date is not valid");
-        }*/
         if (invoice.getDate() == null) {
             throw new ValidationException("The invoice date is not valid");
         }
         if (invoice.getDate().isBefore(yesterday)) {
-            throw new ValidationException("The invoice date isBefore is not valid");
+            throw new ValidationException("The invoice date is before it is not valid");
         }
         if (invoice.getDate().isAfter(today)) {
-            throw new ValidationException("The invoice date isAfter is not valid");
+            throw new ValidationException("The invoice date is after it is not valid");
         }
     }
 

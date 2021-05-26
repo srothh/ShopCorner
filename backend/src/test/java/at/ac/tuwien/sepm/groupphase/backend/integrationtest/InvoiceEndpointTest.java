@@ -84,20 +84,19 @@ public class InvoiceEndpointTest implements TestData {
         invoiceRepository.deleteAll();
         productRepository.deleteAll();
         taxRateRepository.deleteAll();
-        // product
 
+        // product
         product.setId(500L);
         product.setName(TEST_PRODUCT_NAME);
-        product.setDescription(null);
         product.setPrice(TEST_PRODUCT_PRICE);
-        product.setCategory(null);
-        product.setTaxRate(null);
-        productRepository.save(product);
-
 
         // invoiceItem
+        invoiceItemKey.setInvoiceId(null);
+        invoiceItemKey.setProductId(null);
+
         invoiceItem.setId(invoiceItemKey);
         invoiceItem.setProduct(product);
+
         invoiceItem.setNumberOfItems(10);
 
         // invoiceItem to invoice
@@ -112,6 +111,7 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
+        productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         //detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
 
