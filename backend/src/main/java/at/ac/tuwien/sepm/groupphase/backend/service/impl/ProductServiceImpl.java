@@ -39,7 +39,6 @@ public class ProductServiceImpl implements ProductService {
         }
         if (categoryId != null) {
             assignProductToCategory(product, categoryId);
-
         }
         assignProductToTaxRate(product, taxRateId);
         return this.productRepository.save(product);

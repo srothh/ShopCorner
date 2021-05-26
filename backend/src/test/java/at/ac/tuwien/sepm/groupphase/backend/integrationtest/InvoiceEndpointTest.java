@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvoiceItemDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
@@ -20,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -101,7 +101,7 @@ public class InvoiceEndpointTest implements TestData {
         invoiceItem.setInvoice(invoice);
 
         invoiceItem.setProduct(product);
-        invoiceItem.setNumberOfItems(0);
+        invoiceItem.setNumberOfItems(1);
 
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
@@ -110,13 +110,18 @@ public class InvoiceEndpointTest implements TestData {
 
     }
 
+
+
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
         taxRateRepository.save(taxRate);
         productRepository.save(product);
-
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
+
+
+
+
 
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
@@ -127,7 +132,7 @@ public class InvoiceEndpointTest implements TestData {
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
-        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
         SimpleInvoiceDto invoiceDtoResponse = objectMapper.readValue(response.getContentAsString(), SimpleInvoiceDto.class);
@@ -135,8 +140,9 @@ public class InvoiceEndpointTest implements TestData {
         assertNotNull(invoiceDtoResponse.getId());
         assertNotNull(invoiceDtoResponse.getDate());
         assertNotNull(invoiceDtoResponse.getAmount());
-        //invoiceDtoResponse.setId(null);
-        assertEquals(invoice, invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDtoResponse));
+        assertEquals(invoice.getId(), invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDtoResponse).getId());
+        assertEquals(invoice.getDate(), invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDtoResponse).getDate());
+        assertEquals(invoice.getAmount(), invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDtoResponse).getAmount());
     }
 
     @Test
