@@ -96,7 +96,7 @@ public class InvoiceEndpoint {
      */
     @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "",produces = { "application/json"})
+    @PostMapping(value = "", produces = { "application/json"})
     @Operation(summary = "create new invoice")
     public SimpleInvoiceDto createInvoice(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices {}", invoiceDto);
@@ -120,7 +120,7 @@ public class InvoiceEndpoint {
      */
     @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
+    @PostMapping(value = "", produces = "application/pdf")
     @Operation(summary = "create new invoice")
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
