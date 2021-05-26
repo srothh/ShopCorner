@@ -78,6 +78,12 @@ public class OperatorEndpoint {
     @Operation(summary = "Get count of operators", security = @SecurityRequirement(name = "apiKey"))
     public int[] getCount() {
         LOGGER.info("GET " + BASE_URL + "/count");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        if (authorities.toString().equals("[ROLE_EMPLOYEE]")) {
+            int[] count = operatorService.getCollectionSize();
+            return new int[]{count[1]};
+        }
         return operatorService.getCollectionSize();
     }
 
