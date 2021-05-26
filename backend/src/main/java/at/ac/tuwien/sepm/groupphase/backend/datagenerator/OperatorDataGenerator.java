@@ -50,6 +50,7 @@ public class OperatorDataGenerator {
             operatorRepository.save(new Operator("olaf", "scholz", "sf", "aasdssssaadv@gmail.com", Permissions.admin));
             operatorRepository.save(new Operator("puioiuoui", "peepee", "asd3sdd", "asadfdfads@gmail.com", Permissions.employee));
             operatorRepository.save(new Operator("Sandro", "Sandman", "Sandman", "sandman@gmail.com", Permissions.employee));
+            operatorRepository.save(new Operator("Carlos", "Carlos maximus", "Carlisimo", "carlos@gmail.com", Permissions.employee));
         }
     }
 }
