@@ -15,6 +15,16 @@ export class OperatorService {
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
+  /**
+   * Loads the specified operator from the backend
+   *
+   * @param loginName of operator to load
+   */
+  getOperatorByLoginName(loginName: string): Observable<Operator> {
+    console.log('Load operator ' + loginName);
+    return this.httpClient.get<Operator>(this.operatorBaseUri + '/' + loginName);
+  }
+
 
   /**
    * Creates a new operator account in the backend.

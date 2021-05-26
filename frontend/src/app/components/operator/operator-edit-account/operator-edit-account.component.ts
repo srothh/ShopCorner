@@ -4,6 +4,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Permissions} from '../../../dtos/permissions.enum';
 import {Router} from '@angular/router';
 import {OperatorService} from '../../../services/operator.service';
+import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
+
 
 @Component({
   selector: 'app-operator-edit-account',
@@ -12,27 +14,39 @@ import {OperatorService} from '../../../services/operator.service';
 })
 export class OperatorEditAccountComponent implements OnInit {
 
-  // TODO replace with currently logged in operator
-  operator = new Operator(1, 'test', 'test', 'password', 'test@mail.com', Permissions.employee);
+  user: string;
+  operator: Operator;
 
   updateForm: FormGroup;
   submitted = false;
   error = false;
   errorMessage = '';
 
-  constructor(private formBuilder: FormBuilder, private router: Router,
+  constructor(private formBuilder: FormBuilder, private router: Router, private authenticationService: OperatorAuthService,
               private operatorService: OperatorService) {
-    this.updateForm = this.formBuilder.group({
-      name: [this.operator.name, [Validators.required]],
-      loginName: [this.operator.loginName, [Validators.required]],
-      password: [this.operator.password, [Validators.required, Validators.minLength(8)]],
-      email: [this.operator.email, [Validators.required]],
-
-    });
   }
 
   ngOnInit(): void {
-    //TODO fetch currently logged in operator from backend
+
+    this.user = this.authenticationService.getUser();
+
+    this.operatorService.getOperatorByLoginName(this.user)
+      .subscribe(operator => this.operator = operator, error => {
+        console.log(error);
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
+      }, () => {
+        this.updateForm = this.formBuilder.group({
+          name: [this.operator.name, [Validators.required]],
+          loginName: [this.operator.loginName, [Validators.required]],
+          password: ['unchanged', [Validators.required, Validators.minLength(8)]],
+          email: [this.operator.email, [Validators.required]],
+        });
+      });
   }
 
   vanishError() {

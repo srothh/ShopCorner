@@ -74,7 +74,7 @@ public class OperatorServiceImpl implements OperatorService {
         if (operator != null) {
             return operator;
         }
-        throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
+        throw new NotFoundException(String.format("Could not find the operator with the login name %s", loginName));
     }
 
     @Override
@@ -126,7 +126,9 @@ public class OperatorServiceImpl implements OperatorService {
         op.setLoginName(operator.getLoginName());
         op.setEmail(operator.getEmail());
         //can password be updated (this easily)?
-        op.setPassword(passwordEncoder.encode(operator.getPassword()));
+        if (!operator.getPassword().equals("unchanged")) {
+            op.setPassword(passwordEncoder.encode(operator.getPassword()));
+        }
         return operatorRepository.save(op);
     }
 

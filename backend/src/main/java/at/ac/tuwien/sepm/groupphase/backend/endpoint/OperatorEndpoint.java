@@ -80,6 +80,18 @@ public class OperatorEndpoint {
         return operatorService.getCollectionSize();
     }
 
+
+    @PermitAll
+    @GetMapping(value = "/{loginName}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Fetch the specified operator from the backend", security = @SecurityRequirement(name = "apiKey"))
+    public OperatorDto getByLoginName(@PathVariable("loginName") String loginName) {
+        LOGGER.info("GET " + BASE_URL + "/{}", loginName);
+        OperatorDto operatorDto = operatorMapper.entityToDto(operatorService.findOperatorByLoginName(loginName));
+        operatorDto.setPassword(null);
+        return operatorDto;
+    }
+
     /**
      * Save a new Operator.
      *

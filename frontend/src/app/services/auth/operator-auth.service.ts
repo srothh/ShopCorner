@@ -47,6 +47,13 @@ export class OperatorAuthService implements IAuthService {
     return localStorage.getItem(this.authTokenKey);
   }
 
+  getUser(){
+    if (this.getToken() != null) {
+      const decoded: any = jwt_decode(this.getToken());
+      return decoded.sub;
+    }
+  }
+
   /**
    * Returns the user role based on the current token
    */
