@@ -27,6 +27,9 @@ export class OperatorAccountComponent implements OnInit {
 
   ngOnInit(): void {
     this.selected = [];
+    if (this.authService.getUserRole() === 'EMPLOYEE') {
+      this.permissions = Permissions.employee;
+    }
     this.loadOperatorsPage();
     this.loadOperatorCount();
   }
@@ -149,9 +152,13 @@ export class OperatorAccountComponent implements OnInit {
   private loadOperatorCount() {
     this.operatorService.getOperatorCount().subscribe(
       (count: number[]) => {
-        this.collectionSizeAdmin = count[0];
         this.collectionSizeEmployee = count[1];
-        this.currentCollectionSize = this.collectionSizeAdmin;
+        if (this.authService.getUserRole() === 'ADMIN') {
+          this.collectionSizeAdmin = count[0];
+          this.currentCollectionSize = this.collectionSizeAdmin;
+        } else {
+          this.currentCollectionSize = this.collectionSizeEmployee;
+        }
       },
       error => {
         this.error = true;

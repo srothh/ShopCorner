@@ -2,21 +2,32 @@
   <br>
   <h2>Betreiber Konten</h2>
   <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
-    <label class="btn btn-light btn-sm active">
-      <input type="radio" name="buttons" id="option1" (click)=showAdmins()>
+    <label class="btn btn-light btn-sm active" *ngIf="getPermission() === 'ADMIN'">
+      <input type="radio" name="buttons" id="option1" (click)=showAdmins() checked>
       Admins
     </label>
-    <label class="btn btn-light btn-sm">
-      <input type="radio" name="buttons" id="option2" (click)=showEmployees()>
+    <label class="btn btn-light btn-sm" *ngIf="getPermission() === 'EMPLOYEE'; else normal_button">
+      <input type="radio" name="buttons" id="option2" checked>
       Angestellte
     </label>
+    <ng-template #normal_button>
+      <label class="btn btn-light btn-sm">
+        <input type="radio" name="buttons" id="option3" (click)=showEmployees()>
+        Angestellte
+      </label>
+    </ng-template>
   </div>
   <div class="float-right" style="margin-top: 10px;">
     <div *ngIf="selected.length > 0 && getPermission() === 'ADMIN'; else disabled_button">
       <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteCommit">Auswahl löschen</button>
     </div>
     <ng-template #disabled_button>
-      <button type="button" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
+      <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Nur für Admins" *ngIf="getPermission() === 'EMPLOYEE'; else not_selected">
+        <button type="button" style="pointer-events: none;" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
+      </span>
+      <ng-template #not_selected>
+        <button type="button" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
+      </ng-template>
     </ng-template>
   </div>
   <hr>
