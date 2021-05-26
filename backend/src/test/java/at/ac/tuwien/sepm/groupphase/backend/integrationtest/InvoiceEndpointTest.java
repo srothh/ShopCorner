@@ -54,8 +54,6 @@ public class InvoiceEndpointTest implements TestData {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
 
     @Autowired
     private TaxRateRepository taxRateRepository;
@@ -76,33 +74,17 @@ public class InvoiceEndpointTest implements TestData {
     private final InvoiceItem invoiceItem = new InvoiceItem();
     private final Invoice invoice = new Invoice(TEST_INVOICE_ID, TEST_INVOICE_DATE, TEST_INVOICE_AMOUNT);
     private final Product product = new Product();
-    private final Category category = new Category();
     private final TaxRate taxRate = new TaxRate();
 
     @BeforeEach
     public void beforeEach() {
-        categoryRepository.deleteAll();
-        taxRateRepository.deleteAll();
-        productRepository.deleteAll();
         invoiceRepository.deleteAll();
 
+        productRepository.deleteAll();
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
         product.setPrice(TEST_PRODUCT_PRICE);
-
-        category.setId(1L);
-        category.setName(TEST_CATEGORY_NAME);
-
-        taxRate.setId(1L);
-        taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);;
-
-        categoryRepository.save(category);
-        taxRateRepository.save(taxRate);
-
-        product.setCategory(category);
-        product.setTaxRate(taxRate);
-
 
         invoiceItemKey.setInvoiceId(invoice.getId());
         invoiceItemKey.setProductId(product.getId());
@@ -120,6 +102,10 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenAProductAndCategoryAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
+        taxRateRepository.save(taxRate);
+
+        product.setCategory(null);
+        product.setTaxRate(taxRate);
 
         productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
