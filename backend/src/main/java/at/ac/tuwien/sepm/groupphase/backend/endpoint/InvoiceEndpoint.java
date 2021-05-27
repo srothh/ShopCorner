@@ -104,11 +104,10 @@ public class InvoiceEndpoint {
     public SimpleInvoiceDto createInvoice(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices {}", invoiceDto);
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
-
-        Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
         Invoice createdInvoice = invoiceService.creatInvoice(invoice);
-        SimpleInvoiceDto newInvoice = invoiceMapper.invoiceToSimpleInvoiceDto(createdInvoice);
+        Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
         validator.validateNewInvoiceItem(items);
+        SimpleInvoiceDto newInvoice = invoiceMapper.invoiceToSimpleInvoiceDto(createdInvoice);
         for (InvoiceItem item : items) {
             item.setInvoice(createdInvoice);
         }
