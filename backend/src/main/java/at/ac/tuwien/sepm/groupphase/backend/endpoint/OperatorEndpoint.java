@@ -19,6 +19,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -118,5 +119,18 @@ public class OperatorEndpoint {
     public void delete(@PathVariable("id") Long id) {
         LOGGER.info("DELETE " + BASE_URL + "/{}", id);
         operatorService.delete(id);
+    }
+
+    /**
+     * Changes Permssions of Employee to Admin.
+     *
+     * @param id of employee that needs new permissions
+     */
+    @Secured({"ROLE_ADMIN"})
+    @PatchMapping(value = "/{id}/permissions")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void changePermissions(@PathVariable("id") Long id) {
+        LOGGER.info("PATCH " + BASE_URL + "/{}/permissions", id);
+        operatorService.changePermissions(id);
     }
 }
