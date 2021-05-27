@@ -67,6 +67,13 @@ public interface OperatorService extends UserDetailsService {
      */
     Operator save(Operator operator);
 
+    /**
+     * Deletes operator with id.
+     *
+     * @param id of operator that should be deleted
+     */
+    void delete(Long id);
+
 
 
     /**

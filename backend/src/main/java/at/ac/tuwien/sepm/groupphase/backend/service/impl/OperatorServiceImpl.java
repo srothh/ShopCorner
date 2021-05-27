@@ -3,10 +3,8 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
-
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
@@ -98,7 +96,8 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public int[] getCollectionSize() {
         LOGGER.trace("getCollectionsize()");
-        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)), (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
+        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)),
+            (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
     }
 
     @Override
@@ -108,6 +107,14 @@ public class OperatorServiceImpl implements OperatorService {
         String password = passwordEncoder.encode(operator.getPassword());
         operator.setPassword(password);
         return operatorRepository.save(operator);
+    }
+
+    @Override
+    public void delete(Long id) {
+        LOGGER.trace("delete({})", id);
+        operatorRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Could not find operator that should be deleted!"));
+        operatorRepository.deleteById(id);
     }
 
     @Override
