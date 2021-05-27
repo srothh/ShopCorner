@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Permissions} from '../../../dtos/permissions.enum';
 import {Router} from '@angular/router';
 import {OperatorService} from '../../../services/operator.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
@@ -73,6 +72,11 @@ export class OperatorEditAccountComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
+      }, () => {
+          if(this.operator.loginName !== operator.loginName || operator.password !== 'unchanged') {
+                this.authenticationService.logoutUser();
+                this.router.navigate(['/operator/login']);
+          }
       });
     } else {
       console.log('Invalid input');

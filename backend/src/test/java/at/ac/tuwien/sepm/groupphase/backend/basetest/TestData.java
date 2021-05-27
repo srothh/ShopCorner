@@ -36,7 +36,7 @@ public interface TestData {
 
 
 
-    String OPERATOR_BASE_URI = BASE_URI + "/operators/register";
+    String OPERATOR_BASE_URI = BASE_URI + "/operators";
 
     String TEST_OPERATOR_NAME = "operator";
     String TEST_OPERATOR_LOGINNAME = "operatorLoginName";

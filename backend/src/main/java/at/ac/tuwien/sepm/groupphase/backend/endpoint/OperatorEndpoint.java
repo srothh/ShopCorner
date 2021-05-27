@@ -15,23 +15,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -59,7 +56,7 @@ public class OperatorEndpoint {
      * @param permissions of needed operators
      * @return List with all needed operators
      */
-    @PermitAll
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping(params = {"page"})
     @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
     public List<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam("permissions") Permissions permissions) {
@@ -72,7 +69,7 @@ public class OperatorEndpoint {
      *
      * @return Array where [0] is count of admins and [1] is count of employees
      */
-    @PermitAll
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping()
     @Operation(summary = "Get count of operators", security = @SecurityRequirement(name = "apiKey"))
     public int[] getCount() {
@@ -80,8 +77,13 @@ public class OperatorEndpoint {
         return operatorService.getCollectionSize();
     }
 
-
-    @PermitAll
+    /**
+     * Get the operator with the given loginName.
+     *
+     * @param loginName of operator to be fetched
+     * @return the specified operator
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping(value = "/{loginName}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Fetch the specified operator from the backend", security = @SecurityRequirement(name = "apiKey"))
@@ -93,12 +95,12 @@ public class OperatorEndpoint {
     }
 
     /**
-     * Save a new Operator.
+     * Save a new operator.
      *
-     * @param newOperator Operator that should be saved
+     * @param newOperator operator that should be saved
      * @return saved operator
      */
-    @PermitAll //TODO change to @Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register a new operator account", security = @SecurityRequirement(name = "apiKey"))
@@ -111,7 +113,13 @@ public class OperatorEndpoint {
 
     }
 
-    @PermitAll
+    /**
+     * Update an already existing operator.
+     *
+     * @param operatorDto operator to be updated
+     * @return updated operator
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Edit an existing operator account", security = @SecurityRequirement(name = "apiKey"))

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import {Operator} from '../dtos/operator';
 import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Permissions} from '../dtos/permissions.enum';
 import {Globals} from '../global/globals';
+import {OperatorAuthService} from './auth/operator-auth.service';
 
 
 @Injectable({
@@ -12,7 +13,7 @@ import {Globals} from '../global/globals';
 export class OperatorService {
   private operatorBaseUri: string = this.globals.backendUri + '/operators';
 
-  constructor(private httpClient: HttpClient, private globals: Globals) {
+  constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
 
   /**
@@ -22,7 +23,7 @@ export class OperatorService {
    */
   getOperatorByLoginName(loginName: string): Observable<Operator> {
     console.log('Load operator ' + loginName);
-    return this.httpClient.get<Operator>(this.operatorBaseUri + '/' + loginName);
+    return this.httpClient.get<Operator>(this.operatorBaseUri + '/' + loginName, {headers: this.getHeaders()});
   }
 
 
@@ -35,7 +36,7 @@ export class OperatorService {
     console.log('Create new operator account', operator);
     return this.httpClient.post<Operator>(
       this.operatorBaseUri + '/register',  operator
-    );
+    , {headers: this.getHeaders()});
   }
 
   /**
@@ -47,7 +48,7 @@ export class OperatorService {
     console.log('Update operator', operator);
     return this.httpClient.put<Operator>(
       this.operatorBaseUri + '/' + operator.id,  operator
-    );
+    , {headers: this.getHeaders()});
   }
 
   /**
@@ -56,7 +57,7 @@ export class OperatorService {
   getOperatorsPage(page: number, pageCount: number, permissions: Permissions): Observable<Operator[]> {
     console.log('Get Operators with permission: ', permissions, ' for page: ', page);
     return this.httpClient.get<Operator[]>(this.operatorBaseUri + '?page=' + page + '&page_count=' + pageCount +
-      '&permissions=' + permissions);
+      '&permissions=' + permissions, {headers: this.getHeaders()});
   }
 
   /**
@@ -64,7 +65,13 @@ export class OperatorService {
    */
   getOperatorCount(): Observable<number[]> {
     console.log('Get count of Operators');
-    return this.httpClient.get<number[]>(this.operatorBaseUri);
+    return this.httpClient.get<number[]>(this.operatorBaseUri, {headers: this.getHeaders()});
+  }
+
+
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders()
+      .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
 
 }

@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
@@ -22,19 +23,19 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -79,10 +80,10 @@ public class OperatorEndpointTest implements TestData {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         String body = objectMapper.writeValueAsString(operatorDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI)
+        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI + "/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-        )
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
@@ -118,7 +119,7 @@ public class OperatorEndpointTest implements TestData {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         String body = objectMapper.writeValueAsString(operatorDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI)
+        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI + "/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -144,7 +145,7 @@ public class OperatorEndpointTest implements TestData {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         String body = objectMapper.writeValueAsString(operatorDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI)
+        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI + "/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -226,5 +227,156 @@ public class OperatorEndpointTest implements TestData {
         int employeeCount = count[1];
         assertEquals(1, employeeCount);
     }
+
+    @Test
+    public void givenOneOperator_whenPutByNonExistingId_then404() throws Exception {
+        operatorRepository.save(operator);
+
+        employee.setId(-1L);
+        OperatorDto operatorDto = operatorMapper.entityToDto(employee);
+        String body = objectMapper.writeValueAsString(operatorDto);
+
+        MvcResult mvcResult = this.mockMvc.perform(put(OPERATOR_BASE_URI + "/" + employee.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(
+            () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus())
+        );
+    }
+
+    @Test
+    public void givenOneOperator_whenPutByExistingId_thenVerifyOperatorChanged() throws Exception {
+        Operator updatedOperator = operatorRepository.save(operator);
+        updatedOperator.setName("Updated Name");
+        updatedOperator.setPassword("unchanged");
+        updatedOperator.setEmail("updated@email.com");
+
+        OperatorDto operatorDto = operatorMapper.entityToDto(updatedOperator);
+        String body = objectMapper.writeValueAsString(operatorDto);
+
+        MvcResult mvcResult = this.mockMvc.perform(put(OPERATOR_BASE_URI + "/" + updatedOperator.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        OperatorDto operatorResponse = objectMapper.readValue(response.getContentAsString(),
+            OperatorDto.class);
+
+        assertNotNull(operatorResponse.getId());
+        assertNotNull(operatorResponse.getName());
+        assertNotNull(operatorResponse.getLoginName());
+        assertNotNull(operatorResponse.getEmail());
+        assertNotNull(operatorResponse.getPermissions());
+        operatorResponse.setPassword(null);
+        operator.setPassword(null);
+
+        assertAll(
+            () -> assertEquals(updatedOperator.getId(), operatorMapper.dtoToEntity(operatorResponse).getId()),
+            () -> assertEquals(updatedOperator.getEmail(), operatorMapper.dtoToEntity(operatorResponse).getEmail()),
+            () -> assertEquals(updatedOperator.getName(), operatorMapper.dtoToEntity(operatorResponse).getName()),
+            () -> assertEquals(operator.getLoginName(), operatorMapper.dtoToEntity(operatorResponse).getLoginName()),
+            () -> assertEquals(operator.getPermissions(), operatorMapper.dtoToEntity(operatorResponse).getPermissions())
+        );
+    }
+
+    @Test
+    public void givenTwoOperators_whenPutByExistingIdAndChangedOperatorAlreadyExists_then422() throws Exception {
+        Operator firstOperator = operatorRepository.save(admin);
+        Operator updatedOperator = operatorRepository.save(operator);
+
+        updatedOperator.setLoginName(firstOperator.getLoginName());
+        updatedOperator.setEmail(firstOperator.getEmail());
+        updatedOperator.setPassword("unchanged");
+
+        OperatorDto operatorDto = operatorMapper.entityToDto(updatedOperator);
+        String body = objectMapper.writeValueAsString(operatorDto);
+
+        MvcResult mvcResult = this.mockMvc.perform(put(OPERATOR_BASE_URI + "/" + updatedOperator.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(
+            () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus())
+        );
+    }
+
+
+    @Test
+    public void givenOneOperator_whenPutInvalid_then422() throws Exception {
+        Operator updatedOperator = operatorRepository.save(operator);
+        updatedOperator.setName(null);
+        updatedOperator.setLoginName(null);
+        updatedOperator.setEmail(null);
+        updatedOperator.setPassword("unchanged");
+
+        OperatorDto operatorDto = operatorMapper.entityToDto(updatedOperator);
+        String body = objectMapper.writeValueAsString(operatorDto);
+
+        MvcResult mvcResult = this.mockMvc.perform(put(OPERATOR_BASE_URI + "/" + updatedOperator.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(
+            () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus())
+        );
+    }
+
+    @Test
+    public void givenNothing_whenFindByLoginName_then404() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "/" + operator.getLoginName())
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(
+            () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus())
+        );
+    }
+
+    @Test
+    public void givenTwoOperators_whenFindByLoginName_thenCorrectOperator() throws Exception {
+        Operator operator = operatorRepository.save(admin);
+        operatorRepository.save(employee);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "/" + admin.getLoginName())
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        OperatorDto operatorResponse = objectMapper.readValue(response.getContentAsString(),
+            OperatorDto.class);
+
+        assertAll(
+            () -> assertEquals(operator.getId(), operatorMapper.dtoToEntity(operatorResponse).getId()),
+            () -> assertEquals(operator.getEmail(), operatorMapper.dtoToEntity(operatorResponse).getEmail()),
+            () -> assertEquals(operator.getName(), operatorMapper.dtoToEntity(operatorResponse).getName()),
+            () -> assertEquals(operator.getLoginName(), operatorMapper.dtoToEntity(operatorResponse).getLoginName()),
+            () -> assertEquals(operator.getPermissions(), operatorMapper.dtoToEntity(operatorResponse).getPermissions())
+        );
+    }
+
+
 }
 
