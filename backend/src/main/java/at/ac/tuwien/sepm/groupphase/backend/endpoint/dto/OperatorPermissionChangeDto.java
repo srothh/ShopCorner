@@ -1,12 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
