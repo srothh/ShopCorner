@@ -6,6 +6,7 @@ import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
 import {forkJoin} from 'rxjs';
 import {Product} from '../../../dtos/product';
+import {ProductService} from '../../../services/product.service';
 
 
 @Component({
@@ -22,8 +23,14 @@ export class OperatorProductDetailsComponent implements OnInit {
   taxRates: TaxRate[];
   // util properties
   shouldFetch: boolean;
+  errorOccurred: boolean;
+  errorMessage: string;
 
-  constructor(private categoryService: CategoryService, private taxRateService: TaxRateService, private router: Router) {
+  constructor(
+    private categoryService: CategoryService,
+    private taxRateService: TaxRateService,
+    private productService: ProductService,
+    private router: Router) {
     if (router.getCurrentNavigation().extras.state !== undefined) {
       this.categories = this.router.getCurrentNavigation().extras.state[0] as Category[];
       this.taxRates = this.router.getCurrentNavigation().extras.state[1] as TaxRate[];
@@ -45,5 +52,20 @@ export class OperatorProductDetailsComponent implements OnInit {
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
       });
+  }
+  deleteProduct(){
+    this.productService.deleteProduct(this.product.id).subscribe(()=>{
+      this.router.navigate(['/operator/products']).then();
+    }, error => {
+      this.errorOccurred = true;
+      this.errorMessage = error.error.message;
+    });
+  }
+  resetState(){
+    this.errorMessage = null;
+    this.errorOccurred = undefined;
+  }
+  goBackToProductsOverview(){
+    this.router.navigate(['/operator/products']).then();
   }
 }
