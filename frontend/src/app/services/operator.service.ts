@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import {Operator} from '../dtos/operator';
 import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Permissions} from '../dtos/permissions.enum';
 import {Globals} from '../global/globals';
+import {OperatorAuthService} from './auth/operator-auth.service';
 
 
 @Injectable({
@@ -12,7 +13,7 @@ import {Globals} from '../global/globals';
 export class OperatorService {
   private operatorBaseUri: string = this.globals.backendUri + '/operators';
 
-  constructor(private httpClient: HttpClient, private globals: Globals) {
+  constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
 
 
@@ -30,11 +31,15 @@ export class OperatorService {
 
   /**
    * fetches all operator accounts from backend
+   *
+   * @param page that is needed
+   * @param pageCount amount of operators per page
+   * @param permissions of needed operators
    */
   getOperatorsPage(page: number, pageCount: number, permissions: Permissions): Observable<Operator[]> {
     console.log('Get Operators with permission: ', permissions, ' for page: ', page);
     return this.httpClient.get<Operator[]>(this.operatorBaseUri + '?page=' + page + '&page_count=' + pageCount +
-      '&permissions=' + permissions);
+      '&permissions=' + permissions, {headers: this.getHeadersForOperator()});
   }
 
   /**
@@ -42,6 +47,21 @@ export class OperatorService {
    */
   getOperatorCount(): Observable<number[]> {
     console.log('Get count of Operators');
-    return this.httpClient.get<number[]>(this.operatorBaseUri);
+    return this.httpClient.get<number[]>(this.operatorBaseUri + '/count', {headers: this.getHeadersForOperator()});
+  }
+
+  /**
+   * sends delete request with id to backend
+   *
+   * @param id of operator that should be deleted
+   */
+  deleteOperator(id: number): Observable<void> {
+    console.log('Delete operator with id: ' + id);
+    return this.httpClient.delete<void>(this.operatorBaseUri + '/' + id, {headers: this.getHeadersForOperator()});
+  }
+
+  private getHeadersForOperator(): HttpHeaders {
+    return new HttpHeaders()
+      .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
 }
