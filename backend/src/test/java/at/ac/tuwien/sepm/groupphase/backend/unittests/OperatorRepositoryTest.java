@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -75,5 +76,15 @@ public class OperatorRepositoryTest implements TestData {
         assertAll(
             () -> assertEquals(0,operatorRepository.findAll().size())
         );
+    }
+
+    @Test
+    public void givenOneOperator_whenSetPermissionById_thenFindAllAdminsReturnsListWithSizeOne() {
+        operatorRepository.save(employee);
+        Pageable returnPage = PageRequest.of(0, 15);
+
+        operatorRepository.setOperatorPermissionsById(Permissions.admin, employee.getId());
+
+        assertEquals(1, operatorRepository.findAll(OperatorSpecifications.hasPermission(Permissions.admin), returnPage).getContent().size());
     }
 }
