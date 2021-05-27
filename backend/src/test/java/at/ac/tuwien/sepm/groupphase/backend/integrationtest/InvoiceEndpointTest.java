@@ -5,11 +5,13 @@ import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
@@ -55,6 +57,8 @@ public class InvoiceEndpointTest implements TestData {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private TaxRateRepository taxRateRepository;
@@ -78,22 +82,31 @@ public class InvoiceEndpointTest implements TestData {
     private final InvoiceItem invoiceItem = new InvoiceItem();
     private final Invoice invoice = new Invoice();
     private final Product product = new Product();
+    private final Category category = new Category();
+    private final TaxRate taxRate = new TaxRate();
 
     @BeforeEach
     public void beforeEach() {
-        invoiceRepository.deleteAll();
-        productRepository.deleteAll();
+        categoryRepository.deleteAll();
         taxRateRepository.deleteAll();
+        productRepository.deleteAll();
+        invoiceRepository.deleteAll();
 
         // product
-        product.setId(500L);
+        product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
+        product.setDescription(TEST_PRODUCT_DESCRIPTION);
         product.setPrice(TEST_PRODUCT_PRICE);
+
+        category.setId(1L);
+        category.setName(TEST_CATEGORY_NAME);
+
+        taxRate.setId(1L);
+        taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
 
         // invoiceItem
         invoiceItemKey.setInvoiceId(null);
         invoiceItemKey.setProductId(null);
-        productRepository.save(product);
 
         invoiceItem.setId(invoiceItemKey);
         invoiceItem.setProduct(product);
@@ -111,8 +124,11 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
+        categoryRepository.save(category);
+        taxRateRepository.save(taxRate);
+        productRepository.save(product);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
-        detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
+        // detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
 
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
