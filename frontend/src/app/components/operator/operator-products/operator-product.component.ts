@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ProductService} from '../../../services/product.service';
 import {Product} from '../../../dtos/product';
 import {Router, UrlSerializer} from '@angular/router';
@@ -14,24 +14,28 @@ import {TaxRateService} from '../../../services/tax-rate.service';
   styleUrls: ['./operator-product.component.scss']
 })
 export class OperatorProductComponent implements OnInit {
+  @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
   products: Product[];
   categories: Category[];
   taxRates: TaxRate[];
   page = 0;
-  pageSize = 15;
+  pageSize = 5;
   collectionSize = 0;
-  clickedCheckmark = false;
   selectedProducts: Product[] = [];
+
   constructor(private productService: ProductService, private router: Router, private urlSerializer: UrlSerializer,
-              private categoryService: CategoryService, private taxRateService: TaxRateService) { }
+              private categoryService: CategoryService, private taxRateService: TaxRateService) {
+  }
+
   ngOnInit(): void {
     this.fetchData();
   }
+
   fetchData(): void {
     forkJoin([this.productService.getProducts(this.page, this.pageSize),
       this.categoryService.getCategories(), this.taxRateService.getTaxRates(),
       this.productService.getNumberOfProducts()])
-      .subscribe(([productsData, categoriesData,taxRatesData, numberOfProducts]) => {
+      .subscribe(([productsData, categoriesData, taxRatesData, numberOfProducts]) => {
         this.products = productsData;
         this.collectionSize = numberOfProducts;
         this.categories = categoriesData;
@@ -39,29 +43,32 @@ export class OperatorProductComponent implements OnInit {
       });
 
   }
-  fetchProducts(): void{
+
+  fetchProducts(): void {
     this.productService.getProducts(this.page, this.pageSize).subscribe((productData) => {
       this.products = productData;
     });
   }
+
   addNewProduct(): void {
     const currentURL = this.urlSerializer.serialize(this.router.createUrlTree([]));
-    const addProductURL = currentURL.replace('products','products/add');
-    this.router.navigate([addProductURL],{state: [this.categories,this.taxRates]}).then();
+    const addProductURL = currentURL.replace('products', 'products/add');
+    this.router.navigate([addProductURL], {state: [this.categories, this.taxRates]}).then();
   }
-  goToProductDetails(selectedProduct: Product, event){
-    // if checkbox was clicked then stop cell-click-event routing to details page
-    // checkbox is an input type with an corresponding label type
-    if (event.target.toString().includes('HTMLLabelElement') || event.target.toString().includes('HTMLInputLabel')) {
-      event.stopPropagation();
-    } else {
+
+  goToProductDetails(selectedProduct: Product, event) {
+    const targetHTMLElement = event.target.toString();
+    // if a checkbox was clicked then stop cell-click-event routing to details page
+    // checkbox is an input type with an corresponding label type -> therefore only if the target HTML Element
+    // is either input or label -> then do not route to details page
+    if (!(targetHTMLElement.includes('HTMLLabelElement') || targetHTMLElement.includes('HTMLInputLabel'))) {
       const currentUri = this.urlSerializer.serialize(this.router.createUrlTree([]));
       this.router.navigate([currentUri + '/' + selectedProduct.id], {state: [this.categories, this.taxRates, selectedProduct]}).then();
     }
   }
-  clickedCheckMark(event, index: number){
+
+  clickedCheckMark(event, index: number) {
     // no propagation to details site allowed when clicking the checkbox
-    // NOTE: I'm not sure why we need to stop propagation on this method and in goToProductDetails()
     event.stopPropagation();
     if (event.target.checked) {
       console.log(this.products[index]);
@@ -72,22 +79,40 @@ export class OperatorProductComponent implements OnInit {
       this.selectedProducts.splice(deleteIndex, 1);
     }
   }
-  deleteProducts(){
-    if (this.selectedProducts.length > 0){
-      for (const selectedProduct of this.selectedProducts){
-        this.productService.deleteProduct(selectedProduct.id).subscribe(()=>{
-           this.fetchProducts();
-        });
-      }
-      this.collectionSize -= this.selectedProducts.length;
+
+  uncheckSelectedProducts() {
+    this.checkboxes.forEach((element) => {
+      element.nativeElement.checked = false;
+    });
+    this.selectedProducts = [];
+  }
+
+  deleteProducts() {
+    for (const selectedProduct of this.selectedProducts) {
+      this.productService.deleteProduct(selectedProduct.id).subscribe(() => {
+        if (this.selectedProducts.indexOf(selectedProduct) === this.selectedProducts.length - 1) {
+          if ((this.page + 1) * this.pageSize >= this.collectionSize &&
+            //products per page equals selected products -> return to previous page
+            this.products.length === this.selectedProducts.length &&
+            this.page > 0) {
+            this.previousPage();
+          } else {
+            this.fetchProducts();
+          }
+          this.collectionSize -= this.selectedProducts.length;
+          this.uncheckSelectedProducts();
+        }
+      });
     }
   }
+
   previousPage(): void {
     if (this.page > 0) {
       this.page -= 1;
       this.fetchProducts();
     }
   }
+
   nextPage(): void {
     if ((this.page + 1) * this.pageSize < this.collectionSize) {
       this.page += 1;
