@@ -72,6 +72,8 @@ public interface OperatorService extends UserDetailsService {
      *
      * @param id of operator that should be changed
      * @param permissions that operator should get
+     * @throws NotFoundException when no operator with the id is found
+     * @throws RuntimeException  upon encountering errors with the database
      */
     void changePermissions(Long id, Permissions permissions);
 
@@ -79,6 +81,8 @@ public interface OperatorService extends UserDetailsService {
      * Deletes operator with id.
      *
      * @param id of operator that should be deleted
+     * @throws NotFoundException when no operator with the id is found
+     * @throws RuntimeException  upon encountering errors with the database
      */
     void delete(Long id);
 }
