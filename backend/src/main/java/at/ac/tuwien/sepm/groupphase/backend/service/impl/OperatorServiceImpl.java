@@ -112,11 +112,11 @@ public class OperatorServiceImpl implements OperatorService {
 
     @Override
     @Transactional
-    public void changePermissions(Long id) {
+    public void changePermissions(Long id, Permissions permissions) {
         LOGGER.trace("changePermissions({})", id);
         operatorRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Could not find operator that should get new permissions!"));
-        operatorRepository.setOperatorPermissionsById(Permissions.admin, id);
+        operatorRepository.setOperatorPermissionsById(permissions, id);
     }
 
     @Override

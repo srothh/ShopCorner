@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
@@ -125,12 +126,16 @@ public class OperatorEndpoint {
      * Changes Permssions of Employee to Admin.
      *
      * @param id of employee that needs new permissions
+     * @param operatorPermissionChangeDto Dto with permission that should be updated
      */
     @Secured({"ROLE_ADMIN"})
-    @PatchMapping(value = "/{id}/permissions")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void changePermissions(@PathVariable("id") Long id) {
-        LOGGER.info("PATCH " + BASE_URL + "/{}/permissions", id);
-        operatorService.changePermissions(id);
+    @PatchMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void changePermissions(@PathVariable("id") Long id, @Valid @RequestBody OperatorPermissionChangeDto operatorPermissionChangeDto) {
+        LOGGER.info("PATCH " + BASE_URL + "/{}: {}", id, operatorPermissionChangeDto);
+        if (operatorPermissionChangeDto.getPermissions() != Permissions.admin) {
+            throw new IllegalArgumentException("Permission has to be employee");
+        }
+        operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }
 }

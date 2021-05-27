@@ -71,8 +71,9 @@ public interface OperatorService extends UserDetailsService {
      * Changes Permission of operater with id.
      *
      * @param id of operator that should be changed
+     * @param permissions that operator should get
      */
-    void changePermissions(Long id);
+    void changePermissions(Long id, Permissions permissions);
 
     /**
      * Deletes operator with id.
