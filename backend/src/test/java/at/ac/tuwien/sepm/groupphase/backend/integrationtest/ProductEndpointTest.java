@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
+import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
@@ -15,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,6 +59,13 @@ public class ProductEndpointTest implements TestData {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private SecurityProperties securityProperties;
+
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
+
     private final Product product = new Product();
     private final Category category = new Category();
     private final TaxRate taxRate = new TaxRate();
@@ -91,6 +100,7 @@ public class ProductEndpointTest implements TestData {
             post(PRODUCTS_BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER,ADMIN_ROLES))
         )
             .andDo(print())
             .andReturn();
@@ -161,6 +171,7 @@ public class ProductEndpointTest implements TestData {
 
         MvcResult mvcResult = this.mockMvc.perform(post(PRODUCTS_BASE_URI )
             .contentType(MediaType.APPLICATION_JSON)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER,ADMIN_ROLES))
             .content(body))
             .andDo(print())
             .andReturn();
@@ -181,6 +192,7 @@ public class ProductEndpointTest implements TestData {
         ResultActions mvcResult = this.mockMvc.perform(
             put(PRODUCTS_BASE_URI + '/'+newProduct.getId())
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER,ADMIN_ROLES))
                 .content(body))
             .andExpect(status().isOk());
 
@@ -207,6 +219,7 @@ public class ProductEndpointTest implements TestData {
         ResultActions mvcResult = this.mockMvc.perform(
             put(PRODUCTS_BASE_URI+"/"+ product.getId())
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER,ADMIN_ROLES))
                 .content(body))
             .andExpect(status().isNotFound());
 

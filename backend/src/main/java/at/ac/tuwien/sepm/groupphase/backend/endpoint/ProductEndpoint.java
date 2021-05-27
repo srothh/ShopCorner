@@ -6,11 +6,13 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,10 +49,10 @@ public class ProductEndpoint {
      * @param productDto the dto class containing all necessary field
      * @return the newly added product in a dto - format
      */
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Creates a new product with a given optional category and tax-rate")
+    @Operation(summary = "Creates a new product with a given optional category and tax-rate", security = @SecurityRequirement(name = "apiKey"))
     public ProductDto createProduct(@RequestBody @Valid ProductDto productDto) {
         LOGGER.info("POST newProduct({}) " + BASE_URL, productDto);
         return this.productMapper
@@ -59,7 +61,7 @@ public class ProductEndpoint {
     }
 
     /**
-     * gets all products form the database in a paginated manner.
+     * Gets all products form the database in a paginated manner.
      *
      * @param page describes the number of the page
      * @param pageCount the number of entries in each page
@@ -69,7 +71,7 @@ public class ProductEndpoint {
     @PermitAll
     @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Returns all products that are currently stored in the database")
+    @Operation(summary = "Returns all products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
     public List<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
         LOGGER.info("GET " + BASE_URL);
         return this.productService.getAllProductsPerPage(page, pageCount).getContent()
@@ -86,7 +88,11 @@ public class ProductEndpoint {
     @PermitAll
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Returns all products that are currently stored in the database without picture and category in a paginated manner")
+    @Operation
+        (
+        summary = "Returns all products that are currently stored in the database without picture and category in a paginated manner",
+        security = @SecurityRequirement(name = "apiKey")
+        )
     public int getProductsCount() {
         LOGGER.info("GET" + BASE_URL + "/count");
         return this.productService.getProductsCount();
@@ -97,10 +103,13 @@ public class ProductEndpoint {
      * @return all simple products ( product without picture,category) in a dto - format NOT PAGINATED
      */
 
-    @PermitAll
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("/simple")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Returns all products that are currently stored in the database without picture and category")
+    @Operation(
+        summary = "Returns all products that are currently stored in the database without picture and category",
+        security = @SecurityRequirement(name = "apiKey")
+    )
     public List<SimpleProductDto> getAllSimpleProducts() {
         LOGGER.info("GET" + BASE_URL + "/simple");
         return this.productService.getAllProducts()
@@ -111,40 +120,43 @@ public class ProductEndpoint {
 
 
     /**
-     * updates an already existing product from the database.
+     * Updates an already existing product from the database.
      */
 
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @PutMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Updates an already existing product from the database", security = @SecurityRequirement(name = "apiKey"))
     public void updateProduct(@PathVariable Long productId, @RequestBody @Valid ProductDto productDto) {
         LOGGER.info("PUT Product{} with Id{}" + BASE_URL, productDto, productId);
         this.productService.updateProduct(productId, this.productMapper.dtoToEntity(productDto));
     }
 
     /**
-     * gets a specific product with the given id.
+     * Gets a specific product with the given id.
      *
      * @param productId the id to search in the database and retrieve the associated product entity
      * @return the product entity with the associated Id
      */
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Gets a specific product with the give Id", security = @SecurityRequirement(name = "apiKey"))
     public ProductDto getProductById(@PathVariable Long productId) {
         LOGGER.info("GET Product with id{}" + BASE_URL, productId);
         return this.productMapper.entityToDto(this.productService.findById(productId));
     }
 
     /**
-     * deletes a specific product with the given id.
+     * Deletes a specific product with the given id.
      *
      * @param productId the id to search in the database and retrieve the associated product entity
      *
      */
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "deletes a specific product with the given Id", security = @SecurityRequirement(name = "apiKey"))
     public void deleteProductById(@PathVariable Long productId) {
         LOGGER.info("DELETE Product with id{}" + BASE_URL, productId);
         this.productService.deleteProductById(productId);
