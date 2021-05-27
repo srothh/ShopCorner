@@ -134,7 +134,7 @@ public class OperatorEndpoint {
     public void changePermissions(@PathVariable("id") Long id, @Valid @RequestBody OperatorPermissionChangeDto operatorPermissionChangeDto) {
         LOGGER.info("PATCH " + BASE_URL + "/{}: {}", id, operatorPermissionChangeDto);
         if (operatorPermissionChangeDto.getPermissions() != Permissions.admin) {
-            throw new IllegalArgumentException("Permission has to be employee");
+            throw new IllegalArgumentException("Permission has to be admin");
         }
         operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }
