@@ -1,9 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.basetest;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

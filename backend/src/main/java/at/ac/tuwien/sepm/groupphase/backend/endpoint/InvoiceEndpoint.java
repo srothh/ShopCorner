@@ -12,7 +12,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
@@ -112,6 +111,7 @@ public class InvoiceEndpoint {
             item.setInvoice(createdInvoice);
         }
         invoiceItemService.creatInvoiceItem(items);
+
         return newInvoice;
     }
 
@@ -127,8 +127,12 @@ public class InvoiceEndpoint {
     @Operation(summary = "create new invoice")
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
-        return this.getInvoiceAsPdf(this.createInvoice(invoiceDto).getId());
 
+        Invoice invoice = invoiceService.findOneById(this.createInvoice(invoiceDto).getId());
+        PdfGenerator pdf = new PdfGenerator();
+        final byte[] contents = pdf.generatePdfAsByteArray(invoice);
+
+        return new ResponseEntity<byte[]>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
 
 
@@ -148,14 +152,31 @@ public class InvoiceEndpoint {
         PdfGenerator pdf = new PdfGenerator();
         final byte[] contents = pdf.generatePdfAsByteArray(invoice);
 
+
+        return new ResponseEntity<byte[]>(contents, this.generateHeader(), HttpStatus.OK);
+    }
+
+
+
+    private HttpHeaders generateHeader() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         String filename = "output.pdf";
         headers.setContentDispositionFormData(filename, filename);
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-
-        return new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);
+        return headers;
     }
 
+    /*private Invoice addInvoiceToDbs(DetailedInvoiceDto detailedInvoiceDto) {
+        Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(detailedInvoiceDto);
+        Invoice createdInvoice = invoiceService.creatInvoice(invoice);
+        Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(detailedInvoiceDto.getItems());
+        validator.validateNewInvoiceItem(items);
+        for (InvoiceItem item : items) {
+            item.setInvoice(createdInvoice);
+        }
+        invoiceItemService.creatInvoiceItem(items);
+        return createdInvoice;
+    }*/
 
 }

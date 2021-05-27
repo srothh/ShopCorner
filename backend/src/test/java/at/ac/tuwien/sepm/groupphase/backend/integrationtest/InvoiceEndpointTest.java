@@ -89,13 +89,13 @@ public class InvoiceEndpointTest implements TestData {
 
     @BeforeEach
     public void beforeEach() {
+        invoiceRepository.deleteAll();
         categoryRepository.deleteAll();
         taxRateRepository.deleteAll();
         productRepository.deleteAll();
         invoiceRepository.deleteAll();
 
-        // product
-       /* product.setId(0L);
+        product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
         product.setPrice(TEST_PRODUCT_PRICE);
@@ -105,32 +105,37 @@ public class InvoiceEndpointTest implements TestData {
 
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
-*/
+
+        // product
+        product.setId(0L);
+        product.setName(TEST_PRODUCT_NAME);
+        product.setDescription(TEST_PRODUCT_DESCRIPTION);
+        product.setPrice(TEST_PRODUCT_PRICE);
+        product.setTaxRate(taxRateRepository.save(taxRate));
+        product.setCategory(categoryRepository.save(category));
+
         // invoiceItem
-        /*invoiceItemKey.setInvoiceId(null);
+        invoiceItemKey.setInvoiceId(null);
         invoiceItemKey.setProductId(product.getId());
 
         invoiceItem.setId(invoiceItemKey);
-        invoiceItem.setProduct(product);
-        invoiceItem.setNumberOfItems(10);*/
+        invoiceItem.setProduct(productRepository.save(product));
+        invoiceItem.setNumberOfItems(10);
 
         // invoiceItem to invoice
-        //Set<InvoiceItem> items = new HashSet<>();
-        //items.add(invoiceItem);
-
+        Set<InvoiceItem> items = new HashSet<>();
+        items.add(invoiceItem);
+        invoice.setId(TEST_INVOICE_ID);
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
-        //invoice.setItems(items);
+        invoice.setItems(items);
 
     }
 
     @Test
-    public void givenNoItem_whenPost_thenInvoiceWithAllSetProperties_then422() throws Exception {
-        /*categoryRepository.save(category);
-        taxRateRepository.save(taxRate);
-        productRepository.save(product);*/
+    public void givenAllProperties_whenPost_thenInvoice() throws Exception {
+
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
-        // detailedInvoiceDto.setItems(invoiceItemMapper.entityToDto(invoice.getItems()));
 
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
@@ -142,22 +147,37 @@ public class InvoiceEndpointTest implements TestData {
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
-        //SimpleInvoiceDto  invoiceResponse = objectMapper.readValue(response.getContentAsString(), SimpleInvoiceDto.class);
-
-        /*ResponseEntity  responseEntity = objectMapper.readValue(response.getContentAsByteArray(), ResponseEntity.class);
-        assertNotNull(responseEntity);*/
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+        SimpleInvoiceDto simpleInvoiceDto = objectMapper.readValue(response.getContentAsString(),
+            SimpleInvoiceDto.class);
 
         assertAll(
-            () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus()),
-            () -> {
-                String content = response.getContentAsString();
-                content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
-                String[] errors = content.split(",");
-                assertEquals(2, errors.length);
-            }
+            () -> assertEquals(invoice.getDate(), simpleInvoiceDto.getDate()),
+            () -> assertEquals(invoice.getAmount(), simpleInvoiceDto.getAmount())
         );
     }
+
+    @Test
+    public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
+
+        DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
+
+        String body = objectMapper.writeValueAsString(detailedInvoiceDto);
+
+        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+        )
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
+
+    }
+
+
 
     @Test
     public void givenNothing_whenPostInvalid_then400() throws Exception {
