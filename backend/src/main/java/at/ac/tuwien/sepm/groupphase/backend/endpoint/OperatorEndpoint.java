@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -63,7 +64,7 @@ public class OperatorEndpoint {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.toString().equals("[ROLE_EMPLOYEE]") && permissions == Permissions.admin) {
-            return null;
+            throw new AccessDeniedException("Employee can not access admins");
         }
         return operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, pageCount, permissions).getContent());
     }

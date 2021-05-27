@@ -202,6 +202,20 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
+    public void givenOneAdmin_whenFindAllWithPageAndPermissionAdminAsEmployee_thenReturnForbidden()
+        throws Exception {
+        operatorRepository.save(admin);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(EMPLOYEE_USER, EMPLOYEE_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+    }
+
+    @Test
     public void givenTwoOperators_whenGetCount_thenArrayWithTwoOnes()
         throws Exception {
         operatorRepository.save(admin);
