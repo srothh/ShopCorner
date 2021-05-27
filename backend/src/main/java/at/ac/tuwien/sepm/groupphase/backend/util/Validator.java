@@ -63,14 +63,15 @@ public class Validator {
     }
 
 
-    /**
-     *  Is not neccessery because of the hashSet.
-     */
+
     public void validateNewInvoiceItem(Set<InvoiceItem> items) {
         LOGGER.trace("validateNewInvoiceItem({})", items);
         if (items == null) {
             throw new ValidationException("There are no items in the invoice");
         } else {
+            if (items.size() == 0) {
+                throw new ValidationException("There are no items");
+            }
             List<Product> productList = new ArrayList<>();
             for (InvoiceItem item : items) {
 

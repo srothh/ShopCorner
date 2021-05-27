@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
+import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import io.swagger.v3.oas.annotations.Operation;
 
 import javax.annotation.security.PermitAll;
@@ -49,13 +50,15 @@ public class InvoiceEndpoint {
     private final InvoiceService invoiceService;
     private final InvoiceItemService invoiceItemService;
     private final InvoiceItemMapper invoiceItemMapper;
+    private final Validator validator;
 
     @Autowired
-    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService, InvoiceItemService invoiceItemService) {
+    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService, InvoiceItemService invoiceItemService, Validator validator) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
         this.invoiceItemService = invoiceItemService;
+        this.validator = validator;
     }
 
     /**
@@ -105,6 +108,7 @@ public class InvoiceEndpoint {
         Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
         Invoice createdInvoice = invoiceService.creatInvoice(invoice);
         SimpleInvoiceDto newInvoice = invoiceMapper.invoiceToSimpleInvoiceDto(createdInvoice);
+        validator.validateNewInvoiceItem(items);
         for (InvoiceItem item : items) {
             item.setInvoice(createdInvoice);
         }

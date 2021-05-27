@@ -3,6 +3,8 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
@@ -123,7 +125,7 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenAProductAndATaxRate_whenPost_thenInvoiceWithAllSetPropertiesPlusId() throws Exception {
+    public void givenNoItem_whenPost_thenInvoiceWithAllSetProperties_then422() throws Exception {
         /*categoryRepository.save(category);
         taxRateRepository.save(taxRate);
         productRepository.save(product);*/
@@ -132,18 +134,30 @@ public class InvoiceEndpointTest implements TestData {
 
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
+        //MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
+        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
         )
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
-        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
+        SimpleInvoiceDto  invoiceResponse = objectMapper.readValue(response.getContentAsString(), SimpleInvoiceDto.class);
 
-        ResponseEntity  responseEntity = objectMapper.readValue(response.getContentAsByteArray(), ResponseEntity.class);
-        assertNotNull(responseEntity);
+        /*ResponseEntity  responseEntity = objectMapper.readValue(response.getContentAsByteArray(), ResponseEntity.class);
+        assertNotNull(responseEntity);*/
+
+        assertAll(
+            () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus()),
+            () -> {
+                String content = response.getContentAsString();
+                content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
+                String[] errors = content.split(",");
+                assertEquals(2, errors.length);
+            }
+        );
     }
 
     @Test
