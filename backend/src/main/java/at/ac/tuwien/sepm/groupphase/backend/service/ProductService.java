@@ -14,7 +14,6 @@ public interface ProductService {
      *
      * @param product the newly added product
      * @return the newly created product
-     *
      */
     Product createProduct(Product product);
 
@@ -37,7 +36,6 @@ public interface ProductService {
      *
      * @param productId the Id of the product to update
      * @param product the newly updated product entity with the updated fields
-     *
      */
     void updateProduct(Long productId, Product product);
 
@@ -45,10 +43,8 @@ public interface ProductService {
      * Gets a specific product with the given productId.
      *
      * @param productId the is to search in the database
-     *
      * @return the product entity with the given product Id
-     *
-     * */
+     */
     Product findById(Long productId);
 
 
@@ -56,8 +52,7 @@ public interface ProductService {
      * Retrieve the number of all added products.
      *
      * @return retrieves the number of all added products
-     *
-     * */
+     */
     int getProductsCount();
 
 
