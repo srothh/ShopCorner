@@ -106,7 +106,7 @@ public class InvoiceEndpointTest implements TestData {
 
         // invoiceItem
         invoiceItemKey.setInvoiceId(null);
-        invoiceItemKey.setProductId(null);
+        invoiceItemKey.setProductId(product.getId());
 
         invoiceItem.setId(invoiceItemKey);
         invoiceItem.setProduct(product);
