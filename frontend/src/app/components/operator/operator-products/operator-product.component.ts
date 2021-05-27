@@ -20,6 +20,8 @@ export class OperatorProductComponent implements OnInit {
   page = 0;
   pageSize = 15;
   collectionSize = 0;
+  clickedCheckmark = false;
+  selectedProducts: Product[] = [];
   constructor(private productService: ProductService, private router: Router, private urlSerializer: UrlSerializer,
               private categoryService: CategoryService, private taxRateService: TaxRateService) { }
   ngOnInit(): void {
@@ -47,9 +49,38 @@ export class OperatorProductComponent implements OnInit {
     const addProductURL = currentURL.replace('products','products/add');
     this.router.navigate([addProductURL],{state: [this.categories,this.taxRates]}).then();
   }
-  goToProductDetails(selectedProduct: Product){
-    const currentUri = this.urlSerializer.serialize(this.router.createUrlTree([]));
-    this.router.navigate([currentUri + '/' + selectedProduct.id], {state: [this.categories, this.taxRates, selectedProduct]}).then();
+  goToProductDetails(selectedProduct: Product, event){
+    // if checkbox was clicked then stop cell-click-event routing to details page
+    // checkbox is an input type with an corresponding label type
+    if (event.target.toString().includes('HTMLLabelElement') || event.target.toString().includes('HTMLInputLabel')) {
+      event.stopPropagation();
+    } else {
+      const currentUri = this.urlSerializer.serialize(this.router.createUrlTree([]));
+      this.router.navigate([currentUri + '/' + selectedProduct.id], {state: [this.categories, this.taxRates, selectedProduct]}).then();
+    }
+  }
+  clickedCheckMark(event, index: number){
+    // no propagation to details site allowed when clicking the checkbox
+    // NOTE: I'm not sure why we need to stop propagation on this method and in goToProductDetails()
+    event.stopPropagation();
+    if (event.target.checked) {
+      console.log(this.products[index]);
+      this.selectedProducts.push(this.products[index]);
+    } else {
+      const product = this.products[index];
+      const deleteIndex = this.selectedProducts.indexOf(product);
+      this.selectedProducts.splice(deleteIndex, 1);
+    }
+  }
+  deleteProducts(){
+    if (this.selectedProducts.length > 0){
+      for (const selectedProduct of this.selectedProducts){
+        this.productService.deleteProduct(selectedProduct.id).subscribe(()=>{
+           this.fetchProducts();
+        });
+      }
+      this.collectionSize -= this.selectedProducts.length;
+    }
   }
   previousPage(): void {
     if (this.page > 0) {

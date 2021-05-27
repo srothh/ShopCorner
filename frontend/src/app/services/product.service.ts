@@ -47,6 +47,13 @@ export class ProductService {
     return this.httpClient.get<number>(this.messageBaseUri);
   }
 
+  /**
+   * deletes a specific product with the given Id
+   */
+  deleteProduct(productId: number): Observable<void> {
+    return this.httpClient.delete<void>(this.messageBaseUri + '/'+ productId);
+  }
+
 
 
 
