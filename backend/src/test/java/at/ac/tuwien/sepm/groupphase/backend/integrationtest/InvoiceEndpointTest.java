@@ -143,8 +143,8 @@ public class InvoiceEndpointTest implements TestData {
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
-        assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
-        SimpleInvoiceDto  invoiceResponse = objectMapper.readValue(response.getContentAsString(), SimpleInvoiceDto.class);
+        assertEquals(MediaType.TEXT_PLAIN_VALUE, response.getContentType());
+        //SimpleInvoiceDto  invoiceResponse = objectMapper.readValue(response.getContentAsString(), SimpleInvoiceDto.class);
 
         /*ResponseEntity  responseEntity = objectMapper.readValue(response.getContentAsByteArray(), ResponseEntity.class);
         assertNotNull(responseEntity);*/
