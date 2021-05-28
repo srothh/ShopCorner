@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -96,7 +97,8 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public int[] getCollectionSize() {
         LOGGER.trace("getCollectionsize()");
-        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)), (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
+        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)),
+            (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
     }
 
     @Override
@@ -108,4 +110,20 @@ public class OperatorServiceImpl implements OperatorService {
         return operatorRepository.save(operator);
     }
 
+    @Override
+    @Transactional
+    public void changePermissions(Long id, Permissions permissions) {
+        LOGGER.trace("changePermissions({})", id);
+        operatorRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Could not find operator that should get new permissions!"));
+        operatorRepository.setOperatorPermissionsById(permissions, id);
+    }
+
+    @Override
+    public void delete(Long id) {
+        LOGGER.trace("delete({})", id);
+        operatorRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Could not find operator that should be deleted!"));
+        operatorRepository.deleteById(id);
+    }
 }
