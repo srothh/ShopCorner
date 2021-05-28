@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(Product product) {
-        LOGGER.trace("create new Product({})", product);
+        LOGGER.trace("createProduct({})", product);
         if (product.getDescription() != null) {
             this.validateProperty(product.getDescription());
         }
@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     public void assignProductToCategory(Product product, Long categoryId) {
-        LOGGER.trace("assigning categoryId({}) to  product", categoryId);
+        LOGGER.trace("assignProductToCategory({},{})", product, categoryId);
         if (categoryId == null) {
             product.setCategory(null);
         } else {
@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void assignProductToTaxRate(Product product, Long taxRateId) {
-        LOGGER.trace("assigning taxRateId({}) to  product", taxRateId);
+        LOGGER.trace("assignProductToTaxRate({}{})", product, taxRateId);
         TaxRate taxRate = taxRateRepository.findById(taxRateId)
             .orElseThrow(() -> new NotFoundException("Could not find tax-rate!"));
         product.setTaxRate(taxRate);
@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> getAllProductsPerPage(int page, int pageCount) {
-        LOGGER.trace("retrieving all products in a paginated manner");
+        LOGGER.trace("getAllProductsPerPage({}, {})", page, pageCount);
         if (pageCount == 0) {
             pageCount = 15;
         } else if (pageCount > 50) {
@@ -84,12 +84,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        LOGGER.trace("retrieving all products");
+        LOGGER.trace("getAllProducts()");
         return this.productRepository.findAll();
     }
 
     public void validateProperty(String description) {
-        LOGGER.trace("validate property({}) for a product", description);
+        LOGGER.trace("validateProperty({})", description);
         if (!description.isEmpty()) {
             if (description.trim().isEmpty()) {
                 throw new IllegalArgumentException("Only whiteSpaces not allowed!");
@@ -101,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public void updateProduct(Long productId, Product product) {
-        LOGGER.trace("update Product with({})", product);
+        LOGGER.trace("updateProduct({})", product);
         if (product.getDescription() != null) {
             this.validateProperty(product.getDescription());
         }
@@ -119,20 +119,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Product findById(Long productId) {
-        LOGGER.trace("find product with Id{}", productId);
+        LOGGER.trace("findById{}", productId);
         return productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find product %s", productId)));
     }
 
     @Override
     public int getProductsCount() {
-        LOGGER.trace("get the number of products");
+        LOGGER.trace("getProductsCount()");
         return productRepository.findAll().size();
     }
 
     @Override
     public void deleteProductById(Long productId) {
-        LOGGER.trace("DELETE Product with Id{}", productId);
+        LOGGER.trace("deleteProductById{}", productId);
         if (findById(productId) != null) {
             productRepository.deleteById(productId);
         }
