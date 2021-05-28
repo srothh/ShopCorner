@@ -11,15 +11,14 @@ import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -36,25 +35,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(Product product, Long categoryId, Long taxRateId) {
-        LOGGER.trace("create new Product({})" + "  category({})"  + " taxRateId({})", product, categoryId, taxRateId);
+    public Product createProduct(Product product) {
+        LOGGER.trace("create new Product({})", product);
         if (product.getDescription() != null) {
             this.validateProperty(product.getDescription());
         }
-        if (categoryId != null) {
-            assignProductToCategory(product, categoryId);
+        if (product.getCategory() != null) {
+            Category category = product.getCategory();
+            assignProductToCategory(product, category.getId());
 
         }
-        assignProductToTaxRate(product, taxRateId);
+        TaxRate taxRate = product.getTaxRate();
+        assignProductToTaxRate(product, taxRate.getId());
         return this.productRepository.save(product);
     }
 
     @Transactional
     public void assignProductToCategory(Product product, Long categoryId) {
         LOGGER.trace("assigning categoryId({}) to  product", categoryId);
-        Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new NotFoundException("Could not find category!"));
-        product.setCategory(category);
+        if (categoryId == null) {
+            product.setCategory(null);
+        } else {
+            Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Could not find category!"));
+            product.setCategory(category);
+
+        }
     }
 
     private void assignProductToTaxRate(Product product, Long taxRateId) {
@@ -65,6 +71,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<Product> getAllProductsPerPage(int page, int pageCount) {
+        LOGGER.trace("retrieving all products in a paginated manner");
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable pages = PageRequest.of(page, pageCount);
+        return this.productRepository.findAll(pages);
+    }
+
+    @Override
     public List<Product> getAllProducts() {
         LOGGER.trace("retrieving all products");
         return this.productRepository.findAll();
@@ -72,11 +90,41 @@ public class ProductServiceImpl implements ProductService {
 
     public void validateProperty(String description) {
         LOGGER.trace("validate property({}) for a product", description);
-        if (description.trim().isEmpty()) {
-            throw new IllegalArgumentException("Only whiteSpace not allowed!");
+        if (!description.isEmpty()) {
+            if (description.trim().isEmpty()) {
+                throw new IllegalArgumentException("Only whiteSpaces not allowed!");
+            }
         }
         if (description.trim().length() > 70) {
             throw new IllegalArgumentException("description is too long");
         }
+    }
+
+    public void updateProduct(Long productId, Product product) {
+        LOGGER.trace("update Product with({})", product);
+        if (product.getDescription() != null) {
+            this.validateProperty(product.getDescription());
+        }
+        Product updateProduct = this.productRepository
+            .findById(productId).orElseThrow(() -> new NotFoundException("Could not find product with Id:" + productId));
+        updateProduct.setName(product.getName());
+        updateProduct.setDescription(product.getDescription());
+        updateProduct.setPrice(product.getPrice());
+        updateProduct.setPicture(product.getPicture());
+        Category updateCategory = product.getCategory();
+        TaxRate updateTaxRate = product.getTaxRate();
+        assignProductToCategory(updateProduct, updateCategory.getId());
+        assignProductToTaxRate(updateProduct, updateTaxRate.getId());
+        this.productRepository.save(updateProduct);
+    }
+
+    public Product findById(Long productId) {
+        return productRepository.findById(productId)
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find product %s", productId)));
+    }
+
+    @Override
+    public int getProductsCount() {
+        return productRepository.findAll().size();
     }
 }

@@ -31,7 +31,7 @@ public class CustomerJwtAuthenticationFilter extends UsernamePasswordAuthenticat
                                            JwtTokenizer jwtTokenizer) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenizer = jwtTokenizer;
-        setFilterProcessesUrl(securityProperties.getLoginUri());
+        setFilterProcessesUrl(securityProperties.getLoginUriCustomer());
     }
 
     @Override

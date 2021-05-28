@@ -31,6 +31,7 @@ security:
     header: Authorization
     prefix: "Bearer "
     login-uri-customer: /api/v1/authentication/customers
+    login-uri-operator: /api/v1/authentication/operators
   jwt:
     # Use http://www.allkeysgenerator.com/ to generate secrets
     secret: ?E(H+MbQeThWmZq4t7w!z%C*F-J@NcRfUjXn2r5u8x/A?D(G+KbPdSgVkYp3s6v9

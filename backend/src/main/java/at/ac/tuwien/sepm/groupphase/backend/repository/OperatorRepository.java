@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,4 +13,20 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface OperatorRepository extends JpaRepository<Operator, Long>, JpaSpecificationExecutor<Operator> {
+    /**
+     * Finds an operator based on the login name.
+     *
+     * @return an operator with the login name
+     */
+    Operator findByLoginName(String loginName);
+
+    /**
+     * Changes Permissions of an operator with given id.
+     *
+     * @param permissions that should overwrite the old one
+     * @param id of Operator that should be updated
+     */
+    @Modifying
+    @Query("update Operator o set o.permissions = ?1 where o.id = ?2")
+    void setOperatorPermissionsById(Permissions permissions, Long id);
 }
