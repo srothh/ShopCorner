@@ -13,7 +13,6 @@ import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
 
 import org.hibernate.service.spi.ServiceException;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

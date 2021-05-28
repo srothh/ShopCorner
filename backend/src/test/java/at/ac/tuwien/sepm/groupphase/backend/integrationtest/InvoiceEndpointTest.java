@@ -133,6 +133,24 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
+    public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
+        DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
+        String body = objectMapper.writeValueAsString(detailedInvoiceDto);
+
+        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+        )
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
+
+    }
+
+
+    @Test
     public void givenAllProperties_whenPost_thenInvoice() throws Exception {
 
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
@@ -156,25 +174,6 @@ public class InvoiceEndpointTest implements TestData {
             () -> assertEquals(invoice.getDate(), simpleInvoiceDto.getDate()),
             () -> assertEquals(invoice.getAmount(), simpleInvoiceDto.getAmount())
         );
-    }
-
-    @Test
-    public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
-
-        DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
-
-        String body = objectMapper.writeValueAsString(detailedInvoiceDto);
-
-        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(body)
-        )
-            .andDo(print())
-            .andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
-        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-        assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
-
     }
 
 
