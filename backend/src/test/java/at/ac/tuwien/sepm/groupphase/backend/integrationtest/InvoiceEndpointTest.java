@@ -140,7 +140,7 @@ public class InvoiceEndpointTest implements TestData {
         MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-        )
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
@@ -149,7 +149,7 @@ public class InvoiceEndpointTest implements TestData {
 
     }
 
-/*
+
     @Test
     public void givenAllProperties_whenPost_thenInvoice() throws Exception {
 
@@ -161,7 +161,7 @@ public class InvoiceEndpointTest implements TestData {
         MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-        )
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
@@ -176,7 +176,7 @@ public class InvoiceEndpointTest implements TestData {
         );
     }
 
-*/
+
 
     @Test
     public void givenNothing_whenPostInvalid_then400() throws Exception {
