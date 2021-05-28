@@ -128,9 +128,18 @@ public class InvoiceEndpoint {
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
 
-        Invoice invoice = invoiceService.findOneById(this.createInvoice(invoiceDto).getId());
+
+        Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
+        Invoice createdInvoice = invoiceService.creatInvoice(invoice);
+        Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
+        validator.validateNewInvoiceItem(items);
+        for (InvoiceItem item : items) {
+            item.setInvoice(createdInvoice);
+        }
+        invoiceItemService.creatInvoiceItem(items);
+
         PdfGenerator pdf = new PdfGenerator();
-        final byte[] contents = pdf.generatePdfAsByteArray(invoice);
+        final byte[] contents = pdf.generatePdfAsByteArray(invoiceService.findOneById(createdInvoice.getId()));
 
         return new ResponseEntity<byte[]>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
