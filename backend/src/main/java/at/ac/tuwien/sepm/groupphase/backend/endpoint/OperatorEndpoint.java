@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -171,5 +173,22 @@ public class OperatorEndpoint {
     public void delete(@PathVariable("id") Long id) {
         LOGGER.info("DELETE " + BASE_URL + "/{}", id);
         operatorService.delete(id);
+    }
+
+    /**
+     * Changes Permssions of Employee to Admin.
+     *
+     * @param id of employee that needs new permissions
+     * @param operatorPermissionChangeDto Dto with permission that should be updated
+     */
+    @Secured({"ROLE_ADMIN"})
+    @PatchMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void changePermissions(@PathVariable("id") Long id, @Valid @RequestBody OperatorPermissionChangeDto operatorPermissionChangeDto) {
+        LOGGER.info("PATCH " + BASE_URL + "/{}: {}", id, operatorPermissionChangeDto);
+        if (operatorPermissionChangeDto.getPermissions() != Permissions.admin) {
+            throw new IllegalArgumentException("Permission has to be admin");
+        }
+        operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }
 }

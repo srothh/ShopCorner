@@ -2,10 +2,12 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -281,6 +284,109 @@ public class OperatorEndpointTest implements TestData {
         MockHttpServletResponse responseDelete = mvcResultDelete.getResponse();
 
         assertEquals(HttpStatus.NOT_FOUND.value(), responseDelete.getStatus());
+    }
+
+    @Test
+    public void givenNothing_whenChangePermissions_thenNotFoundResponse()
+        throws Exception {
+        String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.admin));
+
+        MvcResult mvcResultPatch = this.mockMvc.perform(patch(OPERATORS_BASE_URI + "/" + 100)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responsePatch = mvcResultPatch.getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), responsePatch.getStatus());
+    }
+
+    @Test
+    public void givenOneAdmin_whenChangePermissionsToEmployee_thenUnprocessableEntityResponse()
+        throws Exception {
+        operatorRepository.save(admin);
+        String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.employee));
+
+        MvcResult mvcResult = this.mockMvc.perform(patch(OPERATORS_BASE_URI + "/" + admin.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
+    }
+
+    @Test
+    public void givenOneEmployee_whenChangePermissions_thenGetAdminWithLengthOneAndEmployeeWithLengthZero()
+        throws Exception {
+        operatorRepository.save(employee);
+        String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.admin));
+
+        MvcResult mvcResultPatch = this.mockMvc.perform(patch(OPERATORS_BASE_URI + "/" + employee.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responsePatch = mvcResultPatch.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responsePatch.getStatus());
+
+        MvcResult mvcResultGetAdmin = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseAdmin = mvcResultGetAdmin.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responseAdmin.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseAdmin.getContentType());
+
+        List<OverviewOperatorDto> overviewOperatorDtosAdmin = Arrays.asList(objectMapper.readValue(responseAdmin.getContentAsString(),
+            OverviewOperatorDto[].class));
+
+        assertEquals(1, overviewOperatorDtosAdmin.size());
+        OverviewOperatorDto adminDto = overviewOperatorDtosAdmin.get(0);
+        assertAll(
+            () -> assertEquals(employee.getId(), adminDto.getId()),
+            () -> assertEquals(TEST_EMPLOYEE_NAME, adminDto.getName()),
+            () -> assertEquals(TEST_EMPLOYEE_LOGINNAME, adminDto.getLoginName()),
+            () -> assertEquals(TEST_EMPLOYEE_EMAIL, adminDto.getEmail()),
+            () -> assertEquals(TEST_ADMIN_PERMISSIONS, adminDto.getPermissions())
+        );
+
+        MvcResult mvcResultGetEmployee = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=employee")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseEmployee = mvcResultGetEmployee.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responseEmployee.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseEmployee.getContentType());
+
+        List<OverviewOperatorDto> overviewOperatorDtosEmployee = Arrays.asList(objectMapper.readValue(responseEmployee.getContentAsString(),
+            OverviewOperatorDto[].class));
+
+        assertEquals(0, overviewOperatorDtosEmployee.size());
+    }
+
+    @Test
+    public void givenOneAdmin_whenChangePermissionsAsEmployee_thenForbiddenResponse()
+        throws Exception {
+        operatorRepository.save(admin);
+        String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.admin));
+
+        MvcResult mvcResult = this.mockMvc.perform(patch(OPERATORS_BASE_URI + "/" + admin.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(EMPLOYEE_USER, EMPLOYEE_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
     }
 
     @Test
