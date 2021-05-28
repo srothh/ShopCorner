@@ -13,6 +13,7 @@ import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
 
 import org.hibernate.service.spi.ServiceException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,12 +26,13 @@ public class PdfGenerator {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final String htmlUri = "htmlToPdfTemplate/";
 
-    public String generatePdf(Invoice invoice) {
+    public byte[] generatePdf(Invoice invoice) {
         String fileOutput = String.format("invoices/invoice_%s_%s.pdf", invoice.getDate().format(dateFormatter), invoice.getId());
-        File f = new File(fileOutput);
+        byte[] pdfAsBytes ;
+        /*File f = new File(fileOutput);
         if (f.exists()) {
-            return fileOutput;
-        }
+            return ;
+        }*/
         ConverterProperties properties = new ConverterProperties();
 
         try {
@@ -97,23 +99,23 @@ public class PdfGenerator {
             document.body().select(".phone").html("01 5880119501");
             document.body().select(".email").html("admin@shop-corner.at");
 
-            HtmlConverter.convertToPdf(document.html(), new FileOutputStream(fileOutput), properties);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+
+            //HtmlConverter.convertToPdf(document.html(), new FileOutputStream(fileOutput), properties);
+            HtmlConverter.convertToPdf(document.html(), buffer, properties);
+
+            pdfAsBytes = buffer.toByteArray();
+            /*try (FileOutputStream fos = new FileOutputStream(fileOutput)) {
+                fos.write(pdfAsBytes);
+            }*/
+
 
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);
         }
-        return fileOutput;
+        return pdfAsBytes;
+
     }
 
-    public byte[] generatePdfAsByteArray(Invoice invoice) {
-        String fileOutput = generatePdf(invoice);
-        Path pdfFile = Paths.get(fileOutput);
-        byte[] pdfAsBytes;
-        try {
-            pdfAsBytes = Files.readAllBytes(pdfFile);
-        } catch (IOException  e) {
-            throw new NotFoundException(String.format("File %s not Found", pdfFile), e);
-        }
-        return pdfAsBytes;
-    }
 }
