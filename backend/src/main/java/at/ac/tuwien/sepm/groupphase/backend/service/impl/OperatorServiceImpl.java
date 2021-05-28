@@ -126,7 +126,7 @@ public class OperatorServiceImpl implements OperatorService {
         if (operatorRepository.findById(operator.getId()).isPresent()) {
             op = operatorRepository.findById(operator.getId()).get();
         } else {
-            throw new NotFoundException(String.format("Could not find the operator with the id %o", operator.getId()));
+            throw new NotFoundException(String.format("Could not find the operator with the id %d", operator.getId()));
         }
 
         op.setName(operator.getName());

@@ -64,6 +64,7 @@ public interface OperatorService extends UserDetailsService {
      *
      * @param operator to be saved
      * @return the operator that has just been saved.
+     * @throws RuntimeException if the operator already exists
      */
     Operator save(Operator operator);
 
@@ -81,6 +82,8 @@ public interface OperatorService extends UserDetailsService {
      *
      * @param operator to be updated
      * @return the operator that has just been updated.
+     * @throws NotFoundException if no matching operator is found in the database
+     * @throws RuntimeException if the updated operator account already exists
      */
     Operator update(Operator operator);
 

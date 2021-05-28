@@ -17,24 +17,15 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import org.springframework.web.bind.annotation.GetMapping;
-
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -135,6 +126,8 @@ public class OperatorEndpoint {
 
     }
 
+
+
     /**
      * Update an already existing operator.
      *
@@ -145,13 +138,26 @@ public class OperatorEndpoint {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Edit an existing operator account", security = @SecurityRequirement(name = "apiKey"))
-    public OperatorDto editOperator(@Valid @PathVariable("id") Long id, @RequestBody OperatorDto operatorDto) {
+    public OperatorDto editOperator(@PathVariable("id") Long id, @Valid @RequestBody OperatorDto operatorDto) {
         LOGGER.info("PUT " + BASE_URL + "/{}", id);
 
-        Operator operator = operatorMapper.dtoToEntity(operatorDto);
-        OperatorDto result = operatorMapper.entityToDto(operatorService.update(operator));
-        result.setPassword(null);
-        return result;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = "";
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        if (operatorService.findOperatorByLoginName(username).getId().equals(id) && id.equals(operatorDto.getId())) {
+
+            Operator operator = operatorMapper.dtoToEntity(operatorDto);
+            OperatorDto result = operatorMapper.entityToDto(operatorService.update(operator));
+            result.setPassword(null);
+            return result;
+        }
+
+        throw new AccessDeniedException("Illegal access");
     }
 
     /**

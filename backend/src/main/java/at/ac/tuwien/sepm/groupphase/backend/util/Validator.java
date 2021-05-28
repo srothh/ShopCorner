@@ -35,14 +35,6 @@ public class Validator {
     public void validateUpdatedOperator(Operator operator, OperatorService operatorService) {
         LOGGER.trace("validateUpdatedOperator({})", operator);
 
-        if (operator.getName() == null || operator.getPassword() == null || operator.getLoginName() == null || operator.getEmail() == null) {
-            throw new ValidationException("Invalid update");
-        }
-
-        if (operator.getName().isBlank() || operator.getPassword().isBlank() || operator.getLoginName().isBlank() || operator.getEmail().isBlank()) {
-            throw new ValidationException("Invalid update");
-        }
-
         List<Operator> operators = operatorService.findAll();
         for (Operator op : operators) {
 

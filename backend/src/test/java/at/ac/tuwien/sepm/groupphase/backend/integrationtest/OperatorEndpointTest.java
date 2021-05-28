@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -293,7 +294,7 @@ public class OperatorEndpointTest implements TestData {
         MvcResult mvcResult = this.mockMvc.perform(put(OPERATOR_BASE_URI + "/" + employee.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_EMPLOYEE_LOGINNAME, EMPLOYEE_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
@@ -316,7 +317,7 @@ public class OperatorEndpointTest implements TestData {
         MvcResult mvcResult = this.mockMvc.perform(put(OPERATOR_BASE_URI + "/" + updatedOperator.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_OPERATOR_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
@@ -358,7 +359,7 @@ public class OperatorEndpointTest implements TestData {
         MvcResult mvcResult = this.mockMvc.perform(put(OPERATOR_BASE_URI + "/" + updatedOperator.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_OPERATOR_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
@@ -368,9 +369,33 @@ public class OperatorEndpointTest implements TestData {
         );
     }
 
+    @Test
+    public void givenTwoOperators_whenPutByExistingIdAndIllegalAccess_then403() throws Exception {
+        operatorRepository.save(admin);
+        Operator updatedOperator = operatorRepository.save(operator);
+
+        updatedOperator.setName("New Name");
+        updatedOperator.setPassword("unchanged");
+
+        OperatorDto operatorDto = operatorMapper.entityToDto(updatedOperator);
+        String body = objectMapper.writeValueAsString(operatorDto);
+
+        MvcResult mvcResult = this.mockMvc.perform(put(OPERATOR_BASE_URI + "/" + updatedOperator.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(
+            () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
+        );
+    }
+
 
     @Test
-    public void givenOneOperator_whenPutInvalid_then422() throws Exception {
+    public void givenOneOperator_whenPutInvalid_then400() throws Exception {
         Operator updatedOperator = operatorRepository.save(operator);
         updatedOperator.setName(null);
         updatedOperator.setLoginName(null);
@@ -383,20 +408,20 @@ public class OperatorEndpointTest implements TestData {
         MvcResult mvcResult = this.mockMvc.perform(put(OPERATOR_BASE_URI + "/" + updatedOperator.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_OPERATOR_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
         assertAll(
-            () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus())
+            () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus())
         );
     }
 
     @Test
     public void givenNothing_whenFindByLoginName_then404() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "/" + operator.getLoginName())
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_OPERATOR_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
