@@ -81,7 +81,7 @@ public class OperatorEndpointTest implements TestData {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         String body = objectMapper.writeValueAsString(operatorDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI + "/register")
+        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -120,7 +120,7 @@ public class OperatorEndpointTest implements TestData {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         String body = objectMapper.writeValueAsString(operatorDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI + "/register")
+        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -146,7 +146,7 @@ public class OperatorEndpointTest implements TestData {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         String body = objectMapper.writeValueAsString(operatorDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI + "/register")
+        MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))

@@ -114,11 +114,11 @@ public class OperatorEndpoint {
      * @return saved operator
      */
     @Secured("ROLE_ADMIN")
-    @PostMapping("/register")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register a new operator account", security = @SecurityRequirement(name = "apiKey"))
     public OperatorDto registerOperator(@Valid @RequestBody OperatorDto newOperator) {
-        LOGGER.info("POST " + BASE_URL + "/register body: {}", newOperator);
+        LOGGER.info("POST " + BASE_URL + " body: {}", newOperator);
         Operator operator = operatorMapper.dtoToEntity(newOperator);
         OperatorDto result = operatorMapper.entityToDto(operatorService.save(operator));
         result.setPassword(null);

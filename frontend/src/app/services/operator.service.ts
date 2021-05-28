@@ -35,7 +35,7 @@ export class OperatorService {
   createOperator(operator: Operator): Observable<Operator> {
     console.log('Create new operator account', operator);
     return this.httpClient.post<Operator>(
-      this.operatorBaseUri + '/register',  operator
+      this.operatorBaseUri,  operator
     , {headers: this.getHeadersForOperator()});
   }
 
