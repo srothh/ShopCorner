@@ -60,6 +60,16 @@ export class OperatorService {
     return this.httpClient.delete<void>(this.operatorBaseUri + '/' + id, {headers: this.getHeadersForOperator()});
   }
 
+  /**
+   * sends a patch request with id and Permission.admin to backend
+   *
+   * @param id of employee that should become an admin
+   */
+  changeOperatorToAdmin(id: number): Observable<void> {
+    console.log('Change Employee with id ' + id + ' to Admin');
+    return this.httpClient.patch<void>(this.operatorBaseUri + '/' + id, {permissions: 'admin'}, {headers: this.getHeadersForOperator()});
+  }
+
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
