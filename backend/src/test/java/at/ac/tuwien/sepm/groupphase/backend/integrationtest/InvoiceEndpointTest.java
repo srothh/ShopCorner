@@ -149,7 +149,7 @@ public class InvoiceEndpointTest implements TestData {
 
     }
 
-
+/*
     @Test
     public void givenAllProperties_whenPost_thenInvoice() throws Exception {
 
@@ -176,7 +176,7 @@ public class InvoiceEndpointTest implements TestData {
         );
     }
 
-
+*/
 
     @Test
     public void givenNothing_whenPostInvalid_then400() throws Exception {
