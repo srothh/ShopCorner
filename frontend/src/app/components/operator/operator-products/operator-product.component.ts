@@ -22,6 +22,8 @@ export class OperatorProductComponent implements OnInit {
   pageSize = 5;
   collectionSize = 0;
   selectedProducts: Product[] = [];
+  errorOccurred: boolean;
+  errorMessage: string;
 
   constructor(private productService: ProductService, private router: Router, private urlSerializer: UrlSerializer,
               private categoryService: CategoryService, private taxRateService: TaxRateService) {
@@ -71,7 +73,6 @@ export class OperatorProductComponent implements OnInit {
     // no propagation to details site allowed when clicking the checkbox
     event.stopPropagation();
     if (event.target.checked) {
-      console.log(this.products[index]);
       this.selectedProducts.push(this.products[index]);
     } else {
       const product = this.products[index];
@@ -102,6 +103,9 @@ export class OperatorProductComponent implements OnInit {
           this.collectionSize -= this.selectedProducts.length;
           this.uncheckSelectedProducts();
         }
+      }, error => {
+        this.errorOccurred = true;
+        this.errorMessage = error.error.message;
       });
     }
   }
@@ -118,5 +122,9 @@ export class OperatorProductComponent implements OnInit {
       this.page += 1;
       this.fetchProducts();
     }
+  }
+  resetState(){
+    this.errorMessage = null;
+    this.errorOccurred = undefined;
   }
 }

@@ -1,3 +1,9 @@
+<div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
+  {{ errorMessage }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 <div class="operator-product-container">
   <div class="operator-product-header mt-3">
     <h3>Produkte</h3>
@@ -29,7 +35,7 @@
       </ng-template>
     </ng-template>
   </div>
-  <div class="border rounded mt-2" style="height: 560px">
+  <div class="border rounded " style="height: 560px; margin-top: 32px">
     <table class="table table-hover table-sm" data-pagination="true" data-page-list="[1,2]">
       <thead class="thead-light">
       <tr>
