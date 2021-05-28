@@ -28,7 +28,7 @@ public class PdfGenerator {
 
     public byte[] generatePdf(Invoice invoice) {
         String fileOutput = String.format("invoices/invoice_%s_%s.pdf", invoice.getDate().format(dateFormatter), invoice.getId());
-        byte[] pdfAsBytes ;
+        byte[] pdfAsBytes;
         /*File f = new File(fileOutput);
         if (f.exists()) {
             return ;
