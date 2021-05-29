@@ -27,12 +27,8 @@ public class PdfGenerator {
     private final String htmlUri = "htmlToPdfTemplate/";
 
     public byte[] generatePdf(Invoice invoice) {
-        String fileOutput = String.format("invoices/invoice_%s_%s.pdf", invoice.getDate().format(dateFormatter), invoice.getId());
         byte[] pdfAsBytes;
-        /*File f = new File(fileOutput);
-        if (f.exists()) {
-            return ;
-        }*/
+
         ConverterProperties properties = new ConverterProperties();
 
         try {
@@ -100,15 +96,8 @@ public class PdfGenerator {
             document.body().select(".email").html("admin@shop-corner.at");
 
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-
-            //HtmlConverter.convertToPdf(document.html(), new FileOutputStream(fileOutput), properties);
             HtmlConverter.convertToPdf(document.html(), buffer, properties);
-
             pdfAsBytes = buffer.toByteArray();
-            /*try (FileOutputStream fos = new FileOutputStream(fileOutput)) {
-                fos.write(pdfAsBytes);
-            }*/
 
 
         } catch (IOException e) {

@@ -14,6 +14,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
@@ -71,8 +72,6 @@ public class InvoiceEndpointTest implements TestData {
     @Autowired
     private InvoiceMapper invoiceMapper;
 
-    @Autowired
-    private InvoiceItemMapper invoiceItemMapper;
 
     @Autowired
     private JwtTokenizer jwtTokenizer;
@@ -146,15 +145,30 @@ public class InvoiceEndpointTest implements TestData {
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
-
+        assertNotNull(response);
     }
 
 
+/*
+    @Test
+    public void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
+        invoiceItemRepository.save(invoiceItem);
+
+        Long id = invoiceRepository.save(invoice).getId();
+
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/getinvoicepdf/"+id)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
+        assertNotNull(response);
+    }*/
+
     @Test
     public void givenAllProperties_whenPost_thenInvoice() throws Exception {
-
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
-
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
         //MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
