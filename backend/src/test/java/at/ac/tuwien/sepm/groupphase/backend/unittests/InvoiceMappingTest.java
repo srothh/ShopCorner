@@ -1,13 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
+
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
@@ -29,14 +29,13 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class InvoiceMappingTest implements TestData {
     private static Invoice invoice = new Invoice();
 
-    @Autowired
-    private InvoiceItemMapper invoiceItemMapper;
 
     @Autowired
     private InvoiceMapper invoiceMapping;

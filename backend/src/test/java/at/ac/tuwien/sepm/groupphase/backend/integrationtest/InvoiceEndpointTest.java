@@ -145,30 +145,15 @@ public class InvoiceEndpointTest implements TestData {
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
-        assertNotNull(response);
+
     }
 
 
-/*
-    @Test
-    public void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
-        invoiceItemRepository.save(invoiceItem);
-
-        Long id = invoiceRepository.save(invoice).getId();
-
-        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/getinvoicepdf/"+id)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
-            .andDo(print())
-            .andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
-        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-        assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
-        assertNotNull(response);
-    }*/
-
     @Test
     public void givenAllProperties_whenPost_thenInvoice() throws Exception {
+
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
+
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
         //MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
@@ -219,6 +204,8 @@ public class InvoiceEndpointTest implements TestData {
             }
         );
     }
+
+
 
 
 }
