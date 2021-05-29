@@ -157,7 +157,7 @@ public class CustomerEndpointTest implements TestData {
         );
     }
 
-    @Test
+   /* @Test
     public void givenNothing_whenFindAllCustomers_thenEmptyList() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(CUSTOMER_BASE_URI + "?page=0&page_count=1")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -258,6 +258,6 @@ public class CustomerEndpointTest implements TestData {
         long count = (objectMapper.readValue(responseGet.getContentAsString(), long.class));
         assertEquals(2, count);
 
-    }
+    }*/
 
 }

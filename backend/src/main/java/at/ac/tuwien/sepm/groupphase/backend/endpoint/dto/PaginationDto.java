@@ -11,12 +11,35 @@ public class PaginationDto<T> {
     public PaginationDto() {
     }
 
-    ;
 
     public PaginationDto(List<T> items, int pageNumber, int pageSize, Long totalItemCount) {
         this.items = items;
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
+        this.totalItemCount = totalItemCount;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public Long getTotalItemCount() {
+        return totalItemCount;
+    }
+
+    public void setTotalItemCount(Long totalItemCount) {
         this.totalItemCount = totalItemCount;
     }
 
