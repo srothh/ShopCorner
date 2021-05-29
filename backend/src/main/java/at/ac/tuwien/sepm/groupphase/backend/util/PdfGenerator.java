@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.styledxmlparser.jsoup.Jsoup;
@@ -14,11 +13,8 @@ import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
 import org.hibernate.service.spi.ServiceException;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 
@@ -26,7 +22,7 @@ public class PdfGenerator {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final String htmlUri = "htmlToPdfTemplate/";
 
-    public byte[] generatePdf(Invoice invoice) {
+    public byte[] generatePdfOperator(Invoice invoice) {
         byte[] pdfAsBytes;
 
         ConverterProperties properties = new ConverterProperties();

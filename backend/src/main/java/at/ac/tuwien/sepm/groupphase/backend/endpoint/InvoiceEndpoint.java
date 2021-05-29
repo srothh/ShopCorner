@@ -139,7 +139,7 @@ public class InvoiceEndpoint {
         invoiceItemService.creatInvoiceItem(items);
 
         PdfGenerator pdf = new PdfGenerator();
-        final byte[] contents = pdf.generatePdf(invoiceService.findOneById(createdInvoice.getId()));
+        final byte[] contents = pdf.generatePdfOperator(invoiceService.findOneById(createdInvoice.getId()));
 
         return new ResponseEntity<byte[]>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
@@ -158,7 +158,7 @@ public class InvoiceEndpoint {
         LOGGER.info("Get /invoices/getinvoicepdf/{}", id);
         Invoice invoice = invoiceService.findOneById(id);
         PdfGenerator pdf = new PdfGenerator();
-        final byte[] contents = pdf.generatePdf(invoice);
+        final byte[] contents = pdf.generatePdfOperator(invoice);
 
 
         return new ResponseEntity<byte[]>(contents, this.generateHeader(), HttpStatus.OK);
