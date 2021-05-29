@@ -132,12 +132,9 @@ public class OperatorServiceImpl implements OperatorService {
         LOGGER.trace("update({})", operator);
 
         validator.validateUpdatedOperator(operator, this);
-        Operator op;
-        if (operatorRepository.findById(operator.getId()).isPresent()) {
-            op = operatorRepository.findById(operator.getId()).get();
-        } else {
-            throw new NotFoundException(String.format("Could not find the operator with the id %d", operator.getId()));
-        }
+
+        Operator op = operatorRepository.findById(operator.getId())
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the operator with the id %d", operator.getId())));
 
         op.setName(operator.getName());
         op.setLoginName(operator.getLoginName());
