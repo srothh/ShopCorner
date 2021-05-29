@@ -5,11 +5,13 @@ import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -162,7 +164,7 @@ public class OperatorEndpointTest implements TestData {
         );
     }
 
-   /* @Test
+    @Test
     public void givenNothing_whenFindAll_thenEmptyList() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -173,10 +175,11 @@ public class OperatorEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
-        List<OverviewOperatorDto> overviewOperatorDtos = Arrays.asList(objectMapper.readValue(response.getContentAsString(),
-            OverviewOperatorDto[].class));
+        PaginationDto<OverviewOperatorDto> overviewOperatorDtos = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>() {
+            });
 
-        assertEquals(0, overviewOperatorDtos.size());
+        assertEquals(0, overviewOperatorDtos.getItems().size());
     }
 
     @Test
@@ -194,8 +197,10 @@ public class OperatorEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
-        List<OverviewOperatorDto> overviewOperatorDtos = Arrays.asList(objectMapper.readValue(response.getContentAsString(),
-            OverviewOperatorDto[].class));
+        PaginationDto<OverviewOperatorDto> paginationDto = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>() {
+            });
+        List<OverviewOperatorDto> overviewOperatorDtos = paginationDto.getItems();
 
         assertEquals(1, overviewOperatorDtos.size());
         OverviewOperatorDto adminDto = overviewOperatorDtos.get(0);
@@ -228,22 +233,32 @@ public class OperatorEndpointTest implements TestData {
         operatorRepository.save(admin);
         operatorRepository.save(employee);
 
-        MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "/count")
+        MvcResult mvcResultAdmin = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
+        MockHttpServletResponse responseAdmin = mvcResultAdmin.getResponse();
 
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+        MvcResult mvcResultEmployee = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseEmployee = mvcResultEmployee.getResponse();
 
-        int[] count = (objectMapper.readValue(response.getContentAsString(), int[].class));
+        assertEquals(HttpStatus.OK.value(), responseAdmin.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseAdmin.getContentType());
 
-        assertEquals(2, count.length);
-        int adminCount = count[0];
-        assertEquals(1, adminCount);
-        int employeeCount = count[1];
-        assertEquals(1, employeeCount);
+        assertEquals(HttpStatus.OK.value(), responseEmployee.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseEmployee.getContentType());
+        PaginationDto<OverviewOperatorDto> paginationDtoAdmin = objectMapper.readValue(responseAdmin.getContentAsString(),
+            new TypeReference<>() {
+            });
+        PaginationDto<OverviewOperatorDto> paginationDtoEmployee = objectMapper.readValue(responseEmployee.getContentAsString(),
+            new TypeReference<>() {
+            });
+
+        assertEquals(1, paginationDtoAdmin.getTotalItemCount());
+        assertEquals(1, paginationDtoEmployee.getTotalItemCount());
     }
 
     @Test
@@ -267,9 +282,10 @@ public class OperatorEndpointTest implements TestData {
 
         assertEquals(HttpStatus.OK.value(), responseGet.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, responseGet.getContentType());
-
-        List<OverviewOperatorDto> overviewOperatorDtos = Arrays.asList(objectMapper.readValue(responseGet.getContentAsString(),
-            OverviewOperatorDto[].class));
+        PaginationDto<OverviewOperatorDto> paginationDto = objectMapper.readValue(responseGet.getContentAsString(),
+            new TypeReference<>() {
+            });
+        List<OverviewOperatorDto> overviewOperatorDtos = paginationDto.getItems();
 
         assertEquals(0, overviewOperatorDtos.size());
     }
@@ -344,8 +360,10 @@ public class OperatorEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), responseAdmin.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, responseAdmin.getContentType());
 
-        List<OverviewOperatorDto> overviewOperatorDtosAdmin = Arrays.asList(objectMapper.readValue(responseAdmin.getContentAsString(),
-            OverviewOperatorDto[].class));
+        PaginationDto<OverviewOperatorDto> paginationDto = objectMapper.readValue(responseAdmin.getContentAsString(),
+            new TypeReference<>() {
+            });
+        List<OverviewOperatorDto> overviewOperatorDtosAdmin = paginationDto.getItems();
 
         assertEquals(1, overviewOperatorDtosAdmin.size());
         OverviewOperatorDto adminDto = overviewOperatorDtosAdmin.get(0);
@@ -366,8 +384,10 @@ public class OperatorEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), responseEmployee.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, responseEmployee.getContentType());
 
-        List<OverviewOperatorDto> overviewOperatorDtosEmployee = Arrays.asList(objectMapper.readValue(responseEmployee.getContentAsString(),
-            OverviewOperatorDto[].class));
+        PaginationDto<OverviewOperatorDto> paginationDtoEmployee = objectMapper.readValue(responseEmployee.getContentAsString(),
+            new TypeReference<>() {
+            });
+        List<OverviewOperatorDto> overviewOperatorDtosEmployee = paginationDtoEmployee.getItems();
 
         assertEquals(0, overviewOperatorDtosEmployee.size());
     }
@@ -561,7 +581,7 @@ public class OperatorEndpointTest implements TestData {
             () -> assertEquals(operator.getPermissions(), operatorMapper.dtoToEntity(operatorResponse).getPermissions())
         );
     }
-*/
+
 
 }
 
