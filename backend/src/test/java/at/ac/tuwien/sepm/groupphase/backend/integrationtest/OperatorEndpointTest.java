@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -49,6 +50,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 
 public class OperatorEndpointTest implements TestData {
+
+    @Autowired
+    CacheManager cacheManager;
 
     @Autowired
     private MockMvc mockMvc;
@@ -239,7 +243,7 @@ public class OperatorEndpointTest implements TestData {
             .andReturn();
         MockHttpServletResponse responseAdmin = mvcResultAdmin.getResponse();
 
-        MvcResult mvcResultEmployee = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+        MvcResult mvcResultEmployee = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=employee")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
@@ -259,6 +263,54 @@ public class OperatorEndpointTest implements TestData {
 
         assertEquals(1, paginationDtoAdmin.getTotalItemCount());
         assertEquals(1, paginationDtoEmployee.getTotalItemCount());
+    }
+
+    @Test
+    public void givenTwoOperators_whenGetCount_thenArrayWithTwoOnesInCache()
+        throws Exception {
+        OperatorDto adminDto = operatorMapper.entityToDto(admin);
+        String body = objectMapper.writeValueAsString(adminDto);
+        OperatorDto employeeDto = operatorMapper.entityToDto(employee);
+        String body2 = objectMapper.writeValueAsString(employeeDto);
+        MvcResult mvcResultPost1 = this.mockMvc.perform(post(OPERATOR_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MvcResult mvcResultPost2 = this.mockMvc.perform(post(OPERATOR_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body2)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+
+        MockHttpServletResponse responsePostEmployee = mvcResultPost1.getResponse();
+        MockHttpServletResponse responsePostAdmin = mvcResultPost2.getResponse();
+
+        assertEquals(HttpStatus.CREATED.value(), responsePostEmployee.getStatus());
+        assertEquals(HttpStatus.CREATED.value(), responsePostAdmin.getStatus());
+
+        MvcResult mvcResultAdmin = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseAdmin = mvcResultAdmin.getResponse();
+
+        MvcResult mvcResultEmployee = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=employee")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseEmployee = mvcResultEmployee.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responseAdmin.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseAdmin.getContentType());
+
+        assertEquals(HttpStatus.OK.value(), responseEmployee.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseEmployee.getContentType());
+
+        assertEquals(1, cacheManager.getCache("counts").get("admins",Long.class));
+        assertEquals(1, cacheManager.getCache("counts").get("employees",Long.class));
     }
 
     @Test

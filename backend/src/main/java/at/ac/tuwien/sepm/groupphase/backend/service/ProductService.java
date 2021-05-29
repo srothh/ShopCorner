@@ -61,6 +61,7 @@ public interface ProductService {
      * Retrieve the number of all added products.
      *
      * @return retrieves the number of all added products
+     * @throws RuntimeException occurs during database operations
      */
     Long getProductsCount();
 

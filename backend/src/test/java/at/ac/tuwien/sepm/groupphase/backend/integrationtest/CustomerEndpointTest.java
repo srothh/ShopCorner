@@ -271,4 +271,43 @@ public class CustomerEndpointTest implements TestData {
 
     }
 
+    @Test
+    public void givenTwoCustomers_whenGetCount_thenTwoInCache()
+        throws Exception {
+
+        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        String body = objectMapper.writeValueAsString(customerDto);
+        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerDto(customer2);
+        String body2 = objectMapper.writeValueAsString(customerDto2);
+        MvcResult mvcResultGet1 = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MvcResult mvcResultGet2 = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body2)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseGet2 = mvcResultGet1.getResponse();
+        MockHttpServletResponse responseGet1 = mvcResultGet2.getResponse();
+        MvcResult mvcResultGet = this.mockMvc.perform(get(CUSTOMER_BASE_URI)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseGet = mvcResultGet.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), responseGet1.getStatus());
+        assertEquals(HttpStatus.CREATED.value(), responseGet2.getStatus());
+
+        assertEquals(HttpStatus.OK.value(), responseGet.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseGet.getContentType());
+
+        PaginationDto<CustomerDto> customerDtos = objectMapper.readValue(responseGet.getContentAsString(),
+            new TypeReference<>() {
+            });
+        assertEquals(2, cacheManager.getCache("counts").get("customers",Long.class));
+    }
+
 }
