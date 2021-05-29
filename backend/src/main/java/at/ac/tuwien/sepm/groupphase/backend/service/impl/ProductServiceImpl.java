@@ -121,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
     public Product findById(Long productId) {
         LOGGER.trace("findById{}", productId);
         return productRepository.findById(productId)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find product %s", productId)));
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
     }
 
     @Override
@@ -133,9 +133,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProductById(Long productId) {
         LOGGER.trace("deleteProductById{}", productId);
-        if (findById(productId) != null) {
-            productRepository.deleteById(productId);
-        }
+        productRepository.findById(productId)
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
+        productRepository.deleteById(productId);
     }
 
 

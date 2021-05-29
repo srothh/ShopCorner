@@ -121,6 +121,9 @@ public class ProductEndpoint {
 
     /**
      * Updates an already existing product from the database.
+     *
+     * @param productId the Id of the product to execute the udpate
+     * @param productDto the product dto with the updated fields
      */
 
     @Secured("ROLE_ADMIN")
@@ -151,7 +154,6 @@ public class ProductEndpoint {
      * Deletes a specific product with the given id.
      *
      * @param productId the id to search in the database and retrieve the associated product entity
-     *
      */
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/{productId}")
