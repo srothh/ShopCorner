@@ -55,7 +55,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     }
 
-
+/*
     @Override
     public Invoice findOneByDate(LocalDateTime date) {
         LOGGER.trace("Find invoices with id {}", date);
@@ -67,7 +67,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new NotFoundException(String.format("Could not find message with date %s", date.toString()), e);
         }
         return invoice;
-    }
+    }*/
 
     @Transactional
     @Override

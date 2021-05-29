@@ -21,7 +21,7 @@ public interface InvoiceService {
      * @param date the id of the message entry
      * @return the message entry
      */
-    Invoice findOneByDate(LocalDateTime date);
+    // Invoice findOneByDate(LocalDateTime date);
 
     /**
      * Find all invoice entries.

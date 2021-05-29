@@ -18,6 +18,4 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
      */
     List<Invoice> findAll();
 
-    Invoice findByDate(LocalDateTime date);
-
 }

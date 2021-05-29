@@ -12,7 +12,10 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -95,14 +98,12 @@ public class InvoiceRepositoryTest implements TestData {
     @Test
     public void givenAllProperties_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
 
-
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
         invoiceItemRepository.save(invoiceItem);
 
-        Assertions.assertAll(
-            //() -> assertEquals(1, invoiceRepository.findAll().size()),
-            () -> Assertions.assertNotNull(invoiceRepository.findById(invoice.getId()))
-            //() -> assertNotNull(invoiceRepository.findByDate(invoice.getDate()))
+        assertAll(
+            () -> assertEquals(1, invoiceRepository.findAll().size()),
+            () -> assertNotNull(invoiceRepository.findById(invoice.getId()))
         );
 
     }
