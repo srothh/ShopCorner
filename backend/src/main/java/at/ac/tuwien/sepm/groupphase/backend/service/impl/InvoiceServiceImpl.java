@@ -55,19 +55,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     }
 
-/*
-    @Override
-    public Invoice findOneByDate(LocalDateTime date) {
-        LOGGER.trace("Find invoices with id {}", date);
-        Invoice invoice;
-        try {
-            invoice = this.invoiceRepository.findByDate(date);
-        } catch (NotFoundException e) {
-            LOGGER.error("Problem while creating Inovice", e);
-            throw new NotFoundException(String.format("Could not find message with date %s", date.toString()), e);
-        }
-        return invoice;
-    }*/
 
     @Transactional
     @Override
