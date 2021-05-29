@@ -101,7 +101,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Cacheable(value = "counts", key = "'customers'")
     @Override
     public long getCustomerCount() {
-        LOGGER.info("{}", this.getClass());
         return customerRepository.count();
     }
 
