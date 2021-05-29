@@ -126,7 +126,7 @@ export class OperatorProductFormComponent implements OnInit {
       this.productService.addProduct(this.newProduct).subscribe(data => {
         this.newProduct.id = data.id;
         this.errorOccurred = false;
-        this.router.navigate([baseURL + '/' + this.newProduct.id]).then();
+        this.router.navigate(['operator/products']).then();
       }, error => {
         this.errorOccurred = true;
         //NOTE: not all error types supported yet because of the way how the interceptor is handling errors
@@ -142,6 +142,7 @@ export class OperatorProductFormComponent implements OnInit {
         this.inEditMode = true;
         this.addProductEnabled = false;
         this.productForm.disable();
+
       }, error => {
         this.errorOccurred = true;
         this.errorMessage = error;

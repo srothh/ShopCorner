@@ -49,5 +49,8 @@ export class OperatorAddProductComponent implements OnInit {
           this.taxRates = taxRatesData;
         });
   }
+  goBackToProductsOverview(){
+    this.router.navigate(['/operator/products']).then();
+  }
 
 }
