@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
+import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +34,18 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final AddressService addressService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private final Validator validator;
 
-    public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService) {
+    public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService, Validator validator) {
         this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository;
         this.addressService = addressService;
+        this.validator = validator;
     }
 
     @Override
     public UserDetails loadUserByUsername(String loginName) {
-        LOGGER.trace("loadUserByUsername({})", loginName);
+        LOGGER.trace("loadCustomerByUsername({})", loginName);
         try {
             Customer customer = this.findCustomerByLoginName(loginName);
             List<GrantedAuthority> grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_CUSTOMER");
@@ -66,6 +69,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
+        validator.validateNewCustomer(customer, this);
         Address address = addressService.addNewAddress(customer.getAddress());
         assignAddressToCustomer(customer, address.getId());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
@@ -94,6 +98,18 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public long getCustomerCount() {
         return customerRepository.count();
+    }
+
+    /**
+     * Returns all customers from the database.
+     *
+     * @return A list containing all the customers in the database
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    @Override
+    public List<Customer> findAll() {
+        LOGGER.trace("findAll()");
+        return customerRepository.findAll();
     }
 
 }

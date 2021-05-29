@@ -4,6 +4,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
@@ -14,9 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -38,8 +44,36 @@ public class OperatorServiceImpl implements OperatorService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
-        return null;
+    public UserDetails loadUserByUsername(String loginName) {
+        LOGGER.trace("loadOperatorByUsername({})", loginName);
+        try {
+            Operator operator = this.findOperatorByLoginName(loginName);
+            String authority = "";
+            switch (operator.getPermissions()) {
+                case admin:
+                    authority = "ROLE_ADMIN";
+                    break;
+                case employee:
+                    authority = "ROLE_EMPLOYEE";
+                    break;
+                default:
+                    break;
+            }
+            List<GrantedAuthority> grantedAuthorities = AuthorityUtils.createAuthorityList(authority);
+            return new User(operator.getLoginName(), operator.getPassword(), grantedAuthorities);
+        } catch (NotFoundException e) {
+            throw new UsernameNotFoundException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Operator findOperatorByLoginName(String loginName) {
+        LOGGER.trace("findOperatorByLoginName({})", loginName);
+        Operator operator = operatorRepository.findByLoginName(loginName);
+        if (operator != null) {
+            return operator;
+        }
+        throw new NotFoundException(String.format("Could not find the operator with the login name %s", loginName));
     }
 
     @Override
@@ -63,7 +97,8 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public int[] getCollectionSize() {
         LOGGER.trace("getCollectionsize()");
-        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)), (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
+        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)),
+            (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
     }
 
     @Override
@@ -73,6 +108,42 @@ public class OperatorServiceImpl implements OperatorService {
         String password = passwordEncoder.encode(operator.getPassword());
         operator.setPassword(password);
         return operatorRepository.save(operator);
+    }
+
+    @Override
+    @Transactional
+    public void changePermissions(Long id, Permissions permissions) {
+        LOGGER.trace("changePermissions({})", id);
+        operatorRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Could not find operator that should get new permissions!"));
+        operatorRepository.setOperatorPermissionsById(permissions, id);
+    }
+
+    @Override
+    public void delete(Long id) {
+        LOGGER.trace("delete({})", id);
+        operatorRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Could not find operator that should be deleted!"));
+        operatorRepository.deleteById(id);
+    }
+
+    @Override
+    public Operator update(Operator operator) {
+        LOGGER.trace("update({})", operator);
+
+        validator.validateUpdatedOperator(operator, this);
+
+        Operator op = operatorRepository.findById(operator.getId())
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the operator with the id %d", operator.getId())));
+
+        op.setName(operator.getName());
+        op.setLoginName(operator.getLoginName());
+        op.setEmail(operator.getEmail());
+        //can password be updated (this easily)?
+        if (!operator.getPassword().equals("unchanged")) {
+            op.setPassword(passwordEncoder.encode(operator.getPassword()));
+        }
+        return operatorRepository.save(op);
     }
 
 }

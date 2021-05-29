@@ -1,17 +1,22 @@
 package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
+import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +31,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(SpringExtension.class)
@@ -52,7 +62,16 @@ public class ProductEndpointTest implements TestData {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private SecurityProperties securityProperties;
+
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
+
     private final Product product = new Product();
+    private final Product product2 = new Product();
+    private final Product product3 = new Product();
     private final Category category = new Category();
     private final TaxRate taxRate = new TaxRate();
 
@@ -77,16 +96,16 @@ public class ProductEndpointTest implements TestData {
     public void givenACategoryAndATaxRate_whenPost_thenProductWithAllSetPropertiesPlusId() throws Exception {
         categoryRepository.save(category);
         taxRateRepository.save(taxRate);
+        product.setTaxRate(taxRate);
+        product.setCategory(category);
         ProductDto productDto = productMapper.entityToDto(product);
         String body = objectMapper.writeValueAsString(productDto);
 
         MvcResult mvcResult = this.mockMvc.perform(
-            post(PRODUCTS_BASE_URI + "/categories/"
-                + category.getId()
-                + "/tax-rates/"
-                + taxRate.getId())
+            post(PRODUCTS_BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
         )
             .andDo(print())
             .andReturn();
@@ -105,8 +124,7 @@ public class ProductEndpointTest implements TestData {
         assertNotNull(productResponse.getCategory());
 
         productResponse.setId(null);
-        productResponse.setCategory(null);
-        productResponse.setTaxRate(null);
+
 
         assertAll(
             () -> assertEquals(product.getName(), productMapper.dtoToEntity(productResponse).getName()),
@@ -128,10 +146,7 @@ public class ProductEndpointTest implements TestData {
         ProductDto productDto = productMapper.entityToDto(product);
         String body = objectMapper.writeValueAsString(productDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(PRODUCTS_BASE_URI + "/categories/"
-            + category.getId()
-            + "/tax-rates/"
-            + taxRate.getId())
+        MvcResult mvcResult = this.mockMvc.perform(post(PRODUCTS_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body))
             .andDo(print())
@@ -153,19 +168,151 @@ public class ProductEndpointTest implements TestData {
     @Test
     public void givenATaxRate_whenPostByNonExistingId_then404() throws Exception {
         taxRateRepository.save(taxRate);
+        product.setTaxRate(taxRate);
+        category.setId(-1L);
+        product.setCategory(category);
         ProductDto productDto = productMapper.entityToDto(product);
         String body = objectMapper.writeValueAsString(productDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(PRODUCTS_BASE_URI + "/categories/"
-            + "/{categoryId}"
-            + "/tax-rates/"
-            + taxRate.getId(), -1L)
+        MvcResult mvcResult = this.mockMvc.perform(post(PRODUCTS_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
             .content(body))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
     }
+
+    @Test
+    public void givenACategoryAndATaxRate_whenPut_thenVerifyProductChanged() throws Exception {
+        categoryRepository.save(category);
+        taxRateRepository.save(taxRate);
+        product.setCategory(category);
+        product.setTaxRate(taxRate);
+        Product newProduct = productRepository.save(product);
+        newProduct.setName("ChangedName");
+        ProductDto productDto = productMapper.entityToDto(newProduct);
+        String body = objectMapper.writeValueAsString(productDto);
+
+        ResultActions mvcResult = this.mockMvc.perform(
+            put(PRODUCTS_BASE_URI + '/' + newProduct.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+                .content(body))
+            .andExpect(status().isOk());
+
+        MockHttpServletResponse response = mvcResult.andReturn().getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        Product updatedProduct = this.productRepository.findById(productDto.getId()).orElseThrow(() -> new NotFoundException("Error"));
+
+        assertAll(
+            () -> assertEquals(newProduct.getName(), updatedProduct.getName()),
+            () -> assertEquals(newProduct.getDescription(), updatedProduct.getDescription()),
+            () -> assertEquals(newProduct.getPrice(), updatedProduct.getPrice()),
+            () -> assertEquals(newProduct.getTaxRate(), updatedProduct.getTaxRate()),
+            () -> assertEquals(newProduct.getCategory(), updatedProduct.getCategory())
+        );
+    }
+
+    @Test
+    public void givenATaxRate_whenPutByNonExistingId_then404() throws Exception {
+        taxRateRepository.save(taxRate);
+        product.setId(1000L);
+        ProductDto productDto = productMapper.entityToDto(product);
+        String body = objectMapper.writeValueAsString(productDto);
+
+        ResultActions mvcResult = this.mockMvc.perform(
+            put(PRODUCTS_BASE_URI + "/" + product.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+                .content(body))
+            .andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    public void givenACategoryAndATaxRate_whenPutIllegalArgument_then400() throws Exception {
+        categoryRepository.save(category);
+        taxRateRepository.save(taxRate);
+        product.setCategory(category);
+        product.setTaxRate(taxRate);
+        Product newProduct = productRepository.save(product);
+        newProduct.setName("           ");
+        ProductDto productDto = productMapper.entityToDto(newProduct);
+        String body = objectMapper.writeValueAsString(productDto);
+
+        ResultActions mvcResult = this.mockMvc.perform(
+            put(PRODUCTS_BASE_URI + "/" + newProduct.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andExpect(status().isBadRequest());
+
+        MockHttpServletResponse response = mvcResult.andReturn().getResponse();
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+    }
+
+    @Test
+    public void givenATaxRate_whenDelete_thenVerifyProductDeleted() throws Exception {
+        taxRateRepository.save(taxRate);
+        product.setTaxRate(taxRate);
+        Product newProduct = productRepository.save(product);
+
+        assertEquals(1, this.productRepository.findAll().size());
+
+        ResultActions mvcResult = this.mockMvc.perform(
+            delete(PRODUCTS_BASE_URI + "/" + newProduct.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andExpect(status().isOk());
+
+        assertEquals(0, productRepository.findAll().size());
+    }
+
+    @Test
+    public void givenATaxRate_whenDeleteByNonExistingId_then404() throws Exception {
+        taxRateRepository.save(taxRate);
+        product.setId(-1000L);
+
+        ResultActions mvcResult = this.mockMvc.perform(
+            delete(PRODUCTS_BASE_URI + "/" + product.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andExpect(status().isNotFound());
+
+    }
+    @Test
+    public void givenSeveralProductsWithTaxRateAndACategory_whenDeleteMultiple_verifyProductsDeleted() throws Exception {
+        taxRateRepository.save(taxRate);
+        categoryRepository.save(category);
+        product.setTaxRate(taxRate);
+        product.setCategory(category);
+        product2.setName("product2");
+        product2.setPrice(20.0);
+        product2.setTaxRate(taxRate);
+        product3.setName("product3");
+        product3.setPrice(20.0);
+        product3.setTaxRate(taxRate);
+        Product newProduct = productRepository.save(product);
+        Product newProduct2 = productRepository.save(product2);
+        Product newProduct3 = productRepository.save(product3);
+
+        assertEquals(3, productRepository.findAll().size());
+
+        List<Long> ids = List.of(newProduct.getId(), newProduct2.getId(), newProduct3.getId());
+
+        for (Long id: ids) {
+            ResultActions mvcResult = this.mockMvc.perform(
+                delete(PRODUCTS_BASE_URI + "/" + id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+                .andExpect(status().isOk());
+        }
+        assertEquals(0,productRepository.findAll().size());
+
+    }
+
 
 }

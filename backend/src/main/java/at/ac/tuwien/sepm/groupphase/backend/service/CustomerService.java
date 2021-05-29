@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.List;
+
 /**
  * A service class handling customers.
  */
@@ -67,5 +69,13 @@ public interface CustomerService extends UserDetailsService {
      * @throws RuntimeException  upon encountering errors with the database
      */
     long getCustomerCount();
+
+    /**
+     * Returns all customers from the database.
+     *
+     * @return A list containing all the customers in the database
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    List<Customer> findAll();
 
 }
