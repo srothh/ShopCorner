@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -102,15 +101,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Cacheable(value = "counts", key = "#root.targetClass")
     @Override
     public long getCustomerCount() {
+        LOGGER.info("{}", this.getClass());
         return customerRepository.count();
     }
 
-    /**
-     * Returns all customers from the database.
-     *
-     * @return A list containing all the customers in the database
-     * @throws RuntimeException upon encountering errors with the database
-     */
+
     @Override
     public List<Customer> findAll() {
         LOGGER.trace("findAll()");

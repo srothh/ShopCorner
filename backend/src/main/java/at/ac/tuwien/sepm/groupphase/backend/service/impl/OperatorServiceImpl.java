@@ -12,6 +12,9 @@ import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -94,13 +97,22 @@ public class OperatorServiceImpl implements OperatorService {
         return operatorRepository.findAll();
     }
 
-    @Override
-    public int[] getCollectionSize() {
-        LOGGER.trace("getCollectionsize()");
-        return new int[]{(int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin)),
-            (int) operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee))};
+    @Cacheable(value = "counts", key = "'admins'")
+    public Long getAdminCount() {
+        LOGGER.trace("getAdminCount()");
+        return operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.admin));
     }
 
+    @Cacheable(value = "counts", key = "'employees'")
+    public Long getEmployeeCount() {
+        LOGGER.trace("getEmployeeCount()");
+        return operatorRepository.count(OperatorSpecifications.hasPermission(Permissions.employee));
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'admins'"),
+        @CacheEvict(value = "counts", key = "'employees'")
+    })
     @Override
     public Operator save(Operator operator) {
         LOGGER.trace("save({})", operator);
