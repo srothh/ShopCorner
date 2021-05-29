@@ -11,11 +11,14 @@ import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
@@ -34,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
         this.taxRateRepository = taxRateRepository;
     }
 
+    @CacheEvict(value = "counts", key = "'products'")
     @Override
     public Product createProduct(Product product) {
         LOGGER.trace("createProduct({})", product);
@@ -124,12 +128,15 @@ public class ProductServiceImpl implements ProductService {
             .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
     }
 
+    @Cacheable(value = "counts", key = "'products'")
     @Override
-    public int getProductsCount() {
+    public Long getProductsCount() {
         LOGGER.trace("getProductsCount()");
-        return productRepository.findAll().size();
+        LOGGER.info("getProductsCount()");
+        return productRepository.count();
     }
 
+    @CacheEvict(value = "counts", key = "'products'")
     @Override
     public void deleteProductById(Long productId) {
         LOGGER.trace("deleteProductById{}", productId);

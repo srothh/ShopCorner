@@ -68,7 +68,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Transactional
-    @CacheEvict(value = "counts", key = "#root.targetClass")
+    @CacheEvict(value = "counts", key = "'customers'")
     @Override
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
@@ -98,7 +98,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setAddress(address);
     }
 
-    @Cacheable(value = "counts", key = "#root.targetClass")
+    @Cacheable(value = "counts", key = "'customers'")
     @Override
     public long getCustomerCount() {
         LOGGER.info("{}", this.getClass());

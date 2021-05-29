@@ -131,6 +131,10 @@ public class OperatorServiceImpl implements OperatorService {
         operatorRepository.setOperatorPermissionsById(permissions, id);
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'admins'"),
+        @CacheEvict(value = "counts", key = "'employees'")
+    })
     @Override
     public void delete(Long id) {
         LOGGER.trace("delete({})", id);

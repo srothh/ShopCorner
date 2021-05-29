@@ -62,7 +62,7 @@ public interface ProductService {
      *
      * @return retrieves the number of all added products
      */
-    int getProductsCount();
+    Long getProductsCount();
 
     /**
      * Deletes a specific product with the given productId.

@@ -1,28 +1,28 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
@@ -57,46 +57,27 @@ public class ProductEndpoint {
         LOGGER.info("POST newProduct({}) " + BASE_URL, productDto);
         return this.productMapper
             .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto)));
-
     }
 
     /**
      * Gets all products form the database in a paginated manner.
      *
-     * @param page describes the number of the page
+     * @param page      describes the number of the page
      * @param pageCount the number of entries in each page
-     *
      * @return all products with all given fields in a dto - format and paginated specified by page and pageCount
      */
     @PermitAll
     @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
-    public List<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
+    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
         LOGGER.info("GET " + BASE_URL);
-        return this.productService.getAllProductsPerPage(page, pageCount).getContent()
+        return new PaginationDto<ProductDto>(this.productService.getAllProductsPerPage(page, pageCount).getContent()
             .stream()
             .map(this.productMapper::entityToDto)
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()), page, pageCount, productService.getProductsCount());
     }
 
-    /**
-     * Gets the number of all added products.
-     *
-     * @return the number of all products
-     */
-    @PermitAll
-    @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    @Operation
-        (
-        summary = "Returns all products that are currently stored in the database without picture and category in a paginated manner",
-        security = @SecurityRequirement(name = "apiKey")
-        )
-    public int getProductsCount() {
-        LOGGER.info("GET" + BASE_URL + "/count");
-        return this.productService.getProductsCount();
-    }
     /**
      * Gets all simple products from the database, which omits some fields like picture and category.
      *
@@ -122,7 +103,7 @@ public class ProductEndpoint {
     /**
      * Updates an already existing product from the database.
      *
-     * @param productId the Id of the product to execute the udpate
+     * @param productId  the Id of the product to execute the udpate
      * @param productDto the product dto with the updated fields
      */
 
