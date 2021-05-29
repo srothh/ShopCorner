@@ -126,4 +126,24 @@ public class OperatorServiceImpl implements OperatorService {
             .orElseThrow(() -> new NotFoundException("Could not find operator that should be deleted!"));
         operatorRepository.deleteById(id);
     }
+
+    @Override
+    public Operator update(Operator operator) {
+        LOGGER.trace("update({})", operator);
+
+        validator.validateUpdatedOperator(operator, this);
+
+        Operator op = operatorRepository.findById(operator.getId())
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the operator with the id %d", operator.getId())));
+
+        op.setName(operator.getName());
+        op.setLoginName(operator.getLoginName());
+        op.setEmail(operator.getEmail());
+        //can password be updated (this easily)?
+        if (!operator.getPassword().equals("unchanged")) {
+            op.setPassword(passwordEncoder.encode(operator.getPassword()));
+        }
+        return operatorRepository.save(op);
+    }
+
 }
