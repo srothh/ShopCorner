@@ -145,7 +145,6 @@ public class InvoiceEndpoint {
     }
 
 
-
     /**
      * Finds an invoice and generates a PDF from it.
      *
@@ -166,7 +165,11 @@ public class InvoiceEndpoint {
     }
 
 
-
+    /**
+     * generates response header for the create and get invoice as pdf request
+     *
+     * @return header for the pdf response
+     */
     private HttpHeaders generateHeader() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
@@ -176,16 +179,5 @@ public class InvoiceEndpoint {
         return headers;
     }
 
-    /*private Invoice addInvoiceToDbs(DetailedInvoiceDto detailedInvoiceDto) {
-        Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(detailedInvoiceDto);
-        Invoice createdInvoice = invoiceService.creatInvoice(invoice);
-        Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(detailedInvoiceDto.getItems());
-        validator.validateNewInvoiceItem(items);
-        for (InvoiceItem item : items) {
-            item.setInvoice(createdInvoice);
-        }
-        invoiceItemService.creatInvoiceItem(items);
-        return createdInvoice;
-    }*/
 
 }

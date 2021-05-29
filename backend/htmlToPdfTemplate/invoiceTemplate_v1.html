@@ -9,6 +9,7 @@
 
         html {
             height: 100%;
+            font-family: Arial,serif;
         }
 
         body {
@@ -78,6 +79,9 @@
             border-collapse: collapse;
         }
 
+        tr,td{
+            margin-top: 5px;
+        }
 
         .table-grid .table-grid td {
             border-top: 1px solid black;
@@ -119,7 +123,7 @@
     </style>
 
 </head>
-<body>
+<body style="font-family: 'Arial Black'">
 <table width="100%" border="0" class="table-grid">
     <tr>
         <td class="center" colspan="3">
@@ -128,7 +132,7 @@
     </tr>
     <tr>
         <td class="center" colspan="3">
-            <h2>Rechnung</h2>
+            <h3>Rechnung</h3>
         </td>
     </tr>
 
@@ -136,7 +140,7 @@
         <td class="right" style="width: 100%"></td>
         <td class="right" style="width: 100%"></td>
         <td class="right">
-            <table class="right" border="0">
+            <table class="right" border="0" style="margin-top: 1rem">
                 <tr>
                     <td class="left">
                         <a>Date: </a>
@@ -147,16 +151,31 @@
                 </tr>
                 <tr>
                     <td class="left">
+                        <a>Zahlungsart: </a>
+                    </td>
+                    <td class="lef">
+                        <a>Paypal</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left">
                         <a>Rechnungsnummer: </a>
                     </td>
                     <td class="left invoice-number">
                         <a>{{invoiceNumber}}</a>
                     </td>
                 </tr>
+                <tr>
+                    <td class="left">
+                        <a>Bestellnummer: </a>
+                    </td>
+                    <td class="left">
+                        <a>{{number}}</a>
+                    </td>
+                </tr>
             </table>
         </td>
     </tr>
-
     <tr>
         <td class="left underline" colspan="3">
             <h4>Bestellte Artikel</h4>
@@ -166,23 +185,6 @@
     <tr style="width: 100%;">
         <td class="center" style="width: 100%;" colspan="3">
             <table class="center table-grid article" style="width: 100%;">
-                <tr>
-                    <th class="center product">
-                        <a>Produkt</a>
-                    </th>
-                    <th class="center price">
-                        <a>Preis</a>
-                    </th>
-                    <th class="center quantity">
-                        <a>Anzahl</a>
-                    </th>
-                    <th class="center tax">
-                        <a>Steuer</a>
-                    </th>
-                    <th class="center amount">
-                        <a>Betrag</a>
-                    </th>
-                </tr>
                 <tr>
                     <th class="center product">
                         <a>Produkt</a>

@@ -8,8 +8,43 @@
 
 <div class="table-view">
   <div class="container my-4">
-    <p class="font-weight-bold">Rechnung erstellen</p>
+    <br>
+    <h2>Rechnungen</h2>
+
+    <div class="row">
+      <div class="col">
+        <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons"
+             aria-label="operator selection">
+          <label class="btn btn-light active btn-sm">
+            <input type="radio" name="buttons" id="option1">
+            Alle
+          </label>
+          <label class="btn btn-light btn-sm">
+            <input type="radio" name="buttons" id="option2">
+            Gesendet
+          </label>
+          <label class="btn btn-light btn-sm">
+            <input type="radio" name="buttons" id="option3">
+            Storniert
+          </label>
+        </div>
+      </div>
+
+      <div class="col text-right">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-dark " type="button" style="width: 100%"> Filtern</button>
+          </div>
+          <div class="col">
+            <button class="btn btn-outline-dark  " type="button" style="width: 100%"> Rechnung erstellen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <hr class="mb-5"/>
+
     <div class="border border-light p-3 mb-4">
       <div class="p-2 bd-highlight col-example">
         <div class="card">
@@ -44,7 +79,8 @@
                               [ngClass]="{ 'is-invalid': submitted && item.controls.name.errors}"
                               (change)="calculateAmount(); updateProducts()">
                         <option value="" selected disabled>(none)</option>
-                        <option *ngFor="let product of products; let i = index;" [ngValue]="product" [class.hidden]="selectedProducts.includes(product)">{{product.name}}</option>
+                        <option *ngFor="let product of products; let i = index;" [ngValue]="product"
+                                [class.hidden]="selectedProducts.includes(product)">{{product.name}}</option>
                       </select>
                       <div *ngIf="submitted && item.controls.name.errors" class="invalid-feedback">
                         <div *ngIf="item.controls.name.errors.required">Wählen sie ein Produkt</div>
@@ -120,9 +156,6 @@
                   <div class="col-4">
                     <button class="btn btn-block btn-dark" type="submit" (click)="download=true"> PDF download</button>
                   </div>
-                  <!--div class="col-3">
-                    <button class="btn btn-block  btn-dark" type="submit" (click)="print=true"> PDF drucken</button>
-                  </div-->
                   <div class="col-4">
                     <button class="btn btn-block btn-dark" type="submit" (click)="show=true"> PDF öffnen</button>
                   </div>
@@ -130,9 +163,7 @@
               </div>
             </form>
           </div>
-
         </div>
-
       </div>
     </div>
   </div>
