@@ -19,7 +19,6 @@ import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import io.swagger.v3.oas.annotations.Operation;
 
-import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 
 
@@ -31,6 +30,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,7 +66,7 @@ public class InvoiceEndpoint {
      * @param id is the id of the invoice
      * @return DetailedInvoiceDto with all given information of the invoice
      */
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
     @Operation(summary = "Get information for specific invoice")
@@ -81,7 +81,7 @@ public class InvoiceEndpoint {
      *
      * @return List with all SimpleInvoices
      */
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "")
     @Operation(summary = "Get overviewing information for all invoices")
@@ -96,7 +96,7 @@ public class InvoiceEndpoint {
      * @param invoiceDto which should be saved in the database
      * @return List with all SimpleInvoices
      */
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "", produces = { "application/json"})
     @Operation(summary = "create new invoice")
@@ -121,7 +121,7 @@ public class InvoiceEndpoint {
      * @param invoiceDto which should be saved in the database
      * @return ResponseEntity with the generated pdf
      */
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
     @Operation(summary = "create new invoice")
@@ -141,7 +141,7 @@ public class InvoiceEndpoint {
         PdfGenerator pdf = new PdfGenerator();
         final byte[] contents = pdf.generatePdfOperator(invoiceService.findOneById(createdInvoice.getId()));
 
-        return new ResponseEntity<byte[]>(contents, this.generateHeader(), HttpStatus.CREATED);
+        return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
 
 
@@ -151,7 +151,7 @@ public class InvoiceEndpoint {
      * @param id id of the invoice
      * @return ResponseEntity with the generated pdf
      */
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/getinvoicepdf/{id}", produces = "application/pdf")
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
@@ -161,12 +161,12 @@ public class InvoiceEndpoint {
         final byte[] contents = pdf.generatePdfOperator(invoice);
 
 
-        return new ResponseEntity<byte[]>(contents, this.generateHeader(), HttpStatus.OK);
+        return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
     }
 
 
     /**
-     * generates response header for the create and get invoice as pdf request
+     * generates response header for the create and get invoice as pdf request.
      *
      * @return header for the pdf response
      */

@@ -4,6 +4,7 @@ import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
 import {Invoice} from '../dtos/invoice';
 import {Product} from '../dtos/product';
+import {OperatorAuthService} from './auth/operator-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,21 +14,25 @@ export class InvoiceService {
   private invoiceBaseUri: string = this.globals.backendUri + '/invoice';
   private productBaseUri: string = this.globals.backendUri + '/products';
 
-  constructor(private httpClient: HttpClient, private globals: Globals) {
+  constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
 
   /**
    * Loads all invoices from the backend
    */
   getInvoice(): Observable<Invoice[]> {
-    return this.httpClient.get<Invoice[]>(this.invoiceBaseUri);
+    return this.httpClient.get<Invoice[]>(this.invoiceBaseUri, {
+      headers: this.getHeadersForOperator()
+    });
   }
 
   /**
    * Loads all simple products from the backend
    */
   getProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.productBaseUri + '/simple');
+    return this.httpClient.get<Product[]>(this.productBaseUri + '/simple', {
+      headers: this.getHeadersForOperator()
+    });
   }
 
 
@@ -38,8 +43,9 @@ export class InvoiceService {
    * @return invoice
    */
   getInvoiceById(id: number): Observable<Invoice> {
-    console.log('Load invoice by ' + id);
-    return this.httpClient.get<Invoice>(this.invoiceBaseUri + '/' + id);
+    return this.httpClient.get<Invoice>(this.invoiceBaseUri + '/' + id, {
+      headers: this.getHeadersForOperator()
+    });
   }
 
   /**
@@ -49,11 +55,7 @@ export class InvoiceService {
    * @return pdf generated from the invoice entry
    */
   getInvoiceAsPdfById(id: number): Observable<any> {
-    const httpOptions = {
-      responseType: 'blob' as 'json',
-      headers: new HttpHeaders().set('Accept', 'application/pdf'),
-    };
-    return this.httpClient.get(this.invoiceBaseUri + '/getinvoicepdf/' + id, httpOptions);
+    return this.httpClient.get(this.invoiceBaseUri + '/getinvoicepdf/' + id, this.getPdfHeadersForOperator());
   }
 
   /**
@@ -66,7 +68,6 @@ export class InvoiceService {
     return this.httpClient.post<Invoice>(this.invoiceBaseUri, invoice);
   }
 
-
   /**
    * Creates a new invoice entry and a pdf in the backend.
    *
@@ -74,10 +75,20 @@ export class InvoiceService {
    * @return pdf generated from the given invoice and invoice entry
    */
   createInvoiceAsPdf(invoice: Invoice): Observable<any> {
+
+    return this.httpClient.post(this.invoiceBaseUri + '/createinvoicepdf', invoice , this.getPdfHeadersForOperator());
+  }
+
+  private getHeadersForOperator(): HttpHeaders {
+    return new HttpHeaders()
+      .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
+  }
+
+  private getPdfHeadersForOperator(): any {
     const httpOptions = {
       responseType: 'blob' as 'json',
-      headers: new HttpHeaders().set('Accept', 'application/pdf'),
+      headers: new HttpHeaders().set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`).set('Accept', 'application/pdf')
     };
-    return this.httpClient.post(this.invoiceBaseUri + '/createinvoicepdf', invoice , httpOptions);
+    return httpOptions;
   }
 }
