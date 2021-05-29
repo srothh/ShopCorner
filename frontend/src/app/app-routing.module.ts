@@ -25,6 +25,7 @@ import {PreventCustomerLoginGuard} from './guards/prevent-customer-login.guard';
 import {OperatorAuthGuard} from './guards/operator-auth.guard';
 import {PreventOperatorLoginGuard} from './guards/prevent-operator-login.guard';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
+import {OperatorEditAccountComponent} from './components/operator/operator-edit-account/operator-edit-account.component';
 
 const routes: Routes = [
   {
@@ -53,6 +54,7 @@ const routes: Routes = [
       {path: 'customers', component: OperatorCustomerComponent},
       {path: 'accounts', component: OperatorAccountComponent},
       {path: 'registration', component: OperatorRegistrationComponent},
+      {path: 'account/edit', component: OperatorEditAccountComponent},
     ],
   },
   {path: 'operator/login', canActivate: [PreventOperatorLoginGuard], component: OperatorLoginComponent}

@@ -28,10 +28,14 @@ import {OperatorRegistrationComponent} from './components/operator/operator-regi
 import {OperatorAddProductComponent} from './components/operator/operator-add-product/operator-add-product.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
+
+import { OperatorEditAccountComponent } from './components/operator/operator-edit-account/operator-edit-account.component';
+
 import {OperatorProductDetailsComponent} from './components/operator/operator-product-details/operator-product-details.component';
 import {OperatorProductFormComponent} from './components/operator/operator-product-form/operator-product-form.component';
 import {BaseLoginComponent} from './components/common/base-login/base-login.component';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
+
 
 @NgModule({
   declarations: [
@@ -59,6 +63,7 @@ import {OperatorLoginComponent} from './components/operator/operator-login/opera
     OperatorRegistrationComponent,
     OperatorAddProductComponent,
     ShopRegistrationComponent,
+    OperatorEditAccountComponent,
     OperatorProductFormComponent,
     OperatorProductDetailsComponent,
   ],

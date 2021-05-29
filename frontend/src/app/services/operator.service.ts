@@ -16,6 +16,16 @@ export class OperatorService {
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
 
+  /**
+   * Loads the specified operator from the backend
+   *
+   * @param loginName of operator to load
+   */
+  getOperatorByLoginName(loginName: string): Observable<Operator> {
+    console.log('Load operator ' + loginName);
+    return this.httpClient.get<Operator>(this.operatorBaseUri + '/' + loginName, {headers: this.getHeadersForOperator()});
+  }
+
 
   /**
    * Creates a new operator account in the backend.
@@ -25,8 +35,20 @@ export class OperatorService {
   createOperator(operator: Operator): Observable<Operator> {
     console.log('Create new operator account', operator);
     return this.httpClient.post<Operator>(
-      this.operatorBaseUri + '/register',  operator
-    );
+      this.operatorBaseUri,  operator
+    , {headers: this.getHeadersForOperator()});
+  }
+
+  /**
+   * Updates the specified operator in the backend.
+   *
+   * @param operator to be updated
+   */
+  updateOperator(operator: Operator): Observable<any> {
+    console.log('Update operator', operator);
+    return this.httpClient.put<Operator>(
+      this.operatorBaseUri + '/' + operator.id,  operator
+    , {headers: this.getHeadersForOperator()});
   }
 
   /**
@@ -74,4 +96,5 @@ export class OperatorService {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
+
 }
