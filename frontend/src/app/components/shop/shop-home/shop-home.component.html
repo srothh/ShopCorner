@@ -1,4 +1,31 @@
-<div class="jumbotron mt-5">
-  <h1 class="display-4">Bestseller products will be listed here</h1>
-  <hr class="my-4">
-</div>
+<main role="main" class="mx-5">
+  <div class="album py-5">
+    <div class="mb-3">
+      <h3>
+        Bestseller
+      </h3>
+      <h6 class="text-muted" *ngIf="collectionSize === 0; else not_empty">
+        Keine Produkte gespeichert.
+      </h6>
+      <ng-template #not_empty>
+        <h6 class="text-muted">Zeigt {{1}}-{{collectionSize}}
+          von {{collectionSize}}</h6>
+      </ng-template>
+    </div>
+    <div class="row">
+      <div class="col-md-4 col-sm-5 col-lg-2" *ngFor="let product of products">
+        <div class="card mb-4 rounded" style="cursor: pointer">
+          <img class="card-img-top" src="{{getImageSource(product)}}" width="125px" height="200px"
+               alt="produkt">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <h6 class="text-muted">{{product.name}}</h6>
+              <h6 class="text-muted">€ {{product.price}}</h6>
+            </div>
+            <button type="button" class="btn btn-block btn-secondary">In den Warenkorb</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

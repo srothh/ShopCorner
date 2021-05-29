@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
@@ -71,14 +73,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProductsPerPage(int page, int pageCount) {
+    public Page<Product> getAllProductsPerPage(int page, int pageCount, String sortBy) {
         LOGGER.trace("getAllProductsPerPage({}, {})", page, pageCount);
         if (pageCount == 0) {
             pageCount = 15;
         } else if (pageCount > 50) {
             pageCount = 50;
         }
-        Pageable pages = PageRequest.of(page, pageCount);
+        Pageable pages;
+        if (sortBy.equals("id")) {
+            pages = PageRequest.of(page, pageCount);
+        } else {
+            pages = PageRequest.of(page, pageCount, Sort.by(sortBy).descending());
+        }
+
         return this.productRepository.findAll(pages);
     }
 

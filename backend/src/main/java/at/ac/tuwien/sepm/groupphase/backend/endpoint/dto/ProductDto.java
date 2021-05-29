@@ -20,6 +20,7 @@ public class ProductDto {
     private Category category;
     private TaxRate taxRate;
     private String picture;
+    private Long saleCount;
 
     public String getPicture() {
         return picture;
@@ -78,6 +79,14 @@ public class ProductDto {
 
     public void setTaxRate(TaxRate taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public Long getSaleCount() {
+        return saleCount;
+    }
+
+    public void setSaleCount(Long saleCount) {
+        this.saleCount = saleCount;
     }
 
     @Override

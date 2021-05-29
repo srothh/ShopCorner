@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {CustomerAuthService} from '../../../services/auth/customer-auth.service';
+import {Product} from '../../../dtos/product';
+import {ProductService} from '../../../services/product.service';
 
 @Component({
   selector: 'app-home',
@@ -8,9 +9,34 @@ import {CustomerAuthService} from '../../../services/auth/customer-auth.service'
 })
 export class ShopHomeComponent implements OnInit {
 
-  constructor(public authService: CustomerAuthService) { }
+  products: Product[];
+  page = 0;
+  pageSize = 18;
+  collectionSize = 0;
 
-  ngOnInit() {
+  constructor(private productService: ProductService) {
+  }
+
+  ngOnInit(): void {
+    this.fetchProducts();
+  }
+
+  fetchProducts(): void {
+    this.productService.getProductsSortedBySales(this.page, this.pageSize).subscribe((productData) => {
+      this.products = productData;
+      this.getCollectionSize();
+    });
+  }
+
+  getImageSource(product: Product): string {
+    if (product.picture != null) {
+      return 'data:image/png;base64,' + product.picture;
+    }
+    return '../../../../assets/stock-productimage-unavailable.jpg';
+  }
+
+  getCollectionSize() {
+    this.productService.getNumberOfProducts().subscribe((count: number) => this.collectionSize = count);
   }
 
 }
