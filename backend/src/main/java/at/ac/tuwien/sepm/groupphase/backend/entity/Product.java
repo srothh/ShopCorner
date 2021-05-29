@@ -28,7 +28,7 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
-
+    private boolean locked;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tax_rate", nullable = false)
     private TaxRate taxRate;
@@ -94,6 +94,14 @@ public class Product {
         this.taxRate = taxRate;
     }
 
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -127,6 +135,8 @@ public class Product {
             ", amount=" + price
             +
             ", category=" + category
+            +
+            ", isLocked=" + locked
             +
             ", taxRate=" + taxRate
             +

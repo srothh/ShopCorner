@@ -68,7 +68,8 @@ export class OperatorProductFormComponent implements OnInit {
       description: [null, Validators.maxLength(70)],
       price: ['', Validators.required],
       taxRate: [null, Validators.required],
-      category: [null]
+      category: [null],
+      locked: [false]
     });
     // if the form is a 'edit-product-form' then set all properties in the form and make them readonly
     if (this.addProductEnabled === false) {
@@ -84,9 +85,9 @@ export class OperatorProductFormComponent implements OnInit {
       null,
       new Category(null, null),
       new TaxRate(null, null, null),
+      false,
       null);
   }
-
   setFormProperties(): void {
     if (this.newProduct === undefined) {
       const productId = +this.activatedRouter.snapshot.paramMap.get('id');
@@ -95,6 +96,7 @@ export class OperatorProductFormComponent implements OnInit {
       this.productForm.controls['name'].setValue(this.newProduct.name);
       this.productForm.controls['description'].setValue(this.newProduct.description);
       this.productForm.controls['price'].setValue(this.newProduct?.price);
+      this.productForm.controls['locked'].setValue(this.newProduct.locked);
       this.productForm.controls['taxRate'].setValue(this.newProduct.taxRate.id, {onlySelf: true});
       this.productForm.controls['category'].setValue(this.newProduct.category?.id, {onlySelf: true});
       if (this.newProduct.category == null){
@@ -118,9 +120,9 @@ export class OperatorProductFormComponent implements OnInit {
       this.newProduct.description = this.newProduct.description.trim();
     }
     if (this.productForm.get('category').value != null) {
-      console.log(this.productForm.get('category')?.value);
       this.newProduct.category.id = this.productForm.get('category')?.value;
     }
+    this.newProduct.locked = this.productForm.get('locked').value;
     if (this.router.url.includes('add')) {
       const baseURL = this.router.url.substring(0, this.router.url.lastIndexOf('/'));
       this.productService.addProduct(this.newProduct).subscribe(data => {
@@ -130,7 +132,7 @@ export class OperatorProductFormComponent implements OnInit {
       }, error => {
         this.errorOccurred = true;
         //NOTE: not all error types supported yet because of the way how the interceptor is handling errors
-        this.errorMessage = error;
+        this.errorMessage = error.error.message;
       });
     } else {
       this.updateProduct();
@@ -145,7 +147,7 @@ export class OperatorProductFormComponent implements OnInit {
 
       }, error => {
         this.errorOccurred = true;
-        this.errorMessage = error;
+        this.errorMessage = error.error.message;
       }
     );
   }
@@ -159,6 +161,7 @@ export class OperatorProductFormComponent implements OnInit {
 
   enableEditing(): void {
     this.productForm.enable();
+    //it is possible to edit the product and eventually make it 'save-able'
     this.addProductEnabled = true;
   }
 
