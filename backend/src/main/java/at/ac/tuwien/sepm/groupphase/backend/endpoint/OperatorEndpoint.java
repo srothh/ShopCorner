@@ -54,8 +54,8 @@ public class OperatorEndpoint {
     /**
      * Get all operators with certain permission for certain page.
      *
-     * @param page        which should be fetched
-     * @param pageCount   amount per page
+     * @param page which should be fetched
+     * @param pageCount amount per page
      * @param permissions of needed operators
      * @return List with all needed operators
      */
@@ -165,7 +165,7 @@ public class OperatorEndpoint {
     /**
      * Changes Permssions of Employee to Admin.
      *
-     * @param id                          of employee that needs new permissions
+     * @param id of employee that needs new permissions
      * @param operatorPermissionChangeDto Dto with permission that should be updated
      */
     @Secured({"ROLE_ADMIN"})

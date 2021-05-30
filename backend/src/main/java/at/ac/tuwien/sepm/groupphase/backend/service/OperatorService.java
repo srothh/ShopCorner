@@ -38,9 +38,9 @@ public interface OperatorService extends UserDetailsService {
     /**
      * Returns page with all needed Operators.
      *
-     * @param page        which should be returned
+     * @param page which should be returned
      * @param permissions of Operators which should be returned
-     * @param pageCount   amount of operators per page
+     * @param pageCount amount of operators per page
      * @return Page with all Operators with right permission
      */
     Page<Operator> findAll(int page, int pageCount, Permissions permissions);
