@@ -14,7 +14,7 @@ import {httpInterceptorProviders} from './interceptors';
 import {OperatorComponent} from './components/operator/operator.component';
 import {OperatorHomeComponent} from './components/operator/operator-home/operator-home.component';
 import {OperatorShopComponent} from './components/operator/operator-shop/operator-shop.component';
-import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
+import {OperatorInvoiceFormComponent} from './components/operator/operator-invoice-form/operator-invoice.component';
 import {OperatorOrderComponent} from './components/operator/operator-order/operator-order.component';
 import {OperatorProductComponent} from './components/operator/operator-products/operator-product.component';
 import {OperatorPromotionComponent} from './components/operator/operator-promotions/operator-promotion.component';
@@ -35,6 +35,8 @@ import {OperatorProductDetailsComponent} from './components/operator/operator-pr
 import {OperatorProductFormComponent} from './components/operator/operator-product-form/operator-product-form.component';
 import {BaseLoginComponent} from './components/common/base-login/base-login.component';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
+import { OperatorInvoiceOverviewComponent } from './components/operator/operator-invoice-overview/operator-invoice-overview.component';
+import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
 
 
 @NgModule({
@@ -50,7 +52,6 @@ import {OperatorLoginComponent} from './components/operator/operator-login/opera
     OperatorComponent,
     OperatorHomeComponent,
     OperatorShopComponent,
-    OperatorInvoiceComponent,
     OperatorOrderComponent,
     OperatorProductComponent,
     OperatorPromotionComponent,
@@ -66,6 +67,10 @@ import {OperatorLoginComponent} from './components/operator/operator-login/opera
     OperatorEditAccountComponent,
     OperatorProductFormComponent,
     OperatorProductDetailsComponent,
+    OperatorInvoiceFormComponent,
+    OperatorInvoiceComponent,
+    OperatorInvoiceOverviewComponent,
+
   ],
   imports: [
     BrowserModule,

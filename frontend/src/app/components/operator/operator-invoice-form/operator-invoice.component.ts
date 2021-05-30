@@ -14,11 +14,11 @@ import {forkJoin} from 'rxjs';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-  selector: 'app-operator-invoice',
-  templateUrl: './operator-invoice.component.html',
+  selector: 'app-operator-invoice-form',
+  templateUrl: './operator-invoice.component-form.html',
   styleUrls: ['./operator-invoice.component.scss']
 })
-export class OperatorInvoiceComponent implements OnInit {
+export class OperatorInvoiceFormComponent implements OnInit {
 
   shopName = 'shopCorner';
 
