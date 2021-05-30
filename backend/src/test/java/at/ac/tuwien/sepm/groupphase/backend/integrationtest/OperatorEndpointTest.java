@@ -316,9 +316,9 @@ public class OperatorEndpointTest implements TestData {
     @Test
     public void givenOneOperator_whenDelete_findAllAfterDeleteReturnsEmptyList()
         throws Exception {
-        operatorRepository.save(admin);
+        operatorRepository.save(employee);
 
-        MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + admin.getId())
+        MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + employee.getId())
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
@@ -352,6 +352,20 @@ public class OperatorEndpointTest implements TestData {
         MockHttpServletResponse responseDelete = mvcResultDelete.getResponse();
 
         assertEquals(HttpStatus.NOT_FOUND.value(), responseDelete.getStatus());
+    }
+
+    @Test
+    public void givenOneAdmin_whenDelete_thenUnprocessableEntityResponse()
+        throws Exception {
+        operatorRepository.save(admin);
+
+        MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + admin.getId())
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseDelete = mvcResultDelete.getResponse();
+
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), responseDelete.getStatus());
     }
 
     @Test
