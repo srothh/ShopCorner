@@ -36,7 +36,7 @@ public class CustomerDataGenerator {
             LOGGER.debug("customers already generated");
         } else {
             Faker faker = new Faker(new Locale("de-AT"));
-            for (int i = 0; i < 300; i++) {
+            for (int i = 0; i < 500; i++) {
                 Address add = addressRepository.save(new Address(faker.address().streetName(), 1000, faker.address().buildingNumber(), faker.number().numberBetween(0, 10), faker.address().buildingNumber()));
                 customerRepository.save(new Customer(faker.internet().emailAddress(), passwordEncoder.encode(faker.internet().password(8, 15, true, false)), faker.name().firstName(), faker.name().username(),
                     add, faker.phoneNumber().cellPhone()));
