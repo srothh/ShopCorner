@@ -106,7 +106,7 @@ public class ProductDataGenerator {
         List<byte[]> list = new ArrayList<>();
         byte[] img = FileUtils.readFileToByteArray(new File("src/main/resources/Images/apple.jpg"));
         list.add(img);
-        byte[] img2 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/banana.jpg"));
+        byte[] img2 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/banana.png"));
         list.add(img2);
         byte[] img3 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/bread.jpg"));
         list.add(img3);
@@ -116,7 +116,7 @@ public class ProductDataGenerator {
         list.add(img5);
         byte[] img6 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/paprika.jpg"));
         list.add(img6);
-        byte[] img7 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/pear.jpg"));
+        byte[] img7 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/pear.png"));
         list.add(img7);
 
         return list;
