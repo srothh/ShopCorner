@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ProductDto {
     private Long id;
     @NotBlank
-    @Size(min = 3, max = 20, message = "name should contain at least 3 characters and 20 at most")
+    @Size(min = 3, max = 50, message = "name should contain at least 3 characters and 20 at most")
     private String name;
     @Size(max = 70)
     private String description;

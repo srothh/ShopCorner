@@ -192,7 +192,7 @@ public class Product {
             return this;
         }
 
-        public ProductBuilder withId(byte[] picture) {
+        public ProductBuilder withPicture(byte[] picture) {
             this.picture = picture;
             return this;
         }
