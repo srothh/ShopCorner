@@ -9,7 +9,6 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.github.javafaker.Faker;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 
@@ -75,43 +73,52 @@ public class ProductDataGenerator {
             TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
             Faker faker = new Faker(new Locale("de-AT"));
             TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
-            byte[] img = prepareImages();
+            List<byte[]> img = prepareImages();
             generateProductsWithTaxRate(taxRate1, category1, category2, category3, category4, faker, img);
-            //generateProductsWithTaxRate(taxRate2, category1, category2, category3, category4, faker, img);
-            //generateProductsWithTaxRate(taxRate3, category1, category2, category3, category4, faker, img);
+            generateProductsWithTaxRate(taxRate2, category1, category2, category3, category4, faker, img);
+            generateProductsWithTaxRate(taxRate3, category1, category2, category3, category4, faker, img);
         }
 
     }
 
-    public void generateProductsWithTaxRate(TaxRate taxRate, Category category1, Category category2, Category category3, Category category4, Faker faker, byte[] img) {
+    public void generateProductsWithTaxRate(TaxRate taxRate, Category category1, Category category2, Category category3, Category category4, Faker faker, List<byte[]> img) {
         for (int i = 0; i < 10; i++) {
             Product prod = Product.ProductBuilder.getProductBuilder().withName(faker.space().nasaSpaceCraft())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category1)
-                .withPicture(img).build();
+                .withPicture(img.get(i % (img.size()))).build();
             productRepository.save(prod);
-
-            /*
             Product prod1 = Product.ProductBuilder.getProductBuilder().withName(faker.food().ingredient())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category2)
-                .withId(Base64.getUrlEncoder().encodeToString((faker.internet().image(250, 250, false, "")).getBytes()).getBytes()).build();
+                .withPicture(img.get((i + 1) % (img.size()))).build();
             productRepository.save(prod1);
             Product prod2 = Product.ProductBuilder.getProductBuilder().withName(faker.food().spice())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category3)
-                .withId(Base64.getUrlEncoder().encodeToString((faker.internet().image(250, 250, false, "")).getBytes()).getBytes()).build();
+                .withPicture(img.get((i + 2) % (img.size()))).build();
             productRepository.save(prod2);
             Product prod3 = Product.ProductBuilder.getProductBuilder().withName(faker.food().vegetable())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category4)
-                .withId(img.get(0)).build();
-            productRepository.save(prod3);*/
-
+                .withPicture(img.get((i + 3) % (img.size()))).build();
+            productRepository.save(prod3);
         }
     }
 
-    public byte[] prepareImages() throws IOException {
-        byte[] img = FileUtils.readFileToByteArray(new File("src/main/resources/Images/apple-1702316_640.jpg"));
-        /*byte[] encoded = Base64.getEncoder().encode(img);
-        List<byte[]> res = new ArrayList<>();
-        res.add(encoded);*/
-        return img;
+    public List<byte[]> prepareImages() throws IOException {
+        List<byte[]> list = new ArrayList<>();
+        byte[] img = FileUtils.readFileToByteArray(new File("src/main/resources/Images/apple.jpg"));
+        list.add(img);
+        byte[] img2 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/banana.jpg"));
+        list.add(img2);
+        byte[] img3 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/bread.jpg"));
+        list.add(img3);
+        byte[] img4 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/broccoli.jpg"));
+        list.add(img4);
+        byte[] img5 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/grapes.jpg"));
+        list.add(img5);
+        byte[] img6 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/paprika.jpg"));
+        list.add(img6);
+        byte[] img7 = FileUtils.readFileToByteArray(new File("src/main/resources/Images/pear.jpg"));
+        list.add(img7);
+
+        return list;
     }
 }
