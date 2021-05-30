@@ -75,20 +75,22 @@ public class ProductDataGenerator {
             TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
             Faker faker = new Faker(new Locale("de-AT"));
             TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
-            List<byte[]> img = prepareImages();
+            byte[] img = prepareImages();
             generateProductsWithTaxRate(taxRate1, category1, category2, category3, category4, faker, img);
-            generateProductsWithTaxRate(taxRate2, category1, category2, category3, category4, faker, img);
-            generateProductsWithTaxRate(taxRate3, category1, category2, category3, category4, faker, img);
+            //generateProductsWithTaxRate(taxRate2, category1, category2, category3, category4, faker, img);
+            //generateProductsWithTaxRate(taxRate3, category1, category2, category3, category4, faker, img);
         }
 
     }
 
-    public void generateProductsWithTaxRate(TaxRate taxRate, Category category1, Category category2, Category category3, Category category4, Faker faker, List<byte[]> img) {
+    public void generateProductsWithTaxRate(TaxRate taxRate, Category category1, Category category2, Category category3, Category category4, Faker faker, byte[] img) {
         for (int i = 0; i < 10; i++) {
             Product prod = Product.ProductBuilder.getProductBuilder().withName(faker.space().nasaSpaceCraft())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category1)
-                .withId(Base64.getUrlEncoder().encodeToString((faker.internet().image(250, 250, false, "")).getBytes()).getBytes()).build();
+                .withPicture(img).build();
             productRepository.save(prod);
+
+            /*
             Product prod1 = Product.ProductBuilder.getProductBuilder().withName(faker.food().ingredient())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category2)
                 .withId(Base64.getUrlEncoder().encodeToString((faker.internet().image(250, 250, false, "")).getBytes()).getBytes()).build();
@@ -100,15 +102,16 @@ public class ProductDataGenerator {
             Product prod3 = Product.ProductBuilder.getProductBuilder().withName(faker.food().vegetable())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category4)
                 .withId(img.get(0)).build();
-            productRepository.save(prod3);
+            productRepository.save(prod3);*/
+
         }
     }
 
-    public List<byte[]> prepareImages() throws IOException {
-        byte[] img = FileUtils.readFileToByteArray(new File("../../../../../../../../resources/Images/apple-1702316_640.jpg"));
-        byte[] encoded = Base64.getEncoder().encode(img);
+    public byte[] prepareImages() throws IOException {
+        byte[] img = FileUtils.readFileToByteArray(new File("src/main/resources/Images/apple-1702316_640.jpg"));
+        /*byte[] encoded = Base64.getEncoder().encode(img);
         List<byte[]> res = new ArrayList<>();
-        res.add(encoded);
-        return res;
+        res.add(encoded);*/
+        return img;
     }
 }
