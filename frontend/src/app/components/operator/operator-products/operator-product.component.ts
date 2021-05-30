@@ -19,7 +19,7 @@ export class OperatorProductComponent implements OnInit {
   categories: Category[];
   taxRates: TaxRate[];
   page = 0;
-  pageSize = 5;
+  pageSize = 15;
   collectionSize = 0;
   selectedProducts: Product[] = [];
   errorOccurred: boolean;
