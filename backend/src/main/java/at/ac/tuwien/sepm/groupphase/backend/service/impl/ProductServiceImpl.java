@@ -114,6 +114,7 @@ public class ProductServiceImpl implements ProductService {
         updateProduct.setName(product.getName());
         updateProduct.setDescription(product.getDescription());
         updateProduct.setPrice(product.getPrice());
+        updateProduct.setLocked(product.isLocked());
         updateProduct.setPicture(product.getPicture());
         Category updateCategory = product.getCategory();
         TaxRate updateTaxRate = product.getTaxRate();
