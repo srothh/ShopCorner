@@ -19,6 +19,7 @@ public class ProductDto {
     private Double price;
     private Category category;
     private TaxRate taxRate;
+    private boolean locked;
     private String picture;
 
     public String getPicture() {
@@ -80,6 +81,15 @@ public class ProductDto {
         this.taxRate = taxRate;
     }
 
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -115,6 +125,8 @@ public class ProductDto {
             ", amount=" + price
             +
             ", category=" + category
+            +
+            ", isLocked=" + locked
             +
             ", taxRate=" + taxRate
             +

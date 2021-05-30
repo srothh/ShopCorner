@@ -44,11 +44,12 @@ public interface CustomerService extends UserDetailsService {
     Customer registerNewCustomer(Customer customer);
 
     /**
-     * Retrieves a page customers from the database.
+     * Retrieves a PaginationDto containing a Page of customers from the database.
      *
      * @param page      The number of the page to retrieve
      * @param pageCount The size of the page to retrieve
-     * @return A page containing the customers retrieved
+     * @return A PaginationDto containing data about the retrieved items
+     * @throws RuntimeException upon encountering errors with the database
      */
     Page<Customer> getAllCustomers(int page, int pageCount);
 

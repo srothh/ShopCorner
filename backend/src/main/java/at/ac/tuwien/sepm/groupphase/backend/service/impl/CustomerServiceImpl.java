@@ -11,6 +11,8 @@ import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -66,6 +68,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Transactional
+    @CacheEvict(value = "counts", key = "'customers'")
     @Override
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
@@ -95,17 +98,13 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setAddress(address);
     }
 
+    @Cacheable(value = "counts", key = "'customers'")
     @Override
     public long getCustomerCount() {
         return customerRepository.count();
     }
 
-    /**
-     * Returns all customers from the database.
-     *
-     * @return A list containing all the customers in the database
-     * @throws RuntimeException upon encountering errors with the database
-     */
+
     @Override
     public List<Customer> findAll() {
         LOGGER.trace("findAll()");

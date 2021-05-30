@@ -9,6 +9,8 @@ import {OperatorAuthService} from '../../services/auth/operator-auth.service';
 })
 export class OperatorComponent implements OnInit {
 
+  user: string;
+
   constructor(private authService: OperatorAuthService, private router: Router) {
   }
 
@@ -18,6 +20,7 @@ export class OperatorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.user = this.authService.getUser();
   }
 
 }
