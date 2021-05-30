@@ -52,6 +52,15 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 
+    public Customer(String email, String password, String name, String loginName, Address address, String phoneNumber) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.loginName = loginName;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
+
     public Long getId() {
         return id;
     }
