@@ -142,4 +142,77 @@ public class Product {
             +
             '}';
     }
+
+    public static final class ProductBuilder {
+        private Long id;
+        private String name;
+        private String description;
+        private Double price;
+        private Category category;
+        private boolean locked;
+        private TaxRate taxRate;
+        private byte[] picture;
+
+        public ProductBuilder(){
+        }
+
+        public static ProductBuilder getProductBuilder() {
+            return new ProductBuilder();
+        }
+
+
+
+        public ProductBuilder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public ProductBuilder withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public ProductBuilder withPrice(Double price) {
+            this.price = price;
+            return this;
+        }
+
+        public ProductBuilder withCategory(Category category) {
+            this.category = category;
+            return this;
+        }
+
+        public ProductBuilder withTaxRate(TaxRate taxRate) {
+            this.taxRate = taxRate;
+            return this;
+        }
+
+        public ProductBuilder withLocked(boolean locked) {
+            this.locked = locked;
+            return this;
+        }
+
+        public ProductBuilder withId(byte[] picture) {
+            this.picture = picture;
+            return this;
+        }
+
+        public ProductBuilder withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Product build() {
+            Product product = new Product();
+            product.setId(id);
+            product.setName(name);
+            product.setDescription(description);
+            product.setPrice(price);
+            product.setCategory(category);
+            product.setTaxRate(taxRate);
+            product.setLocked(locked);
+            product.setPicture(picture);
+            return product;
+        }
+    }
 }
