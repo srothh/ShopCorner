@@ -1,0 +1,56 @@
+<div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
+  {{ errorMessage }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="operator-category-container">
+  <div class="operator-category-header mt-3">
+    <h3>Kategorien</h3>
+  </div>
+  <div class="operator-category-body">
+    <button type="button" class="btn btn-primary mb-3" (click)="addNewCategory()">Produkt hinzufügen</button>
+    <div>
+      <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else last_page">
+        Zeigt {{1 + (pageSize * page)}}-{{(pageSize * (page + 1))}}
+        von {{collectionSize}}</p>
+      <ng-template #last_page>
+        <p style="font-size: 10px; color: gray" *ngIf="collectionSize > 0; else empty_content">
+          Zeigt {{(1 + (pageSize * page))}}-{{collectionSize}}
+          von {{collectionSize}}</p>
+        <ng-template #empty_content>
+          <p style="font-size: 10px; color: gray">Keine Kategorien</p>
+        </ng-template>
+      </ng-template>
+    </div>
+    <div class="border rounded " style="height: 560px; margin-top: 32px">
+      <table class="table table-hover table-sm" data-pagination="true" data-page-list="[1,2]">
+        <thead class="thead-light">
+        <tr>
+          <th scope="col">Ausgewählt</th>
+          <th scope="col">Name</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let category of categories; let i = index" style="cursor: pointer"
+            (click)="goToCategoryDetails(category, $event)">
+          <td>
+            <div class="custom-control custom-checkbox">
+              <input #checkboxes type="checkbox" class="custom-control-input" id="customCheck-{{i}}"
+                     (click)="clickedCheckMark($event, i)">
+              <label class="custom-control-label" for="customCheck-{{i}}"></label>
+            </div>
+          </td>
+          <td>{{category.name}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-between p-2">
+      <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
+      <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+    </div>
+  </div>
+</div>
