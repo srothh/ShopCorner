@@ -7,6 +7,7 @@ import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
+import {Pagination} from '../../../dtos/pagination';
 
 @Component({
   selector: 'app-operator-products',
@@ -35,11 +36,10 @@ export class OperatorProductComponent implements OnInit {
 
   fetchData(): void {
     forkJoin([this.productService.getProducts(this.page, this.pageSize),
-      this.categoryService.getCategories(), this.taxRateService.getTaxRates(),
-      this.productService.getNumberOfProducts()])
-      .subscribe(([productsData, categoriesData, taxRatesData, numberOfProducts]) => {
-        this.products = productsData;
-        this.collectionSize = numberOfProducts;
+      this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
+      .subscribe(([productsData, categoriesData, taxRatesData]) => {
+        this.products = productsData.items;
+        this.collectionSize = productsData.totalItemCount;
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
       });
@@ -47,8 +47,8 @@ export class OperatorProductComponent implements OnInit {
   }
 
   fetchProducts(): void {
-    this.productService.getProducts(this.page, this.pageSize).subscribe((productData) => {
-      this.products = productData;
+    this.productService.getProducts(this.page, this.pageSize).subscribe((productData: Pagination<Product>) => {
+      this.products = productData.items;
     });
   }
 

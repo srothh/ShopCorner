@@ -3,6 +3,7 @@ import {Operator} from '../../../dtos/operator';
 import {OperatorService} from '../../../services/operator.service';
 import {Permissions} from '../../../dtos/permissions.enum';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
+import {Pagination} from '../../../dtos/pagination';
 
 @Component({
   selector: 'app-operator-accounts',
@@ -31,7 +32,6 @@ export class OperatorAccountComponent implements OnInit {
       this.permissions = Permissions.employee;
     }
     this.loadOperatorsPage();
-    this.loadOperatorCount();
   }
 
   /**
@@ -57,6 +57,7 @@ export class OperatorAccountComponent implements OnInit {
     this.selected = [];
     this.permissions = Permissions.employee;
     this.currentCollectionSize = this.collectionSizeEmployee;
+    this.page = 0;
     this.loadOperatorsPage();
   }
 
@@ -67,6 +68,7 @@ export class OperatorAccountComponent implements OnInit {
     this.selected = [];
     this.permissions = Permissions.admin;
     this.currentCollectionSize = this.collectionSizeAdmin;
+    this.page = 0;
     this.loadOperatorsPage();
   }
 
@@ -163,8 +165,9 @@ export class OperatorAccountComponent implements OnInit {
    */
   private loadOperatorsPage() {
     this.operatorService.getOperatorsPage(this.page, this.pageSize, this.permissions).subscribe(
-      (page: Operator[]) => {
-        this.operators = page;
+      (page: Pagination<Operator>) => {
+        this.operators = page.items;
+        this.currentCollectionSize = page.totalItemCount;
       },
       error => {
         this.error = true;
@@ -173,26 +176,4 @@ export class OperatorAccountComponent implements OnInit {
     );
   }
 
-  /**
-   * calls on Service class to fetch operator count from backend
-   */
-  private loadOperatorCount() {
-    this.operatorService.getOperatorCount().subscribe(
-      (count: number[]) => {
-        if (this.authService.getUserRole() === 'ADMIN') {
-          this.collectionSizeAdmin = count[0];
-          this.collectionSizeEmployee = count[1];
-          this.currentCollectionSize = this.collectionSizeAdmin;
-        } else {
-          this.collectionSizeEmployee = count[0];
-          this.currentCollectionSize = this.collectionSizeAdmin;
-          this.currentCollectionSize = this.collectionSizeEmployee;
-        }
-      },
-      error => {
-        this.error = true;
-        this.errorMessage = error.error;
-      }
-    );
-  }
 }

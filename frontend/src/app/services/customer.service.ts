@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {Globals} from '../global/globals';
 import {Customer} from '../dtos/customer';
 import {OperatorAuthService} from './auth/operator-auth.service';
+import {Pagination} from '../dtos/pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +33,9 @@ export class CustomerService {
    * @param pageCount the size of the page to be fetched
    * @return The customers retrieved from the backend
    */
-  getAllCustomersForPage(page: number, pageCount: number): Observable<Customer[]> {
+  getAllCustomersForPage(page: number, pageCount: number): Observable<Pagination<Customer>> {
     console.log('Get customers for page', page);
-    return this.httpClient.get<Customer[]>(
+    return this.httpClient.get<Pagination<Customer>>(
       this.customerBaseUri + '?page=' + page + '&page_count=' + pageCount,
       {headers: this.getHeadersForOperator()}
     );
