@@ -61,8 +61,9 @@ public interface ProductService {
      * Retrieve the number of all added products.
      *
      * @return retrieves the number of all added products
+     * @throws RuntimeException occurs during database operations
      */
-    int getProductsCount();
+    Long getProductsCount();
 
     /**
      * Deletes a specific product with the given productId.

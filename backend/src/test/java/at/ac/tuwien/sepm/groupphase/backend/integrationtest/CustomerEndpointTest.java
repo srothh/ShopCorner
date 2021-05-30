@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
@@ -11,6 +12,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -28,6 +32,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,6 +51,9 @@ public class CustomerEndpointTest implements TestData {
 
     @Autowired
     private AddressRepository addressRepository;
+
+    @Autowired
+    CacheManager cacheManager;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -69,6 +77,7 @@ public class CustomerEndpointTest implements TestData {
     private final Customer customer2 = new Customer("mail@gmail.com", TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, "login", address, 0L, "");
 
     @BeforeEach
+    @CacheEvict(value = "counts",allEntries = true)
     public void beforeEach() {
         customerRepository.deleteAll();
         Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
@@ -167,11 +176,10 @@ public class CustomerEndpointTest implements TestData {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+        PaginationDto<CustomerDto> paginationDto = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>(){});
 
-        List<CustomerDto> customerDtos = Arrays.asList(objectMapper.readValue(response.getContentAsString(),
-            CustomerDto[].class));
-
-        assertEquals(0, customerDtos.size());
+        assertEquals(0, paginationDto.getItems().size());
     }
 
     @Test
@@ -204,11 +212,12 @@ public class CustomerEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), responseGet.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, responseGet.getContentType());
 
-        List<CustomerDto> customerDtos = Arrays.asList(objectMapper.readValue(responseGet.getContentAsString(),
-            CustomerDto[].class));
+        PaginationDto<CustomerDto> customerDtos = objectMapper.readValue(responseGet.getContentAsString(),
+            new TypeReference<>() {
+            });
 
-        assertEquals(1, customerDtos.size());
-        CustomerDto customerDtoCheck = customerDtos.get(0);
+        assertEquals(1, customerDtos.getItems().size());
+        CustomerDto customerDtoCheck = customerDtos.getItems().get(0);
         Address addressCheck = addressMapper.addressDtoToAddress(customerDtoCheck.getAddress());
         assertAll(
             () -> assertEquals(TEST_CUSTOMER_NAME, customerDtoCheck.getName()),
@@ -244,7 +253,7 @@ public class CustomerEndpointTest implements TestData {
             .andReturn();
         MockHttpServletResponse responseGet2 = mvcResultGet1.getResponse();
         MockHttpServletResponse responseGet1 = mvcResultGet2.getResponse();
-        MvcResult mvcResultGet = this.mockMvc.perform(get(CUSTOMER_BASE_URI + "/count")
+        MvcResult mvcResultGet = this.mockMvc.perform(get(CUSTOMER_BASE_URI)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
@@ -255,9 +264,50 @@ public class CustomerEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), responseGet.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, responseGet.getContentType());
 
-        long count = (objectMapper.readValue(responseGet.getContentAsString(), long.class));
-        assertEquals(2, count);
+        PaginationDto<CustomerDto> customerDtos = objectMapper.readValue(responseGet.getContentAsString(),
+            new TypeReference<>() {
+            });
+        assertEquals(2, customerDtos.getTotalItemCount());
 
+    }
+
+    @Test
+    public void givenTwoCustomers_whenGetCount_thenTwoInCache()
+        throws Exception {
+
+        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        String body = objectMapper.writeValueAsString(customerDto);
+        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerDto(customer2);
+        String body2 = objectMapper.writeValueAsString(customerDto2);
+        MvcResult mvcResultGet1 = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MvcResult mvcResultGet2 = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body2)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseGet2 = mvcResultGet1.getResponse();
+        MockHttpServletResponse responseGet1 = mvcResultGet2.getResponse();
+        MvcResult mvcResultGet = this.mockMvc.perform(get(CUSTOMER_BASE_URI)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseGet = mvcResultGet.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), responseGet1.getStatus());
+        assertEquals(HttpStatus.CREATED.value(), responseGet2.getStatus());
+
+        assertEquals(HttpStatus.OK.value(), responseGet.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseGet.getContentType());
+
+        PaginationDto<CustomerDto> customerDtos = objectMapper.readValue(responseGet.getContentAsString(),
+            new TypeReference<>() {
+            });
+        assertEquals(2, cacheManager.getCache("counts").get("customers",Long.class));
     }
 
 }
