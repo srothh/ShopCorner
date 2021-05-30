@@ -76,7 +76,7 @@ export class InvoiceService {
    */
   createInvoiceAsPdf(invoice: Invoice): Observable<any> {
 
-    return this.httpClient.post(this.invoiceBaseUri + '/createinvoicepdf', invoice , this.getPdfHeadersForOperator());
+    return this.httpClient.post(this.invoiceBaseUri, invoice , this.getPdfHeadersForOperator());
   }
 
   private getHeadersForOperator(): HttpHeaders {

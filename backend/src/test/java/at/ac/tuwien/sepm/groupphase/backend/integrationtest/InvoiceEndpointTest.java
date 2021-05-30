@@ -136,7 +136,7 @@ public class InvoiceEndpointTest implements TestData {
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
-        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
+        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -147,34 +147,6 @@ public class InvoiceEndpointTest implements TestData {
         assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
 
     }
-
-
-    @Test
-    public void givenAllProperties_whenPost_thenInvoice() throws Exception {
-
-        DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
-
-        String body = objectMapper.writeValueAsString(detailedInvoiceDto);
-
-        //MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI + "/createinvoicepdf")
-        MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(body)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
-            .andDo(print())
-            .andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
-        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
-        SimpleInvoiceDto simpleInvoiceDto = objectMapper.readValue(response.getContentAsString(),
-            SimpleInvoiceDto.class);
-
-        assertAll(
-            () -> assertEquals(invoice.getDate(), simpleInvoiceDto.getDate()),
-            () -> assertEquals(invoice.getAmount(), simpleInvoiceDto.getAmount())
-        );
-    }
-
 
 
     @Test
