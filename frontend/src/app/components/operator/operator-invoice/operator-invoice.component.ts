@@ -9,9 +9,6 @@ import {InvoiceService} from '../../../services/invoice.service';
 import {formatDate} from '@angular/common';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {InvoiceItem} from '../../../dtos/invoiceItem';
-import {ProductService} from '../../../services/product.service';
-import {UrlSerializer} from '@angular/router';
-import {TaxRateService} from '../../../services/tax-rate.service';
 import {forkJoin} from 'rxjs';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -134,7 +131,7 @@ export class OperatorInvoiceComponent implements OnInit {
     this.newInvoiceForm.value.tax = this.calcTotalTax();
   }
 
-  isNotaNumber(e) {
+  isNotANumber(e) {
     return isNaN(e);
   }
 
@@ -161,6 +158,7 @@ export class OperatorInvoiceComponent implements OnInit {
       this.errorHandling('Es können nicht alle Elemente einer Rechnung gelöscht werden');
     }
     this.updateProducts();
+    this.calculateAmount();
   }
 
   /**
@@ -179,7 +177,6 @@ export class OperatorInvoiceComponent implements OnInit {
       link.download = 'invoice_' + this.invoiceDto.date + '.pdf';
       link.click();
     }, (error) => {
-      // this.defaultServiceErrorHandling(error);
       this.error = true;
       this.errorMessage = error;
     });
@@ -191,7 +188,6 @@ export class OperatorInvoiceComponent implements OnInit {
       const blobURL = URL.createObjectURL(newBlob);
       window.open(blobURL);
     }, (error) => {
-      // this.defaultServiceErrorHandling(error);
       this.error = true;
       this.errorMessage = error;
     });
@@ -253,11 +249,11 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
   private calcTotal() {
-    let amount = 0;
+    let amount = 0.00;
     for (const item of this.t.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        if (product.taxRate !== undefined) {
+        if (product.taxRate !== undefined && this.validateInputNumbers(item.value)) {
           amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
         }
       }
@@ -266,28 +262,35 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
   private calcTotalTax() {
-    let amount = 0;
+    let amount = 0.00;
     for (const item of this.t.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        if (product.taxRate !== undefined) {
+        if (product.taxRate !== undefined && this.validateInputNumbers(item.value)) {
           amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
         }
       }
     }
     return amount.toFixed(2);
+
   }
 
   private calcSubtotal() {
     let amount = 0;
     for (const item of this.t.controls) {
-      if (item !== undefined) {
+      if (item !== undefined && item.value !== undefined) {
         const product = item.value.name;
-        amount += product.price * item.value.quantity;
+        if (product.taxRate !== undefined && this.validateInputNumbers(item.value)) {
+          amount += product.price * item.value.quantity;
+        }
       }
     }
     return amount.toFixed(2);
+
   }
 
+  private validateInputNumbers(item) {
+    return (item.taxRate !== undefined && item.quantity !== undefined) || (item.taxRate !== '' && item.quantity !== '');
+  }
 
 }

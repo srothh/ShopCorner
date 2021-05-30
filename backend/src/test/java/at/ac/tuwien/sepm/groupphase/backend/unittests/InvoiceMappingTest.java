@@ -65,7 +65,6 @@ public class InvoiceMappingTest implements TestData {
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
         product.setPrice(TEST_PRODUCT_PRICE);
 
-
         // invoiceItem
         invoiceItemKey.setInvoiceId(null);
         invoiceItemKey.setProductId(product.getId());

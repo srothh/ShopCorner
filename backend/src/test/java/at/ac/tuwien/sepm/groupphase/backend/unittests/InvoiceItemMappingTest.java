@@ -31,10 +31,8 @@ public class InvoiceItemMappingTest implements TestData {
         private static InvoiceItem invoiceItem = new InvoiceItem();
         private static InvoiceItem invoiceItem2 = new InvoiceItem();
 
-
     @Autowired
     private InvoiceItemMapper invoiceItemMapper;
-
 
     @BeforeAll
     static void beforeAll() {
@@ -83,12 +81,7 @@ public class InvoiceItemMappingTest implements TestData {
 
         invoiceItem2.setId(invoiceItemKey2);
         invoiceItem2.setNumberOfItems(5);
-
-
-
-
     }
-
 
 
     @Test

@@ -12,7 +12,6 @@ public interface InvoiceItemService {
      * Returns all invoiceItems from the database.
      *
      * @return A list containing all the invoiceItems entities from the database
-     * @throws NotFoundException if no data was found in the database
      */
     List<InvoiceItem> findAllInvoicesItems();
 
@@ -23,5 +22,5 @@ public interface InvoiceItemService {
      * @return The added invoice item entity
      * @throws RuntimeException upon encountering errors with the database
      */
-    Set<InvoiceItem> creatInvoiceItem(Set<InvoiceItem> invoiceItem);
+    Set<InvoiceItem> createInvoiceItem(Set<InvoiceItem> invoiceItem);
 }

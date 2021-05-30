@@ -11,7 +11,7 @@ import {OperatorAuthService} from './auth/operator-auth.service';
 })
 export class InvoiceService {
 
-  private invoiceBaseUri: string = this.globals.backendUri + '/invoice';
+  private invoiceBaseUri: string = this.globals.backendUri + '/invoices';
   private productBaseUri: string = this.globals.backendUri + '/products';
 
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
@@ -55,7 +55,7 @@ export class InvoiceService {
    * @return pdf generated from the invoice entry
    */
   getInvoiceAsPdfById(id: number): Observable<any> {
-    return this.httpClient.get(this.invoiceBaseUri + '/getinvoicepdf/' + id, this.getPdfHeadersForOperator());
+    return this.httpClient.get(this.invoiceBaseUri + '/' + id + '/pdf', this.getPdfHeadersForOperator());
   }
 
   /**

@@ -9,10 +9,10 @@ import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,30 +30,20 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
     @Override
     public List<InvoiceItem> findAllInvoicesItems() {
         LOGGER.trace("Find all invoices items");
-        try {
-            return this.invoiceItemRepository.findAll();
-        } catch (NotFoundException e) {
-            LOGGER.error("Could not find any invoices", e);
-            throw new NotFoundException("Could not find any invoices", e);
-        }
+        return this.invoiceItemRepository.findAll();
+
     }
 
     @Override
-    public Set<InvoiceItem> creatInvoiceItem(Set<InvoiceItem> invoiceItems) {
+    public Set<InvoiceItem> createInvoiceItem(Set<InvoiceItem> invoiceItems) {
         LOGGER.trace("Create invoice {}", invoiceItems);
         validator.validateNewInvoiceItem(invoiceItems);
-        //Set<InvoiceItem> newInvoiceItems = new HashSet<>();
-        try {
-            for (InvoiceItem item : invoiceItems) {
-                if (item != null || item.getId() != null) {
-                    //invoiceItem.add(this.invoiceItemRepository.save(item));
-                    this.invoiceItemRepository.save(item);
-                }
+        Set<InvoiceItem> newInvoiceItems = new HashSet<>();
+        for (InvoiceItem item : invoiceItems) {
+            if (item != null || item.getId() != null) {
+                newInvoiceItems.add(this.invoiceItemRepository.save(item));
             }
-        } catch (DataAccessException e) {
-            LOGGER.error("Problem while creating InoviceItem", e);
-            throw new ServiceException("Problem while creating InoviceItem", e);
         }
-        return null;
+        return newInvoiceItems;
     }
 }

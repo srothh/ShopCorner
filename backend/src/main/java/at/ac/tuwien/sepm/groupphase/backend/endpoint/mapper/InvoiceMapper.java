@@ -15,13 +15,13 @@ public interface InvoiceMapper {
     @Named("simpleInvoice")
     SimpleInvoiceDto invoiceToSimpleInvoiceDto(Invoice invoice);
 
-
     @IterableMapping(qualifiedByName = "simpleInvoice")
     List<SimpleInvoiceDto> invoiceToSimpleInvoiceDto(List<Invoice> invoice);
 
+    Invoice simpleInvoiceDtoToInvoice(SimpleInvoiceDto invoice);
+
     DetailedInvoiceDto invoiceToDetailedInvoiceDto(Invoice invoice);
 
-    Invoice simpleInvoiceDtoToInvoice(SimpleInvoiceDto invoice);
 
 
 }

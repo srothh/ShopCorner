@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/v1/invoice")
+@RequestMapping("/api/v1/invoices")
 public class InvoiceEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -103,15 +103,11 @@ public class InvoiceEndpoint {
     public SimpleInvoiceDto createInvoice(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices {}", invoiceDto);
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
-        Invoice createdInvoice = invoiceService.creatInvoice(invoice);
+        PdfGenerator pdf = new PdfGenerator();
         Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
-        validator.validateNewInvoiceItem(items);
+        invoice.setItems(items);
+        Invoice createdInvoice = invoiceService.createInvoice(invoice);
         SimpleInvoiceDto newInvoice = invoiceMapper.invoiceToSimpleInvoiceDto(createdInvoice);
-        for (InvoiceItem item : items) {
-            item.setInvoice(createdInvoice);
-        }
-        invoiceItemService.creatInvoiceItem(items);
-
         return newInvoice;
     }
 
@@ -128,17 +124,11 @@ public class InvoiceEndpoint {
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
 
-
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
-        Invoice createdInvoice = invoiceService.creatInvoice(invoice);
-        Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
-        validator.validateNewInvoiceItem(items);
-        for (InvoiceItem item : items) {
-            item.setInvoice(createdInvoice);
-        }
-        invoiceItemService.creatInvoiceItem(items);
-
         PdfGenerator pdf = new PdfGenerator();
+        Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
+        invoice.setItems(items);
+        Invoice createdInvoice = invoiceService.createInvoice(invoice);
         final byte[] contents = pdf.generatePdfOperator(invoiceService.findOneById(createdInvoice.getId()));
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.CREATED);
@@ -153,13 +143,12 @@ public class InvoiceEndpoint {
      */
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/getinvoicepdf/{id}", produces = "application/pdf")
+    @GetMapping(value = "/{id}/pdf", produces = "application/pdf")
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
         LOGGER.info("Get /invoices/getinvoicepdf/{}", id);
         Invoice invoice = invoiceService.findOneById(id);
         PdfGenerator pdf = new PdfGenerator();
         final byte[] contents = pdf.generatePdfOperator(invoice);
-
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
     }

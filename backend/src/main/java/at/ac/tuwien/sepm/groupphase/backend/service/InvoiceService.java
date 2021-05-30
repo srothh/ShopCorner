@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-
-import java.time.LocalDateTime;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import java.util.List;
 
 public interface InvoiceService {
@@ -12,6 +12,7 @@ public interface InvoiceService {
      *
      * @param id the id of the message entry
      * @return the message entry
+     * @throws NotFoundException when no invoice with the id is found
      */
     Invoice findOneById(Long id);
 
@@ -28,8 +29,9 @@ public interface InvoiceService {
      *
      * @param invoice is the new invoice to create
      * @return new invoice
+     * @throws ServiceException upon encountering errors with the database
      */
-    Invoice creatInvoice(Invoice invoice);
+    Invoice createInvoice(Invoice invoice);
 
 
 

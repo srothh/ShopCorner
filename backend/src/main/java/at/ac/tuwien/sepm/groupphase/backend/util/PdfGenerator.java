@@ -22,6 +22,12 @@ public class PdfGenerator {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final String htmlUri = "htmlToPdfTemplate/";
 
+    /**
+     * Generates a PDF from an HTML template, parses the template into a document, which can then be changed and edited.
+     *
+     * @param invoice Invoice Items
+     * @return byte array with generated pdf
+     */
     public byte[] generatePdfOperator(Invoice invoice) {
         byte[] pdfAsBytes;
 
@@ -33,7 +39,7 @@ public class PdfGenerator {
             final Document document = Jsoup.parse(html);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
             document.body().select(".invoice-date").html(invoice.getDate().format(dateFormatter));
-            document.body().select(".invoice-number").html(invoice.getId() + "");
+            document.body().select(".invoice-number").html(invoice.getId() + "" + invoice.getDate().getDayOfYear());
 
             final Element tableArticle = document.body().select(".article").first();
 

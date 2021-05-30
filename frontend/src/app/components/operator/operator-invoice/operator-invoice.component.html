@@ -100,8 +100,7 @@
                     </div>
                     <div class="col-2 text-center align-items-center">
                       <input type="text" class="form-control" formControlName="amount" name="amount" id="amount"
-                             value="0.0"
-                             value="{{item.value.name!==null&&item.value.name.price!==undefined?item.value.name.price*item.value.quantity:0}}"
+                             value="{{item.value.name!==null&&item.value.name.price!==undefined?item.value.name.price*item.value.quantity:'0'}}"
                              readonly>
                     </div>
                     <div class="col-1 center-block text-center">
@@ -119,10 +118,9 @@
                     <input class="form-control" id="netAmount"
                            style="border: none;background-color:white; text-align: center"
                            formControlName="subtotal" name="subtotal" id="subtotal" readonly
-                           value="{{isNotaNumber(newInvoiceForm.value.subtotal)?'0.00':newInvoiceForm.value.subtotal}}">
+                           value="{{isNotANumber(newInvoiceForm.value.subtotal)?'0.00':newInvoiceForm.value.subtotal}}">
 
                   </div>
-
                 </div>
                 <div class="row align-items-start">
                   <div class="col-9 center-block text-center">
@@ -131,7 +129,8 @@
                   <div class="col-3 center-block text-center">
                     <input class="form-control" id="taxAmount"
                            style="border: none;background-color:white; text-align: center"
-                           formControlName="tax" name="tax" id="tax" readonly value="{{newInvoiceForm.value.tax}}">
+                           formControlName="tax" name="tax" id="tax" readonly
+                           value="{{newInvoiceForm.value.tax}}">
                   </div>
 
                 </div>
@@ -145,7 +144,6 @@
                            formControlName="total" name="total" id="total" readonly
                            value="{{newInvoiceForm.value.total}}">
                   </div>
-
                 </div>
               </div>
               <div class="createInvoice">

@@ -1,56 +1,50 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final InvoiceRepository invoiceRepository;
     private final Validator validator;
+    private final InvoiceItemService invoiceItemService;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, Validator validator) {
+
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, Validator validator, InvoiceItemService invoiceItemService) {
         this.invoiceRepository = invoiceRepository;
         this.validator = validator;
+        this.invoiceItemService = invoiceItemService;
     }
 
 
     @Override
     public List<Invoice> findAllInvoices() {
         LOGGER.trace("Find all invoices");
-        try {
-            return this.invoiceRepository.findAll();
-        } catch (NotFoundException e) {
-            throw new NotFoundException("Could not find any invoices", e);
-        }
+        return this.invoiceRepository.findAll();
+
     }
 
 
     @Override
     public Invoice findOneById(Long id) {
         LOGGER.trace("Find invoices with id {}", id);
-        Invoice invoice;
-        try {
-            Optional<Invoice> invoiceOptional = this.invoiceRepository.findById(id);
-            invoice = invoiceOptional.orElse(null);
-        } catch (NotFoundException e) {
-            LOGGER.error("Problem while creating Inovice", e);
-            throw new NotFoundException(String.format("Could not find invoice with id %s", id));
-        }
+        Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
         return invoice;
 
     }
@@ -58,15 +52,18 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Transactional
     @Override
-    public Invoice creatInvoice(Invoice invoice) {
+    public Invoice createInvoice(Invoice invoice) {
         LOGGER.trace("Create invoice {}", invoice);
         validator.validateNewInvoice(invoice);
-        try {
-            return this.invoiceRepository.save(invoice);
-        } catch (DataAccessException e) {
-            LOGGER.error("Problem while creating Inovice", e);
-            throw new ServiceException("Problem while creating Inovice", e);
+        validator.validateNewInvoiceItem(invoice.getItems());
+        Set<InvoiceItem> items = invoice.getItems();
+        invoice.setItems(null);
+        Invoice createdInvoice = this.invoiceRepository.save(invoice);
+        for (InvoiceItem item : items) {
+            item.setInvoice(createdInvoice);
         }
-    }
+        createdInvoice.setItems(invoiceItemService.createInvoiceItem(items));
+        return createdInvoice;
 
+    }
 }
