@@ -51,7 +51,7 @@
           <div class="card-body">
             <form class="needs-validation" [formGroup]="newInvoiceForm" (ngSubmit)="onSubmit()">
               <div class="card-body">
-                <h4 class="card-title d-flex justify-content-between">Rechnugs Artikel
+                <h4 class="card-title d-flex justify-content-between">Rechnungsartikel
                   <button type="button" class="btn btn-success" (click)="addProductOnClick()">+</button>
                 </h4>
 
@@ -66,7 +66,7 @@
                     <h6>Anzahl</h6>
                   </div>
                   <div class="col-2 center-block text-center">
-                    <h6>Gesamt Betrag</h6>
+                    <h6>Gesamtbetrag</h6>
                   </div>
                   <div class="col-1 center-block text-center">
 
@@ -83,7 +83,7 @@
                                 [class.hidden]="selectedProducts.includes(product)">{{product.name}}</option>
                       </select>
                       <div *ngIf="submitted && item.controls.name.errors" class="invalid-feedback">
-                        <div *ngIf="item.controls.name.errors.required">Wählen sie ein Produkt</div>
+                        <div *ngIf="item.controls.name.errors.required">Wählen Sie ein Produkt</div>
                       </div>
                     </div>
                     <div class="col-3 center-block text-center">
