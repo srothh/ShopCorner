@@ -32,7 +32,7 @@ public class ProductDataGenerator {
 
     @PostConstruct
     public void generateProducts() {
-        /*TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+        TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
         TaxRate taxRate2 = this.taxRateRepository.findById(2L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
         TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
         Category category1 = Category.CategoryBuilder.getCategoryBuilder()
@@ -58,6 +58,6 @@ public class ProductDataGenerator {
             .withTaxRate(taxRate2)
             .withCategory(category3)
             .build();
-        productRepository.save(product1);*/
+        productRepository.save(product1);
     }
 }
