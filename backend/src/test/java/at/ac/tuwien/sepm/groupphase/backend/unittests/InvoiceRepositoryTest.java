@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
@@ -16,11 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -97,14 +101,21 @@ public class InvoiceRepositoryTest implements TestData {
 
     @Test
     public void givenAllProperties_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
-
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
         invoiceItemRepository.save(invoiceItem);
-
         assertAll(
             () -> assertEquals(1, invoiceRepository.findAll().size()),
             () -> assertNotNull(invoiceRepository.findById(invoice.getId()))
         );
+    }
 
+    @Test
+    public void givenAllProperties_whenGetInvoice_thenFindListWithOneInvoiceAndFindElementById() {
+        invoiceItem.setInvoice(invoiceRepository.save(invoice));
+        invoiceItemRepository.save(invoiceItem);
+        Pageable returnPage = PageRequest.of(0, 15);
+        assertAll(
+            () -> assertEquals(1, invoiceRepository.findAll(returnPage).getContent().size())
+        );
     }
 }

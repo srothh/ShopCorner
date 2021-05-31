@@ -1,31 +1,32 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 
-import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
-import java.util.List;
 import java.util.Set;
 
 import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
-import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import io.swagger.v3.oas.annotations.Operation;
 
 import javax.validation.Valid;
 
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,17 +49,13 @@ public class InvoiceEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final InvoiceMapper invoiceMapper;
     private final InvoiceService invoiceService;
-    private final InvoiceItemService invoiceItemService;
     private final InvoiceItemMapper invoiceItemMapper;
-    private final Validator validator;
 
     @Autowired
-    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService, InvoiceItemService invoiceItemService, Validator validator) {
+    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
-        this.invoiceItemService = invoiceItemService;
-        this.validator = validator;
     }
 
     /**
@@ -69,11 +67,10 @@ public class InvoiceEndpoint {
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
-    @Operation(summary = "Get information for specific invoice")
+    @Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
     public DetailedInvoiceDto find(@PathVariable Long id) {
         LOGGER.info("GET /invoice/{}", id);
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
-
     }
 
     /**
@@ -81,13 +78,17 @@ public class InvoiceEndpoint {
      *
      * @return List with all SimpleInvoices
      */
-    @Secured("ROLE_ADMIN")
+
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "")
-    @Operation(summary = "Get overviewing information for all invoices")
-    public List<SimpleInvoiceDto> findAll() {
-        LOGGER.info("GET /invoices");
-        return invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.findAllInvoices());
+    @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
+    public PaginationDto<SimpleInvoiceDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                      @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
+        LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
+        Page<Invoice> operatorPage = invoiceService.getAllInvoices(page, pageCount);
+
+        return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.getAllInvoices(page, pageCount).getContent()), page, pageCount, operatorPage.getTotalPages(), invoiceService.getInvoiceCount());
     }
 
 
@@ -100,7 +101,7 @@ public class InvoiceEndpoint {
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = "application/pdf")
-    @Operation(summary = "create new invoice")
+    @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("POST /invoices/ {}", invoiceDto);
 
@@ -114,7 +115,6 @@ public class InvoiceEndpoint {
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
 
-
     /**
      * Finds an invoice and generates a PDF from it.
      *
@@ -124,6 +124,7 @@ public class InvoiceEndpoint {
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}/pdf", produces = "application/pdf")
+    @Operation(summary = "Retrieve new invoice as pdf", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
         LOGGER.info("GET /invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);

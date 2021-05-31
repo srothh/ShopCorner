@@ -5,6 +5,8 @@ import {Observable} from 'rxjs';
 import {Invoice} from '../dtos/invoice';
 import {Product} from '../dtos/product';
 import {OperatorAuthService} from './auth/operator-auth.service';
+import {Pagination} from '../dtos/pagination';
+import {Customer} from '../dtos/customer';
 
 @Injectable({
   providedIn: 'root'
@@ -18,14 +20,18 @@ export class InvoiceService {
   }
 
   /**
-   * Loads all invoices from the backend
+   * Retrieve a page of invoice from the backend.
    *
-   * @return invoiceList with all invoices
+   * @param page the number of the page to fetch
+   * @param pageCount the size of the page to be fetched
+   * @return The invoice retrieved from the backend
    */
-  getInvoice(): Observable<Invoice[]> {
-    return this.httpClient.get<Invoice[]>(this.invoiceBaseUri, {
-      headers: this.getHeadersForOperator()
-    });
+  getAllInvoicesForPage(page: number, pageCount: number): Observable<Pagination<Invoice>> {
+    console.log('Get customers for page', page);
+    return this.httpClient.get<Pagination<Invoice>>(
+      this.invoiceBaseUri + '?page=' + page + '&page_count=' + pageCount,
+      {headers: this.getHeadersForOperator()}
+    );
   }
 
   /**

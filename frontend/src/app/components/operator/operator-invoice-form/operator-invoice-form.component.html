@@ -1,0 +1,119 @@
+<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error! </strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+<form class="needs-validation" [formGroup]="newInvoiceForm" (ngSubmit)="onSubmit()">
+  <div class="card-body">
+    <h4 class="card-title d-flex justify-content-between">Rechnugs Artikel
+      <button type="button" class="btn btn-success" (click)="addProductOnClick()">+</button>
+    </h4>
+
+    <div class="row align-items-start">
+      <div class="col-4 center-block text-center">
+        <h6>Produkt</h6>
+      </div>
+      <div class="col-3 center-block text-center">
+        <h6>Preis</h6>
+      </div>
+      <div class="col-2 center-block text-center">
+        <h6>Anzahl</h6>
+      </div>
+      <div class="col-2 center-block text-center">
+        <h6>Gesamt Betrag</h6>
+      </div>
+      <div class="col-1 center-block text-center">
+
+      </div>
+    </div>
+    <div *ngFor="let item of t['controls']; let id = index" class="list-group list-group-flush">
+      <div class="row align-items-start" [formGroup]="item">
+        <div class="col-4 center-block text-center">
+          <select class="form-select form-control productName" formControlName="name" id="productName"
+                  [ngClass]="{ 'is-invalid': submitted && item.controls.name.errors}"
+                  (change)="calculateAmount(); updateProducts()">
+            <option value="" selected disabled>(none)</option>
+            <option *ngFor="let product of products; let i = index;" [ngValue]="product"
+                    [class.hidden]="selectedProducts.includes(product)">{{product.name}}</option>
+          </select>
+          <div *ngIf="submitted && item.controls.name.errors" class="invalid-feedback">
+            <div *ngIf="item.controls.name.errors.required">Wählen Sie ein Produkt</div>
+          </div>
+        </div>
+        <div class="col-3 center-block text-center">
+          <input type="number" class="form-control" formControlName="price" name="price" id="price"
+                 value="{{item.value.name!==null?item.value.name.price:0}}" #price readonly>
+        </div>
+        <div class="col-2 center-block text-center">
+          <input type="number" class="form-control" formControlName="quantity" name="quantity" id="quantity"
+                 (change)="calculateAmount()"
+                 [ngClass]="{ 'is-invalid': submitted && this.item.controls.quantity.errors}" min="1">
+          <div *ngIf="submitted && item.controls.quantity.errors" class="invalid-feedback">
+            <div *ngIf="item.controls.quantity.errors.required">Geben Sie die Anzahl der Produkte an</div>
+          </div>
+        </div>
+        <div class="col-2 text-center align-items-center">
+          <input type="text" class="form-control" formControlName="amount" name="amount" id="amount"
+                 value="{{item.value.name!==null&&item.value.name.price!==undefined?(item.value.name.price*item.value.quantity).toFixed(2):'0'}}"
+                 readonly>
+        </div>
+        <div class="col-1 center-block text-center">
+          <button type="button" class="btn btn-outline-danger" (click)="deleteProductFromInvoice(id)">-
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row align-items-start">
+      <div class="col-9 center-block text-center">
+        <span class="form-control" style="border: none; text-align: right">Netto:</span>
+      </div>
+      <div class="col-3 center-block text-center">
+
+        <input class="form-control" id="netAmount"
+               style="border: none;background-color:white; text-align: center"
+               formControlName="subtotal" name="subtotal" id="subtotal" readonly
+               value="{{isNotANumber(newInvoiceForm.value.subtotal)?'0.00':newInvoiceForm.value.subtotal}}">
+      </div>
+    </div>
+    <div class="row align-items-start">
+      <div class="col-9 center-block text-center">
+        <span class="form-control" style="border: none; text-align: right">Steuern:</span>
+      </div>
+      <div class="col-3 center-block text-center">
+        <input class="form-control" id="taxAmount"
+               style="border: none;background-color:white; text-align: center"
+               formControlName="tax" name="tax" id="tax" readonly
+               value="{{newInvoiceForm.value.tax}}">
+      </div>
+
+    </div>
+    <div class="row align-items-start">
+      <div class="col-9 center-block text-center">
+        <span class="form-control" style="border: none;  text-align: right">Gesamtbetrag:</span>
+      </div>
+      <div class="col-3 center-block text-center">
+        <input class="form-control" id="totalAmount"
+               style="border: none;background-color:white; text-align: center"
+               formControlName="total" name="total" id="total" readonly
+               value="{{newInvoiceForm.value.total}}">
+      </div>
+    </div>
+  </div>
+  <div class="createInvoice">
+    <div class="row">
+      <div class="col-4">
+        <button class="btn btn-warning btn-block" type="reset" (click)="onReset()"> Reset Artikel</button>
+      </div>
+      <div class="col-4">
+        <button class="btn btn-block btn-dark" type="submit" (click)="download=true"> PDF download</button>
+      </div>
+      <div class="col-4">
+        <button class="btn btn-block btn-dark" type="submit" (click)="show=true"> PDF öffnen</button>
+      </div>
+    </div>
+  </div>
+</form>
+
