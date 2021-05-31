@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
@@ -57,7 +58,6 @@ public class ProductEndpoint {
         LOGGER.info("POST newProduct({}) " + BASE_URL, productDto);
         return this.productMapper
             .entityToDto(this.productService.createProduct(this.productMapper.dtoToEntity(productDto)));
-
     }
 
     /**
@@ -71,30 +71,12 @@ public class ProductEndpoint {
     @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
-    public List<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam(defaultValue = "id") String sortBy) {
+    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam(defaultValue = "id") String sortBy) {
         LOGGER.info("GET " + BASE_URL);
-        return this.productService.getAllProductsPerPage(page, pageCount, sortBy).getContent()
+        return new PaginationDto<>(this.productService.getAllProductsPerPage(page, pageCount, sortBy).getContent()
             .stream()
             .map(this.productMapper::entityToDto)
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Gets the number of all added products.
-     *
-     * @return the number of all products
-     */
-    @PermitAll
-    @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    @Operation
-        (
-            summary = "Returns all products that are currently stored in the database without picture and category in a paginated manner",
-            security = @SecurityRequirement(name = "apiKey")
-        )
-    public int getProductsCount() {
-        LOGGER.info("GET" + BASE_URL + "/count");
-        return this.productService.getProductsCount();
+            .collect(Collectors.toList()), page, pageCount, productService.getProductsCount());
     }
 
     /**
@@ -117,7 +99,6 @@ public class ProductEndpoint {
             .map(this.productMapper::simpleProductEntityToDto)
             .collect(Collectors.toList());
     }
-
 
     /**
      * Updates an already existing product from the database.
