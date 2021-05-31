@@ -1,4 +1,4 @@
-<div class="container">
+<div>
   <br>
   <h2>Betreiber Konten</h2>
   <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
@@ -16,6 +16,9 @@
         Angestellte
       </label>
     </ng-template>
+  </div>
+  <div class="admin_options" *ngIf="getPermission() === 'ADMIN';" (click)="registerEmployee()">
+    <button type="button" class="btn btn-primary btn-sm">Angestellten registrieren</button>
   </div>
   <div class="admin_options">
     <div *ngIf="selected.length > 0 && getPermission() === 'ADMIN'; else disabled_delete">
@@ -61,9 +64,9 @@
     <table class="table table-sm table-hover">
       <thead>
       <tr class="table-secondary">
-        <th scope="col">Name</th>
-        <th scope="col">Username</th>
-        <th scope="col">E-Mail</th>
+        <th scope="col" class="font-weight-bold">Name</th>
+        <th scope="col" class="font-weight-bold">Username</th>
+        <th scope="col" class="font-weight-bold">E-Mail</th>
       </tr>
       </thead>
       <tbody>
