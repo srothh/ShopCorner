@@ -112,7 +112,6 @@ public class InvoiceEndpoint {
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
 
-
     /**
      * Finds an invoice and generates a PDF from it.
      *
