@@ -4,7 +4,7 @@ import {Product} from '../../../dtos/product';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
-import {ProductService} from '../../../services/product.service';
+import {ProductService} from '../../../services/product/product.service';
 import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
 import {forkJoin} from 'rxjs';

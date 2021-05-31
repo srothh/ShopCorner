@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ProductService} from '../../../services/product.service';
+import {ProductService} from '../../../services/product/product.service';
 import {Product} from '../../../dtos/product';
 import {Router, UrlSerializer} from '@angular/router';
 import {forkJoin} from 'rxjs';

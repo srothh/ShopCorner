@@ -37,6 +37,8 @@ import {BaseLoginComponent} from './components/common/base-login/base-login.comp
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import { OperatorCategoriesComponent } from './components/operator/operator-categories/operator-categories.component';
 import { OperatorAddCategoryComponent } from './components/operator/operator-add-category/operator-add-category.component';
+import { BaseShopProductItemComponent } from './components/common/base-shop-product-item/base-shop-product-item.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -70,6 +72,7 @@ import { OperatorAddCategoryComponent } from './components/operator/operator-add
     OperatorProductDetailsComponent,
     OperatorCategoriesComponent,
     OperatorAddCategoryComponent,
+    BaseShopProductItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,7 +80,8 @@ import { OperatorAddCategoryComponent } from './components/operator/operator-add
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    FontAwesomeModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
