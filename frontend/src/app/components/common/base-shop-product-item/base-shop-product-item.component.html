@@ -1,13 +1,14 @@
-<div class="card mb-4 rounded" style="cursor: pointer">
-  <img class="card-img-top" src="{{getImageSource(product)}}" width="125px" height="200px"
+<div class="card mb-4 rounded zoom shadow-lg" style="cursor: pointer">
+  <img *ngIf="product.picture != null" class="card-img-top" src="{{getImageSource(product)}}" width="125px" height="200px"
        alt="produkt">
+  <object *ngIf="product.picture == null"  class="mx-auto" data="assets/no_image_available.svg" width="125" height="200"> </object>
   <div class="card-body">
     <div class="d-flex flex-column" style="gap: 15px">
       <div>
         <div class="d-flex justify-content-between">
           <span>{{product.name}}</span>
           <!-- Possibilities: In stock, Out of Stock, Unavailable -->
-          <span class="in-stock">Auf Lager</span>
+          <span class="availability" [class.in-stock]="!product.locked" [class.locked]="product.locked">Auf Lager</span>
         </div>
         <span class="text-muted category">{{product.category ? product.category.name : 'Ohne Kategorie'}}</span>
       </div>

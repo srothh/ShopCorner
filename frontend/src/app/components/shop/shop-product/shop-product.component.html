@@ -28,7 +28,7 @@
           <div class="d-flex flex-row" style="gap: 15px">
             <label for="categoryFilter">Filtern nach Kategorien</label>
             <select class="custom-select" name="category-names" id="categoryFilter"
-                    (change)="fetchProducts()"
+                    (change)="selectCategory()"
                     formControlName="categoryId"
             >
               <option selected value="-1">Alle</option>

@@ -19,6 +19,6 @@ export class BaseShopProductItemComponent implements OnInit {
     if (product.picture != null) {
       return 'data:image/png;base64,' + product.picture;
     }
-    return '../../../../assets/stock-productimage-unavailable.jpg';
+    return 'Error: no picture available';
   }
 }

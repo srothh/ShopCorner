@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {ProductService} from '../../../services/product/product.service';
 import {Product} from '../../../dtos/product';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {CategoryService} from '../../../services/category.service';
 import {Category} from '../../../dtos/category';
+import {ProductService} from '../../../services/product/product.service';
 
 @Component({
   selector: 'app-shop-product',
@@ -39,7 +39,6 @@ export class ShopProductComponent implements OnInit {
       this.products = productData.items;
       this.totalPages = productData.totalPages;
       this.collectionSize = productData.totalItemCount;
-      console.log(this.totalPages + '  ' + this.page);
     });
   }
 
@@ -67,5 +66,10 @@ export class ShopProductComponent implements OnInit {
       this.page -= 1;
       this.fetchProducts();
     }
+  }
+
+  selectCategory() {
+    this.page = 0;
+    this.fetchProducts();
   }
 }
