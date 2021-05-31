@@ -4,6 +4,7 @@ import {OperatorService} from '../../../services/operator.service';
 import {Permissions} from '../../../dtos/permissions.enum';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {Pagination} from '../../../dtos/pagination';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-operator-accounts',
@@ -23,7 +24,9 @@ export class OperatorAccountComponent implements OnInit {
   collectionSizeEmployee = 0;
   permissions = Permissions.admin;
 
-  constructor(private authService: OperatorAuthService, private operatorService: OperatorService) {
+  constructor(private authService: OperatorAuthService,
+              private operatorService: OperatorService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -158,6 +161,14 @@ export class OperatorAccountComponent implements OnInit {
         }
       );
     }
+  }
+
+  /**
+   * Redirects to the employee registration page
+   * User needs to be an admin
+   */
+  registerEmployee() {
+    this.router.navigate(['operator/registration']);
   }
 
   /**

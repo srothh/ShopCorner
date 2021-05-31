@@ -1,7 +1,9 @@
 <div class="container">
   <br>
-  <h2>Rechnung</h2>
-  <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
+  <h2 [hidden]="toggleForm">Rechnung</h2>
+  <div class="d-flex justify-content-between">
+
+  <div [hidden]="toggleForm || toggleDetialview" class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
     <label class="btn btn-light btn-sm active">
       <input type="radio" name="buttons" id="option1" checked [disabled]="toggleForm||toggleDetialview">
       Alle
@@ -15,13 +17,15 @@
       Storniert
     </label>
   </div>
-  <div class="invoice_options">
+  <div class="">
     <div>
-      <button type="button" class="btn btn-sm" [ngClass]="(toggleForm||toggleDetialview)?'btn-outline-dark':'btn-outline-success'"
+      <button type="button" class="btn btn-primary"
               (click)="toggleSide()">{{(toggleForm||toggleDetialview)? 'Zurück' : '+ Rechnung'}}</button>
     </div>
 
   </div>
+  </div>
+
   <hr>
   <div>
     <div *ngIf="!toggleForm&&!toggleDetialview">
@@ -44,9 +48,9 @@
         <table class="table table-sm table-hover" data-pagination="true" data-page-list="[1,2]">
           <thead>
           <tr class="table-secondary">
-            <th scope="col">Rechnungsnummer</th>
-            <th scope="col">Datum</th>
-            <th scope="col">Betrag</th>
+            <th scope="col" class="font-weight-bold">Rechnungsnummer</th>
+            <th scope="col" class="font-weight-bold">Datum</th>
+            <th scope="col" class="font-weight-bold">Betrag</th>
           </tr>
           </thead>
           <tbody>
@@ -59,9 +63,9 @@
         </table>
       </div>
 
-      <div class="d-flex justify-content-between p-2">
-        <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
-        <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+      <div class="d-flex justify-content-between pt-3">
+        <button class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
+        <button class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
       </div>
 
 

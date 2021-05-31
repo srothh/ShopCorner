@@ -1,4 +1,4 @@
-<div class="container">
+<div>
   <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
     <strong>Error! </strong> {{ errorMessage }}
     <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
@@ -26,9 +26,9 @@
     <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
       <thead>
       <tr class="table-secondary">
-        <th scope="col">Name</th>
-        <th scope="col">Login Name</th>
-        <th scope="col">E-Mail</th>
+        <th scope="col" class="font-weight-bold">Name</th>
+        <th scope="col" class="font-weight-bold">Login Name</th>
+        <th scope="col" class="font-weight-bold">E-Mail</th>
       </tr>
       </thead>
       <tbody>
@@ -41,9 +41,9 @@
     </table>
   </div>
 
-  <div class="d-flex justify-content-between p-2">
-    <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
-    <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+  <div class="d-flex justify-content-between pt-3">
+    <button class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
+    <button class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
   </div>
 
 

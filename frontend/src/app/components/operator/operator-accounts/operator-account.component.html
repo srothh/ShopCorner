@@ -1,45 +1,48 @@
-<div class="container">
+<div>
   <br>
   <h2>Betreiber Konten</h2>
   <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
-    <label class="btn btn-light btn-sm active" *ngIf="getPermission() === 'ADMIN'">
+    <label class="btn btn-light active" *ngIf="getPermission() === 'ADMIN'">
       <input type="radio" name="buttons" id="option1" (click)=showAdmins() checked>
       Admins
     </label>
-    <label class="btn btn-light btn-sm" *ngIf="getPermission() === 'EMPLOYEE'; else normal_button">
+    <label class="btn btn-light" *ngIf="getPermission() === 'EMPLOYEE'; else normal_button">
       <input type="radio" name="buttons" id="option2" checked>
       Angestellte
     </label>
     <ng-template #normal_button>
-      <label class="btn btn-light btn-sm">
+      <label class="btn btn-light">
         <input type="radio" name="buttons" id="option3" (click)=showEmployees()>
         Angestellte
       </label>
     </ng-template>
   </div>
+  <div class="admin_options" *ngIf="getPermission() === 'ADMIN';" (click)="registerEmployee()">
+    <button type="button" class="btn btn-primary">Angestellten registrieren</button>
+  </div>
   <div class="admin_options">
     <div *ngIf="selected.length > 0 && getPermission() === 'ADMIN'; else disabled_delete">
-      <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteCommit">Auswahl löschen</button>
+      <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">Auswahl löschen</button>
     </div>
     <ng-template #disabled_delete>
       <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Nur für Admins" *ngIf="getPermission() === 'EMPLOYEE'; else not_selected_delete">
         <button type="button" style="pointer-events: none;" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
       </span>
       <ng-template #not_selected_delete>
-        <button type="button" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
+        <button type="button" class="btn btn-outline-danger" disabled>Auswahl löschen</button>
       </ng-template>
     </ng-template>
   </div>
   <div class="admin_options">
     <div *ngIf="selected.length > 0 && getPermission() === 'ADMIN'; else disabled_promote">
-      <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#promoteCommit">Zu Admin machen</button>
+      <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#promoteCommit">Zu Admin machen</button>
     </div>
     <ng-template #disabled_promote>
       <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Nur für Admins" *ngIf="getPermission() === 'EMPLOYEE'; else not_selected_promote">
         <button type="button" style="pointer-events: none;" class="btn btn-outline-secondary btn-sm" disabled>Zu Admin machen</button>
       </span>
       <ng-template #not_selected_promote>
-        <button type="button" class="btn btn-outline-secondary btn-sm" disabled>Zu Admin machen</button>
+        <button type="button" class="btn btn-outline-secondary" disabled>Zu Admin machen</button>
       </ng-template>
     </ng-template>
   </div>
@@ -61,9 +64,9 @@
     <table class="table table-sm table-hover">
       <thead>
       <tr class="table-secondary">
-        <th scope="col">Name</th>
-        <th scope="col">Username</th>
-        <th scope="col">E-Mail</th>
+        <th scope="col" class="font-weight-bold">Name</th>
+        <th scope="col" class="font-weight-bold">Username</th>
+        <th scope="col" class="font-weight-bold">E-Mail</th>
       </tr>
       </thead>
       <tbody>
@@ -83,9 +86,9 @@
     </table>
   </div>
 
-  <div class="d-flex justify-content-between p-2">
-    <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
-    <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+  <div class="d-flex justify-content-between pt-3">
+    <button class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
+    <button class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
   </div>
 
   <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">

@@ -4,14 +4,16 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="operator-product-container">
-  <div class="operator-product-header mt-3">
-    <h3>Produkte</h3>
+<div>
+  <div class="mt-4">
+    <div class="d-flex justify-content-between">
+      <h2>Produkte</h2>
+      <button type="button" class="btn btn-primary mb-3" (click)="addNewProduct()">Produkt hinzufügen</button>
+    </div>
+    <hr>
   </div>
-  <div class="operator-product-body">
-    <button type="button" class="btn btn-primary mb-3" (click)="addNewProduct()">Produkt hinzufügen</button>
+  <div>
     <div>
-
       <div class="float-right ">
         <div *ngIf="selectedProducts.length >0; else not_selected">
         <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteCommit">
@@ -35,9 +37,9 @@
       </ng-template>
     </ng-template>
   </div>
-  <div class="border rounded " style="height: 560px; margin-top: 32px">
+  <div class="border rounded mt-4" style="height: 560px;">
     <table class="table table-hover table-sm" data-pagination="true" data-page-list="[1,2]">
-      <thead class="thead-light">
+      <thead class="table-secondary">
       <tr>
         <th scope="col">Ausgewählt</th>
         <th scope="col">Name</th>
@@ -46,8 +48,6 @@
         <th scope="col">Preis</th>
       </tr>
       </thead>
-
-
       <tbody>
       <tr *ngFor="let product of products; let i = index" style="cursor: pointer"
           (click)="goToProductDetails(product, $event)">
@@ -69,9 +69,9 @@
 
     </table>
   </div>
-  <div class="d-flex justify-content-between p-2">
-    <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
-    <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+  <div class="d-flex justify-content-between pt-3">
+    <button type="button" class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
+    <button type="button" class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
   </div>
 
   <div class="modal fade" id="deleteCommit" tabindex="-1" role="dialog" aria-labelledby="deleteCommitLabel"

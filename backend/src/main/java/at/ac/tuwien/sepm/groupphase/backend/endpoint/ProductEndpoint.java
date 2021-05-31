@@ -85,7 +85,6 @@ public class ProductEndpoint {
             // Temporarily don't cache with filters
             productCount = productPage.getTotalElements();
         }
-        System.out.println(productCount + " " + name + " " + categoryId);
         return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
