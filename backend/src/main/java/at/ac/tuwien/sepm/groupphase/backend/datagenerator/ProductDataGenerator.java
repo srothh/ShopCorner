@@ -8,13 +8,17 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
+import com.github.javafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.Locale;
+import java.util.Map;
 
 @Profile("generateData")
 @Component
@@ -23,19 +27,27 @@ public class ProductDataGenerator {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final TaxRateRepository taxRateRepository;
+    private static final Map<Double, Double> TAX_RATES = Map.of(10.0, 1.10, 13.00, 1.13, 20.0, 1.20);
 
     public ProductDataGenerator(ProductRepository productRepository, CategoryRepository categoryRepository, TaxRateRepository taxRateRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.taxRateRepository = taxRateRepository;
+
     }
 
     @PostConstruct
     public void generateProducts() {
-        if (productRepository.findAll().size() == 0) {
-            TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
-            TaxRate taxRate2 = this.taxRateRepository.findById(2L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
-            TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+        if (productRepository.findAll().size() > 0) {
+            LOGGER.debug("products already generated");
+        } else {
+            for (Map.Entry<Double, Double> entry : TAX_RATES.entrySet()) {
+                TaxRate taxRate = TaxRate.TaxRateBuilder.getTaxRateBuilder()
+                    .withPercentage(entry.getKey())
+                    .withCalculationFactor(entry.getValue())
+                    .build();
+                taxRateRepository.save(taxRate);
+            }
             Category category1 = Category.CategoryBuilder.getCategoryBuilder()
                 .withName("IT & Elektronik")
                 .build();
@@ -52,6 +64,7 @@ public class ProductDataGenerator {
                 .withName("Kleidung")
                 .build();
             categoryRepository.save(category4);
+            TaxRate taxRate2 = this.taxRateRepository.findById(2L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
             Product product1 = Product.ProductBuilder.getProductBuilder()
                 .withName("Banane")
                 .withDescription("leckere Bananen aus Ecuador")
@@ -60,6 +73,35 @@ public class ProductDataGenerator {
                 .withCategory(category3)
                 .build();
             productRepository.save(product1);
+            TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+            Faker faker = new Faker(new Locale("de-AT"));
+            TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+            generateProductsWithTaxRate(taxRate1, category1, category2, category3, category4, faker);
+            generateProductsWithTaxRate(taxRate2, category1, category2, category3, category4, faker);
+            generateProductsWithTaxRate(taxRate3, category1, category2, category3, category4, faker);
+        }
+
+    }
+
+    public void generateProductsWithTaxRate(TaxRate taxRate, Category category1, Category category2, Category category3, Category category4, Faker faker) {
+        for (int i = 0; i < 10; i++) {
+            Product prod = Product.ProductBuilder.getProductBuilder().withName(faker.space().nasaSpaceCraft())
+                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category1).build();
+            productRepository.save(prod);
+            Product prod1 = Product.ProductBuilder.getProductBuilder().withName(faker.food().ingredient())
+                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category2)
+                .build();
+            productRepository.save(prod1);
+            Product prod2 = Product.ProductBuilder.getProductBuilder().withName(faker.food().spice())
+                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category3)
+                .build();
+            productRepository.save(prod2);
+            Product prod3 = Product.ProductBuilder.getProductBuilder().withName(faker.food().vegetable())
+                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category4)
+                .build();
+            productRepository.save(prod3);
         }
     }
+
+
 }
