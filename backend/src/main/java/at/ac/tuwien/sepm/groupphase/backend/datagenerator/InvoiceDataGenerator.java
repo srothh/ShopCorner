@@ -47,7 +47,6 @@ public class InvoiceDataGenerator {
             LOGGER.debug("operators already generated");
         } else {
             for (int i = 1; i <= 50; i++) {
-                InvoiceItemKey itemId = new InvoiceItemKey();
                 InvoiceItem item = new InvoiceItem();
                 Invoice invoice = new Invoice();
 
@@ -58,6 +57,8 @@ public class InvoiceDataGenerator {
                 invoice.setAmount((item.getNumberOfItems() * i));
                 Invoice newInvoice = invoiceRepository.save(invoice);
                 item.setInvoice(newInvoice);
+
+                InvoiceItemKey itemId = new InvoiceItemKey();
                 itemId.setInvoiceId(newInvoice.getId());
                 item.setId(itemId);
                 Set<InvoiceItem> itemSet = new HashSet<>();
