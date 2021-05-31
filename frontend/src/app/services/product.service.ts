@@ -18,13 +18,8 @@ export class ProductService {
   /**
    * Get page of products from the backend
    */
-<<<<<<< HEAD
-  getProducts(page: number, pageCount): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.messageBaseUri + '/?page=' + page + '&page_count=' + pageCount);
-=======
   getProducts(page: number, pageCount): Observable<Pagination<Product>> {
-    return this.httpClient.get<Pagination<Product>>(this.messageBaseUri + '/?page='+ page + '&page_count='+pageCount);
->>>>>>> develop
+    return this.httpClient.get<Pagination<Product>>(this.messageBaseUri + '/?page=' + page + '&page_count=' + pageCount);
   }
 
   /**
