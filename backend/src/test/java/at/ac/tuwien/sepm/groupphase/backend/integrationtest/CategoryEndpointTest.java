@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
+import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CategoryMapper;
@@ -13,6 +14,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +47,12 @@ public class CategoryEndpointTest implements TestData {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Autowired
+    private SecurityProperties securityProperties;
+
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
+
     private final Category category = new Category();
 
     @BeforeEach
@@ -59,6 +67,7 @@ public class CategoryEndpointTest implements TestData {
 
         MvcResult mvcResult = this.mockMvc.perform(post(CATEGORY_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
             .content(body))
             .andDo(print())
             .andReturn();
@@ -84,6 +93,7 @@ public class CategoryEndpointTest implements TestData {
 
         MvcResult mvcResult = this.mockMvc.perform(post(CATEGORY_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
             .content(body))
             .andDo(print())
             .andReturn();
