@@ -17,7 +17,7 @@ export class ShopProductComponent implements OnInit {
   products: Product[];
   categories: Category[];
   page = 0;
-  pageSize = 15;
+  pageSize = 18;
   totalPages = 1;
   collectionSize = 0;
 

@@ -12,13 +12,9 @@
         Bestseller
       </h3>
       <hr>
-      <h6 class="text-muted" *ngIf="collectionSize === 0; else not_empty">
+      <h6 class="text-muted" *ngIf="collectionSize === 0;">
         Keine Produkte gespeichert.
       </h6>
-      <ng-template #not_empty>
-        <h6 class="text-muted">Zeigt {{1}}-{{collectionSize}}
-          von {{collectionSize}}</h6>
-      </ng-template>
     </div>
     <div class="row">
       <div class="col-md-4 col-sm-12 col-lg-4 col-xl-2" *ngFor="let product of products">
