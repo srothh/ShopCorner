@@ -11,7 +11,7 @@ import java.util.Objects;
 public class InvoiceItemKey implements Serializable {
 
     @NotNull(message = "InvoiceItemKey invoiceId can not be null")
-    @Column(name = "invoice_id", nullable = true)
+    @Column(name = "invoice_id")
     Long invoiceId;
 
     @NotNull(message = "InvoiceItemKey productId can not be null")

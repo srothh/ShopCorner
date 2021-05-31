@@ -29,14 +29,14 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
 
     @Override
     public List<InvoiceItem> findAllInvoicesItems() {
-        LOGGER.trace("Find all invoices items");
+        LOGGER.trace("findAllInvoicesItems()");
         return this.invoiceItemRepository.findAll();
 
     }
 
     @Override
     public Set<InvoiceItem> createInvoiceItem(Set<InvoiceItem> invoiceItems) {
-        LOGGER.trace("Create invoice {}", invoiceItems);
+        LOGGER.trace("createInvoiceItem({})", invoiceItems);
         validator.validateNewInvoiceItem(invoiceItems);
         Set<InvoiceItem> newInvoiceItems = new HashSet<>();
         for (InvoiceItem item : invoiceItems) {

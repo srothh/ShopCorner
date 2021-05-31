@@ -90,26 +90,6 @@ public class InvoiceEndpoint {
         return invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.findAllInvoices());
     }
 
-    /**
-     * Create new invoice.
-     *
-     * @param invoiceDto which should be saved in the database
-     * @return List with all SimpleInvoices
-     */
-    @Secured("ROLE_ADMIN")
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "", produces = { "application/json"})
-    @Operation(summary = "create new invoice")
-    public SimpleInvoiceDto createInvoice(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("Create /invoices {}", invoiceDto);
-        Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
-        PdfGenerator pdf = new PdfGenerator();
-        Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
-        invoice.setItems(items);
-        Invoice createdInvoice = invoiceService.createInvoice(invoice);
-        SimpleInvoiceDto newInvoice = invoiceMapper.invoiceToSimpleInvoiceDto(createdInvoice);
-        return newInvoice;
-    }
 
     /**
      * Creates a database entry and generates a pdf.
@@ -119,10 +99,10 @@ public class InvoiceEndpoint {
      */
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/createinvoicepdf", produces = "application/pdf")
+    @PostMapping(produces = "application/pdf")
     @Operation(summary = "create new invoice")
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
+        LOGGER.info("Create /invoices/ {}", invoiceDto);
 
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
         PdfGenerator pdf = new PdfGenerator();

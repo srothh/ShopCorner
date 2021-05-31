@@ -22,7 +22,7 @@ public interface TestData {
     String BASE_URI = "/api/v1";
     String ADDRESS_BASE_URI = BASE_URI + "/address";
     String CUSTOMER_BASE_URI = BASE_URI + "/customers";
-    String INVOICE_BASE_URI = BASE_URI + "/invoice";
+    String INVOICE_BASE_URI = BASE_URI + "/invoices";
 
     //TEST PROPERTIES FOR PRODUCTS, TAX-RATES AND CATEGORIES
     String PRODUCTS_BASE_URI = "/api/v1/products";

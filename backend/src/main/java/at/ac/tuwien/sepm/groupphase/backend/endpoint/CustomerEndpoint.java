@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,18 +12,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/customers")
@@ -64,10 +64,10 @@ public class CustomerEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all customers", security = @SecurityRequirement(name = "apiKey"))
-    public List<CustomerDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "1") Integer page,
-                                             @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
+    public PaginationDto<CustomerDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "1") Integer page,
+                                                      @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
         LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
-        return customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers(page, pageCount).getContent());
+        return new PaginationDto<>(customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers(page, pageCount).getContent()), page, pageCount, customerService.getCustomerCount());
     }
 
     /**

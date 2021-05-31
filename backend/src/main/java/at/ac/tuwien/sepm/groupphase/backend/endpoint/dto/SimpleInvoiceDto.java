@@ -12,7 +12,7 @@ public class SimpleInvoiceDto {
     @NotNull(message = "LocalDateTime can not be null")
     private LocalDateTime date;
 
-    @DecimalMin(value = "0.01", message = "The amount can not be smaller den 0.01")
+    @DecimalMin(value = "0.01", message = "The amount can not be smaller than 0.01")
     private double amount;
 
     public Long getId() {

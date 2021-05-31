@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping(OperatorEndpoint.BASE_URL)
@@ -63,33 +62,22 @@ public class OperatorEndpoint {
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
     @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
-    public List<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam("permissions") Permissions permissions) {
+    public PaginationDto<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam("permissions") Permissions permissions) {
         LOGGER.info("GET " + BASE_URL + "?{}&{}&{}", page, pageCount, permissions);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.toString().equals("[ROLE_EMPLOYEE]") && permissions == Permissions.admin) {
             throw new AccessDeniedException("Employee can not access admins");
         }
-        return operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, pageCount, permissions).getContent());
-    }
-
-    /**
-     * Get count of admins and employees.
-     *
-     * @return Array where [0] is count of admins and [1] is count of employees
-     */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @GetMapping("/count")
-    @Operation(summary = "Get count of operators", security = @SecurityRequirement(name = "apiKey"))
-    public int[] getCount() {
-        LOGGER.info("GET " + BASE_URL + "/count");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        if (authorities.toString().equals("[ROLE_EMPLOYEE]")) {
-            int[] count = operatorService.getCollectionSize();
-            return new int[]{count[1]};
+        PaginationDto<OverviewOperatorDto> dto;
+        if (permissions == Permissions.admin) {
+            dto =
+                new PaginationDto<>(operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, pageCount, permissions).getContent()), page, pageCount, operatorService.getAdminCount());
+        } else {
+            dto =
+                new PaginationDto<>(operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, pageCount, permissions).getContent()), page, pageCount, operatorService.getEmployeeCount());
         }
-        return operatorService.getCollectionSize();
+        return dto;
     }
 
     /**
@@ -127,7 +115,6 @@ public class OperatorEndpoint {
         return result;
 
     }
-
 
 
     /**

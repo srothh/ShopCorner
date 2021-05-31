@@ -38,9 +38,9 @@ public interface OperatorService extends UserDetailsService {
     /**
      * Returns page with all needed Operators.
      *
-     * @param page        which should be returned
+     * @param page which should be returned
      * @param permissions of Operators which should be returned
-     * @param pageCount   amount of operators per page
+     * @param pageCount amount of operators per page
      * @return Page with all Operators with right permission
      */
     Page<Operator> findAll(int page, int pageCount, Permissions permissions);
@@ -51,13 +51,6 @@ public interface OperatorService extends UserDetailsService {
      * @return a list of operators
      */
     List<Operator> findAll();
-
-    /**
-     * returns amount of admins and employees.
-     *
-     * @return an Array where [0] is amount of Admins and [1] is amount of Employees
-     */
-    int[] getCollectionSize();
 
     /**
      * Saves the specified operator.
@@ -71,7 +64,7 @@ public interface OperatorService extends UserDetailsService {
     /**
      * Changes Permission of operater with id.
      *
-     * @param id of operator that should be changed
+     * @param id          of operator that should be changed
      * @param permissions that operator should get
      * @throws NotFoundException when no operator with the id is found
      * @throws RuntimeException  upon encountering errors with the database
@@ -88,16 +81,31 @@ public interface OperatorService extends UserDetailsService {
     void delete(Long id);
 
 
-
     /**
      * Updates the specified operator.
      *
      * @param operator to be updated
      * @return the operator that has just been updated.
      * @throws NotFoundException if no matching operator is found in the database
-     * @throws RuntimeException if the updated operator account already exists
+     * @throws RuntimeException  if the updated operator account already exists
      */
     Operator update(Operator operator);
+
+    /**
+     * returns amount of employees.
+     *
+     * @return count of Employees.
+     * @throws RuntimeException if the updated operator account already exists
+     */
+    public Long getEmployeeCount();
+
+    /**
+     * returns amount of Admins.
+     *
+     * @return count of Admins.
+     * @throws RuntimeException if the updated operator account already exists
+     */
+    public Long getAdminCount();
 
 }
 

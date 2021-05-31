@@ -35,7 +35,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<Invoice> findAllInvoices() {
-        LOGGER.trace("Find all invoices");
+        LOGGER.trace("findAllInvoices()");
         return this.invoiceRepository.findAll();
 
     }
@@ -43,7 +43,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Invoice findOneById(Long id) {
-        LOGGER.trace("Find invoices with id {}", id);
+        LOGGER.trace("findOneById({})", id);
         Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
         return invoice;
 
@@ -53,7 +53,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Transactional
     @Override
     public Invoice createInvoice(Invoice invoice) {
-        LOGGER.trace("Create invoice {}", invoice);
+        LOGGER.trace("createInvoice({})", invoice);
         validator.validateNewInvoice(invoice);
         validator.validateNewInvoiceItem(invoice.getItems());
         Set<InvoiceItem> items = invoice.getItems();
