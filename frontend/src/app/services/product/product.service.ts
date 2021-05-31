@@ -1,16 +1,16 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Globals} from '../global/globals';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Globals} from '../../global/globals';
 import {Observable} from 'rxjs';
-import {Product} from '../dtos/product';
-import {OperatorAuthService} from './auth/operator-auth.service';
-import {Pagination} from '../dtos/pagination';
+import {Product} from '../../dtos/product';
+import {OperatorAuthService} from '../auth/operator-auth.service';
+import {Pagination} from '../../dtos/pagination';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private messageBaseUri: string = this.globals.backendUri + '/products';
+  private productBaseUri: string = this.globals.backendUri + '/products';
 
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
@@ -18,23 +18,21 @@ export class ProductService {
   /**
    * Get page of products from the backend
    */
-  getProducts(page: number, pageCount): Observable<Pagination<Product>> {
-    return this.httpClient.get<Pagination<Product>>(this.messageBaseUri + '/?page=' + page + '&page_count=' + pageCount);
-  }
+  getProducts(page: number, pageCount, name = '', sortBy = 'id'): Observable<Pagination<Product>> {
+    const params = new HttpParams()
+      .set('page', String(page))
+      .set('page_count', String(pageCount))
+      .set('name', name)
+      .set('sortBy', sortBy);
 
-  /**
-   * Get page of products from the backend, sorted by sale count
-   */
-  getProductsSortedBySales(page: number, pageCount): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.messageBaseUri + '/?page=' + page + '&page_count='
-      + pageCount + '&sortBy=saleCount');
+    return this.httpClient.get<Pagination<Product>>(this.productBaseUri, {params});
   }
 
   /**
    * Loads a product with the given Id, if it's present in the backend
    */
   getProductById(id: number): Observable<Product> {
-    return this.httpClient.get<Product>(this.messageBaseUri + '/' + id);
+    return this.httpClient.get<Product>(this.productBaseUri + '/' + id);
   }
 
   /**
@@ -42,7 +40,7 @@ export class ProductService {
    * and the taxRateId
    */
   addProduct(product: Product): Observable<Product> {
-    return this.httpClient.post<Product>(this.messageBaseUri, product, {
+    return this.httpClient.post<Product>(this.productBaseUri, product, {
       headers: this.getHeadersForOperator()
     });
   }
@@ -52,7 +50,7 @@ export class ProductService {
    * and the tax-rate with the given taxRateId
    */
   updateProduct(productId: number, product: Product): Observable<void> {
-    return this.httpClient.put<void>(this.messageBaseUri + '/' + productId, product, {
+    return this.httpClient.put<void>(this.productBaseUri + '/' + productId, product, {
       headers: this.getHeadersForOperator()
     });
   }
@@ -61,14 +59,14 @@ export class ProductService {
    * retrieves the total number of products
    */
   getNumberOfProducts(): Observable<number> {
-    return this.httpClient.get<number>(this.messageBaseUri);
+    return this.httpClient.get<number>(this.productBaseUri);
   }
 
   /**
    * deletes a specific product with the given Id
    */
   deleteProduct(productId: number): Observable<void> {
-    return this.httpClient.delete<void>(this.messageBaseUri + '/' + productId, {
+    return this.httpClient.delete<void>(this.productBaseUri + '/' + productId, {
       headers: this.getHeadersForOperator()
     });
   }

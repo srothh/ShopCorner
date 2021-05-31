@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ProductService} from '../../../services/product.service';
+import {ProductService} from '../../../services/product/product.service';
 import {Product} from '../../../dtos/product';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
@@ -27,9 +27,10 @@ export class ShopProductComponent implements OnInit {
   }
 
   fetchProducts(): void {
-    this.productService.getProducts(this.page, this.pageSize).subscribe((productData) => {
-      this.products = productData;
-      this.getCollectionSize();
+    const name = this.searchForm.controls.searchText.value;
+    this.productService.getProducts(this.page, this.pageSize, name).subscribe((productData) => {
+      this.products = productData.items;
+      this.collectionSize = productData.totalItemCount;
     });
   }
 
@@ -53,12 +54,7 @@ export class ShopProductComponent implements OnInit {
     }
   }
 
-  getCollectionSize() {
-    this.productService.getNumberOfProducts().subscribe((count: number) => this.collectionSize = count);
-  }
-
-
   searchProducts() {
-    console.log(this.searchForm.controls.searchText.value);
+    this.fetchProducts();
   }
 }

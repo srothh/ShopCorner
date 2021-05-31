@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Product} from '../../../dtos/product';
-import {ProductService} from '../../../services/product.service';
+import {ProductService} from '../../../services/product/product.service';
 
 @Component({
   selector: 'app-home',
@@ -22,14 +22,10 @@ export class ShopHomeComponent implements OnInit {
   }
 
   fetchProducts(): void {
-    this.productService.getProductsSortedBySales(this.page, this.pageSize).subscribe((productData) => {
-      this.products = productData;
-      this.getCollectionSize();
+    this.productService.getProducts(this.page, this.pageSize, undefined, 'saleCount').subscribe((productData) => {
+      this.products = productData.items;
+      this.collectionSize = productData.totalItemCount;
     });
-  }
-
-  getCollectionSize() {
-    this.productService.getNumberOfProducts().subscribe((count: number) => this.collectionSize = count);
   }
 
 }
