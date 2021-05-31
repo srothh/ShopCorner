@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

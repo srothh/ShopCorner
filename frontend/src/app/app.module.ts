@@ -37,6 +37,8 @@ import {BaseLoginComponent} from './components/common/base-login/base-login.comp
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
 import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
+import { OperatorCategoriesComponent } from './components/operator/operator-categories/operator-categories.component';
+import { OperatorAddCategoryComponent } from './components/operator/operator-add-category/operator-add-category.component';
 import { BaseShopProductItemComponent } from './components/common/base-shop-product-item/base-shop-product-item.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -54,6 +56,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     OperatorComponent,
     OperatorHomeComponent,
     OperatorShopComponent,
+    OperatorInvoiceComponent,
     OperatorOrderComponent,
     OperatorProductComponent,
     OperatorPromotionComponent,
@@ -72,6 +75,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     OperatorInvoiceFormComponent,
     OperatorInvoiceComponent,
     OperatorInvoiceDetailviewComponent,
+    BaseShopProductItemComponent,
+    OperatorCategoriesComponent,
+    OperatorAddCategoryComponent,
     BaseShopProductItemComponent
   ],
   imports: [

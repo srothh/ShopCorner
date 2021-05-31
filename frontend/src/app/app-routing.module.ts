@@ -28,6 +28,8 @@ import {OperatorEditAccountComponent} from './components/operator/operator-edit-
 import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
 import {OperatorInvoiceFormComponent} from './components/operator/operator-invoice-form/operator-invoice-form.component';
 import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
+import {OperatorCategoriesComponent} from './components/operator/operator-categories/operator-categories.component';
+import {OperatorAddCategoryComponent} from './components/operator/operator-add-category/operator-add-category.component';
 
 const routes: Routes = [
   {
@@ -48,6 +50,8 @@ const routes: Routes = [
       {path: 'shop', component: OperatorShopComponent},
       {path: 'invoices', component: OperatorInvoiceComponent},
       {path: 'invoices/:id', component: OperatorInvoiceDetailviewComponent},
+      {path: 'categories', component: OperatorCategoriesComponent},
+      {path: 'categories/add', component: OperatorAddCategoryComponent},
       {path: 'orders', component: OperatorOrderComponent},
       {path: 'products', component: OperatorProductComponent},
       {path: 'products/add', component: OperatorAddProductComponent},
