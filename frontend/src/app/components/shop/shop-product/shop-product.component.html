@@ -36,11 +36,11 @@
         </div>
       </form>
     </div>
-    <ng-template class="row" *ngIf="collectionSize === 0 else no_products">
+    <div class="row" *ngIf="collectionSize > 0 else no_products">
       <div class="col-md-4 col-sm-5 col-lg-2" *ngFor="let product of products">
         <app-base-shop-product-item [product]="product"></app-base-shop-product-item>
       </div>
-    </ng-template>
+    </div>
     <ng-template #no_products>
       <div id="no-products">
         <h3>
@@ -50,6 +50,7 @@
         <p>Es wurden keine Produkte gefunden.</p>
       </div>
     </ng-template>
+
     <div class="d-flex justify-content-between">
       <button class="btn btn-dark" [disabled]="page === 0" (click)=previousPage()>Vorherige Seite</button>
       <button class="btn btn-dark" [disabled]="page + 1 === totalPages" (click)=nextPage()>Nächste Seite</button>
