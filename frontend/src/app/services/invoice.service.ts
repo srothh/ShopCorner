@@ -20,17 +20,6 @@ export class InvoiceService {
   }
 
   /**
-   * Loads all invoices from the backend
-   *
-   * @return invoiceList with all invoices
-   */
-/*  getInvoice(): Observable<Invoice[]> {
-    return this.httpClient.get<Invoice[]>(this.invoiceBaseUri, {
-      headers: this.getHeadersForOperator()
-    });
-  }
-*/
-  /**
    * Retrieve a page of invoice from the backend.
    *
    * @param page the number of the page to fetch
