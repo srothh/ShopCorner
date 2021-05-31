@@ -22,6 +22,7 @@ public interface TestData {
     String BASE_URI = "/api/v1";
     String ADDRESS_BASE_URI = BASE_URI + "/address";
     String CUSTOMER_BASE_URI = BASE_URI + "/customers";
+    String INVOICE_BASE_URI = BASE_URI + "/invoices";
 
     //TEST PROPERTIES FOR PRODUCTS, TAX-RATES AND CATEGORIES
     String PRODUCTS_BASE_URI = "/api/v1/products";
@@ -78,5 +79,18 @@ public interface TestData {
             add("ROLE_CUSTOMER");
         }
     };
+
+    //TEST PROPERTIES FOR INVOICE_ITEM
+
+    Long TEST_INVOICE_INVOICE_ID = 0L;
+    Long TEST_INVOICE_PRODUCT_ID = 0L;
+
+
+    //TEST PROPERTIES FOR INVOICE
+    Long TEST_INVOICE_ID = 0L;
+    LocalDateTime TEST_INVOICE_DATE = null;
+    Double TEST_INVOICE_AMOUNT = 20.0;
+
+
 
 }

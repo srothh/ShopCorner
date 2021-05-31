@@ -19,7 +19,7 @@ public interface CustomerService extends UserDetailsService {
      * @param loginName the login name
      * @return a Spring Security user
      * @throws UsernameNotFoundException is thrown if the specified user does not exists
-     * @throws RuntimeException          upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     @Override
     UserDetails loadUserByUsername(String loginName);
@@ -30,7 +30,7 @@ public interface CustomerService extends UserDetailsService {
      * @param loginName the login name
      * @return a customer
      * @throws NotFoundException when no customer with the id is found
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     Customer findCustomerByLoginName(String loginName);
 
@@ -46,7 +46,7 @@ public interface CustomerService extends UserDetailsService {
     /**
      * Retrieves a PaginationDto containing a Page of customers from the database.
      *
-     * @param page      The number of the page to retrieve
+     * @param page The number of the page to retrieve
      * @param pageCount The size of the page to retrieve
      * @return A PaginationDto containing data about the retrieved items
      * @throws RuntimeException upon encountering errors with the database
@@ -59,7 +59,7 @@ public interface CustomerService extends UserDetailsService {
      * @param customer  The customer to assign the address to
      * @param addressId The id of the address to assign to the customer
      * @throws NotFoundException when no address with the id is found
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     void assignAddressToCustomer(Customer customer, Long addressId);
 
@@ -67,7 +67,7 @@ public interface CustomerService extends UserDetailsService {
      * Returns amount of customers in the database.
      *
      * @return The amount of customers in the database
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     long getCustomerCount();
 
@@ -75,7 +75,7 @@ public interface CustomerService extends UserDetailsService {
      * Returns all customers from the database.
      *
      * @return A list containing all the customers in the database
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     List<Customer> findAll();
 

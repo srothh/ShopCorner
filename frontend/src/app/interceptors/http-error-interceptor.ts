@@ -10,9 +10,10 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error) => {
         if (error instanceof HttpErrorResponse) {
-          if(error.status === 0){
+          if (error.status === 0) {
             return throwError('backend unreachable');
-          }else{
+          } else {
+            console.log(error);
             let message = error.error.replace(/[a-zA-Z]*\.[a-zA-Z]*\s/, ' ');
             message = message.replace(/{Validation errors=\[/, '');
             message = message.slice(0, -2);

@@ -23,6 +23,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,8 +139,11 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public void delete(Long id) {
         LOGGER.trace("delete({})", id);
-        operatorRepository.findById(id)
+        Operator operator = operatorRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Could not find operator that should be deleted!"));
+        if (operator.getPermissions().equals(Permissions.admin)) {
+            throw new AccessDeniedException("Cannot delete an Admin");
+        }
         operatorRepository.deleteById(id);
     }
 
