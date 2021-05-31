@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -64,7 +65,7 @@ public interface OperatorService extends UserDetailsService {
     /**
      * Changes Permission of operater with id.
      *
-     * @param id          of operator that should be changed
+     * @param id of operator that should be changed
      * @param permissions that operator should get
      * @throws NotFoundException when no operator with the id is found
      * @throws RuntimeException  upon encountering errors with the database
@@ -76,6 +77,7 @@ public interface OperatorService extends UserDetailsService {
      *
      * @param id of operator that should be deleted
      * @throws NotFoundException when no operator with the id is found
+     * @throws ValidationException when id belongs to an admin
      * @throws RuntimeException  upon encountering errors with the database
      */
     void delete(Long id);
@@ -97,7 +99,7 @@ public interface OperatorService extends UserDetailsService {
      * @return count of Employees.
      * @throws RuntimeException if the updated operator account already exists
      */
-    public Long getEmployeeCount();
+    Long getEmployeeCount();
 
     /**
      * returns amount of Admins.
@@ -105,7 +107,7 @@ public interface OperatorService extends UserDetailsService {
      * @return count of Admins.
      * @throws RuntimeException if the updated operator account already exists
      */
-    public Long getAdminCount();
+    Long getAdminCount();
 
 }
 

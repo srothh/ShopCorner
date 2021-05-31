@@ -150,9 +150,9 @@ public class OperatorEndpoint {
     }
 
     /**
-     * Deletes an operator with given id.
+     * Deletes an employee with given id.
      *
-     * @param id of operator that should be deleted
+     * @param id of employee that should be deleted
      */
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping(value = "/{id}")
