@@ -29,4 +29,11 @@ export class CategoryService {
   getCategoriesPerPage(page: number, pageCount): Observable<Pagination<Category>> {
     return this.httpClient.get<Pagination<Category>>(this.messageBaseUri + '/?page='+ page + '&page_count='+pageCount);
   }
+
+  /**
+   * adds a new category to the backend
+   */
+  addCategory(category: Category): Observable<Category> {
+    return this.httpClient.post<Category>(this.messageBaseUri, category);
+  }
 }

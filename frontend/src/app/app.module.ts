@@ -36,6 +36,7 @@ import {OperatorProductFormComponent} from './components/operator/operator-produ
 import {BaseLoginComponent} from './components/common/base-login/base-login.component';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import { OperatorCategoriesComponent } from './components/operator/operator-categories/operator-categories.component';
+import { OperatorAddCategoryComponent } from './components/operator/operator-add-category/operator-add-category.component';
 
 
 @NgModule({
@@ -68,6 +69,7 @@ import { OperatorCategoriesComponent } from './components/operator/operator-cate
     OperatorProductFormComponent,
     OperatorProductDetailsComponent,
     OperatorCategoriesComponent,
+    OperatorAddCategoryComponent,
   ],
   imports: [
     BrowserModule,

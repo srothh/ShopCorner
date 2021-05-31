@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Category} from '../../../dtos/category';
 import {CategoryService} from '../../../services/category.service';
+import {Router, UrlSerializer} from '@angular/router';
 
 @Component({
   selector: 'app-operator-categories',
@@ -14,7 +15,7 @@ export class OperatorCategoriesComponent implements OnInit {
   page = 0;
   pageSize = 10;
   collectionSize = 0;
-  constructor(private categoryService: CategoryService) { }
+  constructor(private categoryService: CategoryService, private router: Router, private urlSerializer: UrlSerializer) { }
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -47,6 +48,10 @@ export class OperatorCategoriesComponent implements OnInit {
       this.fetchCategories();
     }
   }
-  addNewCategory(){}
+  addNewCategory(){
+    const currentURL = this.urlSerializer.serialize(this.router.createUrlTree([]));
+    const addCategoryURL = currentURL.replace('categories', 'categories/add');
+    this.router.navigate([addCategoryURL]).then();
+  }
 
 }
