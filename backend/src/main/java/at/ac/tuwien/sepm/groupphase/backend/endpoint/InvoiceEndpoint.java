@@ -101,7 +101,7 @@ public class InvoiceEndpoint {
     @PostMapping(produces = "application/pdf")
     @Operation(summary = "create new invoice")
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("Create /invoices/ {}", invoiceDto);
+        LOGGER.info("POST /invoices/ {}", invoiceDto);
 
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
         PdfGenerator pdf = new PdfGenerator();
@@ -124,7 +124,7 @@ public class InvoiceEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}/pdf", produces = "application/pdf")
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
-        LOGGER.info("Get /invoices/getinvoicepdf/{}", id);
+        LOGGER.info("GET /invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
         PdfGenerator pdf = new PdfGenerator();
         final byte[] contents = pdf.generatePdfOperator(invoice);
