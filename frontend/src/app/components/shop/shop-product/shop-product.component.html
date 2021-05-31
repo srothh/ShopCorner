@@ -1,0 +1,61 @@
+<main role="main" class="mx-5">
+  <div class="album py-5">
+    <div class="mb-3">
+      <h3>
+        Produkte
+      </h3>
+      <hr>
+      <div *ngIf="collectionSize > 0">
+        <div>
+          <h6 class="text-muted" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content">
+            Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
+            von {{collectionSize}}</h6>
+        </div>
+        <ng-template #other_content>
+          <h6 class="text-muted">Zeigt {{1 + (pageSize * (page))}}-{{collectionSize}}
+            von {{collectionSize}}</h6>
+        </ng-template>
+      </div>
+      <form class="form-inline d-flex justify-content-between" style="gap: 15px" [formGroup]="searchForm"
+            (ngSubmit)="resetAndFetchProducts()">
+        <div class="d-flex flex-row">
+          <input class="form-control search-input" type="search" formControlName="searchText" placeholder="Suche"
+                 aria-label="Suche">
+          <button class="btn btn-primary" type="submit">Suche</button>
+        </div>
+        <div class="d-flex flex-row" style="gap: 15px">
+          <label for="categoryFilter">
+            <fa-icon class="mr-2" [icon]="faFilter"></fa-icon>
+            Filtern nach Kategorien</label>
+          <select class="custom-select" name="category-names" id="categoryFilter"
+                  (change)="resetAndFetchProducts()"
+                  formControlName="categoryId"
+          >
+            <option selected value="-1">Alle</option>
+            <option *ngFor="let category of this.categories" [value]="category.id">{{category.name}}</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="row" *ngIf="collectionSize > 0 else no_products">
+      <div class="col-md-4 col-sm-12 col-lg-4 col-xl-2" *ngFor="let product of products">
+        <app-base-shop-product-item [product]="product"></app-base-shop-product-item>
+      </div>
+    </div>
+    <ng-template #no_products>
+      <div id="no-products">
+        <h3>
+          <fa-icon class="mr-2" [icon]="faSearch"></fa-icon>
+          Keine Produkte gefunden
+        </h3>
+        <p>Es wurden keine Produkte gefunden.</p>
+      </div>
+    </ng-template>
+
+    <div *ngIf="collectionSize > 0" class="d-flex justify-content-between">
+      <button class="btn btn-dark" [disabled]="page === 0" (click)=previousPage()>Vorherige Seite</button>
+      <button class="btn btn-dark" [disabled]="page + 1 === totalPages" (click)=nextPage()>Nächste Seite</button>
+    </div>
+
+  </div>
+</main>

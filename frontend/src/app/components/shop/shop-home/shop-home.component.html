@@ -1,0 +1,25 @@
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Authentication problems!</strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<main role="main" class="mx-5">
+  <div class="album py-5">
+    <div class="mb-3">
+      <h3>
+        Bestseller
+      </h3>
+      <hr>
+      <h6 class="text-muted" *ngIf="collectionSize === 0;">
+        Keine Produkte gespeichert.
+      </h6>
+    </div>
+    <div class="row">
+      <div class="col-md-4 col-sm-12 col-lg-4 col-xl-2" *ngFor="let product of products">
+        <app-base-shop-product-item [product]="product"></app-base-shop-product-item>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,106 @@
+<div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
+  {{ errorMessage }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div>
+  <div class="mt-4">
+    <div class="d-flex justify-content-between">
+      <h2>Produkte</h2>
+      <button type="button" class="btn btn-primary mb-3" (click)="addNewProduct()">Produkt hinzufügen</button>
+    </div>
+    <hr>
+  </div>
+  <div>
+    <div>
+      <div class="float-right ">
+        <div *ngIf="selectedProducts.length >0; else not_selected">
+        <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteCommit">
+          Auswahl löschen
+        </button>
+        </div>
+        <ng-template #not_selected>
+          <button type="button" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
+        </ng-template>
+
+    </div>
+
+    <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else last_page">
+      Zeigt {{1 + (pageSize * page)}}-{{(pageSize * (page + 1))}}
+      von {{collectionSize}}</p>
+    <ng-template #last_page>
+      <p style="font-size: 10px; color: gray" *ngIf="collectionSize > 0; else empty_content">Zeigt {{(1 + (pageSize * page))}}-{{collectionSize}}
+        von {{collectionSize}}</p>
+      <ng-template #empty_content>
+        <p style="font-size: 10px; color: gray">Keine Produkte im Sortiment</p>
+      </ng-template>
+    </ng-template>
+  </div>
+  <div class="border rounded mt-4" style="height: 560px;">
+    <table class="table table-hover table-sm" data-pagination="true" data-page-list="[1,2]">
+      <thead class="table-secondary">
+      <tr>
+        <th scope="col">Ausgewählt</th>
+        <th scope="col">Name</th>
+        <th scope="col">MWSt</th>
+        <th scope="col">Kategorie</th>
+        <th scope="col">Preis</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let product of products; let i = index" style="cursor: pointer"
+          (click)="goToProductDetails(product, $event)">
+        <td>
+          <div class="custom-control custom-checkbox">
+            <input #checkboxes type="checkbox" class="custom-control-input" id="customCheck-{{i}}"
+                   (click)="clickedCheckMark($event, i)">
+            <label class="custom-control-label" for="customCheck-{{i}}"></label>
+          </div>
+        </td>
+        <td>{{product.name}}</td>
+        <td>{{(product.taxRate?.percentage + '%') || '--'}}</td>
+        <td>{{product.category?.name || '--'}}</td>
+        <td>{{product.price}}</td>
+
+      </tr>
+      </tbody>
+
+
+    </table>
+  </div>
+  <div class="d-flex justify-content-between pt-3">
+    <button type="button" class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
+    <button type="button" class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
+  </div>
+
+  <div class="modal fade" id="deleteCommit" tabindex="-1" role="dialog" aria-labelledby="deleteCommitLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Löschen</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Wollen sie die Produkte von {{selectedProducts.length}} Produkten löschen?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="uncheckSelectedProducts()"
+                  data-dismiss="modal">Abbrechen
+          </button>
+          <button type="button" class="btn btn-outline-danger" (click)="deleteProducts()" data-dismiss="modal">Löschen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+</div>
+

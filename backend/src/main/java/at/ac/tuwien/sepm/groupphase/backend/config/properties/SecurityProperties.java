@@ -5,8 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 /**
  * This configuration class offers all necessary security properties in an immutable manner.
  */
@@ -27,8 +25,12 @@ public class SecurityProperties {
         return auth.getPrefix();
     }
 
-    public String getLoginUri() {
-        return auth.getLoginUri();
+    public String getLoginUriCustomer() {
+        return auth.getLoginUriCustomer();
+    }
+
+    public String getLoginUriOperator() {
+        return auth.getLoginUriOperator();
     }
 
     public String getJwtSecret() {
@@ -66,7 +68,8 @@ public class SecurityProperties {
     protected class Auth {
         private String header;
         private String prefix;
-        private String loginUri;
+        private String loginUriCustomer;
+        private String loginUriOperator;
 
         public String getHeader() {
             return header;
@@ -84,12 +87,20 @@ public class SecurityProperties {
             this.prefix = prefix;
         }
 
-        public String getLoginUri() {
-            return loginUri;
+        public String getLoginUriCustomer() {
+            return loginUriCustomer;
         }
 
-        public void setLoginUri(String loginUri) {
-            this.loginUri = loginUri;
+        public void setLoginUriCustomer(String loginUriCustomer) {
+            this.loginUriCustomer = loginUriCustomer;
+        }
+
+        public String getLoginUriOperator() {
+            return loginUriOperator;
+        }
+
+        public void setLoginUriOperator(String loginUriOperator) {
+            this.loginUriOperator = loginUriOperator;
         }
     }
 

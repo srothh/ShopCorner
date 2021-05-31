@@ -1,0 +1,158 @@
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Registrierungsprobleme</strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="py-5 container mx-auto">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <span class="anchor" id="formLogin"></span>
+      <div class="card rounded-0">
+        <div class="card-header">
+          <h3 class="mb-0">Account erstellen</h3>
+        </div>
+        <div class="card-body">
+          <form class="form" [formGroup]="registrationForm" (ngSubmit)="registerUser()">
+            <div class="form-group">
+              <label for="username">Benutzername</label>
+              <input type="text" name="username" formControlName="loginName" class="form-control" id="username">
+              <div *ngIf="registrationForm.get('loginName').invalid &&
+        registrationForm.get('loginName').errors &&
+        (registrationForm.get('loginName').dirty || registrationForm.get('loginName').touched)">
+                <small class="text-danger"
+                       *ngIf="registrationForm.get('loginName').hasError('required')">
+                  Pflichtfeld.
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">Passwort</label>
+              <input type="password" name="password" formControlName="password" class="form-control" id="password">
+              <div *ngIf="registrationForm.get('password').invalid &&
+        registrationForm.get('password').errors &&
+        (registrationForm.get('password').dirty || registrationForm.get('password').touched)">
+                <small class="text-danger"
+                       *ngIf="registrationForm.get('password').hasError('required')">
+                  Pflichtfeld.
+                </small>
+                <small class="text-danger"
+                       *ngIf="registrationForm.get('password').hasError('minlength')">
+                  Minimum 8 Zeichen erforderlich.
+                </small>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" name="name" formControlName="name" class="form-control" id="name">
+              <div *ngIf="registrationForm.get('name').invalid &&
+        registrationForm.get('name').errors &&
+        (registrationForm.get('name').dirty || registrationForm.get('name').touched)">
+                <small class="text-danger"
+                       *ngIf="registrationForm.get('name').hasError('required')">
+                  Pflichtfeld.
+                </small>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col">
+                  <label for="email">Email</label>
+                  <input type="email" name="email" formControlName="email" class="form-control" id="email">
+                  <div *ngIf="registrationForm.get('email').invalid &&
+        registrationForm.get('email').errors &&
+        (registrationForm.get('email').dirty || registrationForm.get('email').touched)">
+                    <small class="text-danger"
+                           *ngIf="registrationForm.get('email').hasError('required')">
+                      Pflichtfeld.
+                    </small>
+                  </div>
+                </div>
+                <div class="col">
+                  <label for="phoneNumber">Telefonnummer</label>
+                  <input type="text" name="phoneNumber" formControlName="phoneNumber" class="form-control"
+                         id="phoneNumber">
+                </div>
+              </div>
+            </div>
+            <div class="form-group" [formGroup]="addressForm">
+              <div class="row">
+                <div class="col">
+                  <label for="street">Straße</label>
+                  <input type="text" name="street" formControlName="street" class="form-control" id="street">
+                  <div *ngIf="addressForm.get('street').invalid &&
+        addressForm.get('street').errors &&
+        (addressForm.get('street').dirty || addressForm.get('street').touched)">
+                    <small class="text-danger"
+                           *ngIf="addressForm.get('street').hasError('required')">
+                      Pflichtfeld.
+                    </small>
+                  </div>
+                </div>
+                <div class="col">
+                  <label for="postalCode">Postleitzahl</label>
+                  <input type="number" name="postalCode" formControlName="postalCode" class="form-control"
+                         id="postalCode">
+                  <div *ngIf="addressForm.get('postalCode').invalid &&
+        addressForm.get('postalCode').errors &&
+        (addressForm.get('postalCode').dirty || addressForm.get('postalCode').touched)">
+                    <small class="text-danger"
+                           *ngIf="addressForm.get('postalCode').hasError('required')">
+                      Pflichtfeld.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" [formGroup]="addressForm">
+              <div class="row">
+                <div class="col">
+                  <label for="houseNumber">Hausnummer</label>
+                  <input type="text" name="houseNumber" formControlName="houseNumber" class="form-control"
+                         id="houseNumber">
+                  <div *ngIf="addressForm.get('houseNumber').invalid &&
+        addressForm.get('houseNumber').errors &&
+        (addressForm.get('houseNumber').dirty || addressForm.get('houseNumber').touched)">
+                    <small class="text-danger"
+                           *ngIf="addressForm.get('houseNumber').hasError('required')">
+                      Pflichtfeld.
+                    </small>
+                  </div>
+                </div>
+                <div class="col">
+                  <label for="stairNumber">Stiege</label>
+                  <input type="number" name="stairNumber" formControlName="stairNumber" class="form-control"
+                         id="stairNumber">
+                </div>
+                <div class="col">
+                  <label for="doorNumber">Tür</label>
+                  <input type="text" name="doorNumber" formControlName="doorNumber" class="form-control"
+                         id="doorNumber">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-row justify-content-center">
+                <button type="button" class="btn btn-primary submit " (click)="registerUser()" [disabled]="registrationForm.invalid||addressForm.invalid">Account erstellen</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-row justify-content-center">
+                <small>
+                  Besitzen Sie einen Account ?
+                  <a class="link-primary" routerLink="/login" routerLinkActive="active">Anmelden</a>
+                </small>
+              </div>
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

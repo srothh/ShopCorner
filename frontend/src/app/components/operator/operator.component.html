@@ -1,0 +1,60 @@
+<div class="d-flex" id="wrapper">
+
+  <!-- Sidebar -->
+  <div class="bg-light border-right" id="sidebar-wrapper">
+    <div class="p-5">
+      <div class="d-flex flex-column">
+        <div class="d-flex flex-row align-items-center">
+          <!-- Temporary operator image -->
+          <img src="https://i.imgur.com/zMBx1FY.png"
+               alt="Webshop Logo"
+               class="rounded-circle" style="height: 3.5rem; width: 3.5rem;">
+          <!-- Temporary operator name -->
+          <span class="ml-5 font-weight-bold">{{user}}</span>
+        </div>
+        <button class="btn btn-primary mt-3" (click)="this.logoutUser()">Ausloggen</button>
+      </div>
+      <hr>
+      <ul class="list-unstyled mt-5">
+        <li class="my-2 p-2" routerLink="/operator/home" routerLinkActive="is-active">
+          <span>Startseite</span>
+        </li>
+        <li class="my-2 p-2" routerLink="/operator/shop" routerLinkActive="is-active">
+          <span>Shop</span>
+        </li>
+        <li class="my-2 p-2" routerLink="/operator/invoices" routerLinkActive="is-active">
+          <span>Rechnungen</span>
+        </li>
+        <li class="my-2 p-2" routerLink="/operator/orders" routerLinkActive="is-active">
+          <span>Bestellungen</span>
+        </li>
+        <li class="my-2 p-2" routerLink="/operator/categories" routerLinkActive="is-active">
+          <span>Kategorien</span>
+        </li>
+        <li class="my-2 p-2" routerLink="/operator/products" routerLinkActive="is-active">
+          <span>Produkte</span>
+        </li>
+        <li class="my-2 p-2" routerLink="/operator/promotions" routerLinkActive="is-active">
+          <span>Aktionen</span>
+        </li>
+        <li class="my-2 p-2" routerLink="/operator/statistics" routerLinkActive="is-active">
+          <span>Statistiken</span>
+        </li>
+        <li class="my-2 p-2" routerLink="/operator/customers" routerLinkActive="is-active">
+          <span>Kunden</span>
+        </li>
+        <li class="my-2 p-2" routerLink="/operator/accounts" routerLinkActive="is-active">
+          <span>Betreiber Konten</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="page-content-wrapper">
+    <div class="container-fluid container py-3">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+</div>

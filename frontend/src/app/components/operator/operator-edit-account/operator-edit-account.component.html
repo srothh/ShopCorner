@@ -1,0 +1,92 @@
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Aktualisierung fehlgeschlagen</strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="py-5">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <span class="anchor" id="formLogin"></span>
+      <div class="card rounded-0">
+        <div class="card-header">
+          <h3 class="mb-0">Accountdaten bearbeiten</h3>
+        </div>
+        <div class="card-body">
+          <form class="form" [formGroup]="updateForm" (ngSubmit)="save()">
+
+            <div class="form-group">
+              <label for="username">Benutzername</label>
+              <input type="text" name="username" formControlName="loginName" class="form-control" id="username">
+              <div *ngIf="updateForm.get('loginName').invalid &&
+        updateForm.get('loginName').errors &&
+        (updateForm.get('loginName').dirty || updateForm.get('loginName').touched)">
+                <small class="text-danger"
+                       *ngIf="updateForm.get('loginName').hasError('required')">
+                  Pflichtfeld.
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">Passwort</label>
+              <input type="password" name="password" formControlName="password" class="form-control" id="password">
+              <div *ngIf="updateForm.get('password').invalid &&
+        updateForm.get('password').errors &&
+        (updateForm.get('password').dirty || updateForm.get('password').touched)">
+                <small class="text-danger"
+                       *ngIf="updateForm.get('password').hasError('required')">
+                  Pflichtfeld.
+                </small>
+                <small class="text-danger"
+                       *ngIf="updateForm.get('password').hasError('minlength')">
+                  Minimum 8 Zeichen erforderlich.
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" name="name" formControlName="name" class="form-control" id="name">
+              <div *ngIf="updateForm.get('name').invalid &&
+       updateForm.get('name').errors &&
+        (updateForm.get('name').dirty || updateForm.get('name').touched)">
+                <small class="text-danger"
+                       *ngIf="updateForm.get('name').hasError('required')">
+                  Pflichtfeld.
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" name="email" formControlName="email" class="form-control" id="email">
+              <div *ngIf="updateForm.get('email').invalid &&
+        updateForm.get('email').errors &&
+        (updateForm.get('email').dirty || updateForm.get('email').touched)">
+                <small class="text-danger"
+                       *ngIf="updateForm.get('email').hasError('required')">
+                  Pflichtfeld.
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label >Berechtigungslevel</label>
+            <div *ngIf="operator.permissions.valueOf() == 'admin'">Administrator</div>
+            <div *ngIf="operator.permissions.valueOf() == 'employee'">Mitarbeiter</div>
+            </div>
+
+            <div class="form-group">
+              <div class="form-row justify-content-center">
+                <button type="button" class="btn btn-primary submit " (click)="save()" [disabled]="updateForm.invalid">Änderungen speichern</button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

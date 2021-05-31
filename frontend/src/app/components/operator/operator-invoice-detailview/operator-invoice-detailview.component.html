@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-sm-2">
+    Rechnungsnummer:
+  </div>
+  <div class="col-sm-2">
+    {{detailedInvocie.id}}
+  </div>
+  <div class="col-sm-1">
+    Datum:
+  </div>
+  <div class="col-sm-4">
+    {{detailedInvocie.date.split("T", 1)}}
+  </div>
+  <div class="col-sm-1">
+    Betrag:
+  </div>
+  <div class="col-sm-1">
+    {{detailedInvocie.amount.toFixed(2)}} €
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm">
+    <div class="border rounded" style="height: 560px">
+      <table class="table table-sm table-hover" data-pagination="true" data-page-list="[1,2]">
+        <thead>
+        <tr class="table-secondary">
+          <th scope="col">Produkt</th>
+          <th scope="col">Anzahl</th>
+          <th scope="col">Steuer</th>
+          <th scope="col">Preis/Stk.</th>
+          <th scope="col">Steuerbetrag</th>
+          <th scope="col">Gesamtbetrag</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of detailedInvocie.items">
+          <td><span>{{item.product.name}}</span></td>
+          <td><span>{{item.numberOfItems}}</span></td>
+          <td><span>{{item.product.taxRate.percentage}} %</span></td>
+          <td><span>{{item.product.price}} €</span></td>
+          <td>
+            <span>{{(((item.product.price * item.product.taxRate.calculationFactor) - item.product.price) * item.numberOfItems).toFixed(2)}}
+              €</span></td>
+          <td><span>{{((item.product.price * item.product.taxRate.calculationFactor) * item.numberOfItems).toFixed(2)}}
+            €</span></td>
+
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm">
+    <button class="btn btn-block btn-primary" type="submit" (click)="onSubmit('download')"> PDF download</button>
+  </div>
+  <div class="col-sm">
+    <button class="btn btn-block btn-primary" type="submit" (click)="onSubmit('show')"> PDF öffnen</button>
+  </div>
+</div>
+
+
+
+
