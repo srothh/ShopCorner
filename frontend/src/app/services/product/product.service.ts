@@ -18,11 +18,12 @@ export class ProductService {
   /**
    * Get page of products from the backend
    */
-  getProducts(page: number, pageCount, name = '', sortBy = 'id'): Observable<Pagination<Product>> {
+  getProducts(page: number, pageCount, name = '', sortBy = 'id', categoryId: number = null): Observable<Pagination<Product>> {
     const params = new HttpParams()
       .set('page', String(page))
       .set('page_count', String(pageCount))
       .set('name', name)
+      .set('category_id', String(categoryId))
       .set('sortBy', sortBy);
 
     return this.httpClient.get<Pagination<Product>>(this.productBaseUri, {params});

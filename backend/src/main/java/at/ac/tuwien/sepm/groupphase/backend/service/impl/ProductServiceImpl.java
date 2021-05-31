@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Locale;
 
 
 @Service
@@ -77,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProductsPerPage(int page, int pageCount, String sortBy, String name) {
+    public Page<Product> getAllProductsPerPage(int page, int pageCount, Long categoryId, String sortBy, String name) {
         LOGGER.trace("getAllProductsPerPage({}, {})", page, pageCount);
         if (pageCount == 0) {
             pageCount = 15;
@@ -90,8 +89,12 @@ public class ProductServiceImpl implements ProductService {
         } else {
             pages = PageRequest.of(page, pageCount, Sort.by(sortBy).descending());
         }
-        if (!name.isEmpty()) {
+        if (!name.isEmpty() && categoryId == -1) {
             return this.productRepository.findAllByName(name, pages);
+        } else if (!name.isEmpty() && categoryId > 0) {
+            return this.productRepository.findAllByNameAndCategoryId(name, categoryId, pages);
+        } else if (name.isEmpty() && categoryId > 0) {
+            return this.productRepository.findAllByCategoryId(categoryId, pages);
         }
 
         return this.productRepository.findAll(pages);

@@ -4,12 +4,14 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -74,12 +76,14 @@ public class ProductEndpoint {
     public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page,
                                                            @RequestParam("page_count") int pageCount,
                                                            @RequestParam(defaultValue = "id") String sortBy,
-                                                           @RequestParam(name = "name", required = false, defaultValue = "") String name) {
+                                                           @RequestParam(name = "name", required = false, defaultValue = "") String name,
+                                                           @RequestParam(name = "category_id", required = false, defaultValue = "-1") Long categoryId) {
         LOGGER.info("GET " + BASE_URL);
-        return new PaginationDto<>(this.productService.getAllProductsPerPage(page, pageCount, sortBy, name).getContent()
+        Page<Product> productPage = this.productService.getAllProductsPerPage(page, pageCount, categoryId, sortBy, name);
+        return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
-            .collect(Collectors.toList()), page, pageCount, productService.getProductsCount());
+            .collect(Collectors.toList()), page, pageCount, productPage.getTotalPages(), this.productService.getProductsCount());
     }
 
     /**
