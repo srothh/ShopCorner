@@ -215,6 +215,7 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenTwoInvoices_whenFindAllWithPageAndPermission_thenListWithSizeTwoAndOverviewOfAllInvoices()
         throws Exception {
+        invoiceRepository.deleteAll();
         Set<InvoiceItem> set = invoice1.getItems();
         invoice1.setItems(null);
         Invoice newInvoice1 = invoiceRepository.save(invoice1);
@@ -249,9 +250,9 @@ public class InvoiceEndpointTest implements TestData {
         assertEquals(2, simpleInvoiceDtos.size());
         SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtos.get(0);
         assertAll(
-            () -> assertEquals(1, simpleInvoiceDto.getId()),
+            () -> assertEquals(newInvoice1.getId(), simpleInvoiceDto.getId()),
             () -> assertNotNull(simpleInvoiceDto.getDate()),
-            () -> assertEquals(invoice1.getAmount(), simpleInvoiceDto.getAmount())
+            () -> assertEquals(newInvoice1.getAmount(), simpleInvoiceDto.getAmount())
         );
     }
 
