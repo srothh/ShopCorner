@@ -65,7 +65,7 @@ public class InvoiceEndpoint {
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
-    @Operation(summary = "Get information for specific invoice")
+    @Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
     public DetailedInvoiceDto find(@PathVariable Long id) {
         LOGGER.info("GET /invoice/{}", id);
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
@@ -81,7 +81,7 @@ public class InvoiceEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<SimpleInvoiceDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "1") Integer page,
+    public PaginationDto<SimpleInvoiceDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                       @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
         LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
         return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.getAllInvoices(page, pageCount).getContent()), page,
@@ -98,7 +98,7 @@ public class InvoiceEndpoint {
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = "application/pdf")
-    @Operation(summary = "create new invoice")
+    @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("POST /invoices/ {}", invoiceDto);
 
@@ -121,6 +121,7 @@ public class InvoiceEndpoint {
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}/pdf", produces = "application/pdf")
+    @Operation(summary = "Retrieve new invoice as pdf", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
         LOGGER.info("GET /invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);

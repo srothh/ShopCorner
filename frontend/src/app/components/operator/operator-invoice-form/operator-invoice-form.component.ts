@@ -206,10 +206,12 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
 
   private fetchData(): void {
-    forkJoin([this.invoiceService.getProducts()])
-      .subscribe(([productsData]) => {
+    this.invoiceService.getProducts().subscribe((productsData) => {
         this.products = productsData;
-      });
+      }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
+    });
   }
 
   private calcTotal() {

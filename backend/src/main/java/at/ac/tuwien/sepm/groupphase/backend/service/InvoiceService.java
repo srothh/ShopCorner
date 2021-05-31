@@ -21,13 +21,6 @@ public interface InvoiceService {
 
 
     /**
-     * Find all invoice entries.
-     *
-     * @return ordered list of all message entries
-     */
-    List<Invoice> findAllInvoices();
-
-    /**
      * Retrieves a PaginationDto containing a Page of invoices from the database.
      *
      * @param page      The number of the page to retrieve

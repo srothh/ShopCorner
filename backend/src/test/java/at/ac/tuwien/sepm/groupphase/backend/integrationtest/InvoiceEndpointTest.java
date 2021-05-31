@@ -284,9 +284,13 @@ public class InvoiceEndpointTest implements TestData {
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
-
-        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-        assertEquals(MediaType.valueOf("text/plain;charset=UTF-8").toString(), response.getContentType());
+        assertAll(
+            () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
+            () -> {
+                String content = response.getContentAsString();
+                assertEquals(("Could not find invoice with id 0"), content);
+            }
+        );
     }
 
 

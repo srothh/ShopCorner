@@ -53,7 +53,7 @@
           <tr *ngFor="let invoice of invoices" (click)="getDetailedView(invoice)">
             <td><span>{{invoice.id}}</span></td>
             <td><span>{{invoice.date.split("T", 1)}}</span></td>
-            <td><span>{{invoice.amount}}</span></td>
+            <td><span>{{invoice.amount.toFixed(2)}} €</span></td>
           </tr>
           </tbody>
         </table>

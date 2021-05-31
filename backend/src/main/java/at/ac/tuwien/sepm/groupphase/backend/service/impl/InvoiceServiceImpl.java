@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -39,15 +38,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 
     @Override
-    public List<Invoice> findAllInvoices() {
-        LOGGER.trace("findAllInvoices()");
-        return this.invoiceRepository.findAll();
-
-    }
-
-    @Override
     public Page<Invoice> getAllInvoices(int page, int pageCount) {
-        LOGGER.trace("getAllCustomers()");
+        LOGGER.trace("getAllInvoices()");
         if (pageCount == 0) {
             pageCount = 15;
         } else if (pageCount > 50) {
@@ -60,15 +52,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Cacheable(value = "counts", key = "'customers'")
     @Override
     public long getInvoiceCount() {
+        LOGGER.trace("getInvoiceCount()");
         return invoiceRepository.count();
     }
 
     @Override
     public Invoice findOneById(Long id) {
         LOGGER.trace("findOneById({})", id);
-        Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
-        return invoice;
-
+        return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
     }
 
 
