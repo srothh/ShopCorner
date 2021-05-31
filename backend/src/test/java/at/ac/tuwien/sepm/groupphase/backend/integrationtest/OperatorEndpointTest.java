@@ -365,7 +365,7 @@ public class OperatorEndpointTest implements TestData {
             .andReturn();
         MockHttpServletResponse responseDelete = mvcResultDelete.getResponse();
 
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), responseDelete.getStatus());
+        assertEquals(HttpStatus.FORBIDDEN.value(), responseDelete.getStatus());
     }
 
     @Test

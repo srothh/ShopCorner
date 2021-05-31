@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
@@ -24,6 +23,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,7 +142,7 @@ public class OperatorServiceImpl implements OperatorService {
         Operator operator = operatorRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Could not find operator that should be deleted!"));
         if (operator.getPermissions().equals(Permissions.admin)) {
-            throw new ValidationException("Cannot delete an Admin");
+            throw new AccessDeniedException("Cannot delete an Admin");
         }
         operatorRepository.deleteById(id);
     }
