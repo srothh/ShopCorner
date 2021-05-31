@@ -6,6 +6,10 @@ import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +34,32 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.save(category);
     }
 
+    @Transactional
+    @Override
+    public Page<Category> getAllCategoriesPerPage(int page, int pageCount) {
+        LOGGER.trace("retrieve all categories");
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable pages = PageRequest.of(page, pageCount);
+        //return this.categoryRepository.getCategoriesPerPage(pages);
+        List<Long> idsOfPageableEntries = categoryRepository.geAllIds(pages);
+        List<Category> categories = categoryRepository.findAllCategoriesPerPage(idsOfPageableEntries);
+        return new PageImpl<Category>(categories, pages, categories.size());
+    }
+
+    @Transactional
     @Override
     public List<Category> getAllCategories() {
-        LOGGER.trace("retrieve all categories");
         return this.categoryRepository.getAllCategories();
     }
+
+    @Override
+    public Long getCategoriesCount() {
+        return this.categoryRepository.count();
+    }
+
+
 }

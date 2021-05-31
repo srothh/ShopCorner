@@ -11,17 +11,18 @@ export class OperatorCategoriesComponent implements OnInit {
   categories: Category[];
   errorOccurred: boolean;
   errorMessage: string;
-  page: number;
-  pageSize: number;
-  collectionSize: number;
+  page = 0;
+  pageSize = 10;
+  collectionSize = 0;
   constructor(private categoryService: CategoryService) { }
 
   ngOnInit(): void {
     this.fetchCategories();
   }
   fetchCategories(){
-    this.categoryService.getCategories().subscribe((categoriesData)=>{
-      this.categories = categoriesData;
+    this.categoryService.getCategoriesPerPage(this.page, this.pageSize).subscribe((categoriesData)=>{
+      this.categories = categoriesData.items;
+      this.collectionSize = categoriesData.totalItemCount;
       this.errorOccurred = false;
     }, error => {
       this.errorOccurred = true;
@@ -34,8 +35,18 @@ export class OperatorCategoriesComponent implements OnInit {
   }
   goToCategoryDetails(category: Category, event){}
   clickedCheckMark(event, index: number) {}
-  previousPage() {}
-  nextPage() {}
+  previousPage() {
+    if (this.page > 0) {
+      this.page -= 1;
+      this.fetchCategories();
+    }
+  }
+  nextPage() {
+    if ((this.page + 1) * this.pageSize < this.collectionSize) {
+      this.page += 1;
+      this.fetchCategories();
+    }
+  }
   addNewCategory(){}
 
 }

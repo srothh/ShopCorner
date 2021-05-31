@@ -32,32 +32,34 @@ public class ProductDataGenerator {
 
     @PostConstruct
     public void generateProducts() {
-        TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
-        TaxRate taxRate2 = this.taxRateRepository.findById(2L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
-        TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
-        Category category1 = Category.CategoryBuilder.getCategoryBuilder()
-            .withName("IT & Elektronik")
-            .build();
-        categoryRepository.save(category1);
-        Category category2 = Category.CategoryBuilder.getCategoryBuilder()
-            .withName("Möbel")
-            .build();
-        categoryRepository.save(category2);
-        Category category3 = Category.CategoryBuilder.getCategoryBuilder()
-            .withName("Obst & Gemüse")
-            .build();
-        categoryRepository.save(category3);
-        Category category4 = Category.CategoryBuilder.getCategoryBuilder()
-            .withName("Kleidung")
-            .build();
-        categoryRepository.save(category4);
-        Product product1 = Product.ProductBuilder.getProductBuilder()
-            .withName("Banane")
-            .withDescription("leckere Bananen aus Ecuador")
-            .withPrice(1.49)
-            .withTaxRate(taxRate2)
-            .withCategory(category3)
-            .build();
-        productRepository.save(product1);
+        if (productRepository.findAll().size() == 0) {
+            TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+            TaxRate taxRate2 = this.taxRateRepository.findById(2L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+            TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+            Category category1 = Category.CategoryBuilder.getCategoryBuilder()
+                .withName("IT & Elektronik")
+                .build();
+            categoryRepository.save(category1);
+            Category category2 = Category.CategoryBuilder.getCategoryBuilder()
+                .withName("Möbel")
+                .build();
+            categoryRepository.save(category2);
+            Category category3 = Category.CategoryBuilder.getCategoryBuilder()
+                .withName("Obst & Gemüse")
+                .build();
+            categoryRepository.save(category3);
+            Category category4 = Category.CategoryBuilder.getCategoryBuilder()
+                .withName("Kleidung")
+                .build();
+            categoryRepository.save(category4);
+            Product product1 = Product.ProductBuilder.getProductBuilder()
+                .withName("Banane")
+                .withDescription("leckere Bananen aus Ecuador")
+                .withPrice(1.49)
+                .withTaxRate(taxRate2)
+                .withCategory(category3)
+                .build();
+            productRepository.save(product1);
+        }
     }
 }

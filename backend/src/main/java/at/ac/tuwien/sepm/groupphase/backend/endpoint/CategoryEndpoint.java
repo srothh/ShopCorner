@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CategoryMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
@@ -15,11 +16,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
@@ -59,12 +60,25 @@ public class CategoryEndpoint {
     }
 
     /**
-     * Gets all categories that are currently saved in the database.
+     * Gets all categories that are currently saved in the database in a paginated manner.
      *
-     * @return all categories in dto format
+     * @return all categories specified by the current page and the pageCount
      */
     @PermitAll
     @GetMapping(BASE_URL)
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Returns all categories relating to products that are currently stored in the database")
+    public PaginationDto<CategoryDto> getAllCategoriesPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
+        LOGGER.info("GET" + BASE_URL);
+        return new PaginationDto<CategoryDto>(this.categoryService.getAllCategoriesPerPage(page, pageCount).getContent()
+            .stream()
+            .map(this.categoryMapper::entityToDto)
+            .collect(Collectors.toList()), page, pageCount, categoryService.getCategoriesCount());
+    }
+
+
+    @PermitAll
+    @GetMapping(BASE_URL + "/all")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all categories relating to products that are currently stored in the database")
     public List<CategoryDto> getAllCategories() {
