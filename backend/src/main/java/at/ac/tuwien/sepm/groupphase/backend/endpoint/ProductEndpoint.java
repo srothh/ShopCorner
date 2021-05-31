@@ -51,8 +51,7 @@ public class ProductEndpoint {
      * @param productDto the dto class containing all necessary field
      * @return the newly added product in a dto - format
      */
-    //@Secured("ROLE_ADMIN")
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Creates a new product with a given optional category and tax-rate", security = @SecurityRequirement(name = "apiKey"))
@@ -65,7 +64,7 @@ public class ProductEndpoint {
     /**
      * Gets all products form the database in a paginated manner.
      *
-     * @param page      describes the number of the page
+     * @param page describes the number of the page
      * @param pageCount the number of entries in each page
      * @return all products with all given fields in a dto - format and paginated specified by page and pageCount
      */
@@ -99,7 +98,6 @@ public class ProductEndpoint {
      *
      * @return all simple products ( product without picture,category) in a dto - format NOT PAGINATED
      */
-
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("/simple")
     @ResponseStatus(HttpStatus.OK)
@@ -121,7 +119,6 @@ public class ProductEndpoint {
      * @param productId  the Id of the product to execute the udpate
      * @param productDto the product dto with the updated fields
      */
-
     @Secured("ROLE_ADMIN")
     @PutMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
