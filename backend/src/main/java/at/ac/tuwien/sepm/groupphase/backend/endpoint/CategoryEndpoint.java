@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,10 +77,11 @@ public class CategoryEndpoint {
     @Operation(summary = "Returns all categories relating to products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<CategoryDto> getAllCategoriesPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
         LOGGER.info("GET" + BASE_URL);
-        return new PaginationDto<CategoryDto>(this.categoryService.getAllCategoriesPerPage(page, pageCount).getContent()
+        Page<Category> categoryPage = this.categoryService.getAllCategoriesPerPage(page, pageCount);
+        return new PaginationDto<CategoryDto>(categoryPage.getContent()
             .stream()
             .map(this.categoryMapper::entityToDto)
-            .collect(Collectors.toList()), page, pageCount, categoryService.getCategoriesCount());
+            .collect(Collectors.toList()), page, pageCount, categoryPage.getTotalPages(), categoryService.getCategoriesCount());
     }
 
     /**
