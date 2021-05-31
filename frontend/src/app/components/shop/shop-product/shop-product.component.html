@@ -1,12 +1,15 @@
 <main role="main" class="mx-5">
   <div class="album py-5">
     <div class="mb-3">
+      <h3>
+        Produkte
+      </h3>
       <h6 class="text-muted" *ngIf="collectionSize === 0; else not_empty">
         Keine Produkte gespeichert.
       </h6>
       <div>
         <ng-template #not_empty>
-          <h6 class="text-muted" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content" >
+          <h6 class="text-muted" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content">
             Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
             von {{collectionSize}}</h6>
         </ng-template>
@@ -15,9 +18,24 @@
             von {{collectionSize}}</h6>
         </ng-template>
       </div>
-      <form class="form-inline" [formGroup]="searchForm" (ngSubmit)="searchProducts()">
-        <input class="form-control mr-sm-2 w-25" type="search" formControlName="searchText" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <form class="form-inline w-100" [formGroup]="searchForm" (ngSubmit)="fetchProducts()">
+        <div class="d-flex justify-content-between w-100">
+          <div class="d-flex justify-content-between">
+            <input class="form-control" type="search" formControlName="searchText" placeholder="Search"
+                   aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </div>
+          <div class="d-flex flex-row" style="gap: 15px">
+            <label for="categoryFilter">Filtern nach Kategorien</label>
+            <select class="custom-select" name="category-names" id="categoryFilter"
+                    (change)="fetchProducts()"
+                    formControlName="categoryId"
+            >
+              <option selected value="-1">Alle</option>
+              <option *ngFor="let category of this.categories" [value]="category.id">{{category.name}}</option>
+            </select>
+          </div>
+        </div>
       </form>
     </div>
     <div class="row">
@@ -26,8 +44,8 @@
       </div>
     </div>
     <div class="d-flex justify-content-between">
-      <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
-      <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+      <button class="btn btn-dark" [disabled]="page === 0" (click)=previousPage()>Vorherige Seite</button>
+      <button class="btn btn-dark" [disabled]="page + 1 === totalPages" (click)=nextPage()>Nächste Seite</button>
     </div>
   </div>
 </main>

@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from '../../../services/product/product.service';
 import {Product} from '../../../dtos/product';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {CategoryService} from '../../../services/category.service';
+import {Category} from '../../../dtos/category';
 
 @Component({
   selector: 'app-shop-product',
@@ -12,25 +14,38 @@ export class ShopProductComponent implements OnInit {
   searchForm: FormGroup;
 
   products: Product[];
+  categories: Category[];
   page = 0;
   pageSize = 15;
+  totalPages = 1;
   collectionSize = 0;
 
-  constructor(private productService: ProductService, private formBuilder: FormBuilder) {
+  constructor(private productService: ProductService, private categoryService: CategoryService, private formBuilder: FormBuilder) {
     this.searchForm = this.formBuilder.group({
       searchText: [''],
+      categoryId: [-1]
     });
   }
 
   ngOnInit(): void {
     this.fetchProducts();
+    this.fetchCategories();
   }
 
   fetchProducts(): void {
     const name = this.searchForm.controls.searchText.value;
-    this.productService.getProducts(this.page, this.pageSize, name).subscribe((productData) => {
+    const categoryId = this.searchForm.controls.categoryId.value;
+    this.productService.getProducts(this.page, this.pageSize, name, undefined, categoryId).subscribe((productData) => {
       this.products = productData.items;
+      this.totalPages = productData.totalPages;
       this.collectionSize = productData.totalItemCount;
+      console.log(this.totalPages + '  ' + this.page);
+    });
+  }
+
+  fetchCategories() {
+    this.categoryService.getCategories().subscribe((categories) => {
+      this.categories = categories;
     });
   }
 
@@ -52,9 +67,5 @@ export class ShopProductComponent implements OnInit {
       this.page -= 1;
       this.fetchProducts();
     }
-  }
-
-  searchProducts() {
-    this.fetchProducts();
   }
 }
