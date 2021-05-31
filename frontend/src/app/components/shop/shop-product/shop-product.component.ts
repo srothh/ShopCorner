@@ -72,7 +72,7 @@ export class ShopProductComponent implements OnInit {
     }
   }
 
-  selectCategory() {
+  resetAndFetchProducts() {
     this.page = 0;
     this.fetchProducts();
   }
