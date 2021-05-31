@@ -6,7 +6,7 @@ import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
 import {forkJoin} from 'rxjs';
 import {Product} from '../../../dtos/product';
-import {ProductService} from '../../../services/product.service';
+import {ProductService} from '../../../services/product/product.service';
 
 
 @Component({

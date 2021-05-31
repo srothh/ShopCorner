@@ -4,4 +4,5 @@ export class Pagination<T> {
   pageNumber: number;
   pageSize: number;
   totalItemCount: number;
+  totalPages: number;
 }

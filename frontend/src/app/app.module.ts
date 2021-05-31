@@ -37,6 +37,8 @@ import {BaseLoginComponent} from './components/common/base-login/base-login.comp
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
 import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
+import { BaseShopProductItemComponent } from './components/common/base-shop-product-item/base-shop-product-item.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -69,7 +71,8 @@ import {OperatorInvoiceDetailviewComponent} from './components/operator/operator
     OperatorProductDetailsComponent,
     OperatorInvoiceFormComponent,
     OperatorInvoiceComponent,
-    OperatorInvoiceDetailviewComponent
+    OperatorInvoiceDetailviewComponent,
+    BaseShopProductItemComponent
   ],
   imports: [
     BrowserModule,
@@ -77,7 +80,8 @@ import {OperatorInvoiceDetailviewComponent} from './components/operator/operator
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    FontAwesomeModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

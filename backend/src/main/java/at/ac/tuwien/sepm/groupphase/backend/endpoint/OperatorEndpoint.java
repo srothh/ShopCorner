@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
@@ -70,12 +71,13 @@ public class OperatorEndpoint {
             throw new AccessDeniedException("Employee can not access admins");
         }
         PaginationDto<OverviewOperatorDto> dto;
+        Page<Operator> operatorPage = operatorService.findAll(page, pageCount, permissions);
         if (permissions == Permissions.admin) {
             dto =
-                new PaginationDto<>(operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, pageCount, permissions).getContent()), page, pageCount, operatorService.getAdminCount());
+                new PaginationDto<>(operatorMapper.operatorToOverviewOperatorDto(operatorPage.getContent()), page, pageCount, operatorPage.getTotalPages(), operatorService.getAdminCount());
         } else {
             dto =
-                new PaginationDto<>(operatorMapper.operatorToOverviewOperatorDto(operatorService.findAll(page, pageCount, permissions).getContent()), page, pageCount, operatorService.getEmployeeCount());
+                new PaginationDto<>(operatorMapper.operatorToOverviewOperatorDto(operatorPage.getContent()), page, pageCount, operatorPage.getTotalPages(), operatorService.getEmployeeCount());
         }
         return dto;
     }
