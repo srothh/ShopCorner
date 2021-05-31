@@ -14,17 +14,29 @@ export class OperatorInvoiceDetailviewComponent implements OnInit {
   error = false;
   errorMessage = '';
   download = false;
-  show = false;
-  print = false;
+
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
     this.detailedInvocie = new Invoice();
+    this.detailedInvocie.date = '';
+    this.detailedInvocie.amount = 0;
+
     this.fetchData(this.value.id);
   }
 
+  onSubmit(event) {
+    if (event === 'show') {
+      this.showInvoiceById();
+    } else if (event === 'download') {
+      this.downloadInvoiceById();
+    }
+
+  }
+
+
   downloadInvoiceById() {
-    this.invoiceService.getInvoiceAsPdfById(-1).subscribe((data) => {
+    this.invoiceService.getInvoiceAsPdfById(this.value.id ).subscribe((data) => {
       const newBlob  = new Blob([data], {type: 'application/pdf'});
       const downloadURL = window.URL.createObjectURL(data);
       const link = document.createElement('a');
@@ -32,7 +44,6 @@ export class OperatorInvoiceDetailviewComponent implements OnInit {
       link.download = 'invoice_' + this.value.date + '_' + this.value.id + '.pdf';
       link.click();
     }, (error) => {
-      // this.defaultServiceErrorHandling(error);
       this.error = true;
       this.errorMessage = error;
     });
@@ -44,7 +55,6 @@ export class OperatorInvoiceDetailviewComponent implements OnInit {
       const blobURL = URL.createObjectURL(newBlob);
       window.open(blobURL);
     }, (error) => {
-      // this.defaultServiceErrorHandling(error);
       this.error = true;
       this.errorMessage = error;
     });

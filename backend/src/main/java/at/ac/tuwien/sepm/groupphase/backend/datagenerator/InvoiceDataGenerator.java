@@ -54,7 +54,7 @@ public class InvoiceDataGenerator {
                 item.setProduct(p);
                 item.setNumberOfItems(i);
                 invoice.setDate(LocalDateTime.now().minus(i, ChronoUnit.DAYS));
-                invoice.setAmount((item.getNumberOfItems() * i));
+                invoice.setAmount((item.getNumberOfItems()*(p.getPrice()*p.getTaxRate().getCalculationFactor())));
                 Invoice newInvoice = invoiceRepository.save(invoice);
                 item.setInvoice(newInvoice);
 

@@ -1,6 +1,6 @@
 <div class="container">
   <br>
-  <h2>Betreiber Konten</h2>
+  <h2>Rechnung</h2>
   <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
     <label class="btn btn-light btn-sm active">
       <input type="radio" name="buttons" id="option1" checked [disabled]="toggleForm||toggleDetialview">
@@ -52,7 +52,7 @@
           <tbody>
           <tr *ngFor="let invoice of invoices" (click)="getDetailedView(invoice)">
             <td><span>{{invoice.id}}</span></td>
-            <td><span>{{invoice.date}}</span></td>
+            <td><span>{{invoice.date.split("T", 1)}}</span></td>
             <td><span>{{invoice.amount}}</span></td>
           </tr>
           </tbody>
