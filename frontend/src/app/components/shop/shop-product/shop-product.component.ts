@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {CategoryService} from '../../../services/category.service';
 import {Category} from '../../../dtos/category';
 import {ProductService} from '../../../services/product/product.service';
+import {faFilter, faSearch} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-shop-product',
@@ -19,6 +20,9 @@ export class ShopProductComponent implements OnInit {
   pageSize = 15;
   totalPages = 1;
   collectionSize = 0;
+
+  faFilter = faFilter;
+  faSearch = faSearch;
 
   constructor(private productService: ProductService, private categoryService: CategoryService, private formBuilder: FormBuilder) {
     this.searchForm = this.formBuilder.group({

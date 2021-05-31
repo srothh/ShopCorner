@@ -1,4 +1,4 @@
-<div class="card mb-4 rounded zoom shadow-lg" style="cursor: pointer">
+<div class="card mb-4 rounded-lg zoom shadow-lg" style="cursor: pointer">
   <img *ngIf="product.picture != null" class="card-img-top" src="{{getImageSource(product)}}" width="125px" height="200px"
        alt="produkt">
   <object *ngIf="product.picture == null"  class="mx-auto" data="assets/no_image_available.svg" width="125" height="200"> </object>
@@ -12,7 +12,9 @@
         </div>
         <span class="text-muted category">{{product.category ? product.category.name : 'Ohne Kategorie'}}</span>
       </div>
-      <span class="price">€ {{product.price.toFixed(2)}}</span>
+      <div>
+        <span class="price">€ {{product.price.toFixed(2)}}</span>
+      </div>
     </div>
   </div>
 </div>
