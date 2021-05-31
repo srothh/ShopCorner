@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {forkJoin} from 'rxjs';
 import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice.service';
+import {Pagination} from '../../../dtos/pagination';
 
 @Component({
   selector: 'app-operator-invoice',
@@ -14,12 +15,14 @@ export class OperatorInvoiceComponent implements OnInit {
   page = 0;
   pageSize = 15;
   collectionSize = 0;
+  error = false;
+  errorMessage = '';
 
-
-  constructor(private invoiceService: InvoiceService) { }
+  constructor(private invoiceService: InvoiceService) {
+  }
 
   ngOnInit(): void {
-    this.fetchData();
+    this.loadInvoicesForPage();
   }
 
   toggleSide() {
@@ -34,7 +37,7 @@ export class OperatorInvoiceComponent implements OnInit {
   nextPage() {
     if ((this.page + 1) * this.pageSize < this.collectionSize) {
       this.page += 1;
-      //this.loadInvoicesForPage();
+      this.loadInvoicesForPage();
     }
   }
 
@@ -44,7 +47,7 @@ export class OperatorInvoiceComponent implements OnInit {
   previousPage() {
     if (this.page > 0) {
       this.page -= 1;
-      //this.loadInvoicesForPage();
+      this.loadInvoicesForPage();
     }
   }
 
@@ -52,11 +55,11 @@ export class OperatorInvoiceComponent implements OnInit {
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
-  /*private loadInvoicesForPage() {
-    this.customerService.getAllCustomersForPage(this.page, this.pageSize).subscribe(
-      (paginationDto: Pagination<Customer>) => {
+  private loadInvoicesForPage() {
+    this.invoiceService.getAllInvoicesForPage(this.page, this.pageSize).subscribe(
+      (paginationDto: Pagination<Invoice>) => {
         console.log(paginationDto);
-        this.customers = paginationDto.items;
+        this.invoices = paginationDto.items;
         this.collectionSize = paginationDto.totalItemCount;
       },
       error => {
@@ -64,16 +67,5 @@ export class OperatorInvoiceComponent implements OnInit {
         this.errorMessage = error.error;
       }
     );
-  }*/
-
-
-
-
-  private fetchData(): void {
-    forkJoin([this.invoiceService.getInvoice()])
-      .subscribe(([invoices]) => {
-        this.invoices = invoices;
-      });
   }
-
 }
