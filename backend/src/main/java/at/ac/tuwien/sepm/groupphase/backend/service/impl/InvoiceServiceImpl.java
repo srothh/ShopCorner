@@ -1,20 +1,15 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
-import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -53,8 +48,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
 
-
-    @Cacheable(value = "counts", key = "'customers'")
+    @Cacheable(value = "counts", key = "'invoices'")
     @Override
     public long getInvoiceCount() {
         LOGGER.trace("getInvoiceCount()");
@@ -67,10 +61,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
     }
 
-
-
-
-
+    @CacheEvict(value = "counts", key = "'invoices'")
     @Transactional
     @Override
     public Invoice createInvoice(Invoice invoice) {
