@@ -72,8 +72,7 @@ public class ProductEndpoint {
     @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page,
-                                                           @RequestParam("page_count") int pageCount,
+    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount,
                                                            @RequestParam(defaultValue = "id") String sortBy,
                                                            @RequestParam(required = false, defaultValue = "") String name,
                                                            @RequestParam(name = "category_id", required = false, defaultValue = "-1") Long categoryId) {

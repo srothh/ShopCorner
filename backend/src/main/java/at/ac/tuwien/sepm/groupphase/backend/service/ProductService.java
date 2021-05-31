@@ -42,7 +42,7 @@ public interface ProductService {
      * Updates an already existing product in the database.
      *
      * @param productId the Id of the product to update
-     * @param product   the newly updated product entity with the updated fields
+     * @param product the newly updated product entity with the updated fields
      * @throws RuntimeException occurs during database operations
      */
     void updateProduct(Long productId, Product product);
@@ -53,7 +53,7 @@ public interface ProductService {
      * @param productId the is to search in the database
      * @return the product entity with the given product Id
      * @throws NotFoundException if the entity is not available in the database
-     * @throws RuntimeException  occurs during database operations
+     * @throws RuntimeException occurs during database operations
      */
     Product findById(Long productId);
 
