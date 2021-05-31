@@ -3,28 +3,28 @@
   <h2>Betreiber Konten</h2>
   <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
     <label class="btn btn-light btn-sm active">
-      <input type="radio" name="buttons" id="option1" checked [disabled]="toggle">
+      <input type="radio" name="buttons" id="option1" checked [disabled]="toggleForm||toggleDetialview">
       Alle
     </label>
     <label class="btn btn-light btn-sm">
-      <input type="radio" name="buttons" id="option2" [disabled]="toggle">
+      <input type="radio" name="buttons" id="option2" [disabled]="toggleForm||toggleDetialview">
       Gesendet
     </label>
     <label class="btn btn-light btn-sm">
-      <input type="radio" name="buttons" id="option3" [disabled]="toggle">
+      <input type="radio" name="buttons" id="option3" [disabled]="toggleForm||toggleDetialview">
       Storniert
     </label>
   </div>
-  <div class="admin_options">
+  <div class="invoice_options">
     <div>
-      <button type="button" class="btn btn-sm" [ngClass]="toggle?'btn-outline-dark':'btn-outline-success'"
-              (click)="toggleSide()">{{toggle ? 'Zurück' : '+ Rechnung'}}</button>
+      <button type="button" class="btn btn-sm" [ngClass]="(toggleForm||toggleDetialview)?'btn-outline-dark':'btn-outline-success'"
+              (click)="toggleSide()">{{(toggleForm||toggleDetialview)? 'Zurück' : '+ Rechnung'}}</button>
     </div>
 
   </div>
   <hr>
   <div>
-    <div *ngIf="!toggle">
+    <div *ngIf="!toggleForm&&!toggleDetialview">
       <div>
         <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
           Keine Kund_innen gespeichert.
@@ -50,7 +50,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let invoice of invoices">
+          <tr *ngFor="let invoice of invoices" (click)="getDetailedView(invoice)">
             <td><span>{{invoice.id}}</span></td>
             <td><span>{{invoice.date}}</span></td>
             <td><span>{{invoice.amount}}</span></td>
@@ -66,8 +66,11 @@
 
 
     </div>
-    <div *ngIf="toggle">
+    <div *ngIf="toggleForm">
       <app-operator-invoice-form></app-operator-invoice-form>
+    </div>
+    <div *ngIf="toggleDetialview">
+      <app-operator-invoice-detailview [value]="detailviewInvoice"></app-operator-invoice-detailview>
     </div>
   </div>
 </div>

@@ -34,7 +34,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   download = false;
   show = false;
-  print = false;
 
   constructor(private invoiceService: InvoiceService, private formBuilder: FormBuilder) {
   }
@@ -76,15 +75,12 @@ export class OperatorInvoiceFormComponent implements OnInit {
       return;
     }
     this.creatInvoiceDto();
-    // this.invoiceService.createInvoice(this.invoiceDto);
-    if (this.print) {
-    } else if (this.show) {
+    if (this.show) {
       this.showInvoice();
     } else if (this.download) {
       this.downloadInvoice();
     }
     this.show = false;
-    this.print = false;
     this.download = false;
     this.newInvoiceForm.reset();
     this.vanishError();
@@ -189,35 +185,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
       this.errorMessage = error;
     });
   }
-
-
-  downloadInvoiceById(id: number) {
-    this.invoiceService.getInvoiceAsPdfById(-1).subscribe((data) => {
-      const newBlob  = new Blob([data], {type: 'application/pdf'});
-      const downloadURL = window.URL.createObjectURL(data);
-      const link = document.createElement('a');
-      link.href = downloadURL;
-      link.download = 'invoice_' + this.invoiceDto.date + '_' + id + '.pdf';
-      link.click();
-    }, (error) => {
-      // this.defaultServiceErrorHandling(error);
-      this.error = true;
-      this.errorMessage = error;
-    });
-  }
-
-  showInvoiceById(id: number) {
-    this.invoiceService.getInvoiceAsPdfById(-1).subscribe((data) => {
-      const newBlob  = new Blob([data], {type: 'application/pdf'});
-      const blobURL = URL.createObjectURL(newBlob);
-      window.open(blobURL);
-    }, (error) => {
-      // this.defaultServiceErrorHandling(error);
-      this.error = true;
-      this.errorMessage = error;
-    });
-  }
-
 
   /**
    * @param error

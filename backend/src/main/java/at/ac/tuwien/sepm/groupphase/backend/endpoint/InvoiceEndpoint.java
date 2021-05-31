@@ -69,7 +69,6 @@ public class InvoiceEndpoint {
     public DetailedInvoiceDto find(@PathVariable Long id) {
         LOGGER.info("GET /invoice/{}", id);
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
-
     }
 
     /**

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component,  OnInit} from '@angular/core';
 import {forkJoin} from 'rxjs';
 import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice.service';
@@ -10,13 +10,16 @@ import {Pagination} from '../../../dtos/pagination';
   styleUrls: ['./operator-invoice.component.scss']
 })
 export class OperatorInvoiceComponent implements OnInit {
-  toggle = false;
+  toggleForm = false;
+  toggleDetialview = false;
+
   invoices: Invoice[];
   page = 0;
   pageSize = 15;
   collectionSize = 0;
   error = false;
   errorMessage = '';
+  detailviewInvoice: Invoice;
 
   constructor(private invoiceService: InvoiceService) {
   }
@@ -26,9 +29,13 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
   toggleSide() {
-    this.toggle = !this.toggle;
+    if (!this.toggleDetialview) {
+      this.toggleForm = !this.toggleForm;
+    } else {
+      this.toggleForm = false;
+    }
+    this.toggleDetialview = false;
   }
-
 
   /**
    * goes to next page if not on the last page
@@ -50,8 +57,15 @@ export class OperatorInvoiceComponent implements OnInit {
     }
   }
 
-  getDetaildView(id: number) {
-    console.log(id);
+  /**
+   * toggles to the detailview.
+   *
+   * @param id of the invoice
+   */
+  getDetailedView(invoice: Invoice) {
+    this.toggleDetialview = true;
+    this.toggleForm = false;
+    this.detailviewInvoice = invoice;
   }
 
 
