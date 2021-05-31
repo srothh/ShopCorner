@@ -51,6 +51,10 @@ export class OperatorInvoiceComponent implements OnInit {
     }
   }
 
+  getDetaildView(id: number) {
+    console.log(id);
+  }
+
 
   /**
    * calls on Service class to fetch all customer accounts from backend

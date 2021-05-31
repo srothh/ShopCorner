@@ -23,7 +23,7 @@
 
   </div>
   <hr>
-  <div class="container">
+  <div>
     <div *ngIf="!toggle">
       <div>
         <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
@@ -41,7 +41,7 @@
       </div>
 
       <div class="border rounded" style="height: 560px">
-        <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
+        <table class="table table-sm table-hover" data-pagination="true" data-page-list="[1,2]">
           <thead>
           <tr class="table-secondary">
             <th scope="col">Rechnungsnummer</th>
@@ -50,10 +50,10 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let invoice of invoices">
-            <td style="background: darkgray"><span>{{invoice.id}}</span></td>
-            <td style="background: darkgray"><span>{{invoice.date}}</span></td>
-            <td style="background: darkgray"><span>{{invoice.amount}}</span></td>
+          <tr *ngFor="let invoice of invoices" (click)="getDetaildView(invoice.id)">
+            <td><span>{{invoice.id}}</span></td>
+            <td><span>{{invoice.date}}</span></td>
+            <td><span>{{invoice.amount}}</span></td>
           </tr>
           </tbody>
         </table>
