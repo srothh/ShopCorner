@@ -4,7 +4,7 @@
       <h3>
         Produkte
       </h3>
-      <div *ngIf="collectionSize === 0">
+      <div *ngIf="collectionSize > 0">
         <div>
           <h6 class="text-muted" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content">
             Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}

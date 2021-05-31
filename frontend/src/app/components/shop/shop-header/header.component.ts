@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CustomerAuthService} from '../../../services/auth/customer-auth.service';
+import {faShoppingCart} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-header',
@@ -7,6 +8,8 @@ import {CustomerAuthService} from '../../../services/auth/customer-auth.service'
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+
+  faShoppingCart = faShoppingCart;
 
   constructor(public authService: CustomerAuthService) { }
 
