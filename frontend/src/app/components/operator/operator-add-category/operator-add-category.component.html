@@ -10,9 +10,6 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<button type="button" class="btn btn-primary mt-2" (click)="goBackToCategoriesOverview()">
-  Zurück
-</button>
 
 <div class="operator-add-category-header mt-3" style="display:flex;justify-content: space-between">
   <h3>Neue Produktkategorie hinzufügen</h3>
@@ -20,6 +17,7 @@
     Speichern
   </button>
 </div>
+<hr>
 
 <form class="row g-3" [formGroup]="categoryForm" #myForm="ngForm" (ngSubmit)="submitCategory()">
   <div class="col-md-6 mt-3">

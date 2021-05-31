@@ -6,11 +6,12 @@
 </div>
 
 <div class="operator-category-container">
-  <div class="operator-category-header mt-3">
-    <h3>Kategorien</h3>
-  </div>
-  <div class="operator-category-body">
+  <div class="operator-category-header mt-3 d-flex justify-content-between">
+    <h2>Kategorien</h2>
     <button type="button" class="btn btn-primary mb-3" (click)="addNewCategory()">Kategorie hinzufügen</button>
+  </div>
+  <hr>
+  <div class="operator-category-body">
     <div>
       <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else last_page">
         Zeigt {{1 + (pageSize * page)}}-{{(pageSize * (page + 1))}}
@@ -26,9 +27,9 @@
     </div>
     <div class="border rounded " style="height: 560px; margin-top: 32px">
       <table class="table table-hover table-sm" data-pagination="true" data-page-list="[1,2]">
-        <thead class="thead-light">
+        <thead class="table-secondary">
         <tr>
-          <th scope="col"></th>
+          <th scope="col">Ausgewählt</th>
           <th scope="col">Name</th>
         </tr>
         </thead>
@@ -48,9 +49,9 @@
         </tbody>
       </table>
     </div>
-    <div class="d-flex justify-content-between p-2">
-      <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
-      <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+    <div class="d-flex justify-content-between pt-3">
+      <button class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
+      <button class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
     </div>
   </div>
 </div>
