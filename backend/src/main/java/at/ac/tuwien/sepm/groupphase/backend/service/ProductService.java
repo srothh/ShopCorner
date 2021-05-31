@@ -23,10 +23,10 @@ public interface ProductService {
     /**
      * Gets all products per page that were previously added in the database in a paginated manner.
      *
-     * @param page       describes the number of the page
-     * @param pageCount  the number of entries each page holds
+     * @param page describes the number of the page
+     * @param pageCount the number of entries each page holds
      * @param categoryId the category id, which a product contains
-     * @param name       the name of the product
+     * @param name the name of the product
      * @return all products that are currently saved in the database
      */
     Page<Product> getAllProductsPerPage(int page, int pageCount, Long categoryId, String sortBy, String name);
