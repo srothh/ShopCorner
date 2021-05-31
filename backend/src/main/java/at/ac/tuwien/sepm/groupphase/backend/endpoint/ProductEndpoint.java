@@ -76,14 +76,22 @@ public class ProductEndpoint {
     public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page,
                                                            @RequestParam("page_count") int pageCount,
                                                            @RequestParam(defaultValue = "id") String sortBy,
-                                                           @RequestParam(name = "name", required = false, defaultValue = "") String name,
+                                                           @RequestParam(required = false, defaultValue = "") String name,
                                                            @RequestParam(name = "category_id", required = false, defaultValue = "-1") Long categoryId) {
         LOGGER.info("GET " + BASE_URL);
         Page<Product> productPage = this.productService.getAllProductsPerPage(page, pageCount, categoryId, sortBy, name);
+        Long productCount;
+        if (name.isEmpty() && categoryId == -1) {
+            productCount = this.productService.getProductsCount();
+        } else {
+            // Temporarily don't cache with filters
+            productCount = productPage.getTotalElements();
+        }
+        System.out.println(productCount + " " + name + " " + categoryId);
         return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
-            .collect(Collectors.toList()), page, pageCount, productPage.getTotalPages(), this.productService.getProductsCount());
+            .collect(Collectors.toList()), page, pageCount, productPage.getTotalPages(), productCount);
     }
 
     /**

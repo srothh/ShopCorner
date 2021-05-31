@@ -144,7 +144,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Cacheable(value = "counts", key = "'products'")
-    @Override
     public Long getProductsCount() {
         LOGGER.trace("getProductsCount()");
         LOGGER.info("getProductsCount()");
