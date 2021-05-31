@@ -16,6 +16,7 @@ public interface CategoryService {
      *
      * @param category the newly added product
      * @return the newly created category
+     * @throws RuntimeException occurs during database operations
      */
     Category createCategory(Category category);
 
@@ -26,6 +27,7 @@ public interface CategoryService {
      * @param pageSize number of entries per page
      *
      * @return all categories that were previously saved in a page Object given by page and pageSize
+     * @throws RuntimeException occurs during database operations
      */
     Page<Category> getAllCategoriesPerPage(int page, int pageSize);
 
@@ -33,6 +35,7 @@ public interface CategoryService {
      * Gets all Categories that were previously created.
      *
      * @return all categories that were previously saved
+     * @throws RuntimeException occurs during database operations
      */
     List<Category> getAllCategories();
 
@@ -40,6 +43,7 @@ public interface CategoryService {
      * Gets the total number of categories.
      *
      * @return the number of total categories
+     * @throws RuntimeException occurs during database operations
      * */
     Long getCategoriesCount();
 }

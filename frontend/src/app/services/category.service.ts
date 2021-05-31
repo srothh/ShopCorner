@@ -12,7 +12,7 @@ import {OperatorAuthService} from './auth/operator-auth.service';
 })
 export class CategoryService {
 
-  private messageBaseUri: string = this.globals.backendUri + '/categories';
+  private categoryBaseUri: string = this.globals.backendUri + '/categories';
 
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
@@ -21,23 +21,31 @@ export class CategoryService {
    * Loads all categories from the backend
    */
   getCategories(): Observable<Category[]> {
-    return this.httpClient.get<Category[]>(this.messageBaseUri +'/all');
+    return this.httpClient.get<Category[]>(this.categoryBaseUri +'/all');
   }
 
   /**
    * Loads all categories from the backend in a paginated manner specified by page and pageSize
+   *
+   * @param page the current page the user is in
+   * @param pageCount number of all entries in a page
+   *
+   * @return An Observable with paginated category
    */
   getCategoriesPerPage(page: number, pageCount): Observable<Pagination<Category>> {
-    return this.httpClient.get<Pagination<Category>>(this.messageBaseUri + '/?page='+ page + '&page_count='+pageCount, {
+    return this.httpClient.get<Pagination<Category>>(this.categoryBaseUri + '/?page='+ page + '&page_count='+pageCount, {
       headers: this.getHeadersForOperator()
     });
   }
 
   /**
    * adds a new category to the backend
+   *
+   * @param category the new category to be added
+   * @return An Observable with the newly added category
    */
   addCategory(category: Category): Observable<Category> {
-    return this.httpClient.post<Category>(this.messageBaseUri, category,{
+    return this.httpClient.post<Category>(this.categoryBaseUri, category,{
       headers: this.getHeadersForOperator()
     });
   }
