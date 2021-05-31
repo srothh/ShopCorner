@@ -14,6 +14,9 @@ export class ShopHomeComponent implements OnInit {
   pageSize = 18;
   collectionSize = 0;
 
+  error = false;
+  errorMessage = '';
+
   constructor(private productService: ProductService) {
   }
 
@@ -23,9 +26,23 @@ export class ShopHomeComponent implements OnInit {
 
   fetchProducts(): void {
     this.productService.getProducts(this.page, this.pageSize, undefined, 'saleCount').subscribe((productData) => {
-      this.products = productData.items;
-      this.collectionSize = productData.totalItemCount;
-    });
+        this.products = productData.items;
+        this.collectionSize = productData.totalItemCount;
+      }, error => {
+        console.log(error);
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
+      });
   }
 
+  /**
+   * Error flag will be deactivated, which clears the error message
+   */
+  vanishError() {
+    this.error = false;
+  }
 }

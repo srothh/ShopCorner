@@ -24,6 +24,9 @@ export class ShopProductComponent implements OnInit {
   faFilter = faFilter;
   faSearch = faSearch;
 
+  error = false;
+  errorMessage = '';
+
   constructor(private productService: ProductService, private categoryService: CategoryService, private formBuilder: FormBuilder) {
     this.searchForm = this.formBuilder.group({
       searchText: [''],
@@ -43,12 +46,28 @@ export class ShopProductComponent implements OnInit {
       this.products = productData.items;
       this.totalPages = productData.totalPages;
       this.collectionSize = productData.totalItemCount;
+    }, error => {
+      console.log(error);
+      this.error = true;
+      if (typeof error.error === 'object') {
+        this.errorMessage = error.error.error;
+      } else {
+        this.errorMessage = error.error;
+      }
     });
   }
 
   fetchCategories() {
     this.categoryService.getCategories().subscribe((categories) => {
       this.categories = categories;
+    }, error => {
+      console.log(error);
+      this.error = true;
+      if (typeof error.error === 'object') {
+        this.errorMessage = error.error.error;
+      } else {
+        this.errorMessage = error.error;
+      }
     });
   }
 
@@ -72,8 +91,18 @@ export class ShopProductComponent implements OnInit {
     }
   }
 
+  /**
+   * Resets the page and fetches products
+   */
   resetAndFetchProducts() {
     this.page = 0;
     this.fetchProducts();
+  }
+
+  /**
+   * Error flag will be deactivated, which clears the error message
+   */
+  vanishError() {
+    this.error = false;
   }
 }

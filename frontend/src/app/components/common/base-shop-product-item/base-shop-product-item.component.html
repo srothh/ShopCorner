@@ -6,16 +6,14 @@
           height="200"></object>
   <div class="card-body">
     <div class="d-flex flex-column justify-content-between">
-      <ul class="list-unstyled mt-3 mb-4">
-        <li>{{product.name}}</li>
-        <li class="text-muted category">{{product.category ? product.category.name : 'Ohne Kategorie'}}</li>
-      </ul>
-      <div class="d-flex justify-content-between flex-wrap" style="gap: 15px">
-        <span class="price">€ {{product.price.toFixed(2)}}</span>
-        <!-- Possibilities: In stock, Unavailable -->
-        <span class="availability" [class.in-stock]="!product.locked"
-            [class.locked]="product.locked">{{product.locked ? 'Nicht verfügbar' : 'Auf Lager'}}</span>
+      <span class="card-title">{{product.name}}</span>
+      <span class="card-subtitle text-muted category">{{product.category ? product.category.name : 'Ohne Kategorie'}}</span>
 
+      <div class="d-flex justify-content-between mt-3">
+        <span class="card-text price">€ {{product.price.toFixed(2)}}</span>
+        <!-- Possibilities: In stock, Unavailable -->
+        <span class="card-text availability" [class.in-stock]="!product.locked"
+            [class.locked]="product.locked">{{product.locked ? 'Nicht verfügbar' : 'Auf Lager'}}</span>
       </div>
     </div>
 
