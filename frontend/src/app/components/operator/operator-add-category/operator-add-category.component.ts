@@ -49,5 +49,8 @@ export class OperatorAddCategoryComponent implements OnInit {
     const isValid = !isWhitespace;
     return isValid ? null : {whitespace: true};
   }
+  goBackToCategoriesOverview(){
+    this.router.navigate(['operator/categories']).then();
+  }
 
 }

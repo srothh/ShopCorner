@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
@@ -30,8 +32,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(CategoryEndpoint.BASE_URL)
 public class CategoryEndpoint {
-    private static final String BASE_URL = "/api/v1/categories";
+    static final String BASE_URL = "/api/v1/categories";
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
@@ -49,10 +52,10 @@ public class CategoryEndpoint {
      *
      * @return the newly added category in a dto - format
      */
-    @PermitAll
-    @PostMapping(BASE_URL)
+    @Secured("ROLE_ADMIN")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Creates a new category that is associated to a product with a given name")
+    @Operation(summary = "Creates a new category that is associated to a product with a given name", security = @SecurityRequirement(name = "apiKey"))
     public CategoryDto createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         LOGGER.info("POST newCategory{}" + BASE_URL, categoryDto);
         return this.categoryMapper
@@ -60,14 +63,17 @@ public class CategoryEndpoint {
     }
 
     /**
-     * Gets all categories that are currently saved in the database in a paginated manner.
+     * Gets all categories that are currently saved in the database in a paginated manner specified by the current page and the pageCount.
+     *
+     * @param page describes the current page
+     * @param pageCount number of entries in a page
      *
      * @return all categories specified by the current page and the pageCount
      */
-    @PermitAll
-    @GetMapping(BASE_URL)
+    @Secured("ROLE_ADMIN")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Returns all categories relating to products that are currently stored in the database")
+    @Operation(summary = "Returns all categories relating to products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<CategoryDto> getAllCategoriesPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
         LOGGER.info("GET" + BASE_URL);
         return new PaginationDto<CategoryDto>(this.categoryService.getAllCategoriesPerPage(page, pageCount).getContent()
@@ -76,11 +82,16 @@ public class CategoryEndpoint {
             .collect(Collectors.toList()), page, pageCount, categoryService.getCategoriesCount());
     }
 
-
+    /**
+     * Gets all the categories that were previously saved.
+     *
+     * @return all categories that were previously added
+     *
+     * */
     @PermitAll
-    @GetMapping(BASE_URL + "/all")
+    @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Returns all categories relating to products that are currently stored in the database")
+    @Operation(summary = "Returns all categories relating to products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
     public List<CategoryDto> getAllCategories() {
         LOGGER.info("GET" + BASE_URL);
         return this.categoryService.getAllCategories()

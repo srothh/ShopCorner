@@ -25,13 +25,12 @@ public interface CategoryService {
      * @param page the current page
      * @param pageSize number of entries per page
      *
-     * @return all categories that were previously saved
+     * @return all categories that were previously saved in a page Object given by page and pageSize
      */
     Page<Category> getAllCategoriesPerPage(int page, int pageSize);
 
     /**
      * Gets all Categories that were previously created.
-     *
      *
      * @return all categories that were previously saved
      */
