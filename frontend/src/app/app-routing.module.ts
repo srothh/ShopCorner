@@ -5,7 +5,6 @@ import {ShopLoginComponent} from './components/shop/shop-login/shop-login.compon
 import {OperatorComponent} from './components/operator/operator.component';
 import {OperatorHomeComponent} from './components/operator/operator-home/operator-home.component';
 import {OperatorShopComponent} from './components/operator/operator-shop/operator-shop.component';
-import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
 import {OperatorOrderComponent} from './components/operator/operator-order/operator-order.component';
 import {OperatorProductComponent} from './components/operator/operator-products/operator-product.component';
 import {OperatorPromotionComponent} from './components/operator/operator-promotions/operator-promotion.component';
@@ -26,6 +25,9 @@ import {OperatorAuthGuard} from './guards/operator-auth.guard';
 import {PreventOperatorLoginGuard} from './guards/prevent-operator-login.guard';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorEditAccountComponent} from './components/operator/operator-edit-account/operator-edit-account.component';
+import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
+import {OperatorInvoiceFormComponent} from './components/operator/operator-invoice-form/operator-invoice-form.component';
+import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
 import {OperatorCategoriesComponent} from './components/operator/operator-categories/operator-categories.component';
 import {OperatorAddCategoryComponent} from './components/operator/operator-add-category/operator-add-category.component';
 

@@ -68,14 +68,15 @@ public class PdfGenerator {
                 tableAsString = tableAsString + String.format("<td class=\"center product\"><span>%s</span></td>", p.getName());
                 tableAsString = tableAsString + String.format("<td class=\"center price\"><span>%s</span></td>", p.getPrice() + " €");
                 tableAsString = tableAsString + String.format("<td class=\"center quantity\"><span>%s</span></td>", i.getNumberOfItems());
-                tableAsString = tableAsString + String.format("<td class=\"center tax\"><span>%s</span></td>", t.getPercentage() + "%");
-                tableAsString = tableAsString + String.format("<td class=\"center amount\"><span>%s</span></td>", totalPerProduct + " €");
+                tableAsString = tableAsString + String.format("<td class=\"center tax\"><span>%s</span></td>",  String.format("%.2f ", t.getPercentage()) + "%");
+                tableAsString = tableAsString + String.format("<td class=\"center amount\"><span>%s</span></td>",  String.format("%.2f €", totalPerProduct));
                 tableAsString = tableAsString + "</tr>";
 
             }
             tableAsString = tableAsString + "</table>";
             tableArticle.html(tableAsString);
             tableAsString = "";
+
 
             final Element tableAmount = document.body().select(".total").first();
             tableAsString = tableAsString + "<tr ><td class=\"right span\" colspan=\"3\"></td>";
