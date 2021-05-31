@@ -45,7 +45,7 @@ public class ProductDataGenerator {
         this.categoryRepository = categoryRepository;
         this.taxRateRepository = taxRateRepository;
         this.invoiceRepository = invoiceRepository;
-        this.invoiceItemRepository =invoiceItemRepository;
+        this.invoiceItemRepository = invoiceItemRepository;
     }
 
     @PostConstruct

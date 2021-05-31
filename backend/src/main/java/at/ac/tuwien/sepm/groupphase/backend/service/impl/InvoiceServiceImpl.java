@@ -4,11 +4,14 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
+import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +42,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Page<Invoice> getAllInvoices(int page, int pageCount) {
-        LOGGER.trace("getAllInvoices()");
+        LOGGER.trace("getAllInvoices({})", page);
         if (pageCount == 0) {
             pageCount = 15;
         } else if (pageCount > 50) {
@@ -48,6 +51,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         Pageable returnPage = PageRequest.of(page, pageCount);
         return invoiceRepository.findAll(returnPage);
     }
+
+
 
     @Cacheable(value = "counts", key = "'customers'")
     @Override
@@ -61,6 +66,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         LOGGER.trace("findOneById({})", id);
         return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
     }
+
+
+
 
 
     @Transactional
