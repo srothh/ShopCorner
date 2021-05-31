@@ -4,32 +4,25 @@
       <h6 class="text-muted" *ngIf="collectionSize === 0; else not_empty">
         Keine Produkte gespeichert.
       </h6>
-      <ng-template #not_empty>
-        <h6 class="text-muted" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content" >
-          Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
-          von {{collectionSize}}</h6>
-      </ng-template>
-      <ng-template #other_content>
-        <h6 class="text-muted">Zeigt {{1 + (pageSize * (page))}}-{{collectionSize}}
-          von {{collectionSize}}</h6>
-      </ng-template>
+      <div>
+        <ng-template #not_empty>
+          <h6 class="text-muted" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content" >
+            Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
+            von {{collectionSize}}</h6>
+        </ng-template>
+        <ng-template #other_content>
+          <h6 class="text-muted">Zeigt {{1 + (pageSize * (page))}}-{{collectionSize}}
+            von {{collectionSize}}</h6>
+        </ng-template>
+      </div>
+
     </div>
     <div class="row">
       <div class="col-md-4 col-sm-5 col-lg-2" *ngFor="let product of products">
-        <div class="card mb-4 rounded" style="cursor: pointer">
-          <img class="card-img-top" src="{{getImageSource(product)}}" width="125px" height="200px"
-               alt="produkt">
-          <div class="card-body">
-            <div class="d-flex justify-content-between">
-              <h6 class="text-muted">{{product.name}}</h6>
-              <h6 class="text-muted">€ {{product.price}}</h6>
-            </div>
-            <button type="button" class="btn btn-block btn-secondary">In den Warenkorb</button>
-          </div>
-        </div>
+        <app-base-shop-product-item [product]="product"></app-base-shop-product-item>
       </div>
     </div>
-    <div class="d-flex justify-content-between p-2">
+    <div class="d-flex justify-content-between">
       <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
       <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
     </div>
