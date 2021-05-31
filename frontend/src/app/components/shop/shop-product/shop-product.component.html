@@ -38,7 +38,7 @@
       </form>
     </div>
     <div class="row" *ngIf="collectionSize > 0 else no_products">
-      <div class="col-md-4 col-sm-5 col-lg-2" *ngFor="let product of products">
+      <div class="col-md-4 col-sm-12 col-lg-4 col-xl-2" *ngFor="let product of products">
         <app-base-shop-product-item [product]="product"></app-base-shop-product-item>
       </div>
     </div>
