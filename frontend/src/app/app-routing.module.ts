@@ -49,7 +49,6 @@ const routes: Routes = [
       {path: 'home', component: OperatorHomeComponent},
       {path: 'shop', component: OperatorShopComponent},
       {path: 'invoices', component: OperatorInvoiceComponent},
-      {path: 'invoices/:id', component: OperatorInvoiceDetailviewComponent},
       {path: 'categories', component: OperatorCategoriesComponent},
       {path: 'categories/add', component: OperatorAddCategoryComponent},
       {path: 'orders', component: OperatorOrderComponent},

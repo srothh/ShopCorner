@@ -8,8 +8,6 @@ import {TaxRate} from '../../../dtos/tax-rate';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
 import {Pagination} from '../../../dtos/pagination';
-import {InvoiceService} from '../../../services/invoice.service';
-import {Invoice} from '../../../dtos/invoice';
 
 @Component({
   selector: 'app-operator-products',
@@ -27,15 +25,13 @@ export class OperatorProductComponent implements OnInit {
   selectedProducts: Product[] = [];
   errorOccurred: boolean;
   errorMessage: string;
-  invoices: Invoice[];
 
   constructor(private productService: ProductService, private router: Router, private urlSerializer: UrlSerializer,
-              private categoryService: CategoryService, private taxRateService: TaxRateService, private invoiceService: InvoiceService) {
+              private categoryService: CategoryService, private taxRateService: TaxRateService) {
   }
 
   ngOnInit(): void {
     this.fetchData();
-    this.fetchInvoices();
   }
 
   fetchData(): void {
@@ -53,11 +49,6 @@ export class OperatorProductComponent implements OnInit {
   fetchProducts(): void {
     this.productService.getProducts(this.page, this.pageSize).subscribe((productData: Pagination<Product>) => {
       this.products = productData.items;
-    });
-  }
-  fetchInvoices(): void {
-    this.invoiceService.getInvoice().subscribe((invoiceData) => {
-      this.invoices = invoiceData;
     });
   }
 
@@ -102,7 +93,7 @@ export class OperatorProductComponent implements OnInit {
       this.productService.deleteProduct(selectedProduct.id).subscribe(() => {
         if (this.selectedProducts.indexOf(selectedProduct) === this.selectedProducts.length - 1) {
           if ((this.page + 1) * this.pageSize >= this.collectionSize &&
-            //products per page equals selected products -> return to previous page
+            // products per page equals selected products -> return to previous page
             this.products.length === this.selectedProducts.length &&
             this.page > 0) {
             this.previousPage();
@@ -132,7 +123,8 @@ export class OperatorProductComponent implements OnInit {
       this.fetchProducts();
     }
   }
-  resetState(){
+
+  resetState() {
     this.errorMessage = null;
     this.errorOccurred = undefined;
   }
