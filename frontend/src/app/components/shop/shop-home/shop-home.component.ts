@@ -28,13 +28,6 @@ export class ShopHomeComponent implements OnInit {
     });
   }
 
-  getImageSource(product: Product): string {
-    if (product.picture != null) {
-      return 'data:image/png;base64,' + product.picture;
-    }
-    return '../../../../assets/stock-productimage-unavailable.jpg';
-  }
-
   getCollectionSize() {
     this.productService.getNumberOfProducts().subscribe((count: number) => this.collectionSize = count);
   }

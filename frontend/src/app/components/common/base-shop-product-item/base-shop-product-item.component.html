@@ -1,0 +1,15 @@
+<div class="card mb-4 rounded" style="cursor: pointer">
+  <img class="card-img-top" src="{{getImageSource(product)}}" width="125px" height="200px"
+       alt="produkt">
+  <div class="card-body">
+    <div class="d-flex flex-column">
+      <div class="d-flex justify-content-between">
+        <span>{{product.name}}</span>
+        <!-- Possibilities: In stock, Out of Stock, Unavailable -->
+        <span class="in-stock">Auf Lager</span>
+      </div>
+      <span>{{product.category}}</span>
+      <span class="price">€ {{product.price}}</span>
+    </div>
+  </div>
+</div>
