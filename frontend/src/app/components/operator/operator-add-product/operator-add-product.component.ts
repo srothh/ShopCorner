@@ -7,7 +7,7 @@ import {Category} from '../../../dtos/category';
 import {forkJoin} from 'rxjs';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
-import {ProductService} from '../../../services/product.service';
+import {ProductService} from '../../../services/product/product.service';
 
 @Component({
   selector: 'app-operator-add-product',

@@ -35,6 +35,8 @@ import {OperatorProductDetailsComponent} from './components/operator/operator-pr
 import {OperatorProductFormComponent} from './components/operator/operator-product-form/operator-product-form.component';
 import {BaseLoginComponent} from './components/common/base-login/base-login.component';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
+import { BaseShopProductItemComponent } from './components/common/base-shop-product-item/base-shop-product-item.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -66,6 +68,7 @@ import {OperatorLoginComponent} from './components/operator/operator-login/opera
     OperatorEditAccountComponent,
     OperatorProductFormComponent,
     OperatorProductDetailsComponent,
+    BaseShopProductItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,7 +76,8 @@ import {OperatorLoginComponent} from './components/operator/operator-login/opera
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    FontAwesomeModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
