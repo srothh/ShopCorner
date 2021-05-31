@@ -99,10 +99,10 @@ public class InvoiceEndpoint {
      */
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "", produces = "application/pdf")
+    @PostMapping(produces = "application/pdf")
     @Operation(summary = "create new invoice")
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("Create /invoices/createinvoicepdf {}", invoiceDto);
+        LOGGER.info("Create /invoices/ {}", invoiceDto);
 
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
         PdfGenerator pdf = new PdfGenerator();

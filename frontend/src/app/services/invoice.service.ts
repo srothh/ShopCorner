@@ -19,6 +19,8 @@ export class InvoiceService {
 
   /**
    * Loads all invoices from the backend
+   *
+   * @return invoiceList with all invoices
    */
   getInvoice(): Observable<Invoice[]> {
     return this.httpClient.get<Invoice[]>(this.invoiceBaseUri, {
@@ -28,6 +30,8 @@ export class InvoiceService {
 
   /**
    * Loads all simple products from the backend
+   *
+   * @return simpleProductsList
    */
   getProducts(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.productBaseUri + '/simple', {

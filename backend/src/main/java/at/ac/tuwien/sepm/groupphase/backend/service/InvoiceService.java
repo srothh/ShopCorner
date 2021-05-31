@@ -20,7 +20,7 @@ public interface InvoiceService {
     /**
      * Find all invoice entries.
      *
-     * @return ordered list of al message entries
+     * @return ordered list of all message entries
      */
     List<Invoice> findAllInvoices();
 
