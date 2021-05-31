@@ -71,9 +71,12 @@ public class ProductEndpoint {
     @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam(defaultValue = "id") String sortBy) {
+    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page,
+                                                           @RequestParam("page_count") int pageCount,
+                                                           @RequestParam(defaultValue = "id") String sortBy,
+                                                           @RequestParam(name = "name", required = false, defaultValue = "") String name) {
         LOGGER.info("GET " + BASE_URL);
-        return new PaginationDto<>(this.productService.getAllProductsPerPage(page, pageCount, sortBy).getContent()
+        return new PaginationDto<>(this.productService.getAllProductsPerPage(page, pageCount, sortBy, name).getContent()
             .stream()
             .map(this.productMapper::entityToDto)
             .collect(Collectors.toList()), page, pageCount, productService.getProductsCount());
