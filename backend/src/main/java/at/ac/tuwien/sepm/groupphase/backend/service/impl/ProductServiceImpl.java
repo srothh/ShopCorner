@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,14 +76,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProductsPerPage(int page, int pageCount) {
+    public Page<Product> getAllProductsPerPage(int page, int pageCount, Long categoryId, String sortBy, String name) {
         LOGGER.trace("getAllProductsPerPage({}, {})", page, pageCount);
         if (pageCount == 0) {
             pageCount = 15;
         } else if (pageCount > 50) {
             pageCount = 50;
         }
-        Pageable pages = PageRequest.of(page, pageCount);
+        Pageable pages;
+        if (sortBy.equals("id")) {
+            pages = PageRequest.of(page, pageCount);
+        } else {
+            pages = PageRequest.of(page, pageCount, Sort.by(sortBy).descending());
+        }
+        if (!name.isEmpty() && categoryId == -1) {
+            return this.productRepository.findAllByName(name, pages);
+        } else if (!name.isEmpty() && categoryId > 0) {
+            return this.productRepository.findAllByNameAndCategoryId(name, categoryId, pages);
+        } else if (name.isEmpty() && categoryId > 0) {
+            return this.productRepository.findAllByCategoryId(categoryId, pages);
+        }
+
         return this.productRepository.findAll(pages);
     }
 
