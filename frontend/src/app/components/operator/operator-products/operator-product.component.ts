@@ -8,6 +8,8 @@ import {TaxRate} from '../../../dtos/tax-rate';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
 import {Pagination} from '../../../dtos/pagination';
+import {InvoiceService} from '../../../services/invoice.service';
+import {Invoice} from '../../../dtos/invoice';
 
 @Component({
   selector: 'app-operator-products',
@@ -25,13 +27,15 @@ export class OperatorProductComponent implements OnInit {
   selectedProducts: Product[] = [];
   errorOccurred: boolean;
   errorMessage: string;
+  invoices: Invoice[];
 
   constructor(private productService: ProductService, private router: Router, private urlSerializer: UrlSerializer,
-              private categoryService: CategoryService, private taxRateService: TaxRateService) {
+              private categoryService: CategoryService, private taxRateService: TaxRateService, private invoiceService: InvoiceService) {
   }
 
   ngOnInit(): void {
     this.fetchData();
+    this.fetchInvoices();
   }
 
   fetchData(): void {
@@ -49,6 +53,11 @@ export class OperatorProductComponent implements OnInit {
   fetchProducts(): void {
     this.productService.getProducts(this.page, this.pageSize).subscribe((productData: Pagination<Product>) => {
       this.products = productData.items;
+    });
+  }
+  fetchInvoices(): void {
+    this.invoiceService.getInvoice().subscribe((invoiceData) => {
+      this.invoices = invoiceData;
     });
   }
 
