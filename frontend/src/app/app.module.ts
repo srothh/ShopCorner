@@ -14,7 +14,7 @@ import {httpInterceptorProviders} from './interceptors';
 import {OperatorComponent} from './components/operator/operator.component';
 import {OperatorHomeComponent} from './components/operator/operator-home/operator-home.component';
 import {OperatorShopComponent} from './components/operator/operator-shop/operator-shop.component';
-import {OperatorInvoiceFormComponent} from './components/operator/operator-invoice-form/operator-invoice.component';
+import {OperatorInvoiceFormComponent} from './components/operator/operator-invoice-form/operator-invoice-form.component';
 import {OperatorOrderComponent} from './components/operator/operator-order/operator-order.component';
 import {OperatorProductComponent} from './components/operator/operator-products/operator-product.component';
 import {OperatorPromotionComponent} from './components/operator/operator-promotions/operator-promotion.component';
@@ -36,6 +36,7 @@ import {OperatorProductFormComponent} from './components/operator/operator-produ
 import {BaseLoginComponent} from './components/common/base-login/base-login.component';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
+import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
 
 
 @NgModule({
@@ -68,7 +69,7 @@ import {OperatorInvoiceComponent} from './components/operator/operator-invoice/o
     OperatorProductDetailsComponent,
     OperatorInvoiceFormComponent,
     OperatorInvoiceComponent,
-
+    OperatorInvoiceDetailviewComponent
   ],
   imports: [
     BrowserModule,

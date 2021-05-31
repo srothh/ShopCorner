@@ -50,7 +50,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let invoice of invoices" (click)="getDetaildView(invoice.id)">
+          <tr *ngFor="let invoice of invoices">
             <td><span>{{invoice.id}}</span></td>
             <td><span>{{invoice.date}}</span></td>
             <td><span>{{invoice.amount}}</span></td>

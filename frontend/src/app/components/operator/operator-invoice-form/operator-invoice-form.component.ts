@@ -1,6 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
 import {Product} from '../../../dtos/product';
 import {Invoice} from '../../../dtos/invoice';
 import {FormBuilder, FormGroup, FormArray, Validators} from '@angular/forms';
@@ -11,12 +9,11 @@ import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {InvoiceItem} from '../../../dtos/invoiceItem';
 import {forkJoin} from 'rxjs';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-operator-invoice-form',
-  templateUrl: './operator-invoice.component-form.html',
-  styleUrls: ['./operator-invoice.component.scss']
+  templateUrl: './operator-invoice-form.component.html',
+  styleUrls: ['./operator-invoice-form.component.scss']
 })
 export class OperatorInvoiceFormComponent implements OnInit {
 

@@ -26,7 +26,8 @@ import {PreventOperatorLoginGuard} from './guards/prevent-operator-login.guard';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorEditAccountComponent} from './components/operator/operator-edit-account/operator-edit-account.component';
 import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
-import {OperatorInvoiceFormComponent} from './components/operator/operator-invoice-form/operator-invoice.component';
+import {OperatorInvoiceFormComponent} from './components/operator/operator-invoice-form/operator-invoice-form.component';
+import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
 
 const routes: Routes = [
   {
@@ -46,6 +47,7 @@ const routes: Routes = [
       {path: 'home', component: OperatorHomeComponent},
       {path: 'shop', component: OperatorShopComponent},
       {path: 'invoices', component: OperatorInvoiceComponent},
+      {path: 'invoices/:id', component: OperatorInvoiceDetailviewComponent},
       {path: 'orders', component: OperatorOrderComponent},
       {path: 'products', component: OperatorProductComponent},
       {path: 'products/add', component: OperatorAddProductComponent},

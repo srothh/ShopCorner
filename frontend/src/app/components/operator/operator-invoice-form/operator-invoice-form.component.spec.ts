@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OperatorInvoiceComponent } from './operator-invoice.component';
+import { OperatorInvoiceComponent } from './operator-invoice-form.component';
 
 describe('OperatorInvoiceComponent', () => {
   let component: OperatorInvoiceComponent;

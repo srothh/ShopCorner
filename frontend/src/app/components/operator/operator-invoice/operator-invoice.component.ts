@@ -27,7 +27,6 @@ export class OperatorInvoiceComponent implements OnInit {
 
   toggleSide() {
     this.toggle = !this.toggle;
-    console.log(this.toggle);
   }
 
 
@@ -62,7 +61,6 @@ export class OperatorInvoiceComponent implements OnInit {
   private loadInvoicesForPage() {
     this.invoiceService.getAllInvoicesForPage(this.page, this.pageSize).subscribe(
       (paginationDto: Pagination<Invoice>) => {
-        console.log(paginationDto);
         this.invoices = paginationDto.items;
         this.collectionSize = paginationDto.totalItemCount;
       },
