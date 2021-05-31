@@ -4,12 +4,15 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="operator-product-container">
-  <div class="operator-product-header mt-3">
-    <h3>Produkte</h3>
+<div class="operator-product-container container">
+  <div class="operator-product-header mt-4">
+    <div class="d-flex justify-content-between">
+      <h2>Produkte</h2>
+      <button type="button" class="btn btn-primary mb-3" (click)="addNewProduct()">Produkt hinzufügen</button>
+    </div>
+    <hr>
   </div>
   <div class="operator-product-body">
-    <button type="button" class="btn btn-primary mb-3" (click)="addNewProduct()">Produkt hinzufügen</button>
     <div>
 
       <div class="float-right ">
@@ -70,8 +73,8 @@
     </table>
   </div>
   <div class="d-flex justify-content-between p-2">
-    <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
-    <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+    <button class="btn primary-bg-white-text" (click)=previousPage()>Vorherige Seite</button>
+    <button class="btn primary-bg-white-text" (click)=nextPage()>Nächste Seite</button>
   </div>
 
   <div class="modal fade" id="deleteCommit" tabindex="-1" role="dialog" aria-labelledby="deleteCommitLabel"

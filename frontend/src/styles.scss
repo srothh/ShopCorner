@@ -2,3 +2,13 @@
 body {
   background-color: whitesmoke;
 }
+
+:root {
+  --primary-bg-color: #2c3e50;
+}
+
+.primary-bg-white-text {
+  background-color: var(--primary-bg-color);
+  color: white;
+}
+
