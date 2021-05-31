@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {IAuthService} from '../../../services/auth/interface-auth.service';
 import {Product} from '../../../dtos/product';
 
 @Component({

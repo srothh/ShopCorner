@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from '../../../services/product.service';
 import {Product} from '../../../dtos/product';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-shop-product',
@@ -8,12 +9,17 @@ import {Product} from '../../../dtos/product';
   styleUrls: ['./shop-product.component.scss']
 })
 export class ShopProductComponent implements OnInit {
+  searchForm: FormGroup;
+
   products: Product[];
   page = 0;
   pageSize = 15;
   collectionSize = 0;
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, private formBuilder: FormBuilder) {
+    this.searchForm = this.formBuilder.group({
+      searchText: [''],
+    });
   }
 
   ngOnInit(): void {
@@ -25,13 +31,6 @@ export class ShopProductComponent implements OnInit {
       this.products = productData;
       this.getCollectionSize();
     });
-  }
-
-  getImageSource(product: Product): string {
-    if (product.picture != null) {
-      return 'data:image/png;base64,' + product.picture;
-    }
-    return '../../../../assets/stock-productimage-unavailable.jpg';
   }
 
   /**
@@ -56,5 +55,10 @@ export class ShopProductComponent implements OnInit {
 
   getCollectionSize() {
     this.productService.getNumberOfProducts().subscribe((count: number) => this.collectionSize = count);
+  }
+
+
+  searchProducts() {
+    console.log(this.searchForm.controls.searchText.value);
   }
 }
