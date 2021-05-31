@@ -1,0 +1,33 @@
+<!--div>
+  <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < currentCollectionSize; else last_page">
+    Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
+    von {{currentCollectionSize}}</p>
+  <ng-template #last_page>
+    <p style="font-size: 10px; color: gray" *ngIf="currentCollectionSize > 0; else empty">Zeigt {{1 + (pageSize * (page))}}-{{currentCollectionSize}}
+      von {{currentCollectionSize}}</p>
+  </ng-template>
+  <ng-template #empty>
+    <p style="font-size: 10px; color: gray">Keine Angestellten gespeichtert</p>
+  </ng-template>
+</div-->
+
+<div class="border rounded" style="height: 560px">
+  <table class="table table-sm table-hover">
+    <thead>
+    <tr class="table-secondary">
+      <th scope="col">Rechnungsnummer</th>
+      <th scope="col">Datum</th>
+      <th scope="col">Betrag</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor = "let invoice of invoices">
+      <ng-container>
+        <td style="background: darkgray"><span>{{invoice.id}}</span></td>
+        <td style="background: darkgray"><span>{{invoice.date}}</span></td>
+        <td style="background: darkgray"><span>{{invoice.amount}}</span></td>
+      </ng-container>
+    </tr>
+    </tbody>
+  </table>
+</div>

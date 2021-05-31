@@ -1,0 +1,34 @@
+<div class="container">
+  <br>
+  <h2>Betreiber Konten</h2>
+  <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
+    <label class="btn btn-light btn-sm active">
+      <input type="radio" name="buttons" id="option1" checked [disabled]="toggle">
+      Alle
+    </label>
+    <label class="btn btn-light btn-sm">
+      <input type="radio" name="buttons" id="option2" [disabled]="toggle">
+      Gesendet
+    </label>
+    <label class="btn btn-light btn-sm">
+      <input type="radio" name="buttons" id="option3" [disabled]="toggle">
+      Storniert
+    </label>
+  </div>
+  <div class="admin_options">
+    <div>
+      <button type="button" class="btn btn-sm" [ngClass]="toggle?'btn-outline-dark':'btn-outline-success'"
+              (click)="toggleSide()">{{toggle ? 'Zurück' : '+ Rechnung'}}</button>
+    </div>
+
+  </div>
+  <hr>
+
+  <div *ngIf="!toggle">
+    <app-operator-invoice-overview></app-operator-invoice-overview>
+  </div>
+  <div *ngIf="toggle">
+    <app-operator-invoice-form></app-operator-invoice-form>
+  </div>
+
+</div>
