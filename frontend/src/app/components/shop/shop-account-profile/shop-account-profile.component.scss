@@ -1,29 +1,24 @@
-.account-details-group {
-  width: 50%;
-  min-width: 400px;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5em;
-}
-
-.account-details-group div {
+.form-group {
   display: flex;
   justify-content: space-between;
 }
 
-.account-details-group div span {
-  text-align: center;
+.form div input {
+  width: 70%;
+  height: 2em;
 }
 
-.grid-container {
+.form div {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
-  gap: 1.5em 0;
+  grid-template-rows: 1fr;
   grid-template-areas:
-    ". ."
-    ". ."
-    ". ."
     ". .";
+  margin-top: 20px;
+  width: 70%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
 }

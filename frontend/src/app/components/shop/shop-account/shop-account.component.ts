@@ -7,7 +7,7 @@ import {faShippingFast, faShieldAlt} from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./shop-account.component.scss']
 })
 export class ShopAccountComponent implements OnInit {
-
+  // Fontawesome Styling Components
   faShippingFast = faShippingFast;
   faShieldAlt = faShieldAlt;
 
