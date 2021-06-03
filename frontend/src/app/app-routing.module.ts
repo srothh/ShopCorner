@@ -26,10 +26,9 @@ import {PreventOperatorLoginGuard} from './guards/prevent-operator-login.guard';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorEditAccountComponent} from './components/operator/operator-edit-account/operator-edit-account.component';
 import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
-import {OperatorInvoiceFormComponent} from './components/operator/operator-invoice-form/operator-invoice-form.component';
-import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
 import {OperatorCategoriesComponent} from './components/operator/operator-categories/operator-categories.component';
 import {OperatorAddCategoryComponent} from './components/operator/operator-add-category/operator-add-category.component';
+import {ShopProductDetailsComponent} from './components/shop/shop-product-details/shop-product-details.component';
 
 const routes: Routes = [
   {
@@ -38,6 +37,7 @@ const routes: Routes = [
       {path: 'home', component: ShopHomeComponent},
       {path: 'login', canActivate: [PreventCustomerLoginGuard], component: ShopLoginComponent},
       {path: 'products', component: ShopProductComponent},
+      {path: 'products/:id', component: ShopProductDetailsComponent},
       {path: 'account', canActivate: [CustomerAuthGuard], component: ShopAccountComponent},
       {path: 'cart', component: ShopCartComponent},
       {path: 'register', component: ShopRegistrationComponent}

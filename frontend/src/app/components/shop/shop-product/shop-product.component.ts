@@ -5,6 +5,7 @@ import {CategoryService} from '../../../services/category.service';
 import {Category} from '../../../dtos/category';
 import {ProductService} from '../../../services/product/product.service';
 import {faFilter, faSearch} from '@fortawesome/free-solid-svg-icons';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-shop-product',
@@ -27,7 +28,10 @@ export class ShopProductComponent implements OnInit {
   error = false;
   errorMessage = '';
 
-  constructor(private productService: ProductService, private categoryService: CategoryService, private formBuilder: FormBuilder) {
+  constructor(private productService: ProductService,
+              private categoryService: CategoryService,
+              private formBuilder: FormBuilder,
+              private router: Router) {
     this.searchForm = this.formBuilder.group({
       searchText: [''],
       categoryId: [-1]
@@ -97,6 +101,12 @@ export class ShopProductComponent implements OnInit {
   resetAndFetchProducts() {
     this.page = 0;
     this.fetchProducts();
+  }
+
+  goToProductDetails(id: number, selectedIndex: number) {
+    const currentUri = this.router.url;
+    const product = this.products[selectedIndex];
+    this.router.navigate([currentUri + '/' + id], {state: {product}}).then();
   }
 
   /**
