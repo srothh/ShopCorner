@@ -169,5 +169,11 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(productId);
     }
 
+    @Override
+    @Cacheable(value = "counts", key = "#category")
+    public Long getCountByCategory(Page page, Long category) {
+        return page.getTotalElements();
+    }
+
 
 }

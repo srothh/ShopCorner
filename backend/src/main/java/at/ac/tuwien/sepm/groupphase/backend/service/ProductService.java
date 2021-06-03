@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -73,6 +74,15 @@ public interface ProductService {
      * @throws NotFoundException if the entity is not available in the database
      */
     void deleteProductById(Long productId);
+
+    /**
+     * Deletes a specific product with the given productId.
+     *
+     * @param page the page to fetch the count of
+     * @param category the category the page is assigned to
+     * @throws RuntimeException occurs during database operations
+     */
+    Long getCountByCategory(Page page, Long category);
 
 
 }
