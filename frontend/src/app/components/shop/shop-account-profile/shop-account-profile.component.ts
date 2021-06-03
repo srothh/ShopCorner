@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Customer} from '../../../dtos/customer';
+import {MeService} from '../../../services/me.service';
+import {Address} from '../../../dtos/address';
 
 @Component({
   selector: 'app-shop-account-profile',
@@ -14,15 +16,13 @@ export class ShopAccountProfileComponent implements OnInit {
 
   editForm: FormGroup;
   isEditMode = false;
-  customer: Customer;
+  myProfile: Customer;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private meService: MeService) {
   }
 
   ngOnInit(): void {
-    // TODO: fetch the customer and assign it here
-    this.customer = null;
-    this.initializeForm();
+    this.fetchMyProfile();
   }
 
   /**
@@ -45,6 +45,35 @@ export class ShopAccountProfileComponent implements OnInit {
    */
   saveUser() {
     this.toggleEditMode();
+    const address = new Address(
+      this.myProfile.id,
+      this.editForm.value.street,
+      this.editForm.value.postalCode,
+      this.editForm.value.houseNumber,
+      this.editForm.value.stairNumber,
+      this.editForm.value.doorNumber
+    );
+    this.myProfile = new Customer(
+      this.myProfile.id,
+      this.editForm.value.loginName,
+      this.editForm.value.password,
+      this.editForm.value.name,
+      this.editForm.value.email,
+      address,
+      this.editForm.value.phoneNumber
+    );
+    // TODO: save myProfile to the database, updates can be done on PUT /me
+  }
+
+  /**
+   * Fetches my profile (customer data) and initializes the form
+   * @private
+   */
+  private fetchMyProfile() {
+    this.meService.getMyProfileData().subscribe((myProfile) => {
+      this.myProfile = myProfile;
+      this.initializeForm();
+    });
   }
 
   /**
@@ -55,16 +84,16 @@ export class ShopAccountProfileComponent implements OnInit {
   private initializeForm() {
     // TODO: add validators
     this.editForm = this.formBuilder.group({
-      loginName: [this.customer.loginName],
-      email: [this.customer.email],
-      name: [this.customer.name],
-      phoneNumber: [this.customer.phoneNumber],
+      loginName: [this.myProfile.loginName],
+      email: [this.myProfile.email],
+      name: [this.myProfile.name],
+      phoneNumber: [this.myProfile.phoneNumber],
       password: [''],
-      street: [this.customer.address.street],
-      postalCode: [this.customer.address.postalCode],
-      houseNumber: [this.customer.address.houseNumber],
-      stairNumber: [this.customer.address.stairNumber],
-      doorNumber: [this.customer.address.doorNumber],
+      street: [this.myProfile.address.street],
+      postalCode: [this.myProfile.address.postalCode],
+      houseNumber: [this.myProfile.address.houseNumber],
+      stairNumber: [this.myProfile.address.stairNumber],
+      doorNumber: [this.myProfile.address.doorNumber],
     });
   }
 }
