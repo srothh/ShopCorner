@@ -1,0 +1,29 @@
+.account-details-group {
+  width: 50%;
+  min-width: 400px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+.account-details-group div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.account-details-group div span {
+  text-align: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  gap: 1.5em 0;
+  grid-template-areas:
+    ". ."
+    ". ."
+    ". ."
+    ". .";
+}

@@ -1,3 +1,25 @@
-<div>
-  shop account works
+<div class="container mt-5">
+  <h2>Mein Konto</h2>
+  <div class="card-deck mt-5">
+    <div class="card" routerLink="/account/orders">
+      <fa-icon class="mr-2" [icon]="faShippingFast"></fa-icon>
+      <div class="card-body">
+        <h5 class="card-title">Meine Bestellungen</h5>
+        <p class="card-text">
+          Some quick example text to build on the card title and make up the
+          bulk of the card's content.
+        </p>
+      </div>
+    </div>
+    <div class="card" routerLink="/account/profile">
+      <fa-icon class="mr-2" [icon]="faShieldAlt"></fa-icon>
+      <div class="card-body">
+        <h5 class="card-title">Meine Profildaten</h5>
+        <p class="card-text">
+          Some quick example text to build on the card title and make up the
+          bulk of the card's content.
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
