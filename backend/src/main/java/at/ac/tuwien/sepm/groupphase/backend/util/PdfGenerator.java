@@ -39,7 +39,7 @@ public class PdfGenerator {
             final Document document = Jsoup.parse(html);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
             document.body().select(".invoice-date").html(invoice.getDate().format(dateFormatter));
-            document.body().select(".invoice-number").html(invoice.getId() + "" + invoice.getDate().getDayOfYear());
+            document.body().select(".invoice-number").html(invoice.getInvoiceNumber());
 
             final Element tableArticle = document.body().select(".article").first();
             StringBuilder tableItemStringBuilder = new StringBuilder();

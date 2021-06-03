@@ -47,7 +47,7 @@ public interface InvoiceService {
      * @return The amount of invoices in the database
      * @throws RuntimeException  upon encountering errors with the database
      */
-    long getInvoiceCountByYear(LocalDateTime date);
+    long getInvoiceCountByYear();
 
 
     /**

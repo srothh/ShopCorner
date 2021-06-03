@@ -61,9 +61,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Cacheable(value = "counts", key = "'invoicesByYear'")
     @Override
-    public long getInvoiceCountByYear(LocalDateTime date) {
+    public long getInvoiceCountByYear() {
         LOGGER.trace("getInvoiceCount()");
-        return invoiceRepository.countInvoiceByDateAfter(date.toLocalDate().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay());
+        return invoiceRepository.countInvoiceByDateAfter(LocalDateTime.now().toLocalDate().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay());
     }
 
     @Override
@@ -84,6 +84,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         validator.validateNewInvoiceItem(invoice.getItems());
         Set<InvoiceItem> items = invoice.getItems();
         invoice.setItems(null);
+        invoice.setInvoiceNumber((this.getInvoiceCountByYear() + 1) + "" + invoice.getDate().getYear());
         Invoice createdInvoice = this.invoiceRepository.save(invoice);
         for (InvoiceItem item : items) {
             item.setInvoice(createdInvoice);
