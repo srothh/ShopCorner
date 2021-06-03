@@ -41,7 +41,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Caching(evict = {
         @CacheEvict(value = "productPages", allEntries = true),
-        @CacheEvict(value = "counts", key = "'products'")
+        @CacheEvict(value = "counts", key = "'products'"),
+        @CacheEvict(value = "categoryCounts", allEntries = true)
     })
     @Override
     public Product createProduct(Product product) {
@@ -59,7 +60,10 @@ public class ProductServiceImpl implements ProductService {
         return this.productRepository.save(product);
     }
 
-    @CacheEvict(value = "productPages", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(value = "productPages", allEntries = true),
+        @CacheEvict(value = "categoryCounts", allEntries = true)
+    })
     @Transactional
     public void assignProductToCategory(Product product, Long categoryId) {
         LOGGER.trace("assignProductToCategory({},{})", product, categoryId);
@@ -123,8 +127,10 @@ public class ProductServiceImpl implements ProductService {
             throw new IllegalArgumentException("description is too long");
         }
     }
-
-    @CacheEvict(value = "productPages", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(value = "categoryCounts", allEntries = true),
+        @CacheEvict(value = "productPages", allEntries = true)
+    })
     public void updateProduct(Long productId, Product product) {
         LOGGER.trace("updateProduct({})", product);
         if (product.getDescription() != null) {
@@ -159,7 +165,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Caching(evict = {
         @CacheEvict(value = "productPages", allEntries = true),
-        @CacheEvict(value = "counts", key = "'products'")
+        @CacheEvict(value = "counts", key = "'products'"),
+        @CacheEvict(value = "categoryCounts", allEntries = true)
     })
     @Override
     public void deleteProductById(Long productId) {
@@ -170,7 +177,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "counts", key = "#category")
+    @Cacheable(value = "categoryCounts", key = "#category")
     public Long getCountByCategory(Page page, Long category) {
         return page.getTotalElements();
     }
