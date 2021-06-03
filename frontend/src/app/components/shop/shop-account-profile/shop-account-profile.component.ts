@@ -67,6 +67,7 @@ export class ShopAccountProfileComponent implements OnInit {
 
   /**
    * Fetches my profile (customer data) and initializes the form
+   *
    * @private
    */
   private fetchMyProfile() {
