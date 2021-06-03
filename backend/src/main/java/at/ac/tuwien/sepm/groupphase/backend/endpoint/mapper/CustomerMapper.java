@@ -14,7 +14,9 @@ import java.util.List;
 public interface CustomerMapper {
     Customer customerDtoToCustomer(CustomerRegistrationDto dto);
 
-    CustomerRegistrationDto customerToCustomerDto(Customer customer);
+    CustomerRegistrationDto customerToCustomerRegistrationDto(Customer customer);
+
+    CustomerDto customerToCustomerDto(Customer customer);
 
     List<CustomerDto> customerListToCustomerDtoList(List<Customer> customers);
 

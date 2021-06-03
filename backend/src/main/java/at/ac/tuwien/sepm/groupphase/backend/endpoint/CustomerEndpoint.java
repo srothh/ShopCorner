@@ -52,7 +52,7 @@ public class CustomerEndpoint {
     @Operation(summary = "Register a new customer account")
     public CustomerRegistrationDto registerNewCustomer(@Valid @RequestBody CustomerRegistrationDto dto) {
         LOGGER.info("POST api/v1/customers");
-        CustomerRegistrationDto customer = customerMapper.customerToCustomerDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto)));
+        CustomerRegistrationDto customer = customerMapper.customerToCustomerRegistrationDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto)));
         customer.setPassword(null);
         return customer;
     }
