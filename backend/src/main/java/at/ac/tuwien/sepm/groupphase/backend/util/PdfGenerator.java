@@ -42,14 +42,14 @@ public class PdfGenerator {
             document.body().select(".invoice-number").html(invoice.getId() + "" + invoice.getDate().getDayOfYear());
 
             final Element tableArticle = document.body().select(".article").first();
-
-            String tableAsString = "<tr >";
-            tableAsString = tableAsString + "<th class=\"center product\"><span>Produkt</span></th>";
-            tableAsString = tableAsString + "<th class=\"center price\"><span>Preis</span></th>";
-            tableAsString = tableAsString + "<th class=\"center quantity\"><span>Anzahl</span></th>";
-            tableAsString = tableAsString + "<th class=\"center tax\"><span>Steuer</span></th>";
-            tableAsString = tableAsString + "<th class=\"center amount\"><span>Betrag</span></th>";
-            tableAsString = tableAsString + "</tr>";
+            StringBuilder tableItemStringBuilder = new StringBuilder();
+            tableItemStringBuilder.append("<tr >");
+            tableItemStringBuilder.append("<th class=\"center product\"><span>Produkt</span></th>");
+            tableItemStringBuilder.append("<th class=\"center price\"><span>Preis</span></th>");
+            tableItemStringBuilder.append("<th class=\"center quantity\"><span>Anzahl</span></th>");
+            tableItemStringBuilder.append("<th class=\"center tax\"><span>Steuer</span></th>");
+            tableItemStringBuilder.append("<th class=\"center amount\"><span>Betrag</span></th>");
+            tableItemStringBuilder.append("</tr>");
             double total = 0;
             double subtotal = 0;
             double tax = 0;
@@ -64,34 +64,33 @@ public class PdfGenerator {
                 tax = tax + taxPerProduct;
                 total = total + totalPerProduct;
                 // Tabel header
-                tableAsString = tableAsString + "<tr>";
-                tableAsString = tableAsString + String.format("<td class=\"center product\"><span>%s</span></td>", p.getName());
-                tableAsString = tableAsString + String.format("<td class=\"center price\"><span>%s</span></td>", p.getPrice() + " €");
-                tableAsString = tableAsString + String.format("<td class=\"center quantity\"><span>%s</span></td>", i.getNumberOfItems());
-                tableAsString = tableAsString + String.format("<td class=\"center tax\"><span>%s</span></td>",  String.format("%.2f ", t.getPercentage()) + "%");
-                tableAsString = tableAsString + String.format("<td class=\"center amount\"><span>%s</span></td>",  String.format("%.2f €", totalPerProduct));
-                tableAsString = tableAsString + "</tr>";
+                tableItemStringBuilder.append("<tr>");
+                tableItemStringBuilder.append("<td class=\"center product\"><span>").append(p.getName()).append("</span></td>");
+                tableItemStringBuilder.append(String.format("<td class=\"center price\"><span>%s</span></td>", p.getPrice() + " €"));
+                tableItemStringBuilder.append(String.format("<td class=\"center quantity\"><span>%s</span></td>", i.getNumberOfItems()));
+                tableItemStringBuilder.append(String.format("<td class=\"center tax\"><span>%s</span></td>", String.format("%.2f ", t.getPercentage()) + "%"));
+                tableItemStringBuilder.append(String.format("<td class=\"center amount\"><span>%s</span></td>", String.format("%.2f €", totalPerProduct)));
+                tableItemStringBuilder.append("</tr>");
 
             }
-            tableAsString = tableAsString + "</table>";
-            tableArticle.html(tableAsString);
-            tableAsString = "";
-
+            tableItemStringBuilder.append("</table>");
+            tableArticle.html(tableItemStringBuilder.toString());
+            StringBuilder tableTotalStringBuilder = new StringBuilder();
 
             final Element tableAmount = document.body().select(".total").first();
-            tableAsString = tableAsString + "<tr ><td class=\"right span\" colspan=\"3\"></td>";
-            tableAsString = tableAsString + "<td class=\"right total-text none-border\"><span>Zwischensumme</span></td>";
-            tableAsString = tableAsString + String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", subtotal);
+            tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
+            tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Zwischensumme</span></td>");
+            tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", subtotal));
 
-            tableAsString = tableAsString + "<tr ><td class=\"right span\" colspan=\"3\"></td>";
-            tableAsString = tableAsString + "<td class=\"right total-text none-border\"><span>Steuer</span></td>";
-            tableAsString = tableAsString + String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", tax);
+            tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
+            tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Steuer</span></td>");
+            tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", tax));
 
-            tableAsString = tableAsString + "<tr ><td class=\"right span\" colspan=\"3\"></td>";
-            tableAsString = tableAsString + "<td class=\"right total-text\"><span>Summe</span></td>";
-            tableAsString = tableAsString + String.format("<td class=\"center\"><span>%1.2f €</span></td></tr>", total);
-            tableAsString = tableAsString + "</table>";
-            tableAmount.html(tableAsString);
+            tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
+            tableTotalStringBuilder.append("<td class=\"right total-text\"><span>Summe</span></td>");
+            tableTotalStringBuilder.append(String.format("<td class=\"center\"><span>%1.2f €</span></td></tr>", total));
+            tableTotalStringBuilder.append("</table>");
+            tableAmount.html(tableTotalStringBuilder.toString());
 
             document.body().select(".name").html("ShopCorner");
             document.body().select(".address").html("Favoritenstraße 9/11, 1040 Wien");
