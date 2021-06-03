@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -68,7 +69,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Transactional
-    @CacheEvict(value = "counts", key = "'customers'")
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'customers'"),
+        @CacheEvict(value = "customerPages", allEntries = true)
+    })
     @Override
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
@@ -80,6 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Cacheable(value = "customerPages")
     public Page<Customer> getAllCustomers(int page, int pageCount) {
         LOGGER.trace("getAllCustomers()");
         if (pageCount == 0) {
@@ -91,6 +96,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll(returnPage);
     }
 
+    @CacheEvict(value = "customerPages", allEntries = true)
     @Transactional
     public void assignAddressToCustomer(Customer customer, Long addressId) {
         LOGGER.trace("assignAddressToCustomer({},{})", customer, addressId);
@@ -109,6 +115,11 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> findAll() {
         LOGGER.trace("findAll()");
         return customerRepository.findAll();
+    }
+
+    @Override
+    public Long getCountByCategory(Pageable page, Long category) {
+        return null;
     }
 
 }

@@ -18,12 +18,12 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,6 +81,7 @@ public class OperatorServiceImpl implements OperatorService {
     }
 
     @Override
+    @Cacheable(value = "operatorPages")
     public Page<Operator> findAll(int page, int pageCount, Permissions permissions) {
         LOGGER.trace("findAll({})", page);
         if (pageCount == 0) {
@@ -112,7 +113,8 @@ public class OperatorServiceImpl implements OperatorService {
 
     @Caching(evict = {
         @CacheEvict(value = "counts", key = "'admins'"),
-        @CacheEvict(value = "counts", key = "'employees'")
+        @CacheEvict(value = "counts", key = "'employees'"),
+        @CacheEvict(value = "operatorPages", allEntries = true)
     })
     @Override
     public Operator save(Operator operator) {
@@ -125,6 +127,7 @@ public class OperatorServiceImpl implements OperatorService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "operatorPages", allEntries = true)
     public void changePermissions(Long id, Permissions permissions) {
         LOGGER.trace("changePermissions({})", id);
         operatorRepository.findById(id)
@@ -134,7 +137,8 @@ public class OperatorServiceImpl implements OperatorService {
 
     @Caching(evict = {
         @CacheEvict(value = "counts", key = "'admins'"),
-        @CacheEvict(value = "counts", key = "'employees'")
+        @CacheEvict(value = "counts", key = "'employees'"),
+        @CacheEvict(value = "operatorPages", allEntries = true)
     })
     @Override
     public void delete(Long id) {
@@ -147,6 +151,7 @@ public class OperatorServiceImpl implements OperatorService {
         operatorRepository.deleteById(id);
     }
 
+    @CacheEvict(value = "operatorPages", allEntries = true)
     @Override
     public Operator update(Operator operator) {
         LOGGER.trace("update({})", operator);
