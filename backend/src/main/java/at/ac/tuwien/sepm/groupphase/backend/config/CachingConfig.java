@@ -13,7 +13,7 @@ public class CachingConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("counts");
+        return new ConcurrentMapCacheManager("counts", "customerPages", "productPages", "operatorPages", "categoryCounts");
     }
 
 }
