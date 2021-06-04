@@ -8,17 +8,17 @@
     </label>
     <label class="btn btn-light" *ngIf="getPermission() === 'EMPLOYEE'; else normal_button">
       <input type="radio" name="buttons" id="option2" checked>
-      Angestellte
+      Mitarbeiter_innen
     </label>
     <ng-template #normal_button>
       <label class="btn btn-light">
         <input type="radio" name="buttons" id="option3" (click)=showEmployees()>
-        Angestellte
+        Mitarbeiter_innen
       </label>
     </ng-template>
   </div>
   <div class="admin_options" *ngIf="getPermission() === 'ADMIN';" (click)="registerEmployee()">
-    <button type="button" class="btn btn-primary">Angestellten registrieren</button>
+    <button type="button" class="btn btn-primary">Mitarbeiter_in registrieren</button>
   </div>
   <div class="admin_options">
     <div *ngIf="selected.length > 0 && getPermission() === 'ADMIN'; else disabled_delete">
@@ -102,7 +102,7 @@
           </button>
         </div>
         <div class="modal-body">
-          Wollen sie die Konten von {{selected.length}} Angestellten löschen?
+          Wollen sie die Konten von {{selected.length}} Mitarbeiter_innen löschen?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" (click)="selected=[]" data-dismiss="modal">Abbrechen</button>
@@ -122,7 +122,7 @@
           </button>
         </div>
         <div class="modal-body">
-          Wollen sie die Rechte von {{selected.length}} Angestellten zu Admin ändern?
+          Wollen sie die Rechte von {{selected.length}} Mitarbeiter_innen zu Admins ändern?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" (click)="selected=[]" data-dismiss="modal">Abbrechen</button>
