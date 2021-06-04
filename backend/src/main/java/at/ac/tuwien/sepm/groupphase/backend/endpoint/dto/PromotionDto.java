@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ public class PromotionDto {
     @NotBlank
     private String code;
     @NotNull
+    @Min(0)
     private double minimumOrderValue;
 
     public PromotionDto() {
