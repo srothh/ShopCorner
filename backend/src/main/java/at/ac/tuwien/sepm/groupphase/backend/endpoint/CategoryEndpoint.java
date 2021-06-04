@@ -71,7 +71,7 @@ public class CategoryEndpoint {
      *
      * @return all categories specified by the current page and the pageCount
      */
-    @Secured("ROLE_ADMIN")
+    @PermitAll
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all categories relating to products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
