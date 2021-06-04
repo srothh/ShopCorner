@@ -127,7 +127,11 @@ public class OperatorServiceImpl implements OperatorService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "operatorPages", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'admins'"),
+        @CacheEvict(value = "counts", key = "'employees'"),
+        @CacheEvict(value = "operatorPages", allEntries = true)
+    })
     public void changePermissions(Long id, Permissions permissions) {
         LOGGER.trace("changePermissions({})", id);
         operatorRepository.findById(id)
@@ -151,7 +155,11 @@ public class OperatorServiceImpl implements OperatorService {
         operatorRepository.deleteById(id);
     }
 
-    @CacheEvict(value = "operatorPages", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'admins'"),
+        @CacheEvict(value = "counts", key = "'employees'"),
+        @CacheEvict(value = "operatorPages", allEntries = true)
+    })
     @Override
     public Operator update(Operator operator) {
         LOGGER.trace("update({})", operator);
