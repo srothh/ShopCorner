@@ -1,5 +1,5 @@
-import { Category } from './category';
-import { TaxRate } from './tax-rate';
+import {Category} from './category';
+import {TaxRate} from './tax-rate';
 
 export class Product {
   constructor(
@@ -11,6 +11,6 @@ export class Product {
     public taxRate: TaxRate,
     public locked: boolean,
     public picture: string | ArrayBuffer,
-    ){
+  ) {
   }
 }

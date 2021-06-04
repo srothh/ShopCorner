@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Product} from '../../../dtos/product';
 import {ProductService} from '../../../services/product/product.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,7 @@ export class ShopHomeComponent implements OnInit {
   error = false;
   errorMessage = '';
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -37,6 +38,11 @@ export class ShopHomeComponent implements OnInit {
           this.errorMessage = error.error;
         }
       });
+  }
+
+  goToProductDetails(id: number, selectedIndex: number) {
+    const product = this.products[selectedIndex];
+    this.router.navigate(['products/' + id], {state: {product}}).then();
   }
 
   /**
