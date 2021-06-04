@@ -25,7 +25,7 @@
       <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">Auswahl löschen</button>
     </div>
     <ng-template #disabled_delete>
-      <span class="d-inline-block" tabindex="0" *ngIf="getPermission() === 'ADMIN';">
+      <span class="d-inline-block" *ngIf="getPermission() === 'ADMIN';">
         <button type="button" class="btn btn-outline-danger" disabled>Auswahl löschen</button>
       </span>
     </ng-template>
