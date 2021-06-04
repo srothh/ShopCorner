@@ -27,7 +27,7 @@
         Speichern
       </button>
     </div>
-    <div *ngIf="addProductEnabled === false && inEditMode === true">
+    <div *ngIf="addProductEnabled === false && inEditMode === true && getPermission() === 'ADMIN'">
       <button class="btn btn-primary" type="submit" (click)="enableEditing()">
         Bearbeiten
       </button>
@@ -134,17 +134,16 @@
       <div class="custom-file mt-3" *ngIf="addProductEnabled">
 
         <input #fileInput type="file" class="custom-file-input" id="customFile" (change)="onSelectFile($event)"
-               accept="image/png, image/jpeg"
-        >
+               accept="image/png, image/jpeg">
 
         <label class="custom-file-label" for="customFile">
-          <div *ngIf="fileToUpload; else elseBlock">
+          <span *ngIf="fileToUpload; else elseBlock">
             {{fileToUpload?.name}}
-          </div>
+          </span>
           <ng-template #elseBlock>Bild auswählen...</ng-template>
         </label>
         <div *ngIf="fileSource" class="mt-2">
-          <button type="button" class="btn btn-light" (click)="clearImage()">Entfernen</button>
+          <button type="button" class="btn btn-outline-danger" (click)="clearImage()">Entfernen</button>
         </div>
 
       </div>

@@ -83,7 +83,7 @@ public class ProductEndpoint {
             productCount = this.productService.getProductsCount();
         } else {
             // Temporarily don't cache with filters
-            productCount = productPage.getTotalElements();
+            productCount = this.productService.getCountByCategory(productPage, categoryId);
         }
         return new PaginationDto<>(productPage.getContent()
             .stream()
@@ -132,7 +132,7 @@ public class ProductEndpoint {
      * @param productId the id to search in the database and retrieve the associated product entity
      * @return the product entity with the associated Id
      */
-    @Secured("ROLE_ADMIN")
+    @PermitAll
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Gets a specific product with the give Id", security = @SecurityRequirement(name = "apiKey"))

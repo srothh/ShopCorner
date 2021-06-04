@@ -1,0 +1,34 @@
+.availability {
+  font-size: 0.8em;
+}
+
+.in-stock {
+  color: #2ecc71;
+}
+
+.locked {
+  color: #e74c3c;
+}
+
+.add-to-cart-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.zoom {
+  transition: transform .2s; /* Animation */
+}
+
+.zoom:hover {
+  transform: scale(1.05);
+}
+.price {
+  font-size: 1.6em;
+}
+
+.custom-card {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+}

@@ -41,7 +41,9 @@ import { OperatorCategoriesComponent } from './components/operator/operator-cate
 import { OperatorAddCategoryComponent } from './components/operator/operator-add-category/operator-add-category.component';
 import { BaseShopProductItemComponent } from './components/common/base-shop-product-item/base-shop-product-item.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
+import { ShopProductDetailsComponent } from './components/shop/shop-product-details/shop-product-details.component';
+import { ShopAccountOrdersComponent } from './components/shop/shop-account-orders/shop-account-orders.component';
+import { ShopAccountProfileComponent } from './components/shop/shop-account-profile/shop-account-profile.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +80,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     BaseShopProductItemComponent,
     OperatorCategoriesComponent,
     OperatorAddCategoryComponent,
-    BaseShopProductItemComponent
+    BaseShopProductItemComponent,
+    ShopProductDetailsComponent,
+    ShopAccountOrdersComponent,
+    ShopAccountProfileComponent
   ],
   imports: [
     BrowserModule,
