@@ -18,6 +18,9 @@ export class ShopAccountProfileComponent implements OnInit {
   isEditMode = false;
   myProfile: Customer;
 
+  error = false;
+  errorMessage = '';
+
   constructor(private formBuilder: FormBuilder, private meService: MeService) {
   }
 
@@ -66,6 +69,13 @@ export class ShopAccountProfileComponent implements OnInit {
   }
 
   /**
+   * Error flag will be deactivated, which clears the error message
+   */
+  vanishError() {
+    this.error = false;
+  }
+
+  /**
    * Fetches my profile (customer data) and initializes the form
    *
    * @private
@@ -74,6 +84,14 @@ export class ShopAccountProfileComponent implements OnInit {
     this.meService.getMyProfileData().subscribe((myProfile) => {
       this.myProfile = myProfile;
       this.initializeForm();
+    }, error => {
+      console.log(error);
+      this.error = true;
+      if (typeof error.error === 'object') {
+        this.errorMessage = error.error.error;
+      } else {
+        this.errorMessage = error.error;
+      }
     });
   }
 
