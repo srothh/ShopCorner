@@ -127,6 +127,7 @@ public class ProductServiceImpl implements ProductService {
             throw new IllegalArgumentException("description is too long");
         }
     }
+
     @Caching(evict = {
         @CacheEvict(value = "categoryCounts", allEntries = true),
         @CacheEvict(value = "productPages", allEntries = true)
