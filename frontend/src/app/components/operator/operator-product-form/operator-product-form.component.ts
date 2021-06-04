@@ -2,12 +2,10 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Product} from '../../../dtos/product';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CategoryService} from '../../../services/category.service';
-import {TaxRateService} from '../../../services/tax-rate.service';
 import {ProductService} from '../../../services/product/product.service';
 import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
-import {forkJoin} from 'rxjs';
+import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 
 @Component({
   selector: 'app-operator-product-form',
@@ -46,7 +44,8 @@ export class OperatorProductFormComponent implements OnInit {
     private router: Router,
     private productService: ProductService,
     private formBuilder: FormBuilder,
-    private activatedRouter: ActivatedRoute
+    private activatedRouter: ActivatedRoute,
+    private authService: OperatorAuthService
   ) {
   }
 
@@ -76,6 +75,15 @@ export class OperatorProductFormComponent implements OnInit {
       this.setFormProperties();
       this.productForm.disable();
     }
+  }
+
+  /**
+   * calls on authentication service to return permission of logged in operator
+   *
+   * @return string role of logged in operator
+   */
+  getPermission(): string {
+    return this.authService.getUserRole();
   }
 
   createNewProduct(): Product {
@@ -124,7 +132,7 @@ export class OperatorProductFormComponent implements OnInit {
     }
     this.newProduct.locked = this.productForm.get('locked').value;
     if (this.router.url.includes('add')) {
-      const baseURL = this.router.url.substring(0, this.router.url.lastIndexOf('/'));
+      //const baseURL = this.router.url.substring(0, this.router.url.lastIndexOf('/'));
       this.productService.addProduct(this.newProduct).subscribe(data => {
         this.newProduct.id = data.id;
         this.errorOccurred = false;
@@ -140,7 +148,7 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   updateProduct() {
-    this.productService.updateProduct(this.newProduct.id,this.newProduct).subscribe(response => {
+    this.productService.updateProduct(this.newProduct.id,this.newProduct).subscribe(() => {
         this.inEditMode = true;
         this.addProductEnabled = false;
         this.productForm.disable();
