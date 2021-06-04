@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +39,11 @@ public class ProductServiceImpl implements ProductService {
         this.taxRateRepository = taxRateRepository;
     }
 
-    @CacheEvict(value = "counts", key = "'products'")
+    @Caching(evict = {
+        @CacheEvict(value = "productPages", allEntries = true),
+        @CacheEvict(value = "counts", key = "'products'"),
+        @CacheEvict(value = "categoryCounts", allEntries = true)
+    })
     @Override
     public Product createProduct(Product product) {
         LOGGER.trace("createProduct({})", product);
@@ -55,6 +60,10 @@ public class ProductServiceImpl implements ProductService {
         return this.productRepository.save(product);
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "productPages", allEntries = true),
+        @CacheEvict(value = "categoryCounts", allEntries = true)
+    })
     @Transactional
     public void assignProductToCategory(Product product, Long categoryId) {
         LOGGER.trace("assignProductToCategory({},{})", product, categoryId);
@@ -75,6 +84,7 @@ public class ProductServiceImpl implements ProductService {
         product.setTaxRate(taxRate);
     }
 
+    @Cacheable(value = "productPages")
     @Override
     public Page<Product> getAllProductsPerPage(int page, int pageCount, Long categoryId, String sortBy, String name) {
         LOGGER.trace("getAllProductsPerPage({}, {})", page, pageCount);
@@ -118,6 +128,10 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "categoryCounts", allEntries = true),
+        @CacheEvict(value = "productPages", allEntries = true)
+    })
     public void updateProduct(Long productId, Product product) {
         LOGGER.trace("updateProduct({})", product);
         if (product.getDescription() != null) {
@@ -147,17 +161,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Long getProductsCount() {
         LOGGER.trace("getProductsCount()");
-        LOGGER.info("getProductsCount()");
         return productRepository.count();
     }
 
-    @CacheEvict(value = "counts", key = "'products'")
+    @Caching(evict = {
+        @CacheEvict(value = "productPages", allEntries = true),
+        @CacheEvict(value = "counts", key = "'products'"),
+        @CacheEvict(value = "categoryCounts", allEntries = true)
+    })
     @Override
     public void deleteProductById(Long productId) {
         LOGGER.trace("deleteProductById{}", productId);
         productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
         productRepository.deleteById(productId);
+    }
+
+    @Override
+    @Cacheable(value = "categoryCounts", key = "#category")
+    public Long getCountByCategory(Page page, Long category) {
+        return page.getTotalElements();
     }
 
 
