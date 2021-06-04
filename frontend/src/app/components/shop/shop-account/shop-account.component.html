@@ -1,3 +1,23 @@
-<div>
-  shop account works
+<div class="container mt-5">
+  <h2>Mein Konto</h2>
+  <div class="card-deck mt-5">
+    <div class="card" routerLink="/account/orders">
+      <fa-icon class="mr-2" [icon]="faShippingFast"></fa-icon>
+      <div class="card-body">
+        <h5 class="card-title">Meine Bestellungen</h5>
+        <p class="card-text">
+          Bestellungen stornieren, Bestellhistorie ansehen
+        </p>
+      </div>
+    </div>
+    <div class="card" routerLink="/account/profile">
+      <fa-icon class="mr-2" [icon]="faShieldAlt"></fa-icon>
+      <div class="card-body">
+        <h5 class="card-title">Meine Profildaten</h5>
+        <p class="card-text">
+          Name, Passwort, Email und weitere Daten bearbeiten
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
