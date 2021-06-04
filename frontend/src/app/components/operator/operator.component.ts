@@ -10,8 +10,10 @@ import {OperatorAuthService} from '../../services/auth/operator-auth.service';
 export class OperatorComponent implements OnInit {
 
   user: string;
+  role: string;
 
   constructor(private authService: OperatorAuthService, private router: Router) {
+    this.role = authService.getUserRole();
   }
 
   logoutUser() {
