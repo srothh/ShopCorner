@@ -83,7 +83,7 @@ public class ProductEndpoint {
             productCount = this.productService.getProductsCount();
         } else {
             // Temporarily don't cache with filters
-            productCount = productPage.getTotalElements();
+            productCount = this.productService.getCountByCategory(productPage, categoryId);
         }
         return new PaginationDto<>(productPage.getContent()
             .stream()
