@@ -65,10 +65,10 @@
       </thead>
       <tbody>
       <tr *ngFor="let operator of operators" (click)="selectOperator(operator)">
-        <ng-container *ngIf="selected.includes(operator); else not_selected" class="selected_row">
-          <td><span>{{operator.name}}</span></td>
-          <td><span>{{operator.loginName}}</span></td>
-          <td><span>{{operator.email}}</span></td>
+        <ng-container *ngIf="selected.includes(operator); else not_selected">
+          <td class="selected_row"><span>{{operator.name}}</span></td>
+          <td class="selected_row"><span>{{operator.loginName}}</span></td>
+          <td class="selected_row"><span>{{operator.email}}</span></td>
         </ng-container>
         <ng-template #not_selected>
           <td><span>{{operator.name}}</span></td>
