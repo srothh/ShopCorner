@@ -129,12 +129,12 @@ public class InvoiceEndpointTest implements TestData {
         // invoiceItem to invoice
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
-        invoice1.setId(TEST_INVOICE_ID);
+        invoice1.setInvoiceNumber((this.invoiceRepository.countInvoiceByDateAfter( invoice1.getDate()) + 1) + "" + invoice1.getDate().getYear());
         invoice1.setDate(LocalDateTime.now());
         invoice1.setAmount(TEST_INVOICE_AMOUNT);
         invoice1.setItems(items);
 
-        invoice2.setId(TEST_INVOICE_ID);
+        invoice2.setInvoiceNumber((this.invoiceRepository.countInvoiceByDateAfter( invoice1.getDate()) + 1) + "" + invoice1.getDate().getYear());
         invoice2.setDate(LocalDateTime.now());
         invoice2.setAmount(TEST_INVOICE_AMOUNT);
         invoice2.setItems(items);
