@@ -68,6 +68,10 @@ public class CustomerServiceImpl implements CustomerService {
         throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'customers'"),
+        @CacheEvict(value = "customerPages", allEntries = true)
+    })
     @Override
     public void deleteCustomerByLoginName(String loginName) {
         LOGGER.trace("deleteCustomerByLoginName({})", loginName);
