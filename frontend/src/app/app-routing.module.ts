@@ -30,6 +30,7 @@ import {OperatorCategoriesComponent} from './components/operator/operator-catego
 import {OperatorAddCategoryComponent} from './components/operator/operator-add-category/operator-add-category.component';
 import {ShopAccountProfileComponent} from './components/shop/shop-account-profile/shop-account-profile.component';
 import {ShopAccountOrdersComponent} from './components/shop/shop-account-orders/shop-account-orders.component';
+import {OperatorAdminGuard} from './guards/operator-admin.guard';
 
 const routes: Routes = [
   {
@@ -49,19 +50,19 @@ const routes: Routes = [
     path: 'operator', canActivate: [OperatorAuthGuard], component: OperatorComponent, children: [
       {path: '', redirectTo: 'home', pathMatch: 'full'},
       {path: 'home', component: OperatorHomeComponent},
-      {path: 'shop', component: OperatorShopComponent},
+      {path: 'shop', canActivate: [OperatorAdminGuard], component: OperatorShopComponent},
       {path: 'invoices', component: OperatorInvoiceComponent},
-      {path: 'categories', component: OperatorCategoriesComponent},
-      {path: 'categories/add', component: OperatorAddCategoryComponent},
+      {path: 'categories', canActivate: [OperatorAdminGuard], component: OperatorCategoriesComponent},
+      {path: 'categories/add', canActivate: [OperatorAdminGuard], component: OperatorAddCategoryComponent},
       {path: 'orders', component: OperatorOrderComponent},
-      {path: 'products', component: OperatorProductComponent},
-      {path: 'products/add', component: OperatorAddProductComponent},
-      {path: 'products/:id', component: OperatorProductDetailsComponent},
+      {path: 'products', canActivate: [OperatorAdminGuard], component: OperatorProductComponent},
+      {path: 'products/add', canActivate: [OperatorAdminGuard], component: OperatorAddProductComponent},
+      {path: 'products/:id', canActivate: [OperatorAdminGuard], component: OperatorProductDetailsComponent},
       {path: 'promotions', component: OperatorPromotionComponent},
       {path: 'statistics', component: OperatorStatisticComponent},
       {path: 'customers', component: OperatorCustomerComponent},
       {path: 'accounts', component: OperatorAccountComponent},
-      {path: 'registration', component: OperatorRegistrationComponent},
+      {path: 'registration', canActivate: [OperatorAdminGuard],  component: OperatorRegistrationComponent},
       {path: 'account/edit', component: OperatorEditAccountComponent},
     ],
   },

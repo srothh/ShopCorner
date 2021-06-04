@@ -11,6 +11,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
+import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,6 +73,8 @@ public class OperatorEndpointTest implements TestData {
     @Autowired
     private OperatorMapper operatorMapper;
 
+    @Autowired
+    private OperatorService operatorService;
 
     private final Operator admin = new Operator(TEST_ADMIN_NAME, TEST_ADMIN_LOGINNAME, TEST_ADMIN_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PERMISSIONS);
     private final Operator employee = new Operator(TEST_EMPLOYEE_NAME, TEST_EMPLOYEE_LOGINNAME, TEST_EMPLOYEE_PASSWORD, TEST_EMPLOYEE_EMAIL, TEST_EMPLOYEE_PERMISSIONS);
@@ -189,8 +192,8 @@ public class OperatorEndpointTest implements TestData {
     @Test
     public void givenTwoOperators_whenFindAllWithPageAndPermission_thenListWithSizeOneAndOverviewOperatorsWithAllPropertiesExceptPassword()
         throws Exception {
-        operatorRepository.save(admin);
-        operatorRepository.save(employee);
+        operatorService.save(admin);
+        operatorService.save(employee);
 
         MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
