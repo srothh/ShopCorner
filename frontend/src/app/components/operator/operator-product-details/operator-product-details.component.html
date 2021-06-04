@@ -7,7 +7,7 @@
 
 <div class="operator-product-details-container">
 
-  <div class="float-right ml-2">
+  <div class="float-right ml-2" *ngIf="getPermission() === 'ADMIN'">
     <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">
       Löschen
     </button>

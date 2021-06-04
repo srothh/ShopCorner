@@ -1,42 +1,49 @@
-<div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
-  {{ errorMessage }}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
 <div>
-  <div class="mt-4">
-    <div class="d-flex justify-content-between">
-      <h2>Produkte</h2>
-      <button type="button" class="btn btn-primary mb-3" (click)="addNewProduct()">Produkt hinzufügen</button>
-    </div>
-    <hr>
+  <div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
-  <div>
-    <div>
-      <div class="float-right ">
-        <div *ngIf="selectedProducts.length >0; else not_selected">
-        <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteCommit">
+
+<br>
+  <h2>Produkte</h2>
+
+  <div *ngIf="getPermission() === 'ADMIN'">
+    <div class="product_options">
+      <button type="button" class="btn btn-primary" (click)="addNewProduct()">Produkt hinzufügen</button>
+    </div>
+    <div class="product_options">
+      <div *ngIf="selectedProducts.length >0; else not_selected">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">
           Auswahl löschen
         </button>
-        </div>
-        <ng-template #not_selected>
-          <button type="button" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
-        </ng-template>
-
+      </div>
+      <ng-template #not_selected>
+    <span>
+      <button type="button" class="btn btn-outline-danger" disabled>Auswahl löschen</button>
+    </span>
+      </ng-template>
     </div>
+    <div class="button_block"></div>
+  </div>
 
+  <hr>
+
+  <div>
     <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else last_page">
       Zeigt {{1 + (pageSize * page)}}-{{(pageSize * (page + 1))}}
       von {{collectionSize}}</p>
     <ng-template #last_page>
-      <p style="font-size: 10px; color: gray" *ngIf="collectionSize > 0; else empty_content">Zeigt {{(1 + (pageSize * page))}}-{{collectionSize}}
+      <p style="font-size: 10px; color: gray" *ngIf="collectionSize > 0; else empty_content">
+        Zeigt {{(1 + (pageSize * page))}}-{{collectionSize}}
         von {{collectionSize}}</p>
       <ng-template #empty_content>
         <p style="font-size: 10px; color: gray">Keine Produkte im Sortiment</p>
       </ng-template>
     </ng-template>
   </div>
+
   <div class="border rounded mt-4" style="height: 560px;">
     <table class="table table-hover table-sm" data-pagination="true" data-page-list="[1,2]">
       <thead class="table-secondary">
@@ -98,9 +105,4 @@
     </div>
   </div>
 
-
 </div>
-
-
-</div>
-
