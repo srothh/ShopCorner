@@ -15,8 +15,13 @@
         <fa-icon class="mr-2" [icon]="faShoppingCart"></fa-icon>
         Warenkorb (2)</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/account">Mein Konto</a>
+    <li class="nav-item dropdown">
+      <a *ngIf="authService.isLoggedIn()" class="nav-link dropdown-toggle" routerLink="/account" data-bs-toggle="dropdown">Mein Konto</a>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" routerLink="/account">Mein Konto</a></li>
+        <li><a class="dropdown-item" routerLink="/account/orders">Meine Bestellungen</a></li>
+        <li><a class="dropdown-item" routerLink="/account/profile">Meine Profildaten</a></li>
+      </ul>
     </li>
     <li class="nav-item">
       <a class="nav-link" *ngIf="!authService.isLoggedIn()" routerLink="/login" routerLinkActive="active">Einloggen</a>

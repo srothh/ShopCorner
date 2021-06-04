@@ -33,7 +33,7 @@ public class CustomerMappingTest implements TestData {
 
     @Test
     public void givenNothing_whenMapCustomerToCustomerRegistrationDto_thenEntityHasAllProperties() {
-        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
         customerDto.getAddress().setId(0L);
         assertAll(
             () -> assertEquals(0, customerDto.getId()),
