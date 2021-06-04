@@ -25,12 +25,9 @@
       <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">Auswahl löschen</button>
     </div>
     <ng-template #disabled_delete>
-      <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Nur für Admins" *ngIf="getPermission() === 'EMPLOYEE'; else not_selected_delete">
-        <button type="button" style="pointer-events: none;" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
-      </span>
-      <ng-template #not_selected_delete>
+      <span class="d-inline-block" tabindex="0" *ngIf="getPermission() === 'ADMIN';">
         <button type="button" class="btn btn-outline-danger" disabled>Auswahl löschen</button>
-      </ng-template>
+      </span>
     </ng-template>
   </div>
   <div class="admin_options">
@@ -38,12 +35,9 @@
       <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#promoteCommit">Zu Admin machen</button>
     </div>
     <ng-template #disabled_promote>
-      <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Nur für Admins" *ngIf="getPermission() === 'EMPLOYEE'; else not_selected_promote">
-        <button type="button" style="pointer-events: none;" class="btn btn-outline-secondary btn-sm" disabled>Zu Admin machen</button>
+      <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Nur für Admins" *ngIf="getPermission() === 'ADMIN';">
+        <button type="button" style="pointer-events: none;" class="btn btn-outline-secondary" disabled>Zu Admin machen</button>
       </span>
-      <ng-template #not_selected_promote>
-        <button type="button" class="btn btn-outline-secondary" disabled>Zu Admin machen</button>
-      </ng-template>
     </ng-template>
   </div>
   <hr>
