@@ -48,7 +48,7 @@ const routes: Routes = [
     path: 'operator', canActivate: [OperatorAuthGuard], component: OperatorComponent, children: [
       {path: '', redirectTo: 'home', pathMatch: 'full'},
       {path: 'home', component: OperatorHomeComponent},
-      {path: 'shop', component: OperatorShopComponent},
+      {path: 'shop', canActivate: [OperatorAdminGuard], component: OperatorShopComponent},
       {path: 'invoices', component: OperatorInvoiceComponent},
       {path: 'categories', canActivate: [OperatorAdminGuard], component: OperatorCategoriesComponent},
       {path: 'categories/add', canActivate: [OperatorAdminGuard], component: OperatorAddCategoryComponent},
