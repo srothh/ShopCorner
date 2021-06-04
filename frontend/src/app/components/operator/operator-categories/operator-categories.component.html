@@ -6,9 +6,10 @@
 </div>
 
 <div class="operator-category-container">
-  <div class="operator-category-header mt-3 d-flex justify-content-between">
-    <h2>Kategorien</h2>
-    <button type="button" class="btn btn-primary mb-3" (click)="addNewCategory()">Kategorie hinzufügen</button>
+  <h2>Kategorien</h2>
+  <div *ngIf="getPermission() === 'ADMIN'">
+  <button type="button" class="btn btn-primary category_options"  (click)="addNewCategory()">Kategorie hinzufügen</button>
+    <div class="button_block"></div>
   </div>
   <hr>
   <div class="operator-category-body">
