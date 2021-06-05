@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Pagination} from '../../../dtos/pagination';
+import {Promotion} from '../../../dtos/promotion';
+import {PromotionService} from '../../../services/promotion.service';
 
 @Component({
   selector: 'app-operator-promotions',
@@ -7,9 +10,62 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OperatorPromotionComponent implements OnInit {
 
-  constructor() { }
+  error = false;
+  errorMessage = '';
+  promotions: Promotion[];
+  page = 0;
+  pageSize = 15;
+  collectionSize = 0;
+
+  constructor(private promotionService: PromotionService) {
+  }
 
   ngOnInit(): void {
+    this.loadPromotionsForPage();
+  }
+
+  /**
+   * Error flag will be deactivated, which clears the error message
+   */
+  vanishError() {
+    this.error = false;
+  }
+
+  /**
+   * goes to next page if not on the last page
+   */
+  nextPage() {
+    if ((this.page + 1) * this.pageSize < this.collectionSize) {
+      this.page += 1;
+      this.loadPromotionsForPage();
+    }
+  }
+
+  /**
+   * goes to previous page if not on the first page
+   */
+  previousPage() {
+    if (this.page > 0) {
+      this.page -= 1;
+      this.loadPromotionsForPage();
+    }
+  }
+
+  /**
+   * calls on Service class to fetch all customer accounts from backend
+   */
+  private loadPromotionsForPage() {
+    this.promotionService.getAllPromotionsForPage(this.page, this.pageSize).subscribe(
+      (paginationDto: Pagination<Promotion>) => {
+        console.log(paginationDto);
+        this.promotions = paginationDto.items;
+        this.collectionSize = paginationDto.totalItemCount;
+      },
+      error => {
+        this.error = true;
+        this.errorMessage = error.error;
+      }
+    );
   }
 
 }
