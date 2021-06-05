@@ -6,6 +6,9 @@ import at.ac.tuwien.sepm.groupphase.backend.service.PromotionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
@@ -26,4 +29,23 @@ public class PromotionServiceImpl implements PromotionService {
         LOGGER.trace("addNewPromotion({})", promotion);
         return this.promotionRepository.save(promotion);
     }
+
+    @Override
+    public Page<Promotion> getAllPromotions(int page, int pageCount) {
+        LOGGER.trace("getAllPromotions()");
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable returnPage = PageRequest.of(page, pageCount);
+        return promotionRepository.findAll(returnPage);
+    }
+
+    @Override
+    public Long getPromotionCount() {
+        return promotionRepository.count();
+    }
+
+
 }

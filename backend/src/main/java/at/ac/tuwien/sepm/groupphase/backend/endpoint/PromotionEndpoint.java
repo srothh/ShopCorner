@@ -1,14 +1,19 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PromotionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PromotionMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Promotion;
 import at.ac.tuwien.sepm.groupphase.backend.service.PromotionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
@@ -36,4 +41,12 @@ public class PromotionEndpoint {
         return promotionMapper.promotionToPromotionDto(promotionService.addNewPromotion(promotionMapper.promotionDtoToPromotion(dto)));
     }
 
+    @GetMapping
+    @PermitAll
+    public PaginationDto<PromotionDto> getAllPages(@RequestParam(name = "page", defaultValue = "1") Integer page,
+                                                   @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
+        LOGGER.info("GET api/v1/promotions?page={}&page_count={}", page, pageCount);
+        Page<Promotion> promotionPage = promotionService.getAllPromotions(page, pageCount);
+        return new PaginationDto<>(promotionMapper.promotionListToPromotionDtoList(promotionPage.getContent()), page, pageCount, promotionPage.getTotalPages(), promotionService.getPromotionCount());
+    }
 }
