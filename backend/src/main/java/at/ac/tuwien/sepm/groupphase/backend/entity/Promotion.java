@@ -29,6 +29,15 @@ public class Promotion {
     public Promotion() {
     }
 
+    public Promotion(String name, double discount, LocalDate creationDate, LocalDate expirationDate, String code, double minimumOrderValue) {
+        this.name = name;
+        this.discount = discount;
+        this.creationDate = creationDate;
+        this.expirationDate = expirationDate;
+        this.code = code;
+        this.minimumOrderValue = minimumOrderValue;
+    }
+
     public Promotion(Long id, String name, double discount, LocalDate creationDate, LocalDate expirationDate, String code, double minimumOrderValue) {
         this.id = id;
         this.name = name;
