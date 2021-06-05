@@ -6,6 +6,9 @@ import at.ac.tuwien.sepm.groupphase.backend.service.PromotionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,12 +27,17 @@ public class PromotionServiceImpl implements PromotionService {
         this.promotionRepository = promotionRepository;
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'promotions'"),
+        @CacheEvict(value = "promotionPages", allEntries = true)
+    })
     @Override
     public Promotion addNewPromotion(Promotion promotion) {
         LOGGER.trace("addNewPromotion({})", promotion);
         return this.promotionRepository.save(promotion);
     }
 
+    @Cacheable(value = "promotionPages")
     @Override
     public Page<Promotion> getAllPromotions(int page, int pageCount) {
         LOGGER.trace("getAllPromotions()");
@@ -42,6 +50,7 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionRepository.findAll(returnPage);
     }
 
+    @Cacheable(value = "counts", key = "'promotions'")
     @Override
     public Long getPromotionCount() {
         return promotionRepository.count();
