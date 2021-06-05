@@ -112,8 +112,9 @@ public class ProductDataGenerator {
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category4)
                 .build();
             Long prodId3 = productRepository.save(prod3).getId();
-            generateInvoices();
         }
+        generateInvoices();
+
     }
 
     public void generateInvoices() {
@@ -129,6 +130,7 @@ public class ProductDataGenerator {
                 item.setNumberOfItems(i);
                 invoice.setDate(LocalDateTime.now().minus(i, ChronoUnit.DAYS));
                 invoice.setAmount((item.getNumberOfItems() * (p.getPrice() * p.getTaxRate().getCalculationFactor())));
+                invoice.setInvoiceNumber(i + "" + invoice.getDate().getYear());
                 Invoice newInvoice = invoiceRepository.save(invoice);
                 item.setInvoice(newInvoice);
 
