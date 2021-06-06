@@ -24,9 +24,9 @@ public class Category {
     @NotBlank
     @Size(min = 3, max = 20)
     private String name;
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = true)
-    @JsonIgnore
-    private Set<Product> products = new HashSet<>();
+    //@OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+    //@JsonIgnore
+    //private Set<Product> products = new HashSet<>();
 
     public Category(){}
 
@@ -46,20 +46,20 @@ public class Category {
         this.name = name;
     }
 
-    public Set<Product> getProducts() {
+    /*public Set<Product> getProducts() {
         return products;
-    }
+    }*/
 
-    public void setProducts(Set<Product> products) {
+    /*public void setProducts(Set<Product> products) {
         this.products = products;
-    }
+    }*/
 
-    @PreRemove
-    public void preRemove() {
+    //@PreRemove
+    /* public void preRemove() {
         for (Product product : products) {
             product.setCategory(null);
         }
-    }
+    }*/
 
     public boolean equals(Object o) {
         if (this == o) {
