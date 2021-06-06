@@ -51,6 +51,9 @@ export class OperatorPromotionComponent implements OnInit {
     }
   }
 
+  parseDates(date: string): string {
+    return date.replace('T', ' ');
+  }
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
@@ -67,5 +70,7 @@ export class OperatorPromotionComponent implements OnInit {
       }
     );
   }
+
+
 
 }

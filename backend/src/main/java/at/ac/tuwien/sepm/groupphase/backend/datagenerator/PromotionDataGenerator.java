@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 @Profile("generateData")
 @Component
@@ -32,12 +32,19 @@ public class PromotionDataGenerator {
         if (promotionRepository.findAll().size() > 0) {
             LOGGER.debug("Promotions already generated");
         } else {
+            Calendar cal = Calendar.getInstance();
+            LOGGER.info(new Timestamp(System.currentTimeMillis()).toString());
             Faker faker = new Faker(new Locale("de-AT"));
             for (int i = 0; i < 200; i++) {
                 promotionRepository.save(
-                    new Promotion(faker.lorem().word(), faker.number().randomDouble(2, 1, 100), LocalDate.now(), faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), faker.lorem().word(),
+                    new Promotion(faker.lorem().word(), faker.number().randomDouble(2, 1, 100), LocalDateTime.now().withNano(0), LocalDateTime
+                        .of(faker.number().numberBetween(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.YEAR) + 2), faker.number().numberBetween(1, 12), faker.number().numberBetween(1, 30),
+                            faker.number().numberBetween(1, 23), faker.number().numberBetween(1, 59), faker.number().numberBetween(0, 59)), faker.lorem().word(),
                         faker.number().randomDouble(2, 5, 150)));
             }
         }
     }
+
+
 }
+

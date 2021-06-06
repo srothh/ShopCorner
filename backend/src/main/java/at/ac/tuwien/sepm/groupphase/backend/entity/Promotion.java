@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Promotion {
@@ -18,9 +18,9 @@ public class Promotion {
     @Column(name = "discount", nullable = false)
     private double discount;
     @Column(name = "creationDate", nullable = false)
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
     @Column(name = "expirationDate", nullable = false)
-    private LocalDate expirationDate;
+    private LocalDateTime expirationDate;
     @Column(name = "code", nullable = false)
     private String code;
     @Column(name = "minimumOrderValue")
@@ -29,7 +29,7 @@ public class Promotion {
     public Promotion() {
     }
 
-    public Promotion(String name, double discount, LocalDate creationDate, LocalDate expirationDate, String code, double minimumOrderValue) {
+    public Promotion(String name, double discount, LocalDateTime creationDate, LocalDateTime expirationDate, String code, double minimumOrderValue) {
         this.name = name;
         this.discount = discount;
         this.creationDate = creationDate;
@@ -38,7 +38,7 @@ public class Promotion {
         this.minimumOrderValue = minimumOrderValue;
     }
 
-    public Promotion(Long id, String name, double discount, LocalDate creationDate, LocalDate expirationDate, String code, double minimumOrderValue) {
+    public Promotion(Long id, String name, double discount, LocalDateTime creationDate, LocalDateTime expirationDate, String code, double minimumOrderValue) {
         this.id = id;
         this.name = name;
         this.discount = discount;
@@ -72,19 +72,19 @@ public class Promotion {
         this.discount = discount;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDate getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDate expirationDate) {
+    public void setExpirationDate(LocalDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 

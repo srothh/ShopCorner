@@ -38,8 +38,8 @@
       <tr *ngFor="let promotion of promotions">
         <td><span>{{promotion.name}}</span></td>
         <td><span>{{promotion.discount}} €</span></td>
-        <td><span>{{promotion.creationDate}}</span></td>
-        <td><span>{{promotion.expirationDate}}</span></td>
+        <td><span>{{parseDates(promotion.creationDate)}}</span></td>
+        <td><span>{{parseDates(promotion.expirationDate)}}</span></td>
         <td><span>{{promotion.code}}</span></td>
         <td><span>{{promotion.minimumOrderValue}} €</span></td>
       </tr>

@@ -3,7 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class PromotionDto {
 
@@ -14,9 +14,9 @@ public class PromotionDto {
     @NotNull
     private double discount;
     @NotNull
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
     @NotNull
-    private LocalDate expirationDate;
+    private LocalDateTime expirationDate;
     @NotNull
     @NotBlank
     private String code;
@@ -27,7 +27,7 @@ public class PromotionDto {
     public PromotionDto() {
     }
 
-    public PromotionDto(Long id, String name, double discount, LocalDate creationDate, LocalDate expirationDate, String code, double minimumOrderValue) {
+    public PromotionDto(Long id, String name, double discount, LocalDateTime creationDate, LocalDateTime expirationDate, String code, double minimumOrderValue) {
         this.id = id;
         this.name = name;
         this.discount = discount;
@@ -61,19 +61,19 @@ public class PromotionDto {
         this.discount = discount;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDate getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDate expirationDate) {
+    public void setExpirationDate(LocalDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 
