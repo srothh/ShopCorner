@@ -2,13 +2,13 @@ import {Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/c
 import {ProductService} from '../../../services/product/product.service';
 import {Product} from '../../../dtos/product';
 import {Router, UrlSerializer} from '@angular/router';
-import {forkJoin} from 'rxjs';
 import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
-import {Pagination} from '../../../dtos/pagination';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
+import {faFilter} from '@fortawesome/free-solid-svg-icons';
+import {PageableProducts} from '../../../services/pagination/pageable-products';
 
 @Component({
   selector: 'app-operator-products',
@@ -17,22 +17,25 @@ import {OperatorAuthService} from '../../../services/auth/operator-auth.service'
 })
 export class OperatorProductComponent implements OnInit {
   @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
-  products: Product[];
+  faFilter = faFilter;
   categories: Category[];
   taxRates: TaxRate[];
-  page = 0;
-  pageSize = 15;
-  collectionSize = 0;
   selectedProducts: Product[] = [];
-  errorOccurred: boolean;
+  error: boolean;
   errorMessage: string;
 
-  constructor(private productService: ProductService, private router: Router, private urlSerializer: UrlSerializer,
-              private categoryService: CategoryService, private taxRateService: TaxRateService, private authService: OperatorAuthService) {
+  constructor(private productService: ProductService,
+              private router: Router,
+              private urlSerializer: UrlSerializer,
+              private categoryService: CategoryService,
+              private taxRateService: TaxRateService,
+              private authService: OperatorAuthService,
+              public pageableProducts: PageableProducts) {
   }
 
   ngOnInit(): void {
-    this.fetchData();
+    this.fetchProducts();
+    this.fetchCategories();
   }
 
   /**
@@ -44,21 +47,33 @@ export class OperatorProductComponent implements OnInit {
     return this.authService.getUserRole();
   }
 
-  fetchData(): void {
-    forkJoin([this.productService.getProducts(this.page, this.pageSize),
-      this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
-      .subscribe(([productsData, categoriesData, taxRatesData]) => {
-        this.products = productsData.items;
-        this.collectionSize = productsData.totalItemCount;
-        this.categories = categoriesData;
-        this.taxRates = taxRatesData;
-      });
-
+  fetchProducts(): void {
+    this.pageableProducts.fetchProducts();
   }
 
-  fetchProducts(): void {
-    this.productService.getProducts(this.page, this.pageSize).subscribe((productData: Pagination<Product>) => {
-      this.products = productData.items;
+  resetAndFetchProducts(searchForm) {
+    this.pageableProducts.searchQuery = {
+      name: searchForm.controls.searchText.value,
+      categoryId: searchForm.controls.categoryId.value,
+    };
+    this.pageableProducts.resetAndFetchProducts();
+  }
+
+  getPaginatedProducts() {
+    return this.pageableProducts.items;
+  }
+
+  fetchCategories() {
+    this.categoryService.getCategories().subscribe((categories) => {
+      this.categories = categories;
+    }, error => {
+      console.log(error);
+      this.error = true;
+      if (typeof error.error === 'object') {
+        this.errorMessage = error.error.error;
+      } else {
+        this.errorMessage = error.error;
+      }
     });
   }
 
@@ -82,10 +97,10 @@ export class OperatorProductComponent implements OnInit {
   clickedCheckMark(event, index: number) {
     // no propagation to details site allowed when clicking the checkbox
     event.stopPropagation();
+    const product = this.getPaginatedProducts()[index];
     if (event.target.checked) {
-      this.selectedProducts.push(this.products[index]);
+      this.selectedProducts.push(product);
     } else {
-      const product = this.products[index];
       const deleteIndex = this.selectedProducts.indexOf(product);
       this.selectedProducts.splice(deleteIndex, 1);
     }
@@ -102,40 +117,38 @@ export class OperatorProductComponent implements OnInit {
     for (const selectedProduct of this.selectedProducts) {
       this.productService.deleteProduct(selectedProduct.id).subscribe(() => {
         if (this.selectedProducts.indexOf(selectedProduct) === this.selectedProducts.length - 1) {
-          if ((this.page + 1) * this.pageSize >= this.collectionSize &&
+          if ((this.pageableProducts.page + 1) * this.pageableProducts.pageSize >= this.pageableProducts.collectionSize &&
             // products per page equals selected products -> return to previous page
-            this.products.length === this.selectedProducts.length &&
-            this.page > 0) {
-            this.previousPage();
+            this.getPaginatedProducts().length === this.selectedProducts.length &&
+            this.pageableProducts.page > 0) {
+            this.pageableProducts.previousPage();
           } else {
             this.fetchProducts();
           }
-          this.collectionSize -= this.selectedProducts.length;
+          this.pageableProducts.collectionSize -= this.selectedProducts.length;
           this.uncheckSelectedProducts();
         }
       }, error => {
-        this.errorOccurred = true;
+        this.error = true;
         this.errorMessage = error.error.message;
       });
     }
   }
 
-  previousPage(): void {
-    if (this.page > 0) {
-      this.page -= 1;
-      this.fetchProducts();
-    }
+  errorOccurred() {
+    return this.error || this.pageableProducts.error;
   }
 
-  nextPage(): void {
-    if ((this.page + 1) * this.pageSize < this.collectionSize) {
-      this.page += 1;
-      this.fetchProducts();
+  getErrorMessage() {
+    if (this.error) {
+      return this.errorMessage;
     }
+    return this.pageableProducts.errorMessage;
   }
 
   resetState() {
     this.errorMessage = null;
-    this.errorOccurred = undefined;
+    this.error = undefined;
+    this.pageableProducts.vanishError();
   }
 }
