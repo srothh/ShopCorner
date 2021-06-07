@@ -31,7 +31,7 @@ public class Product {
     private String description;
     @DecimalMin("0.0")
     private Double price;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;

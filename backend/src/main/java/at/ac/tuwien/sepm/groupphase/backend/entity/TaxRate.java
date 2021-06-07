@@ -21,9 +21,9 @@ public class TaxRate {
     private Long id;
     private Double percentage;
     private Double calculationFactor;
-    @OneToMany(mappedBy = "taxRate", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<Product> products = new HashSet<>();
+    //@OneToMany(mappedBy = "taxRate", fetch = FetchType.LAZY)
+    //@JsonIgnore
+    //private Set<Product> products = new HashSet<>();
 
     public Double getCalculationFactor() {
         return calculationFactor;
@@ -51,13 +51,14 @@ public class TaxRate {
         this.percentage = percentage;
     }
 
-    public Set<Product> getProducts() {
+    /*public Set<Product> getProducts() {
         return products;
-    }
+    }*/
 
-    public void setProducts(Set<Product> products) {
+
+    /*public void setProducts(Set<Product> products) {
         this.products = products;
-    }
+    }*/
 
 
     @Override
