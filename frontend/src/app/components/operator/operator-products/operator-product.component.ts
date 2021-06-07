@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ProductService} from '../../../services/product.service';
+import {ProductService} from '../../../services/product/product.service';
 import {Product} from '../../../dtos/product';
 import {Router, UrlSerializer} from '@angular/router';
 import {forkJoin} from 'rxjs';
@@ -8,6 +8,7 @@ import {TaxRate} from '../../../dtos/tax-rate';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
 import {Pagination} from '../../../dtos/pagination';
+import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 
 @Component({
   selector: 'app-operator-products',
@@ -27,11 +28,20 @@ export class OperatorProductComponent implements OnInit {
   errorMessage: string;
 
   constructor(private productService: ProductService, private router: Router, private urlSerializer: UrlSerializer,
-              private categoryService: CategoryService, private taxRateService: TaxRateService) {
+              private categoryService: CategoryService, private taxRateService: TaxRateService, private authService: OperatorAuthService) {
   }
 
   ngOnInit(): void {
     this.fetchData();
+  }
+
+  /**
+   * calls on authentication service to return permission of logged in operator
+   *
+   * @return string role of logged in operator
+   */
+  getPermission(): string {
+    return this.authService.getUserRole();
   }
 
   fetchData(): void {
@@ -123,6 +133,7 @@ export class OperatorProductComponent implements OnInit {
       this.fetchProducts();
     }
   }
+
   resetState() {
     this.errorMessage = null;
     this.errorOccurred = undefined;

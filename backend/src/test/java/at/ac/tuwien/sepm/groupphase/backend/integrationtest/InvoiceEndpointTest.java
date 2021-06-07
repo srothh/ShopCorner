@@ -3,9 +3,8 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
@@ -19,6 +18,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -38,11 +37,13 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -56,6 +57,9 @@ public class InvoiceEndpointTest implements TestData {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
+
+    @Autowired
+    private InvoiceItemRepository invoiceItemRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -81,7 +85,8 @@ public class InvoiceEndpointTest implements TestData {
 
     private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
     private final InvoiceItem invoiceItem = new InvoiceItem();
-    private final Invoice invoice = new Invoice();
+    private final Invoice invoice1 = new Invoice();
+    private final Invoice invoice2 = new Invoice();
     private final Product product = new Product();
     private final Category category = new Category();
     private final TaxRate taxRate = new TaxRate();
@@ -124,16 +129,21 @@ public class InvoiceEndpointTest implements TestData {
         // invoiceItem to invoice
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
-        invoice.setId(TEST_INVOICE_ID);
-        invoice.setDate(LocalDateTime.now());
-        invoice.setAmount(TEST_INVOICE_AMOUNT);
-        invoice.setItems(items);
+        invoice1.setInvoiceNumber(TEST_INVOICE_NUMBER_1);
+        invoice1.setDate(LocalDateTime.now());
+        invoice1.setAmount(TEST_INVOICE_AMOUNT);
+        invoice1.setItems(items);
+
+        invoice2.setInvoiceNumber(TEST_INVOICE_NUMBER_2);
+        invoice2.setDate(LocalDateTime.now());
+        invoice2.setAmount(TEST_INVOICE_AMOUNT);
+        invoice2.setItems(items);
 
     }
 
     @Test
     public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
-        DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
+        DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice1);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
         MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)
@@ -150,12 +160,147 @@ public class InvoiceEndpointTest implements TestData {
 
 
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
-        invoice.setAmount(0);
-        invoice.setDate(null);
-        invoice.setItems(null);
+    public void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
+        Set<InvoiceItem> set1 = invoice1.getItems();
+        Set<InvoiceItem> set2 = invoice2.getItems();
+        invoice1.setItems(null);
+        Invoice newInvoice = invoiceRepository.save(invoice1);
+        for(InvoiceItem item: set1){
+            item.setInvoice(newInvoice);
+            invoiceItemRepository.save(item);
+        }
 
-        DetailedInvoiceDto dto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice);
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/"+newInvoice.getId()+"/pdf")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
+        assertNotNull(response);
+    }
+
+    @Test
+    public void givenItems_whenGetInvoice_thenInvoice() throws Exception {
+        Set<InvoiceItem> set = invoice1.getItems();
+        invoice1.setItems(null);
+        invoice1.setDate(LocalDateTime.now());
+        Invoice newInvoice = invoiceRepository.save(invoice1);
+        for(InvoiceItem item: set){
+            item.setInvoice(newInvoice);
+            invoiceItemRepository.save(item);
+        }
+        newInvoice.setItems(set);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/"+newInvoice.getId())
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        DetailedInvoiceDto detailedInvoiceDto = objectMapper.readValue(response.getContentAsString(),
+            DetailedInvoiceDto.class);
+
+        assertAll(
+            () -> assertNotNull(detailedInvoiceDto.getId()),
+            () -> assertNotNull(detailedInvoiceDto.getDate()),
+            () -> assertEquals(newInvoice.getAmount(), detailedInvoiceDto.getAmount()),
+            () -> assertEquals(newInvoice.getItems().size(), detailedInvoiceDto.getItems().size())
+        );
+    }
+
+
+    @Test
+    public void givenTwoInvoices_whenFindAllWithPageAndPermission_thenListWithSizeTwoAndOverviewOfAllInvoices()
+        throws Exception {
+        invoiceRepository.deleteAll();
+        Set<InvoiceItem> set = invoice1.getItems();
+        invoice1.setItems(null);
+        Invoice newInvoice1 = invoiceRepository.save(invoice1);
+        for(InvoiceItem item: set){
+            item.setInvoice(newInvoice1);
+            invoiceItemRepository.save(item);
+        }
+        newInvoice1.setItems(set);
+
+        invoice2.setItems(null);
+        Invoice newInvoice2 = invoiceRepository.save(invoice2);
+        for(InvoiceItem item: set){
+            item.setInvoice(newInvoice2);
+            invoiceItemRepository.save(item);
+        }
+        newInvoice2.setItems(set);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        PaginationDto<SimpleInvoiceDto> paginationDto = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>() {
+            });
+        List<SimpleInvoiceDto> simpleInvoiceDtos = paginationDto.getItems();
+
+        assertEquals(2, simpleInvoiceDtos.size());
+        SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtos.get(0);
+        assertAll(
+            () -> assertEquals(newInvoice1.getId(), simpleInvoiceDto.getId()),
+            () -> assertNotNull(simpleInvoiceDto.getDate()),
+            () -> assertEquals(newInvoice1.getAmount(), simpleInvoiceDto.getAmount())
+        );
+    }
+
+
+
+    @Test
+    public void givenNothing_whenFindPage_thenEmptyList() throws Exception {
+        invoiceRepository.deleteAll();
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        PaginationDto<SimpleInvoiceDto> overviewOperatorDtos = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>() {
+            });
+
+        assertEquals(0, overviewOperatorDtos.getItems().size());
+    }
+
+    @Test
+    public void givenNothing_whenFindById_then404() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get( INVOICE_BASE_URI + "/" +0L)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertAll(
+            () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
+            () -> {
+                String content = response.getContentAsString();
+                assertEquals(("Could not find invoice with id 0"), content);
+            }
+        );
+    }
+
+
+    @Test
+    public void givenNothing_whenPostInvalid_then400() throws Exception {
+        invoice1.setAmount(0);
+        invoice1.setDate(null);
+        invoice1.setItems(null);
+
+        DetailedInvoiceDto dto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice1);
         String body = objectMapper.writeValueAsString(dto);
 
         MvcResult mvcResult = this.mockMvc.perform(post(INVOICE_BASE_URI)

@@ -4,12 +4,14 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +52,7 @@ public class CustomerEndpoint {
     @Operation(summary = "Register a new customer account")
     public CustomerRegistrationDto registerNewCustomer(@Valid @RequestBody CustomerRegistrationDto dto) {
         LOGGER.info("POST api/v1/customers");
-        CustomerRegistrationDto customer = customerMapper.customerToCustomerDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto)));
+        CustomerRegistrationDto customer = customerMapper.customerToCustomerRegistrationDto(customerService.registerNewCustomer(customerMapper.customerDtoToCustomer(dto)));
         customer.setPassword(null);
         return customer;
     }
@@ -67,7 +69,8 @@ public class CustomerEndpoint {
     public PaginationDto<CustomerDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "1") Integer page,
                                                       @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
         LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
-        return new PaginationDto<>(customerMapper.customerListToCustomerDtoList(customerService.getAllCustomers(page, pageCount).getContent()), page, pageCount, customerService.getCustomerCount());
+        Page<Customer> customerPage = customerService.getAllCustomers(page, pageCount);
+        return new PaginationDto<>(customerMapper.customerListToCustomerDtoList(customerPage.getContent()), page, pageCount, customerPage.getTotalPages(), customerService.getCustomerCount());
     }
 
     /**

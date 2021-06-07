@@ -1,13 +1,14 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.ManyToOne;
-import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -34,6 +35,9 @@ public class Product {
     private TaxRate taxRate;
     @Lob
     private byte[] picture;
+    @Column(name = "saleCount", columnDefinition = "BIGINT default 0")
+    private Long saleCount;
+
 
     public Product() {
     }
@@ -92,6 +96,14 @@ public class Product {
 
     public void setTaxRate(TaxRate taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public Long getSaleCount() {
+        return saleCount;
+    }
+
+    public void setSaleCount(Long saleCount) {
+        this.saleCount = saleCount;
     }
 
     public boolean isLocked() {

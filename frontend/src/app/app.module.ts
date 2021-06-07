@@ -14,7 +14,7 @@ import {httpInterceptorProviders} from './interceptors';
 import {OperatorComponent} from './components/operator/operator.component';
 import {OperatorHomeComponent} from './components/operator/operator-home/operator-home.component';
 import {OperatorShopComponent} from './components/operator/operator-shop/operator-shop.component';
-import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
+import {OperatorInvoiceFormComponent} from './components/operator/operator-invoice-form/operator-invoice-form.component';
 import {OperatorOrderComponent} from './components/operator/operator-order/operator-order.component';
 import {OperatorProductComponent} from './components/operator/operator-products/operator-product.component';
 import {OperatorPromotionComponent} from './components/operator/operator-promotions/operator-promotion.component';
@@ -35,7 +35,15 @@ import {OperatorProductDetailsComponent} from './components/operator/operator-pr
 import {OperatorProductFormComponent} from './components/operator/operator-product-form/operator-product-form.component';
 import {BaseLoginComponent} from './components/common/base-login/base-login.component';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
-
+import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
+import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
+import { OperatorCategoriesComponent } from './components/operator/operator-categories/operator-categories.component';
+import { OperatorAddCategoryComponent } from './components/operator/operator-add-category/operator-add-category.component';
+import { BaseShopProductItemComponent } from './components/common/base-shop-product-item/base-shop-product-item.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ShopProductDetailsComponent } from './components/shop/shop-product-details/shop-product-details.component';
+import { ShopAccountOrdersComponent } from './components/shop/shop-account-orders/shop-account-orders.component';
+import { ShopAccountProfileComponent } from './components/shop/shop-account-profile/shop-account-profile.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +74,16 @@ import {OperatorLoginComponent} from './components/operator/operator-login/opera
     OperatorEditAccountComponent,
     OperatorProductFormComponent,
     OperatorProductDetailsComponent,
+    OperatorInvoiceFormComponent,
+    OperatorInvoiceComponent,
+    OperatorInvoiceDetailviewComponent,
+    BaseShopProductItemComponent,
+    OperatorCategoriesComponent,
+    OperatorAddCategoryComponent,
+    BaseShopProductItemComponent,
+    ShopProductDetailsComponent,
+    ShopAccountOrdersComponent,
+    ShopAccountProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +91,8 @@ import {OperatorLoginComponent} from './components/operator/operator-login/opera
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    FontAwesomeModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

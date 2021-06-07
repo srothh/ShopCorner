@@ -21,6 +21,7 @@ public class ProductDto {
     private TaxRate taxRate;
     private boolean locked;
     private String picture;
+    private Long saleCount;
 
     public String getPicture() {
         return picture;
@@ -81,6 +82,13 @@ public class ProductDto {
         this.taxRate = taxRate;
     }
 
+    public Long getSaleCount() {
+        return saleCount;
+    }
+
+    public void setSaleCount(Long saleCount) {
+        this.saleCount = saleCount;
+    }
 
     public boolean isLocked() {
         return locked;

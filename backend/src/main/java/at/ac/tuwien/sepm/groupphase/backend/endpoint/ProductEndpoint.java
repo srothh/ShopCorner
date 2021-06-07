@@ -4,12 +4,14 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -70,12 +72,23 @@ public class ProductEndpoint {
     @GetMapping(params = {"page"})
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
+    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount,
+                                                           @RequestParam(defaultValue = "id") String sortBy,
+                                                           @RequestParam(required = false, defaultValue = "") String name,
+                                                           @RequestParam(name = "category_id", required = false, defaultValue = "-1") Long categoryId) {
         LOGGER.info("GET " + BASE_URL);
-        return new PaginationDto<ProductDto>(this.productService.getAllProductsPerPage(page, pageCount).getContent()
+        Page<Product> productPage = this.productService.getAllProductsPerPage(page, pageCount, categoryId, sortBy, name);
+        Long productCount;
+        if (name.isEmpty() && categoryId == -1) {
+            productCount = this.productService.getProductsCount();
+        } else {
+            // Temporarily don't cache with filters
+            productCount = this.productService.getCountByCategory(productPage, categoryId);
+        }
+        return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
-            .collect(Collectors.toList()), page, pageCount, productService.getProductsCount());
+            .collect(Collectors.toList()), page, pageCount, productPage.getTotalPages(), productCount);
     }
 
     /**
@@ -83,7 +96,6 @@ public class ProductEndpoint {
      *
      * @return all simple products ( product without picture,category) in a dto - format NOT PAGINATED
      */
-
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("/simple")
     @ResponseStatus(HttpStatus.OK)
@@ -99,14 +111,12 @@ public class ProductEndpoint {
             .collect(Collectors.toList());
     }
 
-
     /**
      * Updates an already existing product from the database.
      *
      * @param productId  the Id of the product to execute the udpate
      * @param productDto the product dto with the updated fields
      */
-
     @Secured("ROLE_ADMIN")
     @PutMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
@@ -122,7 +132,7 @@ public class ProductEndpoint {
      * @param productId the id to search in the database and retrieve the associated product entity
      * @return the product entity with the associated Id
      */
-    @Secured("ROLE_ADMIN")
+    @PermitAll
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Gets a specific product with the give Id", security = @SecurityRequirement(name = "apiKey"))

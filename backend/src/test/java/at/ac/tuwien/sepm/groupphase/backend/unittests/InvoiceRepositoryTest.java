@@ -21,6 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -88,7 +90,7 @@ public class InvoiceRepositoryTest implements TestData {
         // invoiceItem to invoice
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
-        invoice.setId(TEST_INVOICE_ID);
+        invoice.setInvoiceNumber(TEST_INVOICE_NUMBER_1);
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
 
@@ -97,14 +99,21 @@ public class InvoiceRepositoryTest implements TestData {
 
     @Test
     public void givenAllProperties_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
-
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
         invoiceItemRepository.save(invoiceItem);
-
         assertAll(
             () -> assertEquals(1, invoiceRepository.findAll().size()),
             () -> assertNotNull(invoiceRepository.findById(invoice.getId()))
         );
+    }
 
+    @Test
+    public void givenAllProperties_whenGetInvoice_thenFindListWithOneInvoiceAndFindElementById() {
+        invoiceItem.setInvoice(invoiceRepository.save(invoice));
+        invoiceItemRepository.save(invoiceItem);
+        Pageable returnPage = PageRequest.of(0, 15);
+        assertAll(
+            () -> assertEquals(1, invoiceRepository.findAll(returnPage).getContent().size())
+        );
     }
 }

@@ -2,10 +2,15 @@ package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import com.github.javafaker.Faker;
@@ -17,8 +22,12 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 @Profile("generateData")
 @Component
@@ -27,13 +36,16 @@ public class ProductDataGenerator {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final TaxRateRepository taxRateRepository;
+    private final InvoiceRepository invoiceRepository;
+    private final InvoiceItemRepository invoiceItemRepository;
     private static final Map<Double, Double> TAX_RATES = Map.of(10.0, 1.10, 13.00, 1.13, 20.0, 1.20);
 
-    public ProductDataGenerator(ProductRepository productRepository, CategoryRepository categoryRepository, TaxRateRepository taxRateRepository) {
+    public ProductDataGenerator(ProductRepository productRepository, CategoryRepository categoryRepository, TaxRateRepository taxRateRepository, InvoiceRepository invoiceRepository, InvoiceItemRepository invoiceItemRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.taxRateRepository = taxRateRepository;
-
+        this.invoiceRepository = invoiceRepository;
+        this.invoiceItemRepository = invoiceItemRepository;
     }
 
     @PostConstruct
@@ -87,21 +99,49 @@ public class ProductDataGenerator {
         for (int i = 0; i < 10; i++) {
             Product prod = Product.ProductBuilder.getProductBuilder().withName(faker.space().nasaSpaceCraft())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category1).build();
-            productRepository.save(prod);
+            Long prodId = productRepository.save(prod).getId();
             Product prod1 = Product.ProductBuilder.getProductBuilder().withName(faker.food().ingredient())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category2)
                 .build();
-            productRepository.save(prod1);
+            Long prodId1 = productRepository.save(prod1).getId();
             Product prod2 = Product.ProductBuilder.getProductBuilder().withName(faker.food().spice())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category3)
                 .build();
-            productRepository.save(prod2);
+            Long prodId2 = productRepository.save(prod2).getId();
             Product prod3 = Product.ProductBuilder.getProductBuilder().withName(faker.food().vegetable())
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category4)
                 .build();
-            productRepository.save(prod3);
+            Long prodId3 = productRepository.save(prod3).getId();
         }
+        generateInvoices();
+
     }
 
+    public void generateInvoices() {
+        if (invoiceRepository.findAll().size() > 0) {
+            LOGGER.debug("operators already generated");
+        } else {
+            for (int i = 1; i <= 25; i++) {
+                InvoiceItem item = new InvoiceItem();
+                Invoice invoice = new Invoice();
 
+                Product p = productRepository.findAll().get(0);
+                item.setProduct(p);
+                item.setNumberOfItems(i);
+                invoice.setDate(LocalDateTime.now().minus(i, ChronoUnit.DAYS));
+                invoice.setAmount((item.getNumberOfItems() * (p.getPrice() * p.getTaxRate().getCalculationFactor())));
+                invoice.setInvoiceNumber(i + "" + invoice.getDate().getYear());
+                Invoice newInvoice = invoiceRepository.save(invoice);
+                item.setInvoice(newInvoice);
+
+                InvoiceItemKey itemId = new InvoiceItemKey();
+                itemId.setInvoiceId(newInvoice.getId());
+                item.setId(itemId);
+                Set<InvoiceItem> itemSet = new HashSet<>();
+                itemSet.add(item);
+                invoice.setItems(itemSet);
+                invoiceItemRepository.save(item);
+            }
+        }
+    }
 }

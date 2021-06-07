@@ -9,6 +9,9 @@ public class SimpleInvoiceDto {
 
     private Long id;
 
+
+    private String invoiceNumber;
+
     @NotNull(message = "LocalDateTime can not be null")
     private LocalDateTime date;
 
@@ -21,6 +24,14 @@ public class SimpleInvoiceDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     public LocalDateTime getDate() {
@@ -59,6 +70,6 @@ public class SimpleInvoiceDto {
 
     @Override
     public String toString() {
-        return "SimpleInvoiceDto{" + "id=" + id + ", date=" + date + ", amount=" + amount + '}';
+        return "SimpleInvoiceDto{" + "id=" + id + ", invoiceNumber=" + invoiceNumber + ", date=" + date + ", amount=" + amount + '}';
     }
 }
