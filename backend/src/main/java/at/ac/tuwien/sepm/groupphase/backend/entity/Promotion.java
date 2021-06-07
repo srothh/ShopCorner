@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +20,7 @@ public class Promotion {
     @Column(name = "discount", nullable = false)
     private double discount;
     @Column(name = "creationDate", nullable = false)
+    @CreationTimestamp
     private LocalDateTime creationDate;
     @Column(name = "expirationDate", nullable = false)
     private LocalDateTime expirationDate;

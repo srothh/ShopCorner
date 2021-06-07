@@ -16,6 +16,7 @@ export class OperatorPromotionComponent implements OnInit {
   page = 0;
   pageSize = 15;
   collectionSize = 0;
+  form = false;
 
   constructor(private promotionService: PromotionService) {
   }
@@ -54,6 +55,12 @@ export class OperatorPromotionComponent implements OnInit {
   parseDates(date: string): string {
     return date.replace('T', ' ');
   }
+
+  toggleForm() {
+    this.form = !this.form;
+  }
+
+
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
@@ -70,7 +77,6 @@ export class OperatorPromotionComponent implements OnInit {
       }
     );
   }
-
 
 
 }
