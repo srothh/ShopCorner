@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Set;
 
 @Service
@@ -55,13 +59,23 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.count();
     }
 
+    @Cacheable(value = "counts", key = "'invoicesByYear'")
+    @Override
+    public long getInvoiceCountByYear(LocalDateTime firstDateOfYear) {
+        LOGGER.trace("getInvoiceCount()");
+        return invoiceRepository.countInvoiceByDateAfter(firstDateOfYear);
+    }
+
     @Override
     public Invoice findOneById(Long id) {
         LOGGER.trace("findOneById({})", id);
         return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
     }
 
-    @CacheEvict(value = "counts", key = "'invoices'")
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'invoices'"),
+        @CacheEvict(value = "counts", key = "'invoicesByYear'")
+    })
     @Transactional
     @Override
     public Invoice createInvoice(Invoice invoice) {
@@ -70,6 +84,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         validator.validateNewInvoiceItem(invoice.getItems());
         Set<InvoiceItem> items = invoice.getItems();
         invoice.setItems(null);
+        LocalDateTime firstDateOfYear = LocalDateTime.now().toLocalDate().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay();
+        invoice.setInvoiceNumber((this.getInvoiceCountByYear(firstDateOfYear) + 1) + "" + invoice.getDate().getYear());
         Invoice createdInvoice = this.invoiceRepository.save(invoice);
         for (InvoiceItem item : items) {
             item.setInvoice(createdInvoice);

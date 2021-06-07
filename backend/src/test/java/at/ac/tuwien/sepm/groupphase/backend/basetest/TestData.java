@@ -80,14 +80,11 @@ public interface TestData {
         }
     };
 
-    //TEST PROPERTIES FOR INVOICE_ITEM
-
-    Long TEST_INVOICE_INVOICE_ID = 0L;
-    Long TEST_INVOICE_PRODUCT_ID = 0L;
-
 
     //TEST PROPERTIES FOR INVOICE
     Long TEST_INVOICE_ID = 0L;
+    String TEST_INVOICE_NUMBER_1 = "42016";
+    String TEST_INVOICE_NUMBER_2 = "42017";
     LocalDateTime TEST_INVOICE_DATE = null;
     Double TEST_INVOICE_AMOUNT = 20.0;
 

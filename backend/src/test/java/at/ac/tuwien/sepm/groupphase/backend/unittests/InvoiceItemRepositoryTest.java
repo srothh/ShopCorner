@@ -87,7 +87,7 @@ public class InvoiceItemRepositoryTest implements TestData {
         // invoiceItem to invoice
         Set<InvoiceItem> items = new HashSet<>();
         items.add(invoiceItem);
-        invoice.setId(TEST_INVOICE_ID);
+        invoice.setInvoiceNumber(TEST_INVOICE_NUMBER_1);
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
 
