@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
 import java.lang.invoke.MethodHandles;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -44,27 +43,7 @@ public class CartEndpoint {
         this.productService = productService;
     }
 
-    /*@PermitAll
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "add a new product to cart")
-    public ResponseEntity<List<ProductDto>> addProductToCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @RequestBody List<ProductDto> productDtos) {
-        LOGGER.info("POST api/v1/carts {}", productDtos);
-        List<Product> cart;
-        System.out.println(sessionId);
-        if (sessionId.equals("default") || cartMap.get(sessionId) == null) {
-            sessionId = UUID.randomUUID().toString();
-            cart = productMapper.dtoToEntity(productDtos);
-            cartMap.put(sessionId, cart);
-        } else {
-            cart = productMapper.dtoToEntity(productDtos);
-            cartMap.put(sessionId, cart);
-        }
-        List<ProductDto> responseBody = productMapper.entityToDto(cart);
-        ResponseCookie.ResponseCookieBuilder responseCookieBuilder = ResponseCookie.from("sessionId", sessionId);
-        return new ResponseEntity<>(responseBody, this.generateHeader(responseCookieBuilder.build()), HttpStatus.CREATED);
-    }*/
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @PermitAll
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
