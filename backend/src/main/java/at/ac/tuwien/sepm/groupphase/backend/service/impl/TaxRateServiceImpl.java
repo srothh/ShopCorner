@@ -26,7 +26,7 @@ public class TaxRateServiceImpl implements TaxRateService {
 
     @Override
     public List<TaxRate> getAllTaxRates() {
-        LOGGER.trace("retrieving all tax-rates");
+        LOGGER.trace("getAllTaxRates()");
         return this.taxRateRepository.findAll();
     }
 }
