@@ -151,17 +151,32 @@ public class OperatorEndpoint {
         throw new AccessDeniedException("Illegal access");
     }
 
+
+
     /**
-     * Deletes an employee with given id.
+     * Deletes the operator with the given id.
      *
-     * @param id of employee that should be deleted
+     * @param id of the operator to be deleted
      */
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
         LOGGER.info("DELETE " + BASE_URL + "/{}", id);
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = "";
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        if (operatorService.findOperatorByLoginName(username).getId().equals(id)) {
+            throw new AccessDeniedException("Admins cannot delete their own accounts");
+        }
         operatorService.delete(id);
+
     }
 
     /**

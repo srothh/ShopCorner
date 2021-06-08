@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
@@ -139,6 +140,7 @@ public class OperatorServiceImpl implements OperatorService {
         operatorRepository.setOperatorPermissionsById(permissions, id);
     }
 
+
     @Caching(evict = {
         @CacheEvict(value = "counts", key = "'admins'"),
         @CacheEvict(value = "counts", key = "'employees'"),
@@ -147,11 +149,8 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public void delete(Long id) {
         LOGGER.trace("delete({})", id);
-        Operator operator = operatorRepository.findById(id)
+        operatorRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Could not find operator that should be deleted!"));
-        if (operator.getPermissions().equals(Permissions.admin)) {
-            throw new AccessDeniedException("Cannot delete an Admin");
-        }
         operatorRepository.deleteById(id);
     }
 
