@@ -88,6 +88,7 @@ public class ProductEndpoint {
         return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
+            .filter(productDto -> !productDto.isDeleted())
             .collect(Collectors.toList()), page, pageCount, productPage.getTotalPages(), productCount);
     }
 
