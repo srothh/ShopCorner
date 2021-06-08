@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Globals} from '../global/globals';
+import {Product} from '../dtos/product';
+import {Observable} from 'rxjs';
 
 
 @Injectable({
@@ -11,7 +13,8 @@ export class CartService {
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
-  /*addProductsToCart(products: Product[]): Observable<any> {
-    return this.httpClient.post<any>(this.cartBaseUri,  products, {withCredentials: true});
-  }*/
+  // TODO: {withCredentials: true} throws an CORS error
+  addProductsToCart(products: Product[]): Observable<any> {
+    return this.httpClient.post<any>(this.cartBaseUri,  products);
+  }
 }
