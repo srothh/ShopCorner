@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CartService} from '../../../services/cart.service';
-import {faAngleLeft, faArrowLeft, faMinus, faMoneyCheckAlt, faStepBackward} from '@fortawesome/free-solid-svg-icons';
+import {faAngleLeft, faMinus, faMoneyCheckAlt} from '@fortawesome/free-solid-svg-icons';
 import {Product} from '../../../dtos/product';
 import {Globals} from '../../../global/globals';
 import {Router} from '@angular/router';
@@ -14,11 +14,9 @@ export class ShopCartComponent implements OnInit {
   error = false;
   errorMessage = '';
   faCheckout = faMoneyCheckAlt;
-  faDelte = faMinus;
+  faDelete = faMinus;
   faBack = faAngleLeft;
   products: Product[];
-  quantity: number;
-  map = [{item: {}, quantity: 1}];
 
 
   constructor(private cartService: CartService, private globals: Globals, private router: Router) { }
@@ -28,7 +26,6 @@ export class ShopCartComponent implements OnInit {
     this.globals.getCart().forEach((product) => {
         this.products.push(product);
     });
-    this.quantity = 1;
   }
 
 
@@ -40,7 +37,6 @@ export class ShopCartComponent implements OnInit {
   }
 
   removeFromCart(product: Product) {
-    const id = this.products.indexOf(product);
     const newProductList = [];
     this.products.forEach((item) => {
       if (item.id !== product.id) {
@@ -49,20 +45,48 @@ export class ShopCartComponent implements OnInit {
     });
     this.globals.deleteFromCart(product);
     this.products = newProductList;
+    this.calcAmount();
   }
 
   cartIsEmpty() {
     return this.globals.isCartEmpty();
   }
 
-  updateQuantity(index: number, product: Product, event) {
-    const value = Number(event.target.value);
-    this.map[index] = {item: product, quantity: value};
-    return value;
+  changedTotal(index: number, event) {
+    this.products[index].quantity = event.target.value;
+    this.globals.updateCart(this.products[index], event.target.value);
+    this.calcAmount();
   }
 
-  getQuantity(index: number, product: Product) {
-    return this.map[index].quantity;
+  calcAmount() {
+    document.getElementById('subtotal').innerText = this.sanitizeHTML((this.calcSubtotal() + ''));
+    document.getElementById('tax').innerText = this.sanitizeHTML(this.calcTax() + '');
+    document.getElementById('total').innerText = this.sanitizeHTML(this.calcTotal() + '');
+  }
+
+  calcSubtotal() {
+    let subtotal = 0;
+    this.products.forEach((item) => {
+      subtotal = subtotal + (item.price * item.quantity);
+    });
+    return subtotal.toFixed(2);
+  }
+
+  calcTax() {
+    let tax = 0;
+    this.products.forEach((item) => {
+      tax += item.price * (item.taxRate.calculationFactor - 1) * item.quantity;
+    });
+    return tax.toFixed(2);
+  }
+
+  calcTotal() {
+      return (Number(this.calcSubtotal()) + Number(this.calcTax())).toFixed(2);
+  }
+
+  routeToDetailView(product: Product) {
+    this.router.navigate(['products/' + product.id]).then();
+
   }
 
   routeBackToShop() {
@@ -76,6 +100,11 @@ export class ShopCartComponent implements OnInit {
     this.error = false;
   }
 
+  private sanitizeHTML(str: string) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerText;
+  }
 
 
 }

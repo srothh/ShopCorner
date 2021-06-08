@@ -21,17 +21,15 @@ export class Globals {
     return cart.length !== undefined ? cart.length : 0;
   }
 
-  getNumberOfCartItems() {
+  updateCart(item, quantity) {
     const cart = this.getCart();
-    let numberOfItems = 0;
-    if (this.getCartSize() !== 0) {
-      for (let i = 0; i < this.getCartSize(); i++) {
-        numberOfItems += cart[i].quantity;
-      }
-      return numberOfItems;
+    if (this.containsProductAtIndex(item) === -1) {
+      item['quantity'] = 1;
+      cart.push(item);
     } else {
-      return 0;
+      cart[this.containsProductAtIndex(item)]['quantity'] = quantity;
     }
+    this.setCart(cart);
   }
 
   addToCart(item) {
