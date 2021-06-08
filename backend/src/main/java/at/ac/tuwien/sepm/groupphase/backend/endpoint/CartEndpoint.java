@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
-import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.HashMap;
@@ -44,14 +44,14 @@ public class CartEndpoint {
         this.productService = productService;
     }
 
-
-    @PermitAll
+    /*@PermitAll
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "add a new product to cart")
     public ResponseEntity<List<ProductDto>> addProductToCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @RequestBody List<ProductDto> productDtos) {
-        LOGGER.info("POST api/v1/cart {}", productDtos);
+        LOGGER.info("POST api/v1/carts {}", productDtos);
         List<Product> cart;
+        System.out.println(sessionId);
         if (sessionId.equals("default") || cartMap.get(sessionId) == null) {
             sessionId = UUID.randomUUID().toString();
             cart = productMapper.dtoToEntity(productDtos);
@@ -61,8 +61,28 @@ public class CartEndpoint {
             cartMap.put(sessionId, cart);
         }
         List<ProductDto> responseBody = productMapper.entityToDto(cart);
-        Duration minutes = Duration.ofMinutes(30);
-        ResponseCookie.ResponseCookieBuilder responseCookieBuilder = ResponseCookie.from("sessionId", sessionId).path("/cart").maxAge(minutes);
+        ResponseCookie.ResponseCookieBuilder responseCookieBuilder = ResponseCookie.from("sessionId", sessionId);
+        return new ResponseEntity<>(responseBody, this.generateHeader(responseCookieBuilder.build()), HttpStatus.CREATED);
+    }*/
+
+    @PermitAll
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "add a new product to cart")
+    public ResponseEntity<List<ProductDto>> addProductToCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @RequestBody List<ProductDto> productDtos) {
+        LOGGER.info("POST api/v1/carts {}", productDtos);
+        List<Product> cart;
+        System.out.println(sessionId);
+        if (sessionId.equals("default") || cartMap.get(sessionId) == null) {
+            sessionId = UUID.randomUUID().toString();
+            cart = productMapper.dtoToEntity(productDtos);
+            cartMap.put(sessionId, cart);
+        } else {
+            cart = productMapper.dtoToEntity(productDtos);
+            cartMap.put(sessionId, cart);
+        }
+        List<ProductDto> responseBody = productMapper.entityToDto(cart);
+        ResponseCookie.ResponseCookieBuilder responseCookieBuilder = ResponseCookie.from("sessionId", sessionId);
         return new ResponseEntity<>(responseBody, this.generateHeader(responseCookieBuilder.build()), HttpStatus.CREATED);
     }
 
@@ -73,8 +93,10 @@ public class CartEndpoint {
      */
     private HttpHeaders generateHeader(ResponseCookie responseCookie) {
         HttpHeaders headers = new HttpHeaders();
+        headers.setAccessControlAllowOrigin("http://localhost:4200");
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.SET_COOKIE, responseCookie.toString());
+        headers.add(HttpHeaders.COOKIE, responseCookie.toString());
+        headers.setOrigin("http://localhost:8080");
         return headers;
     }
 

@@ -13,7 +13,7 @@
       <!-- Temporary number of items in the cart -->
       <a class="nav-link" routerLink="/cart" routerLinkActive="active">
         <fa-icon class="mr-2" [icon]="faShoppingCart"></fa-icon>
-        Warenkorb (2)</a>
+        Warenkorb {{getCartSize()!=0?'('+getCartSize()+')':''}}</a>
     </li>
     <li class="nav-item dropdown">
       <a *ngIf="authService.isLoggedIn()" class="nav-link dropdown-toggle" routerLink="/account" data-bs-toggle="dropdown">Mein Konto</a>
