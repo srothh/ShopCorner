@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {Product} from '../dtos/product';
 
 @Injectable({
   providedIn: 'root'
@@ -27,12 +28,12 @@ export class Globals {
   }
 
 
-  deleteFromCart(id) {
+  deleteFromCart(product: Product) {
     const cart = this.getCart();
     const newCart = [];
 
     cart.forEach((item) => {
-      if (item.id !== id) {
+      if (item.id !== product.id) {
         newCart.push(item);
 
       }

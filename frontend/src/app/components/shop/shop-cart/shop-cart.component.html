@@ -17,22 +17,23 @@
     <table class="table table-hover table-sm">
       <thead class="table-secondary">
       <tr>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col">MWSt</th>
-        <th scope="col">Kategorie</th>
-        <th scope="col">Preis</th>
+        <th scope="col" class="picture"></th>
+        <th scope="col" class="name"></th>
+        <th scope="col" class="quantity">Menge</th>
+        <th scope="col" class="price">Einzelpreis</th>
+        <th scope="col" class="total">Gesmatbetrag</th>
+        <th scope="col" class="delete"></th>
+
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let product of products; let i = index">
-        <td><img *ngIf="product.picture != null" class="card-img-top" src="{{getImageSource(product)}}" width="125px"
-                 height="200px"
-                 alt="produkt"></td>
-        <td>{{product.name}}</td>
-        <td>{{(product.taxRate?.percentage + '%') || '--'}}</td>
-        <td>{{product.category?.name || '--'}}</td>
-        <td>{{product.price}}</td>
+        <td class="centerContent picture"><img *ngIf="product.picture != null" class="card-img-top" src="{{getImageSource(product)}}" alt="produkt"></td>
+        <td class="name">{{product.name}}</td>
+        <td class="quantity"><input type="number" min="1" max="" value="1"></td>
+        <td class="price"></td>
+        <td class="total">{{(product.taxRate?.calculationFactor*product.price).toFixed(2)}}</td>
+        <td class="delete"><button class="btn btn-outline-danger" (click)="removeFromCart(product)"><fa-icon class="mr-2" [icon]="faDelte"></fa-icon></button></td>
       </tr>
       </tbody>
 

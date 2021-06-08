@@ -2,3 +2,46 @@
   display: flex;
   justify-content: space-between;
 }
+
+img{
+  width: 50%;
+  height: auto;
+}
+.centerContent{
+  text-align: center;
+  justify-content: center;
+}
+
+
+.picture{
+  width: 25%;
+}
+.name{
+  text-align: center;
+  width: 25%;
+}
+.quantity{
+  width: 10%;
+}
+.price{
+  width: 10%;
+}
+.total{
+  text-align: right;
+  width: 10%;
+}
+.delete{
+  text-align: center;
+  width: 5%;
+}
+.delete > button{
+  width: 70%;
+  height: 70%;
+  text-align: center;
+}
+.delete > button > fa-icon{
+  text-align: center;
+}
+.quantity > input{
+  width: 50%;
+}
