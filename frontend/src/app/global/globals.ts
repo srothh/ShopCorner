@@ -21,12 +21,30 @@ export class Globals {
     return cart.length !== undefined ? cart.length : 0;
   }
 
-  addToCart(item) {
+  getNumberOfCartItems() {
     const cart = this.getCart();
-    cart.push(item);
-    this.setCart(cart);
+    let numberOfItems = 0;
+    if (this.getCartSize() !== 0) {
+      for (let i = 0; i < this.getCartSize(); i++) {
+        numberOfItems += cart[i].quantity;
+      }
+      return numberOfItems;
+    } else {
+      return 0;
+    }
   }
 
+  addToCart(item) {
+    const cart = this.getCart();
+    if (this.containsProductAtIndex(item) === -1) {
+      item['quantity'] = 1;
+      cart.push(item);
+    } else {
+      const quantity = cart[this.containsProductAtIndex(item)]['quantity'];
+      cart[this.containsProductAtIndex(item)]['quantity'] = quantity + 1;
+    }
+    this.setCart(cart);
+  }
 
   deleteFromCart(product: Product) {
     const cart = this.getCart();
@@ -39,6 +57,10 @@ export class Globals {
       }
     });
     this.setCart(newCart);
+  }
+
+  isCartEmpty() {
+    return this.getCartSize() === 0;
   }
 
   resetCart() {
@@ -59,6 +81,15 @@ export class Globals {
   }
 
 
+  private containsProductAtIndex(product: Product) {
+    const cart = this.getCart();
+    for (let i = 0; i < this.getCartSize(); i++) {
+        if (cart[i].id === product.id) {
+          return i;
+        }
+    }
+    return -1;
+  }
 
 }
 

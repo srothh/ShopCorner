@@ -1,15 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CartService} from '../../../services/cart.service';
-import {HttpHeaders, HttpResponse} from '@angular/common/http';
-import {
-  faCross, faCrosshairs, faMinus,
-  faMoneyBill,
-  faMoneyBillWaveAlt,
-  faMoneyCheck,
-  faMoneyCheckAlt,
-  faTrash,
-  faWallet
-} from '@fortawesome/free-solid-svg-icons';
+import {faMinus, faMoneyCheckAlt} from '@fortawesome/free-solid-svg-icons';
 import {Product} from '../../../dtos/product';
 import {Globals} from '../../../global/globals';
 
@@ -24,14 +15,20 @@ export class ShopCartComponent implements OnInit {
   faCheckout = faMoneyCheckAlt;
   faDelte = faMinus;
   products: Product[];
+  quantity: number;
+  map = [{item: {}, quantity: 1}];
+
+
   constructor(private cartService: CartService, private globals: Globals) { }
 
   ngOnInit(): void {
     this.products = [];
-    this.globals.getCart().forEach((item) => {
-      this.products.push(item);
-      });
+    this.globals.getCart().forEach((product) => {
+        this.products.push(product);
+    });
+    this.quantity = 1;
   }
+
 
   getImageSource(product: Product): string {
     if (product.picture != null) {
@@ -50,7 +47,20 @@ export class ShopCartComponent implements OnInit {
     });
     this.globals.deleteFromCart(product);
     this.products = newProductList;
+  }
 
+  cartIsEmpty() {
+    return this.globals.getCartSize() === 0;
+  }
+
+  updateQuantity(index: number, product: Product, event) {
+    const value = Number(event.target.value);
+    this.map[index] = {item: product, quantity: value};
+    return value;
+  }
+
+  getQuantity(index: number, product: Product) {
+    return this.map[index].quantity;
   }
 
   /**
@@ -59,5 +69,7 @@ export class ShopCartComponent implements OnInit {
   vanishError() {
     this.error = false;
   }
+
+
 
 }

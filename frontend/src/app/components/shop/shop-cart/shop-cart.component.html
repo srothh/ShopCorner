@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="container mt-5 cart">
   <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Problems!</strong> {{ errorMessage }}
     <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
@@ -7,13 +7,13 @@
   </div>
   <div class="header">
     <h2>Warenkorb</h2>
-    <button class="btn btn-primary" >
+    <button class="btn btn-primary" *ngIf="!cartIsEmpty()">
       <fa-icon class="mr-2" [icon]="faCheckout"></fa-icon>
       WEITER ZU KASSE
     </button>
   </div>
 
-  <div class="rounded mt-4">
+  <div class="rounded mt-4" *ngIf="!cartIsEmpty()">
     <table class="table table-hover table-sm">
       <thead class="table-secondary">
       <tr>
@@ -30,15 +30,17 @@
       <tr *ngFor="let product of products; let i = index">
         <td class="centerContent picture"><img *ngIf="product.picture != null" class="card-img-top" src="{{getImageSource(product)}}" alt="produkt"></td>
         <td class="name">{{product.name}}</td>
-        <td class="quantity"><input type="number" min="1" max="" value="1"></td>
-        <td class="price"></td>
-        <td class="total">{{(product.taxRate?.calculationFactor*product.price).toFixed(2)}}</td>
+        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.quantity" (change)="updateQuantity(i,product,$event)"></td>
+        <td class="price">{{(product.taxRate?.calculationFactor*product.price).toFixed(2)}}</td>
+        <td class="total">{{(product.taxRate?.calculationFactor*product.price*product.quantity).toFixed(2)}}</td>
         <td class="delete"><button class="btn btn-outline-danger" (click)="removeFromCart(product)"><fa-icon class="mr-2" [icon]="faDelte"></fa-icon></button></td>
       </tr>
       </tbody>
-
-
     </table>
   </div>
-
+  <div class="rounded mt-4" *ngIf="cartIsEmpty()">
+      <div class="empty-cart">
+          <h4>Warenkorb ist leer</h4>
+      </div>
+  </div>
 </div>
