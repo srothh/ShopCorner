@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {CartService} from '../../../services/cart.service';
-import {faMinus, faMoneyCheckAlt} from '@fortawesome/free-solid-svg-icons';
+import {faAngleLeft, faArrowLeft, faMinus, faMoneyCheckAlt, faStepBackward} from '@fortawesome/free-solid-svg-icons';
 import {Product} from '../../../dtos/product';
 import {Globals} from '../../../global/globals';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-shop-cart',
@@ -14,12 +15,13 @@ export class ShopCartComponent implements OnInit {
   errorMessage = '';
   faCheckout = faMoneyCheckAlt;
   faDelte = faMinus;
+  faBack = faAngleLeft;
   products: Product[];
   quantity: number;
   map = [{item: {}, quantity: 1}];
 
 
-  constructor(private cartService: CartService, private globals: Globals) { }
+  constructor(private cartService: CartService, private globals: Globals, private router: Router) { }
 
   ngOnInit(): void {
     this.products = [];
@@ -50,7 +52,7 @@ export class ShopCartComponent implements OnInit {
   }
 
   cartIsEmpty() {
-    return this.globals.getCartSize() === 0;
+    return this.globals.isCartEmpty();
   }
 
   updateQuantity(index: number, product: Product, event) {
@@ -61,6 +63,10 @@ export class ShopCartComponent implements OnInit {
 
   getQuantity(index: number, product: Product) {
     return this.map[index].quantity;
+  }
+
+  routeBackToShop() {
+    this.router.navigate(['home']).then();
   }
 
   /**

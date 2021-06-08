@@ -28,19 +28,32 @@
       </thead>
       <tbody>
       <tr *ngFor="let product of products; let i = index">
-        <td class="centerContent picture"><img *ngIf="product.picture != null" class="card-img-top" src="{{getImageSource(product)}}" alt="produkt"></td>
+        <td class="centerContent picture"><img *ngIf="product.picture != null" class="card-img-top"
+                                               src="{{getImageSource(product)}}" alt="produkt"></td>
         <td class="name">{{product.name}}</td>
-        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.quantity" (change)="updateQuantity(i,product,$event)"></td>
-        <td class="price">{{(product.taxRate?.calculationFactor*product.price).toFixed(2)}}</td>
-        <td class="total">{{(product.taxRate?.calculationFactor*product.price*product.quantity).toFixed(2)}}</td>
-        <td class="delete"><button class="btn btn-outline-danger" (click)="removeFromCart(product)"><fa-icon class="mr-2" [icon]="faDelte"></fa-icon></button></td>
+        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.quantity"
+                                    (change)="updateQuantity(i,product,$event)"></td>
+        <td class="price">{{(product.taxRate?.calculationFactor * product.price).toFixed(2)}}</td>
+        <td class="total">{{(product.taxRate?.calculationFactor * product.price * product.quantity).toFixed(2)}}</td>
+        <td class="delete">
+          <button class="btn btn-outline-danger" (click)="removeFromCart(product)">
+            <fa-icon class="mr-2" [icon]="faDelte"></fa-icon>
+          </button>
+        </td>
       </tr>
       </tbody>
     </table>
+    <div class="back-button">
+      <button class="btn btn-primary pull-right" *ngIf="!cartIsEmpty()" (click)="routeBackToShop()">
+        <fa-icon class="mr-2" [icon]="faBack"></fa-icon>
+        WEITER EINKAUFEN
+      </button>
+    </div>
+
   </div>
   <div class="rounded mt-4" *ngIf="cartIsEmpty()">
-      <div class="empty-cart">
-          <h4>Warenkorb ist leer</h4>
-      </div>
+    <div class="empty-cart">
+      <h4>Warenkorb ist leer</h4>
+    </div>
   </div>
 </div>
