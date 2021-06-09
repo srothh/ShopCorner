@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Promotion {
@@ -105,5 +106,19 @@ public class Promotion {
 
     public void setMinimumOrderValue(double minimumOrderValue) {
         this.minimumOrderValue = minimumOrderValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Promotion promotion = (Promotion) o;
+        return Objects.equals(id, promotion.id) && Objects.equals(name, promotion.name) && Objects.equals(discount, promotion.discount) && Objects.equals(creationDate, promotion.creationDate)
+            && Objects.equals(expirationDate, promotion.expirationDate)
+            && Objects.equals(code, promotion.code) && Objects.equals(minimumOrderValue, promotion.minimumOrderValue);
     }
 }
