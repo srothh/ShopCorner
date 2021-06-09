@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -82,7 +84,7 @@ public class OperatorEndpointTest implements TestData {
 
     @BeforeEach
     public void beforeEach() {
-        operatorRepository.deleteAll();
+        operatorService.deleteAll();
         Operator admin = new Operator(TEST_ADMIN_NAME, TEST_ADMIN_LOGINNAME, TEST_ADMIN_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PERMISSIONS);
         Operator employee = new Operator(TEST_EMPLOYEE_NAME, TEST_EMPLOYEE_LOGINNAME, TEST_EMPLOYEE_PASSWORD, TEST_EMPLOYEE_EMAIL, TEST_EMPLOYEE_PERMISSIONS);
         Operator operator = new Operator(TEST_OPERATOR_NAME, TEST_OPERATOR_LOGINNAME, TEST_OPERATOR_PASSWORD, TEST_OPERATOR_EMAIL, TEST_OPERATOR_PERMISSION);
@@ -92,7 +94,6 @@ public class OperatorEndpointTest implements TestData {
     public void givenNothing_whenPost_thenOperatorWithAllSetPropertiesPlusId() throws Exception {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         String body = objectMapper.writeValueAsString(operatorDto);
-
         MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
@@ -170,6 +171,7 @@ public class OperatorEndpointTest implements TestData {
             () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus())
         );
     }
+
 
     @Test
     public void givenNothing_whenFindAll_thenEmptyList() throws Exception {

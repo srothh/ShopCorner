@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
@@ -19,7 +18,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -176,6 +174,15 @@ public class OperatorServiceImpl implements OperatorService {
             op.setPassword(passwordEncoder.encode(operator.getPassword()));
         }
         return operatorRepository.save(op);
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'admins'"),
+        @CacheEvict(value = "counts", key = "'employees'"),
+        @CacheEvict(value = "operatorPages", allEntries = true)
+    })
+    public void deleteAll() {
+        operatorRepository.deleteAll();
     }
 
 }

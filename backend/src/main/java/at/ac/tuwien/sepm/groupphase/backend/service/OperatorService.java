@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,9 +38,9 @@ public interface OperatorService extends UserDetailsService {
     /**
      * Returns page with all needed Operators.
      *
-     * @param page which should be returned
+     * @param page        which should be returned
      * @param permissions of Operators which should be returned
-     * @param pageCount amount of operators per page
+     * @param pageCount   amount of operators per page
      * @return Page with all Operators with right permission
      */
     Page<Operator> findAll(int page, int pageCount, Permissions permissions);
@@ -65,13 +64,12 @@ public interface OperatorService extends UserDetailsService {
     /**
      * Changes Permission of operater with id.
      *
-     * @param id of operator that should be changed
+     * @param id          of operator that should be changed
      * @param permissions that operator should get
      * @throws NotFoundException when no operator with the id is found
      * @throws RuntimeException  upon encountering errors with the database
      */
     void changePermissions(Long id, Permissions permissions);
-
 
 
     /**
@@ -110,6 +108,12 @@ public interface OperatorService extends UserDetailsService {
      */
     Long getAdminCount();
 
+    /**
+     * Deletes all operators from the repository.
+     *
+     * @throws RuntimeException if the updated operator account already exists
+     */
+    void deleteAll();
 }
 
 
