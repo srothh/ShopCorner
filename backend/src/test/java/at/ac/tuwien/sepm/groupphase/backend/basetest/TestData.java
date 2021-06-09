@@ -5,6 +5,7 @@ import com.github.javafaker.LeagueOfLegends;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public interface TestData {
@@ -24,7 +25,7 @@ public interface TestData {
     String ADDRESS_BASE_URI = BASE_URI + "/address";
     String CUSTOMER_BASE_URI = BASE_URI + "/customers";
     String INVOICE_BASE_URI = BASE_URI + "/invoices";
-    String PROMOTION_BASE_URI = BASE_URI + "promotions";
+    String PROMOTION_BASE_URI = BASE_URI + "/promotions";
 
     //TEST PROPERTIES FOR PRODUCTS, TAX-RATES AND CATEGORIES
     String PRODUCTS_BASE_URI = "/api/v1/products";
@@ -66,7 +67,7 @@ public interface TestData {
     String TEST_PROMOTION_NAME = "Promotion";
     double TEST_PROMOTION_DISCOUNT = 2;
     LocalDateTime TEST_PROMOTION_CREATIONDATE = LocalDateTime.now();
-    LocalDateTime TEST_PROMOTION_EXPIRATIONDATE = LocalDateTime.of(2024,10,9,13,20);
+    LocalDateTime TEST_PROMOTION_EXPIRATIONDATE = LocalDateTime.of(Calendar.getInstance().get(Calendar.YEAR) + 1,10,9,13,20);
     String TEST_PROMOTION_CODE = "Testcode";
     double TEST_PROMOTION_MINIMUMORDERVALUE = 10;
 
