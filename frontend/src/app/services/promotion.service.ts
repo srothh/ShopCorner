@@ -23,7 +23,7 @@ export class PromotionService {
    */
   addPromotion(promotion: Promotion): Observable<Promotion> {
     console.log('Create new Promotion', promotion);
-    return this.httpClient.post<Promotion>(this.promotionBaseUri, promotion);
+    return this.httpClient.post<Promotion>(this.promotionBaseUri, promotion, {headers: this.getHeadersForOperator()});
   }
 
   /**
