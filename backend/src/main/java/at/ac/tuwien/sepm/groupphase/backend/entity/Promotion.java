@@ -24,7 +24,7 @@ public class Promotion {
     private LocalDateTime creationDate;
     @Column(name = "expirationDate", nullable = false)
     private LocalDateTime expirationDate;
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", nullable = false, unique = true)
     private String code;
     @Column(name = "minimumOrderValue")
     private double minimumOrderValue;
