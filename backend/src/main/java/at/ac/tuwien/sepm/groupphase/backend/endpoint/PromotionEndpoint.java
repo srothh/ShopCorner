@@ -34,6 +34,12 @@ public class PromotionEndpoint {
         this.promotionService = promotionService;
     }
 
+    /**
+     * Adds a new promotion to the database.
+     *
+     * @param dto The promotion dto containing the promotion information
+     * @return The response dto containing the added promotion
+     */
     @PostMapping
     @PermitAll
     public PromotionDto addPromotion(@Valid @RequestBody PromotionDto dto) {
@@ -41,6 +47,11 @@ public class PromotionEndpoint {
         return promotionMapper.promotionToPromotionDto(promotionService.addNewPromotion(promotionMapper.promotionDtoToPromotion(dto)));
     }
 
+    /**
+     * Retrieves a page of promotions from the database.
+     *
+     * @return A list of all the retrieved promotions
+     */
     @GetMapping
     @PermitAll
     public PaginationDto<PromotionDto> getAllPages(@RequestParam(name = "page", defaultValue = "1") Integer page,
