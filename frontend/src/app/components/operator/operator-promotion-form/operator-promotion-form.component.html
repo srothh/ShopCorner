@@ -1,5 +1,12 @@
 
-<form class="row g-3" [formGroup]="promotionForm" (ngSubmit)="addNewPromotion()" id="myForm">
+<div *ngIf="error" class="alert alert-danger" role="alert">
+  {{ errorMessage }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="vanishError()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<form class="row g-3" [formGroup]="promotionForm"  id="myForm">
   <div class="col-md-6 mt-3">
     <div class="form-group required">
       <label for="name" class="form-label"><b>Name </b></label>

@@ -22,12 +22,12 @@ export class PromotionService {
    * @return The promotion dto as received from the backend
    */
   addPromotion(promotion: Promotion): Observable<Promotion> {
-    console.log('Create new Customer', promotion);
+    console.log('Create new Promotion', promotion);
     return this.httpClient.post<Promotion>(this.promotionBaseUri, promotion);
   }
 
   /**
-   * Retrieve a page of customers from the backend.
+   * Retrieve a page of promotions from the backend.
    *
    * @param page the number of the page to fetch
    * @param pageCount the size of the page to be fetched

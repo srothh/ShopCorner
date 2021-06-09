@@ -13,6 +13,8 @@ export class OperatorPromotionFormComponent implements OnInit {
   newPromotion: Promotion;
   today = new Date(Date.now());
   promotionForm: FormGroup;
+  error = false;
+  errorMessage = '';
 
   constructor(private promotionService: PromotionService, private formBuilder: FormBuilder) {
   }
@@ -43,8 +45,13 @@ export class OperatorPromotionFormComponent implements OnInit {
       '', expDate, this.promotionForm.controls.code.value, this.promotionForm.controls.minimum.value);
     this.promotionService.addPromotion(this.newPromotion).subscribe(() => {
     }, error => {
-      console.log(error);
+      this.error = true;
+      this.errorMessage = error.message;
     });
+  }
+
+  vanishError() {
+    this.error = false;
   }
 
   private addLeadingZero(num: number): string {
