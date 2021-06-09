@@ -1,14 +1,19 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.Id;
+import javax.persistence.Entity;
+import javax.persistence.GenerationType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.Column;
+import javax.persistence.PreRemove;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -28,6 +33,7 @@ public class Product {
     private Double price;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
     private boolean locked;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -112,6 +118,11 @@ public class Product {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    @PreRemove
+    private void preRemove() {
+        this.setCategory(null);
     }
 
     @Override

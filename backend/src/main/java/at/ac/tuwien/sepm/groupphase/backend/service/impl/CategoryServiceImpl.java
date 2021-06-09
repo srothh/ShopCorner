@@ -43,20 +43,15 @@ public class CategoryServiceImpl implements CategoryService {
         } else if (pageCount > 50) {
             pageCount = 50;
         }
-        // to fetch categories in a lazy fetched behaviour( because of products) there are 2 steps necessary
-        // 1. search all Ids in a paginated manner 2. get all entries that corresponds to these ids and fetch the
-        // related products -> and eventually return a new Page - Object
         Pageable pages = PageRequest.of(page, pageCount);
-        List<Long> idsOfPageableEntries = categoryRepository.geAllIds(pages);
-        List<Category> categories = categoryRepository.findAllCategoriesPerPage(idsOfPageableEntries);
-        return new PageImpl<Category>(categories, pages, categories.size());
+        return this.categoryRepository.findAll(pages);
     }
 
     @Transactional
     @Override
     public List<Category> getAllCategories() {
         LOGGER.trace("getAllCategories()");
-        return this.categoryRepository.getAllCategories();
+        return this.categoryRepository.findAll();
     }
 
     @Override
