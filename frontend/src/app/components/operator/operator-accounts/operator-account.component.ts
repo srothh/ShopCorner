@@ -96,16 +96,18 @@ export class OperatorAccountComponent implements OnInit {
   }
 
   /**
-   * selects or deselects employee
+   * selects or deselects operator
    *
    * @param operator that should be selescted or deselected
    */
   selectOperator(operator: Operator) {
-    if (this.selected.includes(operator)) {
-      const index = this.selected.indexOf(operator, 0);
-      this.selected.splice(index, 1);
-    } else if (operator.permissions === 'employee') {
-      this.selected.push(operator);
+    if(this.getPermission() === 'ADMIN') {
+      if (this.selected.includes(operator)) {
+        const index = this.selected.indexOf(operator, 0);
+        this.selected.splice(index, 1);
+      } else {
+        this.selected.push(operator);
+      }
     }
   }
 
