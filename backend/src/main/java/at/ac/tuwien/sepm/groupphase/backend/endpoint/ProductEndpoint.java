@@ -109,6 +109,7 @@ public class ProductEndpoint {
         return this.productService.getAllProducts()
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
+            .filter(productDto -> !productDto.isDeleted())
             .collect(Collectors.toList());
     }
 
