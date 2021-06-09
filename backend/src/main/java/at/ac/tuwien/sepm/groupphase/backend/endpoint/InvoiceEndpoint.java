@@ -13,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
@@ -64,7 +65,7 @@ public class InvoiceEndpoint {
      * @param id is the id of the invoice
      * @return DetailedInvoiceDto with all given information of the invoice
      */
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
     @Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
@@ -83,11 +84,10 @@ public class InvoiceEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<SimpleInvoiceDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "0") Integer page,
+    public PaginationDto<SimpleInvoiceDto> getAllInvoices(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                       @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
         LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
         Page<Invoice> operatorPage = invoiceService.getAllInvoices(page, pageCount);
-
         return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.getAllInvoices(page, pageCount).getContent()), page, pageCount, operatorPage.getTotalPages(), invoiceService.getInvoiceCount());
     }
 
@@ -98,7 +98,7 @@ public class InvoiceEndpoint {
      * @param invoiceDto which should be saved in the database
      * @return ResponseEntity with the generated pdf
      */
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = "application/pdf")
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
@@ -121,7 +121,7 @@ public class InvoiceEndpoint {
      * @param id id of the invoice
      * @return ResponseEntity with the generated pdf
      */
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}/pdf", produces = "application/pdf")
     @Operation(summary = "Retrieve new invoice as pdf", security = @SecurityRequirement(name = "apiKey"))
