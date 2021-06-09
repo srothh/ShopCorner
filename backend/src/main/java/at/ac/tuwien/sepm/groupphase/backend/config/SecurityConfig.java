@@ -109,6 +109,8 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(permitAll);
         configuration.setAllowedOrigins(permitAll);
         configuration.setAllowedMethods(permitMethods);
+        /*configuration.setAllowCredentials(true);
+        configuration.setAllowedOriginPatterns(permitAll);*/
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

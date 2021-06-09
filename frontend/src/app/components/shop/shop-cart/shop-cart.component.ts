@@ -28,6 +28,11 @@ export class ShopCartComponent implements OnInit {
     });
   }
 
+  send() {
+    this.cartService.addProductsToCart([]).subscribe((items) => {
+      console.log(items);
+    });
+  }
 
   getImageSource(product: Product): string {
     if (product.picture != null) {

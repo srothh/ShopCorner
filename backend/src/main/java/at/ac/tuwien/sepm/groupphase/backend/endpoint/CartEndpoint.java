@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CartDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,8 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -48,7 +52,7 @@ public class CartEndpoint {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "add a new product to cart")
-    public ResponseEntity<List<ProductDto>> addProductToCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @RequestBody List<ProductDto> productDtos) {
+    public ResponseEntity<CartDto> addProductToCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @RequestBody List<ProductDto> productDtos) {
         LOGGER.info("POST api/v1/carts {}", productDtos);
         List<Product> cart;
         System.out.println(sessionId);
@@ -60,9 +64,12 @@ public class CartEndpoint {
             cart = productMapper.dtoToEntity(productDtos);
             cartMap.put(sessionId, cart);
         }
-        List<ProductDto> responseBody = productMapper.entityToDto(cart);
+        Map<Long, Integer> cartItems  = new HashMap<>();
+        cartItems.put(1L, 2);
+        cartItems.put(2L, 2);
+        cartItems.put(3L, 2);
         ResponseCookie.ResponseCookieBuilder responseCookieBuilder = ResponseCookie.from("sessionId", sessionId);
-        return new ResponseEntity<>(responseBody, this.generateHeader(responseCookieBuilder.build()), HttpStatus.CREATED);
+        return new ResponseEntity<>(new CartDto(cartItems), this.generateHeader(responseCookieBuilder.build()), HttpStatus.CREATED);
     }
 
     /**
@@ -72,10 +79,8 @@ public class CartEndpoint {
      */
     private HttpHeaders generateHeader(ResponseCookie responseCookie) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccessControlAllowOrigin("http://localhost:4200");
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.COOKIE, responseCookie.toString());
-        headers.setOrigin("http://localhost:8080");
         return headers;
     }
 
