@@ -165,9 +165,9 @@ public class OperatorEndpoint {
     }
 
     /**
-     * Changes Permssions of Employee to Admin.
+     * Changes Permissions of the operator with the given id.
      *
-     * @param id of employee that needs new permissions
+     * @param id of operator that needs new permissions
      * @param operatorPermissionChangeDto Dto with permission that should be updated
      */
     @Secured({"ROLE_ADMIN"})
@@ -175,8 +175,17 @@ public class OperatorEndpoint {
     @ResponseStatus(HttpStatus.OK)
     public void changePermissions(@PathVariable("id") Long id, @Valid @RequestBody OperatorPermissionChangeDto operatorPermissionChangeDto) {
         LOGGER.info("PATCH " + BASE_URL + "/{}: {}", id, operatorPermissionChangeDto);
-        if (operatorPermissionChangeDto.getPermissions() != Permissions.admin) {
-            throw new IllegalArgumentException("Permission has to be admin");
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = "";
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        if (operatorService.findOperatorByLoginName(username).getId().equals(id)) {
+            throw new AccessDeniedException("Admins cannot change their own permissions");
         }
         operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }
