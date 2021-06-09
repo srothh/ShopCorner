@@ -8,7 +8,9 @@
   <br>
   <h2>Aktionen</h2>
   <div [hidden]="form" class="d-flex justify-content-end">
-    <button type="button" class="btn btn-primary" (click)="toggleForm()">Aktion erstellen</button>
+    <button type="button" *ngIf="!form" class="btn btn-primary" (click)="toggleForm()">Aktion erstellen</button>
+    <button type="button" *ngIf="form" class="btn btn-primary" (click)="toggleForm()">Zurück</button>
+
   </div>
   <hr [hidden]="form">
   <div *ngIf="!form">

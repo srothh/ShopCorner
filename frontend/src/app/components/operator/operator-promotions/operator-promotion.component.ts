@@ -53,7 +53,8 @@ export class OperatorPromotionComponent implements OnInit {
   }
 
   parseDates(date: string): string {
-    return date.replace('T', ' ');
+
+    return (date.slice(0, 16)).replace('T', ' ');
   }
 
   toggleForm() {
