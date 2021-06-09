@@ -4,6 +4,8 @@ import {faAngleLeft, faMinus, faMoneyCheckAlt} from '@fortawesome/free-solid-svg
 import {Product} from '../../../dtos/product';
 import {Globals} from '../../../global/globals';
 import {Router} from '@angular/router';
+import {CartGlobals} from '../../../global/CartGlobals';
+import {Cart} from '../../../dtos/cart';
 
 @Component({
   selector: 'app-shop-cart',
@@ -17,21 +19,41 @@ export class ShopCartComponent implements OnInit {
   faDelete = faMinus;
   faBack = faAngleLeft;
   products: Product[];
+  cart: Cart;
 
-
-  constructor(private cartService: CartService, private globals: Globals, private router: Router) { }
+  constructor(private cartService: CartService, private globals: Globals, private cartGlobals: CartGlobals, private router: Router) { }
 
   ngOnInit(): void {
     this.products = [];
-    this.globals.getCart().forEach((product) => {
+    this.cartGlobals.getCart().forEach((product) => {
         this.products.push(product);
     });
+
+    const cartItems = { };
+    for (let i = 0 ; i < this.cartGlobals.getCartSize(); i++) {
+      cartItems[this.products[i].id] = this.products[i].quantity;
+    }
+    this.cart = new Cart(null, JSON.stringify(cartItems));
+    console.log(this.cart);
   }
 
-  send() {
-    this.cartService.addProductsToCart([]).subscribe((items) => {
-      console.log(items);
-    });
+  addProductToCart() {
+    if (this.cart.id === null) {
+      this.cartService.addProductsToCart(new Cart(null, {1: 1, 2: 2})).subscribe((item) => {
+        this.cart = item;
+        console.log(item);
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error;
+      });
+    } else {
+      this.cartService.updateProductsToCart(new Cart(null, {1: 1, 2: 2})).subscribe((item) => {
+        this.cart = item;
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error;
+      });
+    }
   }
 
   getImageSource(product: Product): string {
@@ -48,18 +70,18 @@ export class ShopCartComponent implements OnInit {
         newProductList.push(item);
       }
     });
-    this.globals.deleteFromCart(product);
+    this.cartGlobals.deleteFromCart(product);
     this.products = newProductList;
     this.calcAmount();
   }
 
   cartIsEmpty() {
-    return this.globals.isCartEmpty();
+    return this.cartGlobals.isCartEmpty();
   }
 
   changedTotal(index: number, event) {
     this.products[index].quantity = event.target.value;
-    this.globals.updateCart(this.products[index], event.target.value);
+    this.cartGlobals.updateCart(this.products[index], event.target.value);
     this.calcAmount();
   }
 

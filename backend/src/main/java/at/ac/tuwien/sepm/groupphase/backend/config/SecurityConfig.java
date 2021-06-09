@@ -107,10 +107,9 @@ public class SecurityConfig {
             HttpMethod.TRACE.name());
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(permitAll);
-        configuration.setAllowedOrigins(permitAll);
         configuration.setAllowedMethods(permitMethods);
-        /*configuration.setAllowCredentials(true);
-        configuration.setAllowedOriginPatterns(permitAll);*/
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOriginPatterns(permitAll);
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

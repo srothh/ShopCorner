@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Product} from '../../../dtos/product';
 import {ProductService} from '../../../services/product.service';
 import {Globals} from '../../../global/globals';
+import {CartGlobals} from '../../../global/CartGlobals';
 
 @Component({
   selector: 'app-shop-product-details',
@@ -14,7 +15,7 @@ export class ShopProductDetailsComponent implements OnInit {
   product: Product;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute,
-              private productService: ProductService, private globals: Globals) {
+              private productService: ProductService, private globals: Globals, private cartGlobals: CartGlobals,) {
     const state = this.router.getCurrentNavigation().extras.state;
     if (state) {
       this.product = state.product;
@@ -37,7 +38,7 @@ export class ShopProductDetailsComponent implements OnInit {
 
   addToCart(product: Product) {
     // TODO: add to cart logic ...
-    this.globals.addToCart(product);
+    this.cartGlobals.addToCart(product);
     this.router.navigate(['cart']).then();
   }
 

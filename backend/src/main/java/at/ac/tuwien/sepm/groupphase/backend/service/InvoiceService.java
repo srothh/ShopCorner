@@ -14,10 +14,10 @@ import java.util.List;
 public interface InvoiceService {
 
     /**
-     * Find a single message entry by id.
+     * Find a single invoice entry by id.
      *
-     * @param id the id of the message entry
-     * @return the message entry
+     * @param id the id of the invoice entry
+     * @return the invoice entry
      * @throws NotFoundException when no invoice with the id is found
      */
     Invoice findOneById(Long id);
