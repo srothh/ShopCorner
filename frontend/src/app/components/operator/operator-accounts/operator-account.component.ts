@@ -125,9 +125,15 @@ export class OperatorAccountComponent implements OnInit {
             } else {
               this.loadOperatorsPage();
             }
-            this.collectionSizeEmployee -= this.selected.length;
-            this.currentCollectionSize = this.collectionSizeEmployee;
-            this.selected = [];
+            if(operator.permissions === Permissions.employee) {
+              this.collectionSizeEmployee -= this.selected.length;
+              this.currentCollectionSize = this.collectionSizeEmployee;
+              this.selected = [];
+            } else {
+              this.collectionSizeAdmin -= this.selected.length;
+              this.currentCollectionSize = this.collectionSizeAdmin;
+              this.selected = [];
+            }
           }
         },
         error => {
