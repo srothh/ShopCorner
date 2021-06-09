@@ -12,6 +12,7 @@ public class PromotionDto {
     @NotBlank
     private String name;
     @NotNull
+    @Min(0)
     private double discount;
     private LocalDateTime creationDate;
     @NotNull

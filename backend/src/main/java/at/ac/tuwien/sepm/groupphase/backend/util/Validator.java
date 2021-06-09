@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Promotion;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
+import at.ac.tuwien.sepm.groupphase.backend.service.PromotionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -94,9 +95,16 @@ public class Validator {
         }
     }
 
-    public void validateNewPromotion(Promotion promotion) {
+    public void validateNewPromotion(Promotion promotion, PromotionService promotionService) {
         if (!promotion.getExpirationDate().isAfter(LocalDateTime.now())) {
             throw new ValidationException("Expirationdate has to be after creationdate");
+        }
+        List<Promotion> promotions = promotionService.findAll();
+
+        for (Promotion p : promotions) {
+            if (p.getCode().equals(promotion.getCode())) {
+                throw new ValidationException("Code has to be unique");
+            }
         }
     }
 
