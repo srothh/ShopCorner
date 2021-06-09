@@ -74,8 +74,8 @@ public class PromotionEndpointTest implements TestData {
 
         MvcResult mvcResult = this.mockMvc.perform(post(PROMOTION_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(body)
-        )
+            .content(body).header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)
+        ))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();

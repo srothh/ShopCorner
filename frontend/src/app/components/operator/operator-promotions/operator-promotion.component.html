@@ -12,7 +12,8 @@
     <button type="button" *ngIf="form" class="btn btn-primary" (click)="toggleForm()">Zurück</button>
 
   </div>
-  <hr [hidden]="form">
+
+  <hr>
   <div *ngIf="!form">
     <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
       Keine Aktionen gespeichert.

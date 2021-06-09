@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +45,7 @@ public class PromotionEndpoint {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     public PromotionDto addPromotion(@Valid @RequestBody PromotionDto dto) {
         LOGGER.info("POST " + BASE_URL);
         return promotionMapper.promotionToPromotionDto(promotionService.addNewPromotion(promotionMapper.promotionDtoToPromotion(dto)));
@@ -56,7 +57,7 @@ public class PromotionEndpoint {
      * @return A list of all the retrieved promotions
      */
     @GetMapping
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     public PaginationDto<PromotionDto> getAllPages(@RequestParam(name = "page", defaultValue = "1") Integer page,
                                                    @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
         LOGGER.info("GET api/v1/promotions?page={}&page_count={}", page, pageCount);
