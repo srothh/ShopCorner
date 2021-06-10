@@ -96,7 +96,7 @@ public interface OperatorService extends UserDetailsService {
      * returns amount of employees.
      *
      * @return count of Employees.
-     * @throws RuntimeException if the updated operator account already exists
+     * @throws RuntimeException upon encountering errors with the database
      */
     Long getEmployeeCount();
 
@@ -104,15 +104,15 @@ public interface OperatorService extends UserDetailsService {
      * returns amount of Admins.
      *
      * @return count of Admins.
-     * @throws RuntimeException if the updated operator account already exists
+     * @throws RuntimeException upon encountering errors with the database
      */
     Long getAdminCount();
 
     /**
      * Deletes all operators from the repository.
-     * Solely to be used for testing purposes. 
+     * Solely to be used for testing purposes.
      *
-     * @throws RuntimeException if the updated operator account already exists
+     * @throws RuntimeException upon encountering errors with the database
      */
     void deleteAll();
 }
