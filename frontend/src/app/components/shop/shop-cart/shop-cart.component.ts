@@ -6,6 +6,7 @@ import {Globals} from '../../../global/globals';
 import {Router} from '@angular/router';
 import {CartGlobals} from '../../../global/CartGlobals';
 import {Cart} from '../../../dtos/cart';
+import {CartItem} from '../../../dtos/cartItem';
 
 @Component({
   selector: 'app-shop-cart',
@@ -20,41 +21,39 @@ export class ShopCartComponent implements OnInit {
   faBack = faAngleLeft;
   products: Product[];
   cart: Cart;
-
+  cartItems: CartItem[];
   constructor(private cartService: CartService, private globals: Globals, private cartGlobals: CartGlobals, private router: Router) { }
 
   ngOnInit(): void {
     this.products = [];
+    this.cartItems = [];
+    this.cart = new Cart();
+
     this.cartGlobals.getCart().forEach((product) => {
         this.products.push(product);
+        this.cartItems.push(new CartItem(product.id, product.quantity));
     });
 
-    const cartItems = { };
-    for (let i = 0 ; i < this.cartGlobals.getCartSize(); i++) {
-      cartItems[this.products[i].id] = this.products[i].quantity;
-    }
-    this.cart = new Cart(null, JSON.stringify(cartItems));
-    console.log(this.cart);
+    this.cart.cartItems = this.cartItems;
+    this.productToCart();
+
   }
 
-  addProductToCart() {
-    if (this.cart.id === null) {
-      this.cartService.addProductsToCart(new Cart(null, {1: 1, 2: 2})).subscribe((item) => {
+  productToCart() {
+    this.cartGlobals.getCart().forEach((product) => {
+      this.cartItems.push(new CartItem(product.id, product.quantity));
+    });
+    this.cart.cartItems = this.cartItems;
+
+    this.cartService.productsToCart(this.cart).subscribe((item) => {
         this.cart = item;
         console.log(item);
       }, (error) => {
         this.error = true;
         this.errorMessage = error;
       });
-    } else {
-      this.cartService.updateProductsToCart(new Cart(null, {1: 1, 2: 2})).subscribe((item) => {
-        this.cart = item;
-      }, (error) => {
-        this.error = true;
-        this.errorMessage = error;
-      });
     }
-  }
+
 
   getImageSource(product: Product): string {
     if (product.picture != null) {

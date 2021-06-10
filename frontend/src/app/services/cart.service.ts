@@ -15,11 +15,12 @@ export class CartService {
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
+/*
   addProductsToCart(products: Cart): Observable<Cart> {
     return this.httpClient.post<Cart>(this.cartBaseUri, products, {withCredentials: true});
-  }
+  }*/
 
-  updateProductsToCart(products: Cart): Observable<Cart> {
+  productsToCart(products: Cart): Observable<Cart> {
     return this.httpClient.put<Cart>(this.cartBaseUri, products, {withCredentials: true});
   }
 }

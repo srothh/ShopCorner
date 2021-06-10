@@ -10,6 +10,9 @@ public interface CartService {
 
     Cart addProductsToCart(Cart cart);
 
+    Cart findCartBySessionId(UUID sessionId);
+
+    Cart updateCart(Cart c);
 
     /**
      * Find a single cart entry by sessionId.
@@ -19,6 +22,7 @@ public interface CartService {
      * @throws NotFoundException when no cart with the sessionId is found
      */
     boolean sessionIdExists(UUID sessionId);
+
 
     @Scheduled(cron = "* */1 * * * *")
     Long deleteCartAfterDuration();

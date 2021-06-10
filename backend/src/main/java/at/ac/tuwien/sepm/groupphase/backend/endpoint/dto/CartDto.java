@@ -1,42 +1,33 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
 
 public class CartDto {
 
-    Long id;
+    private Long id;
 
     @NotNull
-    Map<Long, Integer> cartItems = new HashMap();
+    private List<CartItemDto> cartItems = new ArrayList<>();
 
-    public CartDto() {
-    }
-
-    public CartDto(Map<Long, Integer> cartItems) {
-        this.cartItems = cartItems;
-    }
-
-
-    public Map<Long, Integer> getCartItems() {
-        return cartItems;
-    }
-    public void setCartItems(HashMap<Long, Integer> cartItems) {
-        this.cartItems = cartItems;
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() {
-        return id;
+    public List<CartItemDto> getCartItems() {
+        return cartItems;
     }
 
-
-
+    public void setCartItemsList(List<CartItemDto> cartItems) {
+        this.cartItems = cartItems;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -47,20 +38,12 @@ public class CartDto {
             return false;
         }
         CartDto cartDto = (CartDto) o;
-        return Objects.equals(cartItems, cartDto.cartItems) && Objects.equals(id, cartDto.id);
+        return Objects.equals(id, cartDto.id) && Objects.equals(cartItems, cartDto.cartItems);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, cartItems);
-    }
-
-    @Override
-    public String toString() {
-        return "CartDto{" +
-            "id=" + id +
-            ", cartItems=" + cartItems +
-            '}';
     }
 }
 

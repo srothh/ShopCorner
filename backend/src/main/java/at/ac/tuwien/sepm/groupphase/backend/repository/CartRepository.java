@@ -2,7 +2,9 @@ package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -20,4 +22,12 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
     boolean existsCartBySessionId(UUID sessionId);
 
     Long deleteCartByCreatedAtIsBefore(LocalDateTime sessionId);
+
+
+    @Query("SELECT c FROM Cart c JOIN FETCH c.cartItems WHERE c.sessionId = (:sessionId)")
+    Cart findBySessionId(@Param("sessionId") UUID sessionId);
+
+
+
+    void deleteCartBySessionId(UUID sessionId);
 }
