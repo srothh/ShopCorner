@@ -84,13 +84,19 @@ export class OperatorService {
   }
 
   /**
-   * sends a patch request with id and Permission.admin to backend
+   * sends a patch request with id and the new permissions to the backend
    *
-   * @param id of employee that should become an admin
+   * @param operator whose permissions should be changed
    */
-  changeOperatorToAdmin(id: number): Observable<void> {
-    console.log('Change Employee with id ' + id + ' to Admin');
-    return this.httpClient.patch<void>(this.operatorBaseUri + '/' + id, {permissions: 'admin'}, {headers: this.getHeadersForOperator()});
+  changePermissions(operator: Operator): Observable<void> {
+    console.log('Change permissions of operator with id ' + operator.id);
+    if(operator.permissions === Permissions.admin){
+      return this.httpClient.patch<void>(this.operatorBaseUri + '/' + operator.id, {permissions: 'employee'},
+        {headers: this.getHeadersForOperator()});
+    } else {
+      return this.httpClient.patch<void>(this.operatorBaseUri + '/' + operator.id, {permissions: 'admin'},
+        {headers: this.getHeadersForOperator()});
+    }
   }
 
   private getHeadersForOperator(): HttpHeaders {
