@@ -24,6 +24,7 @@ public interface TaxRateService {
      *
      * @return tax-rate with the given Id
      * @throws NotFoundException is thrown when the id could not be found in the database
+     * @throws RuntimeException is thrown when an error occurred during data processing
      */
     TaxRate findTaxRateById(Long taxRateId);
 

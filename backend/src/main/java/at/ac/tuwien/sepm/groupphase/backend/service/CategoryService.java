@@ -55,6 +55,7 @@ public interface CategoryService {
      *
      * @return category with the given Id
      * @throws NotFoundException is thrown when the id could not be found in the database
+     * @throws RuntimeException is thrown when an error occurred during data processing
      */
     Category findCategoryById(Long categoryId);
 }
