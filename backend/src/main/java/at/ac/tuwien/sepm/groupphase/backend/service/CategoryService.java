@@ -46,4 +46,13 @@ public interface CategoryService {
      * @throws RuntimeException occurs during database operations
      * */
     Long getCategoriesCount();
+
+    /**
+     * Updates an already existing category entity in the database with the given Id.
+     *
+     * @param categoryId the id of the category to execute the update
+     * @param category the new category with updated fields
+     */
+
+    void updateCategory(Long categoryId, Category category);
 }

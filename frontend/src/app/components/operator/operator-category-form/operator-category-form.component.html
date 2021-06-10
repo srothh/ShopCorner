@@ -25,6 +25,11 @@
       Speichern
     </button>
   </div>
+  <div *ngIf="addCategoryEnabled === false && inEditMode === true">
+    <button class="btn btn-primary" type="submit" (click)="enableEditing()">
+      Bearbeiten
+    </button>
+  </div>
 </div>
 
 <form class="row g-3" [formGroup]="categoryForm" #myForm="ngForm" (ngSubmit)="submitCategory()">

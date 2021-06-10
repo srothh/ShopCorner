@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
 import org.slf4j.Logger;
@@ -58,6 +60,15 @@ public class CategoryServiceImpl implements CategoryService {
     public Long getCategoriesCount() {
         LOGGER.trace("getAllCategoriesCount()");
         return this.categoryRepository.count();
+    }
+
+    @Override
+    public void updateCategory(Long categoryId, Category category) {
+        LOGGER.trace("updateCategory({})", category);
+        Category updatedCategory = this.categoryRepository
+            .findById(categoryId).orElseThrow(() -> new NotFoundException("Could not find category with Id:" + categoryId));
+        updatedCategory.setName(category.getName());
+        categoryRepository.save(updatedCategory);
     }
 
 

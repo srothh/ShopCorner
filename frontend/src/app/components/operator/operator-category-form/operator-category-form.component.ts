@@ -34,8 +34,6 @@ export class OperatorCategoryFormComponent implements OnInit {
       this.setFormProperties();
       this.categoryForm.disable();
     }
-    console.log('addCategoryEnabled', this.addCategoryEnabled);
-    console.log('EditMode', this.inEditMode);
   }
   setFormProperties(){
     this.categoryForm.controls['name'].setValue(this.category.name);
@@ -57,6 +55,11 @@ export class OperatorCategoryFormComponent implements OnInit {
       this.errorOccurred = true;
       this.errorMessage = error.error.message;
     });
+  }
+  enableEditing(){
+    this.inEditMode = true;
+    this.addCategoryEnabled = true;
+    this.categoryForm.enable();
   }
   get categoryFormControl() {
     return this.categoryForm.controls;
