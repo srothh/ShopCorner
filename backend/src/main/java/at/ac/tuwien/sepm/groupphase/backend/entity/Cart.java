@@ -1,27 +1,18 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -29,7 +20,6 @@ public class Cart {
 
 
     @Id
-    //@SequenceGenerator(name="category_sequence", sequenceName = "category_sequence")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -37,9 +27,8 @@ public class Cart {
     @Column(nullable = false, unique = true)
     private UUID sessionId;
 
-    @NotNull
-    @ElementCollection
-    Map<Long, Integer> cartItems = new HashMap();
+    @OneToMany(mappedBy="cart")
+    private Set<CartItem> items = new HashSet<>();
 
     @NotNull
     LocalDateTime createdAt;
@@ -47,9 +36,11 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(Long id, HashMap<Long, Integer> cartItems) {
+    public Cart(Long id, UUID sessionId, Set<CartItem> items, LocalDateTime createdAt) {
         this.id = id;
-        this.cartItems = cartItems;
+        this.sessionId = sessionId;
+        this.items = items;
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -76,14 +67,13 @@ public class Cart {
         this.sessionId = sessionId;
     }
 
-    public void setCartItems(Map<Long, Integer> cartItems) {
-        this.cartItems = cartItems;
+    public Set<CartItem> getItems() {
+        return items;
     }
 
-    public Map<Long, Integer> getCartItems() {
-        return cartItems;
+    public void setItems(Set<CartItem> items) {
+        this.items = items;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -94,11 +84,11 @@ public class Cart {
             return false;
         }
         Cart cart = (Cart) o;
-        return Objects.equals(id, cart.id) && Objects.equals(sessionId, cart.sessionId) && Objects.equals(createdAt, cart.createdAt) && Objects.equals(cartItems, cart.cartItems);
+        return Objects.equals(id, cart.id) && Objects.equals(sessionId, cart.sessionId) && Objects.equals(createdAt, cart.createdAt) && Objects.equals(items, cart.items);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sessionId, cartItems, createdAt);
+        return Objects.hash(id, sessionId, items, createdAt);
     }
 }

@@ -31,28 +31,29 @@ public class CartServiceImpl implements CartService {
         return this.cartRepository.save(cart);
     }
 
+
     @Override
     public Cart findCartBySessionId(UUID sessionId) {
         return this.cartRepository.findBySessionId(sessionId);
     }
 
-    @Transactional
+    /*@Transactional
     @Override
     public Cart updateCart(Cart c) {
         this.cartRepository.deleteCartBySessionId(c.getSessionId());
         return this.cartRepository.save(c);
-    }
+    }*/
 
     @Override
     public boolean sessionIdExists(UUID sessionId) {
         return this.cartRepository.existsCartBySessionId(sessionId);
     }
 
-    @Transactional
-    @Scheduled(cron = "* */3 * * * *")
-    @Override
+    //@Transactional
+    //@Scheduled(cron = "* */3 * * * *")
+    /*@Override
     public Long deleteCartAfterDuration() {
         LocalDateTime timeBefore = LocalDateTime.now().minus(1, ChronoUnit.MINUTES);
         return this.cartRepository.deleteCartByCreatedAtIsBefore(timeBefore);
-    }
+    }*/
 }

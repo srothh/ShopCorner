@@ -23,11 +23,7 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
 
     Long deleteCartByCreatedAtIsBefore(LocalDateTime sessionId);
 
-
-    @Query("SELECT c FROM Cart c JOIN FETCH c.cartItems WHERE c.sessionId = (:sessionId)")
-    Cart findBySessionId(@Param("sessionId") UUID sessionId);
-
-
+    Cart findBySessionId(UUID sessionId);
 
     void deleteCartBySessionId(UUID sessionId);
 }
