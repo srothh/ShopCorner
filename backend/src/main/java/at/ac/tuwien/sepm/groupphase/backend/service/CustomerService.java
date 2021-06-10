@@ -36,6 +36,15 @@ public interface CustomerService extends UserDetailsService {
     Customer findCustomerByLoginName(String loginName);
 
     /**
+     * Deletes a customer based on the login name.
+     *
+     * @param loginName the login name
+     * @throws NotFoundException when no customer with the id is found
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    void deleteCustomerByLoginName(String loginName);
+
+    /**
      * Registers a new customer and persists its entity in the database.
      *
      * @param customer The customer entity to save
