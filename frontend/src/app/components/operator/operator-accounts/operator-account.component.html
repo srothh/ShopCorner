@@ -2,7 +2,7 @@
   <br>
   <h2>Betreiber Konten</h2>
   <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
-    <label class="btn btn-light active" *ngIf="getPermission() === 'ADMIN'">
+    <label class="btn btn-light active " *ngIf="getPermission() === 'ADMIN'">
       <input type="radio" name="buttons" id="option1" (click)=showAdmins() checked>
       Admins
     </label>
@@ -102,7 +102,7 @@
           </button>
         </div>
         <div class="modal-body">
-          Wollen sie die Konten von {{selected.length}} Mitarbeiter_innen löschen?
+          Wollen Sie {{selected.length}} Konten löschen?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" (click)="selected=[]" data-dismiss="modal">Abbrechen</button>

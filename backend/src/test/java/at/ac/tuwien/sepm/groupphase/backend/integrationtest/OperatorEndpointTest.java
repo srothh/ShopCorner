@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -82,7 +84,7 @@ public class OperatorEndpointTest implements TestData {
 
     @BeforeEach
     public void beforeEach() {
-        operatorRepository.deleteAll();
+        operatorService.deleteAll();
         Operator admin = new Operator(TEST_ADMIN_NAME, TEST_ADMIN_LOGINNAME, TEST_ADMIN_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PERMISSIONS);
         Operator employee = new Operator(TEST_EMPLOYEE_NAME, TEST_EMPLOYEE_LOGINNAME, TEST_EMPLOYEE_PASSWORD, TEST_EMPLOYEE_EMAIL, TEST_EMPLOYEE_PERMISSIONS);
         Operator operator = new Operator(TEST_OPERATOR_NAME, TEST_OPERATOR_LOGINNAME, TEST_OPERATOR_PASSWORD, TEST_OPERATOR_EMAIL, TEST_OPERATOR_PERMISSION);
@@ -92,7 +94,6 @@ public class OperatorEndpointTest implements TestData {
     public void givenNothing_whenPost_thenOperatorWithAllSetPropertiesPlusId() throws Exception {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         String body = objectMapper.writeValueAsString(operatorDto);
-
         MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
@@ -170,6 +171,7 @@ public class OperatorEndpointTest implements TestData {
             () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus())
         );
     }
+
 
     @Test
     public void givenNothing_whenFindAll_thenEmptyList() throws Exception {
@@ -317,12 +319,13 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneOperator_whenDelete_findAllAfterDeleteReturnsEmptyList()
+    public void givenTwoOperators_whenDelete_findAllAfterDeleteReturnsListOfSize1()
         throws Exception {
+        operatorRepository.save(admin);
         operatorRepository.save(employee);
 
         MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + employee.getId())
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse responseDelete = mvcResultDelete.getResponse();
@@ -330,7 +333,7 @@ public class OperatorEndpointTest implements TestData {
         assertEquals(HttpStatus.NO_CONTENT.value(), responseDelete.getStatus());
 
         MvcResult mvcResultGet = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse responseGet = mvcResultGet.getResponse();
@@ -342,7 +345,7 @@ public class OperatorEndpointTest implements TestData {
             });
         List<OverviewOperatorDto> overviewOperatorDtos = paginationDto.getItems();
 
-        assertEquals(0, overviewOperatorDtos.size());
+        assertEquals(1, overviewOperatorDtos.size());
     }
 
     @Test
@@ -358,17 +361,47 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneAdmin_whenDelete_thenUnprocessableEntityResponse()
+    public void givenOneAdmin_whenDeleteOwnAccount_thenForbiddenResponse()
         throws Exception {
-        operatorRepository.save(admin);
+        Operator saved = operatorRepository.save(admin);
 
-        MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + admin.getId())
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+        MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + saved.getId())
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse responseDelete = mvcResultDelete.getResponse();
 
         assertEquals(HttpStatus.FORBIDDEN.value(), responseDelete.getStatus());
+    }
+
+    @Test
+    public void givenTwoAdmins_whenDeleteAndNotOwnAccount_findAllAfterDeleteReturnsListOfSize1()
+        throws Exception {
+        Operator admin1 = operatorRepository.save(admin);
+        Operator admin2 = operatorRepository.save(operator);
+
+        MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + admin2.getId())
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseDelete = mvcResultDelete.getResponse();
+
+        assertEquals(HttpStatus.NO_CONTENT.value(), responseDelete.getStatus());
+
+        MvcResult mvcResultGet = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseGet = mvcResultGet.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responseGet.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseGet.getContentType());
+        PaginationDto<OverviewOperatorDto> paginationDto = objectMapper.readValue(responseGet.getContentAsString(),
+            new TypeReference<>() {
+            });
+        List<OverviewOperatorDto> overviewOperatorDtos = paginationDto.getItems();
+
+        assertEquals(1, overviewOperatorDtos.size());
     }
 
     @Test
