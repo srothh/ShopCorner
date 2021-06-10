@@ -11,7 +11,7 @@
     <div class="form-group required">
       <label for="name" class="form-label"><b>Name </b></label>
       <input type="text" class="form-control" id="name" name="input1"
-             placeholder="Geben Sie einen Namen für ihre Aktion ein" required formControlName="name">
+             placeholder="Geben Sie einen Namen für Ihre Aktion ein" required formControlName="name">
       <div *ngIf="promotionForm.get('name').invalid &&
         promotionForm.get('name').errors &&
         (promotionForm.get('name').dirty || promotionForm.get('name').touched)">
@@ -60,7 +60,7 @@
     <div class="form-group required">
       <label for="code" class="form-label"><b>Gutscheincode </b></label>
       <input type="text" class="form-control" id="code" name="code"
-             placeholder="Geben Sie einen Code für ihre Aktion ein" required formControlName="code">
+             placeholder="Geben Sie einen Code für Ihre Aktion ein" required formControlName="code">
       <div *ngIf="promotionForm.get('code').invalid &&
         promotionForm.get('code').errors &&
         (promotionForm.get('code').dirty || promotionForm.get('code').touched)">

@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Promotion;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public interface PromotionService {
      * @param promotion the promotion to add
      * @return the promotion added
      * @throws RuntimeException upon encountering errors with the database
+     * @throws ValidationException when the promotion is invalid
      */
     Promotion addNewPromotion(Promotion promotion);
 
