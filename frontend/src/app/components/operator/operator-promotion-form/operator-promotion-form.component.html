@@ -1,0 +1,95 @@
+
+<div *ngIf="error" class="alert alert-danger" role="alert">
+  {{ errorMessage }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="vanishError()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<form class="row g-3" [formGroup]="promotionForm"  id="myForm">
+  <div class="col-md-6 mt-3">
+    <div class="form-group required">
+      <label for="name" class="form-label"><b>Name </b></label>
+      <input type="text" class="form-control" id="name" name="input1"
+             placeholder="Geben Sie einen Namen für Ihre Aktion ein" required formControlName="name">
+      <div *ngIf="promotionForm.get('name').invalid &&
+        promotionForm.get('name').errors &&
+        (promotionForm.get('name').dirty || promotionForm.get('name').touched)">
+        <small class="text-danger"
+               *ngIf="promotionForm.get('name').hasError('required')">
+          Pflichtfeld.
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mt-3">
+    <div class="form-group required">
+      <label for="discount" class="form-label"><b>Rabatt </b></label>
+      <input type="number" min="0" class="form-control" id="discount" name="discount"
+              required formControlName="discount">
+      <div *ngIf="promotionForm.get('discount').invalid &&
+        promotionForm.get('discount').errors &&
+        (promotionForm.get('discount').dirty || promotionForm.get('discount').touched)">
+        <small class="text-danger"
+               *ngIf="promotionForm.get('discount').hasError('required')">
+          Pflichtfeld.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 mt-3">
+    <div class="form-group required">
+      <label for="expirationDate" class="form-label"><b>Ablaufdatum </b></label>
+      <div class="input-group">
+        <input class="form-control" placeholder="yyyy-mm-dd"
+               name="expirationDate" id="expirationDate" ngbDatepicker #d="ngbDatepicker"
+               formControlName="expirationDate">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mt-3 align-items-center">
+    <div class="form-group required">
+      <ngb-timepicker id="time" formControlName="time"></ngb-timepicker>
+    </div>
+  </div>
+  <div class="col-md-6 mt-3">
+    <div class="form-group required">
+      <label for="code" class="form-label"><b>Gutscheincode </b></label>
+      <input type="text" class="form-control" id="code" name="code"
+             placeholder="Geben Sie einen Code für Ihre Aktion ein" required formControlName="code">
+      <div *ngIf="promotionForm.get('code').invalid &&
+        promotionForm.get('code').errors &&
+        (promotionForm.get('code').dirty || promotionForm.get('code').touched)">
+        <small class="text-danger"
+               *ngIf="promotionForm.get('code').hasError('required')">
+          Pflichtfeld.
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mt-3">
+    <div class="form-group required">
+      <label for="minimum" class="form-label"><b>Mindestbestellwert </b></label>
+      <input type="number" min="0" class="form-control" id="minimum" name="minimum"
+             placeholder="Geben Sie einen Mindestbestellwert für ihre Aktion ein" required formControlName="minimum">
+      <div *ngIf="promotionForm.get('minimum').invalid &&
+        promotionForm.get('minimum').errors &&
+        (promotionForm.get('minimum').dirty || promotionForm.get('minimum').touched)">
+        <small class="text-danger"
+               *ngIf="promotionForm.get('minimum').hasError('required')">
+          Pflichtfeld.
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mt-3">
+    <button class="btn btn-primary" type="submit" (click)="addNewPromotion()" [disabled]="!promotionForm.valid">
+      Speichern
+    </button>
+  </div>
+
+</form>
