@@ -11,7 +11,6 @@ public class TaxRateDto {
     private Long id;
     private Double percentage;
     private Double calculationFactor;
-    private Set<Product> products = new HashSet<>();
 
     public Double getCalculationFactor() {
         return calculationFactor;
@@ -38,15 +37,6 @@ public class TaxRateDto {
     public void setPercentage(Double percentage) {
         this.percentage = percentage;
     }
-
-    public Set<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
-
 
     @Override
     public boolean equals(Object o) {
