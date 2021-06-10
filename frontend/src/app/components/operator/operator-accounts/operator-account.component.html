@@ -32,11 +32,11 @@
   </div>
   <div class="admin_options">
     <div *ngIf="selected.length > 0 && getPermission() === 'ADMIN'; else disabled_promote">
-      <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#promoteCommit">Zu Admin machen</button>
+      <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#promoteCommit">Berechtigungslevel ändern</button>
     </div>
     <ng-template #disabled_promote>
       <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Nur für Admins" *ngIf="getPermission() === 'ADMIN';">
-        <button type="button" style="pointer-events: none;" class="btn btn-outline-secondary" disabled>Zu Admin machen</button>
+        <button type="button" style="pointer-events: none;" class="btn btn-outline-secondary" disabled>Berechtigungslevel ändern</button>
       </span>
     </ng-template>
   </div>
@@ -122,11 +122,11 @@
           </button>
         </div>
         <div class="modal-body">
-          Wollen sie die Rechte von {{selected.length}} Mitarbeiter_innen zu Admins ändern?
+          Wollen sie die Rechte von {{selected.length}} Personen ändern?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" (click)="selected=[]" data-dismiss="modal">Abbrechen</button>
-          <button type="button" class="btn btn-outline-primary" (click)="changeToAdmin()" data-dismiss="modal">Ändern</button>
+          <button type="button" class="btn btn-outline-primary" (click)="changePermissions()" data-dismiss="modal">Ändern</button>
         </div>
       </div>
     </div>
