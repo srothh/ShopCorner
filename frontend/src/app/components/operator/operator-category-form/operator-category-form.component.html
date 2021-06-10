@@ -1,0 +1,51 @@
+<div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
+  {{ errorMessage }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div *ngIf="errorOccurred===false" class="alert alert-success" role="alert">
+  Eine neue Kategorie wurde erfolgreich hinzugefügt!
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="operator-category-header mt-3" style="display:flex;justify-content: space-between">
+  <div *ngIf="addCategoryEnabled===false&& inEditMode === true">
+    <h3>Kategorie - Detail</h3>
+  </div>
+  <div *ngIf="addCategoryEnabled===true && inEditMode===false">
+    <h3>Kategorie hinzufügen</h3>
+  </div>
+  <div *ngIf="addCategoryEnabled===true && inEditMode===true">
+    <h3>Kategorie bearbeiten</h3>
+  </div>
+  <div *ngIf="addCategoryEnabled===true">
+    <button class="btn btn-primary" type="submit" [disabled]="!categoryForm.valid"  (click)="myForm.ngSubmit.emit()">
+      Speichern
+    </button>
+  </div>
+</div>
+
+<form class="row g-3" [formGroup]="categoryForm" #myForm="ngForm" (ngSubmit)="submitCategory()">
+  <div class="col-md-6 mt-3">
+
+    <div class="form-group required">
+      <label for="inputTitle" class="form-label"><b>Name </b></label>
+      <input type="text" class="form-control" id="inputTitle" name="input1"
+             placeholder="Geben Sie einen Namen für ihre Kategorie ein" required formControlName="name">
+      <div *ngIf="categoryFormControl.name.touched && categoryFormControl.name.invalid">
+        <div class="text-danger" *ngIf="categoryFormControl.name.errors.required">Geben Sie bitte einen Namen ein</div>
+        <div class="text-danger" *ngIf="categoryFormControl.name.errors.minlength">Der Name muss mindestens 3 Zeichen
+          besitzen
+        </div>
+        <div class="text-danger" *ngIf="categoryFormControl.name.errors.maxlength">Der Name ist zu lang. Bitte wählen
+          Sie einen kürzeren Namen.
+        </div>
+        <div class="text-danger" *ngIf="categoryFormControl.name.hasError('whitespace')">Der Name darf nur aus Zeichen
+          bestehen
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

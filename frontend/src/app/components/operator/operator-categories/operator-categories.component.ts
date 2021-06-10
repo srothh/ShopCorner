@@ -48,7 +48,10 @@ export class OperatorCategoriesComponent implements OnInit {
     this.errorMessage = undefined;
   }
 
-  goToCategoryDetails(category: Category, event){}
+  goToCategoryDetails(selectedCategory: Category, event){
+    console.log('selectedCategory', selectedCategory);
+    this.router.navigate(['operator/categories/' + selectedCategory.id],{ state: [selectedCategory]}).then();
+  }
 
   clickedCheckMark(event, index: number) {}
 
