@@ -28,7 +28,7 @@ import {OperatorRegistrationComponent} from './components/operator/operator-regi
 import {OperatorAddProductComponent} from './components/operator/operator-add-product/operator-add-product.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
-
+import { OperatorPromotionFormComponent } from './components/operator/operator-promotion-form/operator-promotion-form.component';
 import {OperatorEditAccountComponent} from './components/operator/operator-edit-account/operator-edit-account.component';
 
 import {OperatorProductDetailsComponent} from './components/operator/operator-product-details/operator-product-details.component';
@@ -71,6 +71,7 @@ import {NgdbModalActionComponent} from './components/common/ngbd-modal-action/ng
     ShopProductComponent,
     ShopCartComponent,
     OperatorRegistrationComponent,
+    OperatorPromotionFormComponent,
     OperatorAddProductComponent,
     ShopRegistrationComponent,
     OperatorEditAccountComponent,
