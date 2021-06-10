@@ -110,6 +110,7 @@ public interface OperatorService extends UserDetailsService {
 
     /**
      * Deletes all operators from the repository.
+     * Solely to be used for testing purposes. 
      *
      * @throws RuntimeException if the updated operator account already exists
      */
