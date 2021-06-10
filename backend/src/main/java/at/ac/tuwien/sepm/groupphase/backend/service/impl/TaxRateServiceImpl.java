@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.TaxRateService;
 import org.slf4j.Logger;
@@ -26,7 +27,12 @@ public class TaxRateServiceImpl implements TaxRateService {
 
     @Override
     public List<TaxRate> getAllTaxRates() {
-        LOGGER.trace("retrieving all tax-rates");
-        return this.taxRateRepository.getAllTaxRates();
+        LOGGER.trace("getAllTaxRates()");
+        return this.taxRateRepository.findAll();
+    }
+
+    public TaxRate findTaxRateById(Long taxRateId) {
+        LOGGER.trace("findTaxRateById({})", taxRateId);
+        return this.taxRateRepository.findById(taxRateId).orElseThrow(() -> new NotFoundException("Could not find tax-rate!"));
     }
 }

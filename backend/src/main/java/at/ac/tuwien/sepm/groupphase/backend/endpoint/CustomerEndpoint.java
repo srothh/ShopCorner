@@ -66,7 +66,7 @@ public class CustomerEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all customers", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<CustomerDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "1") Integer page,
+    public PaginationDto<CustomerDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                       @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
         LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
         Page<Customer> customerPage = customerService.getAllCustomers(page, pageCount);

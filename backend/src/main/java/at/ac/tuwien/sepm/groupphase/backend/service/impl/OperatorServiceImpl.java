@@ -18,7 +18,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -139,6 +138,7 @@ public class OperatorServiceImpl implements OperatorService {
         operatorRepository.setOperatorPermissionsById(permissions, id);
     }
 
+
     @Caching(evict = {
         @CacheEvict(value = "counts", key = "'admins'"),
         @CacheEvict(value = "counts", key = "'employees'"),
@@ -147,11 +147,8 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public void delete(Long id) {
         LOGGER.trace("delete({})", id);
-        Operator operator = operatorRepository.findById(id)
+        operatorRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Could not find operator that should be deleted!"));
-        if (operator.getPermissions().equals(Permissions.admin)) {
-            throw new AccessDeniedException("Cannot delete an Admin");
-        }
         operatorRepository.deleteById(id);
     }
 
@@ -177,6 +174,15 @@ public class OperatorServiceImpl implements OperatorService {
             op.setPassword(passwordEncoder.encode(operator.getPassword()));
         }
         return operatorRepository.save(op);
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'admins'"),
+        @CacheEvict(value = "counts", key = "'employees'"),
+        @CacheEvict(value = "operatorPages", allEntries = true)
+    })
+    public void deleteAll() {
+        operatorRepository.deleteAll();
     }
 
 }

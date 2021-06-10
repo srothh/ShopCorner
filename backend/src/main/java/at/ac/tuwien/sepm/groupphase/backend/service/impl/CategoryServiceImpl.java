@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
+import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
 import org.slf4j.Logger;
@@ -43,26 +45,26 @@ public class CategoryServiceImpl implements CategoryService {
         } else if (pageCount > 50) {
             pageCount = 50;
         }
-        // to fetch categories in a lazy fetched behaviour( because of products) there are 2 steps necessary
-        // 1. search all Ids in a paginated manner 2. get all entries that corresponds to these ids and fetch the
-        // related products -> and eventually return a new Page - Object
         Pageable pages = PageRequest.of(page, pageCount);
-        List<Long> idsOfPageableEntries = categoryRepository.geAllIds(pages);
-        List<Category> categories = categoryRepository.findAllCategoriesPerPage(idsOfPageableEntries);
-        return new PageImpl<Category>(categories, pages, categories.size());
+        return this.categoryRepository.findAll(pages);
     }
 
     @Transactional
     @Override
     public List<Category> getAllCategories() {
         LOGGER.trace("getAllCategories()");
-        return this.categoryRepository.getAllCategories();
+        return this.categoryRepository.findAll();
     }
 
     @Override
     public Long getCategoriesCount() {
         LOGGER.trace("getAllCategoriesCount()");
         return this.categoryRepository.count();
+    }
+
+    public Category findCategoryById(Long categoryId) {
+        LOGGER.trace("findCategoryById({})", categoryId);
+        return this.categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Could not find category!"));
     }
 
 
