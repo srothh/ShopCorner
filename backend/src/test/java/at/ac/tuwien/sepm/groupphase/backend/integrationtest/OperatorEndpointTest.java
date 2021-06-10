@@ -412,7 +412,7 @@ public class OperatorEndpointTest implements TestData {
         MvcResult mvcResultPatch = this.mockMvc.perform(patch(OPERATORS_BASE_URI + "/" + 100)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse responsePatch = mvcResultPatch.getResponse();
@@ -421,7 +421,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneAdmin_whenChangePermissionsToEmployee_thenUnprocessableEntityResponse()
+    public void givenOneAdmin_whenChangeOwnPermissions_thenForbiddenResponse()
         throws Exception {
         operatorRepository.save(admin);
         String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.employee));
@@ -429,24 +429,25 @@ public class OperatorEndpointTest implements TestData {
         MvcResult mvcResult = this.mockMvc.perform(patch(OPERATORS_BASE_URI + "/" + admin.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
     }
 
     @Test
-    public void givenOneEmployee_whenChangePermissions_thenGetAdminWithLengthOneAndEmployeeWithLengthZero()
+    public void givenTwoOperators_whenChangePermissions_thenGetAdminWithLengthTwoAndEmployeeWithLengthZero()
         throws Exception {
+        operatorRepository.save(admin);
         operatorRepository.save(employee);
         String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.admin));
 
         MvcResult mvcResultPatch = this.mockMvc.perform(patch(OPERATORS_BASE_URI + "/" + employee.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
-            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse responsePatch = mvcResultPatch.getResponse();
@@ -467,8 +468,8 @@ public class OperatorEndpointTest implements TestData {
             });
         List<OverviewOperatorDto> overviewOperatorDtosAdmin = paginationDto.getItems();
 
-        assertEquals(1, overviewOperatorDtosAdmin.size());
-        OverviewOperatorDto adminDto = overviewOperatorDtosAdmin.get(0);
+        assertEquals(2, overviewOperatorDtosAdmin.size());
+        OverviewOperatorDto adminDto = overviewOperatorDtosAdmin.get(1);
         assertAll(
             () -> assertEquals(employee.getId(), adminDto.getId()),
             () -> assertEquals(TEST_EMPLOYEE_NAME, adminDto.getName()),
@@ -492,6 +493,64 @@ public class OperatorEndpointTest implements TestData {
         List<OverviewOperatorDto> overviewOperatorDtosEmployee = paginationDtoEmployee.getItems();
 
         assertEquals(0, overviewOperatorDtosEmployee.size());
+    }
+
+    @Test
+    public void givenTwoAdmins_whenChangePermissions_thenGetAdminWithLengthOneAndEmployeeWithLengthOne()
+        throws Exception {
+        operatorRepository.save(admin);
+        operatorRepository.save(operator);
+        String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.employee));
+
+        MvcResult mvcResultPatch = this.mockMvc.perform(patch(OPERATORS_BASE_URI + "/" + operator.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_ADMIN_LOGINNAME, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responsePatch = mvcResultPatch.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responsePatch.getStatus());
+
+        MvcResult mvcResultGetEmployee = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=employee")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseEmployee = mvcResultGetEmployee.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responseEmployee.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseEmployee.getContentType());
+
+        PaginationDto<OverviewOperatorDto> paginationDto = objectMapper.readValue(responseEmployee.getContentAsString(),
+            new TypeReference<>() {
+            });
+        List<OverviewOperatorDto> overviewOperatorDtosEmployee = paginationDto.getItems();
+
+        assertEquals(1, overviewOperatorDtosEmployee.size());
+        OverviewOperatorDto employeeDto = overviewOperatorDtosEmployee.get(0);
+        assertAll(
+            () -> assertEquals(operator.getId(), employeeDto.getId()),
+            () -> assertEquals(TEST_OPERATOR_NAME, employeeDto.getName()),
+            () -> assertEquals(TEST_OPERATOR_LOGINNAME, employeeDto.getLoginName()),
+            () -> assertEquals(TEST_OPERATOR_EMAIL, employeeDto.getEmail()),
+            () -> assertEquals(TEST_EMPLOYEE_PERMISSIONS, employeeDto.getPermissions())
+        );
+
+        MvcResult mvcResultGetAdmin = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseAdmin = mvcResultGetAdmin.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), responseAdmin.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, responseAdmin.getContentType());
+
+        PaginationDto<OverviewOperatorDto> paginationDtosAdmin = objectMapper.readValue(responseAdmin.getContentAsString(),
+            new TypeReference<>() {
+            });
+        List<OverviewOperatorDto> overviewOperatorDtosAdmin = paginationDtosAdmin.getItems();
+
+        assertEquals(1, overviewOperatorDtosAdmin.size());
     }
 
     @Test

@@ -7,10 +7,16 @@
   </div>
   <div class="header">
     <h2>Meine Daten</h2>
-    <button *ngIf="!isEditMode" class="btn btn-primary" (click)="toggleEditMode()">
-      <fa-icon class="mr-2" [icon]="faEdit"></fa-icon>
-      Bearbeiten
-    </button>
+    <div class="btn-toolbar">
+      <button *ngIf="!isEditMode" class="btn btn-outline-danger mr-2" (click)="attemptToDeleteAccount()">
+        <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
+        Konto löschen
+      </button>
+      <button *ngIf="!isEditMode" class="btn btn-primary" (click)="toggleEditMode()">
+        <fa-icon class="mr-2" [icon]="faEdit"></fa-icon>
+        Bearbeiten
+      </button>
+    </div>
     <div *ngIf="isEditMode" class="btn-toolbar">
       <button class="btn btn-outline-secondary mr-2" (click)="cancelEdit()">Abbrechen</button>
       <button class="btn btn-primary" (click)="saveUser()">Speichern</button>

@@ -145,11 +145,11 @@ export class OperatorAccountComponent implements OnInit {
   }
 
   /**
-   * calls on service to delete selected operators and after last delete reloads page
+   * calls on service to change the permissions of the selected operators and after last change reloads page
    */
-  changeToAdmin() {
+  changePermissions() {
     for (const operator of this.selected) {
-      this.operatorService.changeOperatorToAdmin(operator.id).subscribe(
+      this.operatorService.changePermissions(operator).subscribe(
         () => {
           if (this.selected.indexOf(operator) === this.selected.length-1) {
             if ((this.page+1)*this.pageSize >= this.currentCollectionSize && this.operators.length === this.selected.length
@@ -158,9 +158,15 @@ export class OperatorAccountComponent implements OnInit {
             } else {
               this.loadOperatorsPage();
             }
-            this.collectionSizeEmployee -= this.selected.length;
-            this.currentCollectionSize = this.collectionSizeEmployee;
-            this.selected = [];
+            if(operator.permissions === Permissions.employee) {
+              this.collectionSizeEmployee -= this.selected.length;
+              this.currentCollectionSize = this.collectionSizeEmployee;
+              this.selected = [];
+            } else {
+              this.collectionSizeAdmin -= this.selected.length;
+              this.currentCollectionSize = this.collectionSizeAdmin;
+              this.selected = [];
+            }
           }
         },
         error => {

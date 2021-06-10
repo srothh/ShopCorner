@@ -12,9 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.lang.invoke.MethodHandles;
 import java.security.Principal;
@@ -42,9 +43,18 @@ public class MeEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve customer data", security = @SecurityRequirement(name = "apiKey"))
-    public CustomerDto findCustomerData(Principal principal) {
+    public CustomerDto findCustomerByLoginName(Principal principal) {
         LOGGER.info("GET " + BASE_URL);
         Customer entity = customerService.findCustomerByLoginName(principal.getName());
         return customerMapper.customerToCustomerDto(entity);
+    }
+
+    @Secured({"ROLE_CUSTOMER"})
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete customer", security = @SecurityRequirement(name = "apiKey"))
+    public void deleteCustomerByUsername(Principal principal) {
+        LOGGER.info("DELETE " + BASE_URL);
+        customerService.deleteCustomerByLoginName(principal.getName());
     }
 }
