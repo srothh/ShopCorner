@@ -94,7 +94,8 @@ export class OperatorProductFormComponent implements OnInit {
       new Category(null, null),
       new TaxRate(null, null, null),
       false,
-      null);
+      null,
+      false);
   }
   setFormProperties(): void {
     if (this.newProduct === undefined) {
