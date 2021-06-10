@@ -46,12 +46,27 @@ export class OperatorCategoryFormComponent implements OnInit {
     return new Category(null, null);
   }
   submitCategory(){
-    this.category.name = this.categoryForm.get('name').value;
-    this.categoryService.addCategory(this.category).subscribe((categoryData)=>{
-      this.category.id = categoryData.id;
-      this.errorOccurred = false;
-      this.router.navigate(['operator/categories']).then();
-    },error => {
+    this.category.name = this.categoryForm.get('name').value.trim();
+    if (this.router.url.includes('add')) {
+      this.categoryService.addCategory(this.category).subscribe((categoryData) => {
+        this.category.id = categoryData.id;
+        this.errorOccurred = false;
+        this.router.navigate(['operator/categories']).then();
+      }, error => {
+        this.errorOccurred = true;
+        this.errorMessage = error.error.message;
+      });
+    } else {
+      this.updateCategory();
+    }
+  }
+  updateCategory(){
+    this.categoryService.updateCategory(this.category.id, this.category).subscribe(() => {
+      this.inEditMode = true;
+      this.addCategoryEnabled = false;
+      this.categoryForm.disable();
+
+    }, error => {
       this.errorOccurred = true;
       this.errorMessage = error.error.message;
     });

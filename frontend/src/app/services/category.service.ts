@@ -49,6 +49,19 @@ export class CategoryService {
       headers: this.getHeadersForOperator()
     });
   }
+
+  /**
+   * updates an already existing category to the backend
+   *
+   * @param categoryId the Id of the category to execute the update
+   * @param category the updated category
+   * @return An Observable with no return value
+   */
+  updateCategory(categoryId: number, category: Category): Observable<void> {
+    return this.httpClient.put<void>(this.categoryBaseUri + '/'+categoryId,category,{
+      headers: this.getHeadersForOperator()
+    });
+  }
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
