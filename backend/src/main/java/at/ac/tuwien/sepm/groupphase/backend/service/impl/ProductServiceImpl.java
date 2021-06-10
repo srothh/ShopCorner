@@ -8,8 +8,9 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
+import at.ac.tuwien.sepm.groupphase.backend.service.TaxRateService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
-import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,19 +34,19 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-    private final TaxRateRepository taxRateRepository;
+    private final CategoryService categoryService;
+    private final TaxRateService taxRateService;
     private final InvoiceItemService invoiceItemService;
 
     @Autowired
     public ProductServiceImpl(
         ProductRepository productRepository,
-        CategoryRepository categoryRepository,
-        TaxRateRepository taxRateRepository,
+        CategoryService categoryService,
+        TaxRateService taxRateService,
         InvoiceItemService invoiceItemService) {
         this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.taxRateRepository = taxRateRepository;
+        this.categoryService = categoryService;
+        this.taxRateService = taxRateService;
         this.invoiceItemService = invoiceItemService;
     }
 
@@ -80,17 +81,14 @@ public class ProductServiceImpl implements ProductService {
         if (categoryId == null) {
             product.setCategory(null);
         } else {
-            Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("Could not find category!"));
+            Category category = categoryService.findCategoryById(categoryId);
             product.setCategory(category);
-
         }
     }
 
     private void assignProductToTaxRate(Product product, Long taxRateId) {
         LOGGER.trace("assignProductToTaxRate({}{})", product, taxRateId);
-        TaxRate taxRate = taxRateRepository.findById(taxRateId)
-            .orElseThrow(() -> new NotFoundException("Could not find tax-rate!"));
+        TaxRate taxRate = taxRateService.findTaxRateById(taxRateId);
         product.setTaxRate(taxRate);
     }
 
