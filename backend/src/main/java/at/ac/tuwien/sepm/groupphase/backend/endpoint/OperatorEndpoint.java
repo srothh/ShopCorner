@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
+import java.security.Principal;
 import java.util.Collection;
 
 @RestController
@@ -129,18 +130,10 @@ public class OperatorEndpoint {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Edit an existing operator account", security = @SecurityRequirement(name = "apiKey"))
-    public OperatorDto editOperator(@PathVariable("id") Long id, @Valid @RequestBody OperatorDto operatorDto) {
+    public OperatorDto editOperator(@PathVariable("id") Long id, @Valid @RequestBody OperatorDto operatorDto, Principal principal) {
         LOGGER.info("PUT " + BASE_URL + "/{}", id);
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = "";
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-
-        if (operatorService.findOperatorByLoginName(username).getId().equals(id) && id.equals(operatorDto.getId())) {
+        if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id) && id.equals(operatorDto.getId())) {
 
             Operator operator = operatorMapper.dtoToEntity(operatorDto);
             OperatorDto result = operatorMapper.entityToDto(operatorService.update(operator));
@@ -161,18 +154,10 @@ public class OperatorEndpoint {
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id, Principal principal) {
         LOGGER.info("DELETE " + BASE_URL + "/{}", id);
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = "";
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-
-        if (operatorService.findOperatorByLoginName(username).getId().equals(id)) {
+        if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id)) {
             throw new AccessDeniedException("Admins cannot delete their own accounts");
         }
         operatorService.delete(id);
