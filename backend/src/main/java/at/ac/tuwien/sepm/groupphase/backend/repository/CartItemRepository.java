@@ -12,7 +12,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     /**
      * Deletes cartItems by id.
      *
-     * @param id of the cartItem to be deleted
+     * @param id of the cartItem to be delete
      * @throws RuntimeException upon encountering errors with the database
      */
     void deleteCartItemById(Long id);
