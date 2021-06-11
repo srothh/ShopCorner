@@ -80,6 +80,16 @@ public class OperatorServiceImpl implements OperatorService {
     }
 
     @Override
+    public Operator findOperatorByEmail(String email) {
+        LOGGER.trace("findOperatorByEmail({})", email);
+        Operator operator = operatorRepository.findByEmail(email);
+        if (operator != null) {
+            return operator;
+        }
+        throw new NotFoundException(String.format("Could not find the operator with the email %s", email));
+    }
+
+    @Override
     @Cacheable(value = "operatorPages")
     public Page<Operator> findAll(int page, int pageCount, Permissions permissions) {
         LOGGER.trace("findAll({})", page);

@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(OperatorEndpoint.BASE_URL)
@@ -181,4 +183,15 @@ public class OperatorEndpoint {
         }
         operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }
+/*
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @PostMapping("/resetPassword")
+    public void resetPassword(@RequestParam("email") String email, HttpServletRequest request) {
+
+        Operator operator = operatorService.findOperatorByEmail(email);
+
+        String resetToken = UUID.randomUUID().toString();
+        operator.setResetToken(resetToken);
+
+    } */
 }

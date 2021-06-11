@@ -36,6 +36,16 @@ public interface OperatorService extends UserDetailsService {
     Operator findOperatorByLoginName(String loginName);
 
     /**
+     * Find an operator based on the email address.
+     *
+     * @param email the email of the operator to be returned
+     * @return the operator with the given email
+     * @throws NotFoundException when no operator with the given email is found
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Operator findOperatorByEmail(String email);
+
+    /**
      * Returns page with all needed Operators.
      *
      * @param page        which should be returned
