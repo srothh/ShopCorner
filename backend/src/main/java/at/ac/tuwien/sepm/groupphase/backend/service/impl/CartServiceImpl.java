@@ -9,6 +9,8 @@ import at.ac.tuwien.sepm.groupphase.backend.service.CartItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +35,7 @@ public class CartServiceImpl implements CartService {
     }
 
 
-
+    @CacheEvict(value = "existent", key = "'cart'")
     @Override
     public Cart createCart(Cart cart) {
         LOGGER.trace("createCart({})", cart);
@@ -70,7 +72,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-
+    @Cacheable(value = "existent", key = "'cart'")
     @Override
     public boolean sessionIdExists(UUID sessionId) {
         LOGGER.trace("sessionIdExists({})", sessionId.toString());
