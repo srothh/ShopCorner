@@ -26,6 +26,7 @@ public interface TestData {
     String CUSTOMER_BASE_URI = BASE_URI + "/customers";
     String INVOICE_BASE_URI = BASE_URI + "/invoices";
     String PROMOTION_BASE_URI = BASE_URI + "/promotions";
+    String CART_BASE_URI = BASE_URI + "/carts";
 
     //TEST PROPERTIES FOR PRODUCTS, TAX-RATES AND CATEGORIES
     String PRODUCTS_BASE_URI = "/api/v1/products";

@@ -35,7 +35,6 @@ public class CartServiceImpl implements CartService {
     }
 
 
-    @CacheEvict(value = "existent", key = "'cart'")
     @Override
     public Cart createCart(Cart cart) {
         LOGGER.trace("createCart({})", cart);
@@ -72,7 +71,6 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    @Cacheable(value = "existent", key = "'cart'")
     @Override
     public boolean sessionIdExists(UUID sessionId) {
         LOGGER.trace("sessionIdExists({})", sessionId.toString());
