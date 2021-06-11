@@ -105,4 +105,8 @@ public interface TestData {
     Long CART_ITEM_PRODUCT_ID = 0L;
     int CART_ITEM_QUANTITY = 5 ;
 
+    Long CART_ID_2 = 1L;
+    Long CART_ITEM_ID_2 = 1L;
+    Long CART_ITEM_PRODUCT_ID_2 = 1L;
+    int CART_ITEM_QUANTITY_2 = 10 ;
 }
