@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Category} from '../../../dtos/category';
 import {CategoryService} from '../../../services/category.service';
 import {Router, UrlSerializer} from '@angular/router';
@@ -10,12 +10,14 @@ import {OperatorAuthService} from '../../../services/auth/operator-auth.service'
   styleUrls: ['./operator-categories.component.scss']
 })
 export class OperatorCategoriesComponent implements OnInit {
+  @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
   categories: Category[];
   errorOccurred: boolean;
   errorMessage: string;
   page = 0;
   pageSize = 10;
   collectionSize = 0;
+  selectedCategories: Category[] = [];
   constructor(private categoryService: CategoryService, private router: Router, private urlSerializer: UrlSerializer,
               private authService: OperatorAuthService) { }
 
@@ -49,12 +51,29 @@ export class OperatorCategoriesComponent implements OnInit {
   }
 
   goToCategoryDetails(selectedCategory: Category, event){
-    console.log('selectedCategory', selectedCategory);
-    this.router.navigate(['operator/categories/' + selectedCategory.id],{ state: [selectedCategory]}).then();
+    const targetHTMLElement = event.target.toString();
+    if (!(targetHTMLElement.includes('HTMLLabelElement') || targetHTMLElement.includes('HTMLInputLabel'))) {
+      this.router.navigate(['operator/categories/' + selectedCategory.id],{ state: [selectedCategory]}).then();
+    }
   }
 
-  clickedCheckMark(event, index: number) {}
-
+  clickedCheckMark(event, index: number) {
+    event.stopPropagation();
+    if (event.target.checked) {
+      this.selectedCategories.push(this.categories[index]);
+    } else {
+      const category = this.categories[index];
+      const deleteIndex = this.selectedCategories.indexOf(category);
+      this.selectedCategories.splice(deleteIndex, 1);
+    }
+  }
+  uncheckSelectedCategories(){
+    this.checkboxes.forEach((element) => {
+      element.nativeElement.checked = false;
+    });
+    this.selectedCategories = [];
+  }
+  deleteCategories(){}
   previousPage() {
     if (this.page > 0) {
       this.page -= 1;

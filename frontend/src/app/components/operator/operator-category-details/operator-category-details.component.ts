@@ -21,5 +21,11 @@ export class OperatorCategoryDetailsComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  deleteCategory(){
+    console.log('');
+  }
+  getPermission(){
+    console.log('');
+  }
 
 }

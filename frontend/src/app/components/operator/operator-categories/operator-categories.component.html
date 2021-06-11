@@ -8,9 +8,21 @@
 <div class="operator-category-container">
   <h2>Kategorien</h2>
   <div *ngIf="getPermission() === 'ADMIN'">
-  <button type="button" class="btn btn-primary category_options"  (click)="addNewCategory()">Kategorie hinzufügen</button>
+    <div class="category_options">
+      <div *ngIf="selectedCategories.length >0; else not_selected">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">
+          Auswahl löschen
+        </button>
+      </div>
+      <ng-template #not_selected>
+    <span>
+      <button type="button" class="btn btn-outline-danger" disabled>Auswahl löschen</button>
+    </span>
+      </ng-template>
+    </div>
     <div class="button_block"></div>
   </div>
+
   <hr>
   <div class="operator-category-body">
     <div>
@@ -53,6 +65,29 @@
     <div class="d-flex justify-content-between pt-3">
       <button class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
       <button class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
+    </div>
+    <div class="modal fade" id="deleteCommit" tabindex="-1" role="dialog" aria-labelledby="deleteCommitLabel"
+         aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Löschen</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Wollen sie die Kategorien von {{selectedCategories.length}} Kategorien löschen?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" (click)="uncheckSelectedCategories()"
+                    data-dismiss="modal">Abbrechen
+            </button>
+            <button type="button" class="btn btn-outline-danger" (click)="deleteCategories()" data-dismiss="modal">Löschen
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
