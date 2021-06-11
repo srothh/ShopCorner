@@ -98,6 +98,7 @@ public class ProductDto {
         this.locked = locked;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
