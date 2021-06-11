@@ -29,7 +29,7 @@ public class Cart {
     @Column(nullable = false, unique = true)
     private UUID sessionId;
 
-    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<CartItem> items = new HashSet<>();
 
     @NotNull
@@ -101,13 +101,4 @@ public class Cart {
         return Objects.hash(id, sessionId, items, createdAt);
     }
 
-    @Override
-    public String toString() {
-        return "Cart{" +
-            "id=" + id +
-            ", sessionId=" + sessionId +
-            ", items=" + items.size() +
-            ", createdAt=" + createdAt +
-            '}';
-    }
 }

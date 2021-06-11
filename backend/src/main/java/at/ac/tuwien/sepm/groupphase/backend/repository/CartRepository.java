@@ -14,15 +14,29 @@ import java.util.UUID;
 public interface CartRepository extends JpaRepository<Cart, UUID> {
 
     /**
-     * Find all message entries ordered by published at date (descending).
+     * Checks whether the session exists.
      *
-     * @return ordered list of al message entries
+     * @param sessionId assigned to the session
+     * @return if exists true otherwise false
      * @throws RuntimeException upon encountering errors with the database
      */
     boolean existsCartBySessionId(UUID sessionId);
 
-    Long deleteCartByCreatedAtIsBefore(LocalDateTime sessionId);
+    /**
+     * Deletes carts after a certain time.
+     *
+     * @param date everything before will be deleted
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    void deleteCartByCreatedAtIsBefore(LocalDateTime date);
 
+    /**
+     * Find all a cart by sessionId.
+     *
+     * @param sessionId assigned to the session
+     * @return the cart assigned to the session
+     * @throws RuntimeException upon encountering errors with the database
+     */
     @Query(value = "select c from Cart c where c.sessionId = (:sessionId)")
     Cart findBySessionId(@Param("sessionId") UUID sessionId);
 

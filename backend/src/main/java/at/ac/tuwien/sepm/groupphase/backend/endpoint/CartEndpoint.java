@@ -55,18 +55,24 @@ public class CartEndpoint {
         this.cartItemService = cartItemService;
     }
 
+    /**
+     * Get cart assigned by sessionId.
+     *
+     * @return CartDto with all given information of the Cart
+     */
     @PermitAll
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "update the cart")
     public CartDto getCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, HttpServletResponse response) {
+        LOGGER.info("GET /api/v1/cart/");
         Cart cart;
         if (sessionId.equals("default") || !this.sessionExists(sessionId) || !this.validateSession(sessionId)) {
             sessionId = UUID.randomUUID().toString();
             this.createCookie(sessionId, response);
         }
         if (!this.sessionExists(sessionId)) {
-            cart = this.cartService.createCart(new Cart(UUID.fromString(sessionId),LocalDateTime.now()));
+            cart = this.cartService.createCart(new Cart(UUID.fromString(sessionId), LocalDateTime.now()));
             return this.cartMapper.cartToCartDto(cart);
         }
         cart = this.cartService.findCartBySessionId(UUID.fromString(sessionId));
@@ -75,23 +81,36 @@ public class CartEndpoint {
         return cartDto;
     }
 
+    /**
+     * Delete cartItem from cart assigned by sessionId.
+     *
+     * @param id the productId of the cartItem to be removed
+     */
     @PermitAll
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "update the cart")
     public void deleteCartItem(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @PathVariable Long id) {
+        LOGGER.info("DELETE /api/v1/cart/{}:id", id);
         if (this.sessionExists(sessionId)) {
             UUID sessionUuid = UUID.fromString(sessionId);
             Cart cart = this.cartService.findCartBySessionId(sessionUuid);
-            this.cartItemService.deleteCartItemById(cart,id);
+            this.cartItemService.deleteCartItemById(cart, id);
         }
     }
 
+    /**
+     * Update the cartItem from cart assigned by sessionId.
+     *
+     * @param item the cartItem to be updated
+     * @return CartDto with all given information of the Cart
+     */
     @PermitAll
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "update the cart")
     public CartDto updateProductInCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @Valid @RequestBody CartItemDto item, HttpServletResponse response) {
+        LOGGER.info("PUT /api/v1/cart/ {}", item);
         if (this.sessionExists(sessionId)) {
             UUID sessionUuid = UUID.fromString(sessionId);
             Cart cart = this.cartService.findCartBySessionId(sessionUuid);
@@ -104,12 +123,18 @@ public class CartEndpoint {
         return new CartDto();
     }
 
-
+    /**
+     * creates a cart and a cartItem which are assigned to a sessionId.
+     *
+     * @param item the cartItem to be created
+     * @return CartDto with all given information of the Cart
+     */
     @PermitAll
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "update the cart")
     public CartDto createProductInCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @Valid @RequestBody CartItemDto item, HttpServletResponse response) {
+        LOGGER.info("POST /api/v1/cart/ {}", item);
         CartDto cartDto = new CartDto();
         if (sessionId.equals("default") || !this.sessionExists(sessionId)) {
             sessionId = UUID.randomUUID().toString();
@@ -126,6 +151,20 @@ public class CartEndpoint {
         return cartDto;
     }
 
+    /**
+     * Creates a cookie with a generated sessionId.
+     *
+     * @param sessionId the generated sessionId for the session assignment
+     * @param response the response for the client
+     */
+    private void createCookie(String sessionId, HttpServletResponse response) {
+        ResponseCookie resCookie = ResponseCookie.from("sessionId", sessionId)
+            .httpOnly(true)
+            .sameSite("None")
+            .secure(true)
+            .build();
+        response.addHeader("Set-Cookie", resCookie.toString());
+    }
 
     private Cart addCartItem(String sessionId, CartItemDto item) {
         UUID sessionUuid = UUID.fromString(sessionId);
@@ -152,16 +191,6 @@ public class CartEndpoint {
 
         Cart createdCart = this.cartService.createCart(cart);
         return createdCart;
-    }
-
-
-    private void createCookie(String sessionId, HttpServletResponse response) {
-        ResponseCookie resCookie = ResponseCookie.from("sessionId", sessionId)
-            .httpOnly(true)
-            .sameSite("None")
-            .secure(true)
-            .build();
-        response.addHeader("Set-Cookie", resCookie.toString());
     }
 
 

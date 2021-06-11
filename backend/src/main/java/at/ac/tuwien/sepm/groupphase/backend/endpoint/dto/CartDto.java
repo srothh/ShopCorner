@@ -47,13 +47,6 @@ public class CartDto {
     }
 
 
-    @Override
-    public String toString() {
-        return "CartDto{" +
-            "id=" + id +
-            ", cartItem=" + cartItems.size() +
-            '}';
-    }
 }
 
 

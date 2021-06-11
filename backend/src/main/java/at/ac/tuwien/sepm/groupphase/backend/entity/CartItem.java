@@ -16,7 +16,7 @@ public class CartItem {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "cart_id", nullable=false)
+    @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
     private Long productId;
@@ -61,8 +61,12 @@ public class CartItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CartItem cartItem = (CartItem) o;
         return quantity == cartItem.quantity && Objects.equals(id, cartItem.id) && Objects.equals(cart, cartItem.cart) && Objects.equals(productId, cartItem.productId);
     }
@@ -72,13 +76,4 @@ public class CartItem {
         return Objects.hash(id, productId, quantity);
     }
 
-    @Override
-    public String toString() {
-        return "CartItem{" +
-            "id=" + id +
-            ", cart=" + cart +
-            ", productId=" + productId +
-            ", quantity=" + quantity +
-            '}';
-    }
 }

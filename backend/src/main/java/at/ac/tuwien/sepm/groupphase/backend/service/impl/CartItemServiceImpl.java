@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Cart;
 import at.ac.tuwien.sepm.groupphase.backend.entity.CartItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CartItemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CartItemService;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public Set<CartItem> createCartItem(Set<CartItem> cartItem) {
+        LOGGER.trace("createCartItem({})", cartItem);
         Set<CartItem> newCartItems = new HashSet<>();
         for (CartItem item : cartItem) {
             if (item != null || item.getId() != null) {
@@ -41,6 +43,7 @@ public class CartItemServiceImpl implements CartItemService {
     @Transactional
     @Override
     public CartItem updateCartItem(Cart cart, CartItem item) {
+        LOGGER.trace("updateCartItem({},{})", cart, item);
         CartItem toDelete = new CartItem();
         for (CartItem c : cart.getItems()) {
             if (c.getProductId().equals(item.getProductId())) {
@@ -57,12 +60,18 @@ public class CartItemServiceImpl implements CartItemService {
     @Transactional
     @Override
     public void deleteCartItem(CartItem cartItem) {
-        this.cartItemRepository.deleteCartItemById(cartItem.getId());
+        LOGGER.trace("deleteCartItem({})", cartItem);
+        try {
+            this.cartItemRepository.deleteCartItemById(cartItem.getId());
+        } catch (RuntimeException e) {
+            throw new NotFoundException(String.format("Could not delete the cartItem %s", cartItem.toString()));
+        }
     }
 
     @Transactional
     @Override
     public void deleteCartItemById(Cart cart, Long id) {
+        LOGGER.trace("updateCartItem({},{})", cart, id);
         CartItem toDelete = new CartItem();
         for (CartItem c : cart.getItems()) {
             if (c.getProductId().equals(id)) {
