@@ -32,7 +32,7 @@ public class PromotionDataGenerator {
         if (promotionRepository.findAll().size() > 0) {
             LOGGER.debug("Promotions already generated");
         } else {
-            Calendar cal = Calendar.getInstance();
+            /*Calendar cal = Calendar.getInstance();
             LOGGER.info(new Timestamp(System.currentTimeMillis()).toString());
             Faker faker = new Faker(new Locale("de-AT"));
             for (int i = 0; i < 200; i++) {
@@ -41,7 +41,7 @@ public class PromotionDataGenerator {
                         .of(faker.number().numberBetween(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.YEAR) + 2), faker.number().numberBetween(1, 12), faker.number().numberBetween(1, 30),
                             faker.number().numberBetween(1, 23), faker.number().numberBetween(1, 59), faker.number().numberBetween(0, 59)), faker.lorem().word(),
                         faker.number().randomDouble(2, 5, 150)));
-            }
+            }*/
         }
     }
 

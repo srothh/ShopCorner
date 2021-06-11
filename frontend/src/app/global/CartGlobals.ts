@@ -1,13 +1,16 @@
 import {Injectable} from '@angular/core';
 import {Product} from '../dtos/product';
 import {CartService} from '../services/cart.service';
+import {CartItem} from '../dtos/cartItem';
+import {ProductService} from '../services/product.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartGlobals {
-  constructor(private service: CartService) {
+  constructor(private cartService: CartService, private productService: ProductService) {
   }
+
   public getCart() {
     let cart = localStorage.getItem('cart');
     if (!cart) {
@@ -35,15 +38,12 @@ export class CartGlobals {
 
   addToCart(item) {
     const cart = this.getCart();
-    if (this.containsProductAtIndex(item) === -1) {
       item['quantity'] = 1;
       cart.push(item);
-    } else {
-      const quantity = cart[this.containsProductAtIndex(item)]['quantity'];
-      cart[this.containsProductAtIndex(item)]['quantity'] = quantity + 1;
-    }
     this.setCart(cart);
   }
+
+
 
   deleteFromCart(product: Product) {
     const cart = this.getCart();
@@ -70,7 +70,7 @@ export class CartGlobals {
     localStorage.setItem('cart', JSON.stringify(cart));
   }
 
-  private containsProductAtIndex(product: Product) {
+  containsProductAtIndex(product: Product) {
     const cart = this.getCart();
     for (let i = 0; i < this.getCartSize(); i++) {
       if (cart[i].id === product.id) {
@@ -79,4 +79,6 @@ export class CartGlobals {
     }
     return -1;
   }
+
+
 }

@@ -8,10 +8,13 @@ import java.util.UUID;
 
 public interface CartService {
 
-    Cart addProductsToCart(Cart cart);
 
+    Cart createCart(Cart cart);
+
+    Cart addItemToCart(Cart cart);
 
     Cart findCartBySessionId(UUID sessionId);
+
 
     //Cart updateCart(Cart c);
 

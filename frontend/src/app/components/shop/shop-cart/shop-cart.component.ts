@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {CartService} from '../../../services/cart.service';
 import {faAngleLeft, faMinus, faMoneyCheckAlt} from '@fortawesome/free-solid-svg-icons';
 import {Product} from '../../../dtos/product';
@@ -13,7 +13,7 @@ import {CartItem} from '../../../dtos/cartItem';
   templateUrl: './shop-cart.component.html',
   styleUrls: ['./shop-cart.component.scss']
 })
-export class ShopCartComponent implements OnInit {
+export class ShopCartComponent implements OnInit, AfterViewInit {
   error = false;
   errorMessage = '';
   faCheckout = faMoneyCheckAlt;
@@ -22,37 +22,18 @@ export class ShopCartComponent implements OnInit {
   products: Product[];
   cart: Cart;
   cartItems: CartItem[];
-  constructor(private cartService: CartService, private globals: Globals, private cartGlobals: CartGlobals, private router: Router) { }
 
-  ngOnInit(): void {
-    this.products = [];
-    this.cartItems = [];
-    this.cart = new Cart();
-
-    this.cartGlobals.getCart().forEach((product) => {
-        this.products.push(product);
-        this.cartItems.push(new CartItem(product.id, product.quantity));
-    });
-
-    this.cart.cartItems = this.cartItems;
-    this.productToCart();
-
+  constructor(private cartService: CartService, private globals: Globals, private cartGlobals: CartGlobals, private router: Router) {
   }
 
-  productToCart() {
-    this.cartGlobals.getCart().forEach((product) => {
-      this.cartItems.push(new CartItem(product.id, product.quantity));
-    });
-    this.cart.cartItems = this.cartItems;
+  ngOnInit(): void {
+    this.products = this.cartGlobals.getCart();
+    this.cartItems = [];
+  }
 
-    this.cartService.productsToCart(this.cart).subscribe((item) => {
-        this.cart = item;
-        console.log(item);
-      }, (error) => {
-        this.error = true;
-        this.errorMessage = error;
-      });
-    }
+  ngAfterViewInit() {
+    this.fetchCart();
+  }
 
 
   getImageSource(product: Product): string {
@@ -107,7 +88,7 @@ export class ShopCartComponent implements OnInit {
   }
 
   calcTotal() {
-      return (Number(this.calcSubtotal()) + Number(this.calcTax())).toFixed(2);
+    return (Number(this.calcSubtotal()) + Number(this.calcTax())).toFixed(2);
   }
 
   routeToDetailView(product: Product) {
@@ -132,5 +113,10 @@ export class ShopCartComponent implements OnInit {
     return div.innerText;
   }
 
+  private fetchCart() {
+    this.cartService.getCart().subscribe((items) => {
+      console.log(items);
+    });
+  }
 
 }

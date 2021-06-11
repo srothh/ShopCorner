@@ -4,6 +4,7 @@ import {Globals} from '../global/globals';
 import {Product} from '../dtos/product';
 import {Observable} from 'rxjs';
 import {Cart} from '../dtos/cart';
+import {CartItem} from '../dtos/cartItem';
 
 
 @Injectable({
@@ -15,13 +16,16 @@ export class CartService {
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
-/*
-  addProductsToCart(products: Cart): Observable<Cart> {
-    return this.httpClient.post<Cart>(this.cartBaseUri, products, {withCredentials: true});
-  }*/
+  getCart(): Observable<Cart> {
+    return this.httpClient.get<Cart>(this.cartBaseUri, {withCredentials: true});
+  }
 
-  productsToCart(products: Cart): Observable<Cart> {
-    return this.httpClient.put<Cart>(this.cartBaseUri, products, {withCredentials: true});
+  addProductsToCart(cartItem: CartItem): Observable<Cart> {
+    return this.httpClient.post<Cart>(this.cartBaseUri, cartItem, {withCredentials: true});
+  }
+
+  updateToCart(cartItem: CartItem): Observable<Cart> {
+    return this.httpClient.put<Cart>(this.cartBaseUri, cartItem, {withCredentials: true});
   }
 }
 

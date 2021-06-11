@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,7 +29,7 @@ public class Cart {
     @Column(nullable = false, unique = true)
     private UUID sessionId;
 
-    @OneToMany(mappedBy="cart")
+    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<CartItem> items = new HashSet<>();
 
     @NotNull
@@ -36,12 +38,19 @@ public class Cart {
     public Cart() {
     }
 
+    public Cart(UUID sessionId, LocalDateTime createdAt) {
+        this.sessionId = sessionId;
+        this.createdAt = createdAt;
+    }
+
     public Cart(Long id, UUID sessionId, Set<CartItem> items, LocalDateTime createdAt) {
         this.id = id;
         this.sessionId = sessionId;
         this.items = items;
         this.createdAt = createdAt;
     }
+
+
 
     public Long getId() {
         return id;
@@ -90,5 +99,15 @@ public class Cart {
     @Override
     public int hashCode() {
         return Objects.hash(id, sessionId, items, createdAt);
+    }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+            "id=" + id +
+            ", sessionId=" + sessionId +
+            ", items=" + items.size() +
+            ", createdAt=" + createdAt +
+            '}';
     }
 }

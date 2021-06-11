@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 public class CartDto {
@@ -9,7 +11,7 @@ public class CartDto {
     private Long id;
 
     @NotNull
-    private CartItemDto cartItem;
+    private Set<CartItemDto> cartItems = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -19,12 +21,12 @@ public class CartDto {
         this.id = id;
     }
 
-    public CartItemDto getCartItems() {
-        return cartItem;
+    public Set<CartItemDto> getCartItems() {
+        return cartItems;
     }
 
-    public void setCartItemsList(CartItemDto cartItems) {
-        this.cartItem = cartItems;
+    public void setCartItems(Set<CartItemDto> cartItems) {
+        this.cartItems = cartItems;
     }
 
     @Override
@@ -36,12 +38,21 @@ public class CartDto {
             return false;
         }
         CartDto cartDto = (CartDto) o;
-        return Objects.equals(id, cartDto.id) && Objects.equals(cartItem, cartDto.cartItem);
+        return Objects.equals(id, cartDto.id) && Objects.equals(cartItems, cartDto.cartItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cartItem);
+        return Objects.hash(id, cartItems);
+    }
+
+
+    @Override
+    public String toString() {
+        return "CartDto{" +
+            "id=" + id +
+            ", cartItem=" + cartItems.size() +
+            '}';
     }
 }
 
