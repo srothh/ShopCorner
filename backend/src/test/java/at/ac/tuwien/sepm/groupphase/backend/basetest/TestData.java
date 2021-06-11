@@ -99,6 +99,10 @@ public interface TestData {
     LocalDateTime TEST_INVOICE_DATE = null;
     Double TEST_INVOICE_AMOUNT = 20.0;
 
-
+    //TEST PROPERTIES FOR CART
+    Long CART_ID = 0L;
+    Long CART_ITEM_ID = 0L;
+    Long CART_ITEM_PRODUCT_ID = 0L;
+    int CART_ITEM_QUANTITY = 5 ;
 
 }

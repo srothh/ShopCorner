@@ -10,8 +10,18 @@ public class CartDto {
 
     private Long id;
 
+
+
     @NotNull
     private Set<CartItemDto> cartItems = new HashSet<>();
+
+    public CartDto() {
+    }
+
+    public CartDto(Long id, Set<CartItemDto> cartItems) {
+        this.id = id;
+        this.cartItems = cartItems;
+    }
 
     public Long getId() {
         return id;
