@@ -9,9 +9,10 @@ public interface CartItemService {
 
     Set<CartItem> createCartItem(Set<CartItem> cartItem);
 
-    CartItem createCartItem(CartItem cartItem);
-
     CartItem updateCartItem(Cart cart, CartItem item);
 
     void deleteCartItem(CartItem cartItem);
+
+    void deleteCartItemById(Cart cart,Long id);
+
 }

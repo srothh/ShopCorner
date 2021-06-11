@@ -31,7 +31,7 @@
         <td class="centerContent picture" (click)="routeToDetailView(product)"><img *ngIf="product.picture != null" class="card-img-top"
                                                src="{{getImageSource(product)}}" alt="produkt"></td>
         <td class="name" (click)="routeToDetailView(product)">{{product.name}}</td>
-        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.quantity" (change)="changedTotal(i, $event)"></td>
+        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.quantity" (change)="updateQuantity($event, product)" (change)="changedTotal(i, $event)"></td>
         <td class="tax" (click)="routeToDetailView(product)">{{(product.taxRate.percentage)}} %</td>
         <td class="price" (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price).toFixed(2)}} €</td>
         <td class="total-num" (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price * product.quantity).toFixed(2)}} €</td>

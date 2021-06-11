@@ -37,17 +37,12 @@ public class CartItemServiceImpl implements CartItemService {
         return newCartItems;
     }
 
-    @Override
-    public CartItem createCartItem(CartItem cartItem) {
-        return this.cartItemRepository.save(cartItem);
-    }
 
     @Transactional
     @Override
     public CartItem updateCartItem(Cart cart, CartItem item) {
         CartItem toDelete = new CartItem();
         for (CartItem c : cart.getItems()) {
-            System.out.println(c.getProductId().equals(item.getProductId()));
             if (c.getProductId().equals(item.getProductId())) {
                 toDelete = c;
                 break;
@@ -64,5 +59,19 @@ public class CartItemServiceImpl implements CartItemService {
     public void deleteCartItem(CartItem cartItem) {
         this.cartItemRepository.deleteCartItemById(cartItem.getId());
     }
+
+    @Transactional
+    @Override
+    public void deleteCartItemById(Cart cart, Long id) {
+        CartItem toDelete = new CartItem();
+        for (CartItem c : cart.getItems()) {
+            if (c.getProductId().equals(id)) {
+                toDelete = c;
+                break;
+            }
+        }
+        this.deleteCartItem(toDelete);
+    }
+
 
 }
