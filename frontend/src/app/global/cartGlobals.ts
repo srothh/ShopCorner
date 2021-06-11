@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Product} from '../dtos/product';
-import {CartService} from '../services/cart.service';
-import {CartItem} from '../dtos/cartItem';
-import {ProductService} from '../services/product.service';
+import {Cart} from '../dtos/cart';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartGlobals {
-  constructor(private cartService: CartService, private productService: ProductService) {
+  constructor() {
   }
 
   public getCart() {
@@ -36,9 +34,22 @@ export class CartGlobals {
     this.setCart(cart);
   }
 
+  updateTotalCart(cart: Cart) {
+    const cartToUpdate = this.getCart();
+    cart.cartItems.forEach((item) => {
+      cartToUpdate.forEach( (cartItem) => {
+          if (item.productId === cartItem.id) {
+            if (item.quantity === cartItem.quantity) {
+              this.updateCart(cartItem, item.quantity);
+            }
+          }
+        });
+    });
+  }
+
   addToCart(item) {
     const cart = this.getCart();
-      item['quantity'] = 1;
+    item['quantity'] = 1;
       cart.push(item);
     this.setCart(cart);
   }

@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterContentInit, Component, OnInit} from '@angular/core';
 import {CartService} from '../../../services/cart.service';
 import {faAngleLeft, faMinus, faMoneyCheckAlt} from '@fortawesome/free-solid-svg-icons';
 import {Product} from '../../../dtos/product';
 import {Globals} from '../../../global/globals';
 import {Router} from '@angular/router';
-import {CartGlobals} from '../../../global/CartGlobals';
+import {CartGlobals} from '../../../global/cartGlobals';
 import {Cart} from '../../../dtos/cart';
 import {CartItem} from '../../../dtos/cartItem';
 
@@ -13,7 +13,7 @@ import {CartItem} from '../../../dtos/cartItem';
   templateUrl: './shop-cart.component.html',
   styleUrls: ['./shop-cart.component.scss']
 })
-export class ShopCartComponent implements OnInit, AfterViewInit {
+export class ShopCartComponent implements OnInit, AfterContentInit {
   error = false;
   errorMessage = '';
   faCheckout = faMoneyCheckAlt;
@@ -31,10 +31,9 @@ export class ShopCartComponent implements OnInit, AfterViewInit {
     this.cartItems = [];
   }
 
-  ngAfterViewInit() {
-    this.fetchCart();
+  ngAfterContentInit() {
+     this.fetchCart();
   }
-
 
   getImageSource(product: Product): string {
     if (product.picture != null) {
@@ -51,9 +50,19 @@ export class ShopCartComponent implements OnInit, AfterViewInit {
       }
     });
     this.cartGlobals.deleteFromCart(product);
+    this.deleteCartItem(new CartItem(product.id, product.quantity));
     this.products = newProductList;
     this.calcAmount();
   }
+
+  deleteCartItem(cartItem: CartItem) {
+    this.cartService.deleteCart(cartItem).subscribe(() => {
+    }, error => {
+      this.error = true;
+      this.errorMessage = error.error.message;
+    });
+  }
+
 
   cartIsEmpty() {
     return this.cartGlobals.isCartEmpty();
@@ -115,7 +124,11 @@ export class ShopCartComponent implements OnInit, AfterViewInit {
 
   private fetchCart() {
     this.cartService.getCart().subscribe((items) => {
-      console.log(items);
+      if (items.cartItems.length !== 0) {
+        this.cartGlobals.updateTotalCart(items);
+        this.products = this.cartGlobals.getCart();
+        console.log(this.products);
+      }
     });
   }
 

@@ -16,6 +16,10 @@ export class CartService {
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
+  deleteCart(cartItem: CartItem): Observable<any> {
+    return this.httpClient.delete<any>(this.cartBaseUri + '/' + cartItem.productId, {withCredentials: true});
+  }
+
   getCart(): Observable<Cart> {
     return this.httpClient.get<Cart>(this.cartBaseUri, {withCredentials: true});
   }

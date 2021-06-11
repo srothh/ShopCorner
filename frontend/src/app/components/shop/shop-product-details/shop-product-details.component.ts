@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Product} from '../../../dtos/product';
 import {ProductService} from '../../../services/product.service';
 import {Globals} from '../../../global/globals';
-import {CartGlobals} from '../../../global/CartGlobals';
+import {CartGlobals} from '../../../global/cartGlobals';
 import {CartItem} from '../../../dtos/cartItem';
 import {CartService} from '../../../services/cart.service';
 

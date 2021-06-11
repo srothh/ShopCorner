@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CustomerAuthService} from '../../../services/auth/customer-auth.service';
 import {faShoppingCart} from '@fortawesome/free-solid-svg-icons';
 import {Globals} from '../../../global/globals';
-import {CartGlobals} from '../../../global/CartGlobals';
+import {CartGlobals} from '../../../global/cartGlobals';
 
 @Component({
   selector: 'app-header',
