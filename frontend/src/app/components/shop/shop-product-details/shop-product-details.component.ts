@@ -14,8 +14,8 @@ import {CartService} from '../../../services/cart.service';
 })
 export class ShopProductDetailsComponent implements OnInit {
 
-  errror = false;
-  errorrMessage = '';
+  error = false;
+  errorMessage = '';
 
   product: Product;
 
@@ -49,12 +49,12 @@ export class ShopProductDetailsComponent implements OnInit {
     if (index === -1) {
       this.cartGlobals.addToCart(product);
       this.cartService.addProductsToCart(new CartItem(product.id, 1)).subscribe( (item) => {
-       if (item.cartItems.length !== this.cartGlobals.getCartSize()) {
-         console.log('update cart');
+       if ((item.cartItems.length !== this.cartGlobals.getCartSize()) && (this.cartGlobals.getCartSize() < item.cartItems.length)) {
+         this.cartGlobals.appendMissingItems(item);
        }
       }, (error) => {
-        this.errror = true;
-        this.errorrMessage = error;
+        this.error = true;
+        this.errorMessage = error;
       });
 
     } else {
@@ -64,10 +64,10 @@ export class ShopProductDetailsComponent implements OnInit {
       this.cartGlobals.updateCart(product, quantity);
 
       this.cartService.updateToCart(new CartItem(product.id, quantity)).subscribe( (item) => {
-          console.log(item, '<<---');
+        this.cartGlobals.appendMissingItems(item);
       }, (error) => {
-        this.errror = true;
-        this.errorrMessage = error;
+        this.error = true;
+        this.errorMessage = error;
       });
     }
     this.router.navigate(['cart']).then();

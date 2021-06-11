@@ -17,7 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,17 +76,32 @@ public class CartEndpoint {
     }
 
     @PermitAll
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "update the cart")
+    public void deleteCartItem(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @PathVariable Long id) {
+        if (this.sessionExists(sessionId)) {
+            UUID sessionUuid = UUID.fromString(sessionId);
+            Cart cart = this.cartService.findCartBySessionId(sessionUuid);
+            this.cartItemService.deleteCartItemById(cart,id);
+        }
+    }
+
+    @PermitAll
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "update the cart")
     public CartDto updateProductInCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @Valid @RequestBody CartItemDto item, HttpServletResponse response) {
-        UUID sessionUuid = UUID.fromString(sessionId);
-        Cart cart = this.cartService.findCartBySessionId(sessionUuid);
-        this.cartItemService.updateCartItem(cart, this.cartItemMapper.cartItemDtoToCartItem(item));
-        cart = this.cartService.findCartBySessionId(sessionUuid);
-        CartDto cartDto  = this.cartMapper.cartToCartDto(cart);
-        cartDto.setCartItems(this.cartItemMapper.cartItemToCartItemDto(cart.getItems()));
-        return cartDto;
+        if (this.sessionExists(sessionId)) {
+            UUID sessionUuid = UUID.fromString(sessionId);
+            Cart cart = this.cartService.findCartBySessionId(sessionUuid);
+            this.cartItemService.updateCartItem(cart, this.cartItemMapper.cartItemDtoToCartItem(item));
+            cart = this.cartService.findCartBySessionId(sessionUuid);
+            CartDto cartDto = this.cartMapper.cartToCartDto(cart);
+            cartDto.setCartItems(this.cartItemMapper.cartItemToCartItemDto(cart.getItems()));
+            return cartDto;
+        }
+        return new CartDto();
     }
 
 
@@ -102,7 +119,6 @@ public class CartEndpoint {
             cartDto.setCartItems(this.cartItemMapper.cartItemToCartItemDto(cart.getItems()));
 
         } else if (this.validateSession(sessionId) && this.sessionExists(sessionId)) {
-            System.out.println("add");
             Cart createdCart = this.addCartItem(sessionId, item);
             cartDto = this.cartMapper.cartToCartDto(createdCart);
             cartDto.setCartItems(this.cartItemMapper.cartItemToCartItemDto(createdCart.getItems()));

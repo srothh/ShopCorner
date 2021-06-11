@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Product} from '../dtos/product';
 import {Cart} from '../dtos/cart';
+import {ProductService} from '../services/product.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartGlobals {
-  constructor() {
+  constructor(private productService: ProductService) {
   }
 
   public getCart() {
@@ -44,6 +45,19 @@ export class CartGlobals {
             }
           }
         });
+    });
+  }
+
+  appendMissingItems(cart: Cart) {
+    const cartToExtend = this.getCart();
+    cart.cartItems.forEach((items) => {
+      if (this.containsProductIdAtIndex(items.productId) === -1) {
+        this.productService.getProductById(items.productId).subscribe((product) => {
+          product['quantity'] = items.quantity;
+          cartToExtend.push(product);
+          this.setCart(cartToExtend);
+        });
+      }
     });
   }
 
@@ -91,5 +105,14 @@ export class CartGlobals {
     return -1;
   }
 
+  containsProductIdAtIndex(id: number) {
+    const cart = this.getCart();
+    for (let i = 0; i < this.getCartSize(); i++) {
+      if (cart[i].id === id) {
+        return i;
+      }
+    }
+    return -1;
+  }
 
 }

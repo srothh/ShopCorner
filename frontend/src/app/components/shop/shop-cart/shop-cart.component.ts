@@ -59,7 +59,17 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
     this.cartService.deleteCart(cartItem).subscribe(() => {
     }, error => {
       this.error = true;
-      this.errorMessage = error.error.message;
+      this.errorMessage = error;
+    });
+  }
+
+  updateQuantity(event, product) {
+    this.cartService.updateToCart(new CartItem(product.id, event.target.value)).subscribe( (item) => {
+      console.log(item);
+      this.cartGlobals.appendMissingItems(item);
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -127,7 +137,6 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
       if (items.cartItems.length !== 0) {
         this.cartGlobals.updateTotalCart(items);
         this.products = this.cartGlobals.getCart();
-        console.log(this.products);
       }
     });
   }
