@@ -120,10 +120,10 @@ public class Product {
         this.locked = locked;
     }
 
-    @PreRemove
+    /*@PreRemove
     private void preRemove() {
         this.setCategory(null);
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {

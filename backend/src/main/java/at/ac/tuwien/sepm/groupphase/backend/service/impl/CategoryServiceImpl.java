@@ -5,9 +5,12 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
+import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PreRemove;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
@@ -22,12 +26,14 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductService productService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ProductService productService) {
         this.categoryRepository = categoryRepository;
+        this.productService = productService;
     }
 
     @Override
@@ -69,6 +75,24 @@ public class CategoryServiceImpl implements CategoryService {
             .findById(categoryId).orElseThrow(() -> new NotFoundException("Could not find category with Id:" + categoryId));
         updatedCategory.setName(category.getName());
         categoryRepository.save(updatedCategory);
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "productPages", allEntries = true),
+        @CacheEvict(value = "counts", key = "'products'"),
+        @CacheEvict(value = "categoryCounts", allEntries = true)
+    })
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        LOGGER.trace("deleteCategory({})", categoryId);
+        this.categoryRepository
+            .findById(categoryId).orElseThrow(() -> new NotFoundException("Could not find category with Id:" + categoryId));
+        List<Product> products = productService.getAllProductsByCategory(categoryId);
+        for (Product p : products) {
+            p.setCategory(null);
+        }
+        this.categoryRepository.deleteById(categoryId);
+
     }
 
 

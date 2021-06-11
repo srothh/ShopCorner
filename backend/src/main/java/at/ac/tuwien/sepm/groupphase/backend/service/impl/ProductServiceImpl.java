@@ -116,6 +116,11 @@ public class ProductServiceImpl implements ProductService {
         return this.productRepository.findAll();
     }
 
+    public List<Product> getAllProductsByCategory(Long categoryId) {
+        LOGGER.trace("getAllProductsByCategory(categoryId)");
+        return this.productRepository.findAllByCategoryId(categoryId);
+    }
+
     public void validateProperty(String description) {
         LOGGER.trace("validateProperty({})", description);
         if (!description.isEmpty()) {

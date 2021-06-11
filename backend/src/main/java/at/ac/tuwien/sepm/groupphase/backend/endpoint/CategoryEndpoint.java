@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
@@ -117,6 +118,20 @@ public class CategoryEndpoint {
     public void updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryDto categoryDto) {
         LOGGER.info("PUT category{}" + BASE_URL, categoryDto);
         categoryService.updateCategory(categoryId, categoryMapper.dtoToEntity(categoryDto));
+    }
+
+    /**
+     * Deletes a category entity in the database with the given id.
+     *
+     * @param categoryId the Id of the category to execute the delete action
+     */
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Deletes a category entity in the database", security = @SecurityRequirement(name = "apiKey"))
+    public void deleteCategory(@PathVariable Long categoryId) {
+        LOGGER.info("DELETE category with Id{}" + BASE_URL, categoryId);
+        categoryService.deleteCategory(categoryId);
     }
 
 }

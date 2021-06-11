@@ -55,4 +55,16 @@ public interface CategoryService {
      */
 
     void updateCategory(Long categoryId, Category category);
+
+    /**
+     * Deletes a category entity in the database with the given Id.
+     *
+     * @param categoryId the id of the category to execute the delete action
+     *
+     */
+
+    void deleteCategory(Long categoryId);
+
+
+
 }

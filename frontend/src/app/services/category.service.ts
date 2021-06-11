@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
-import {Product} from '../dtos/product';
 import {Category} from '../dtos/category';
 import {Pagination} from '../dtos/pagination';
 import {OperatorAuthService} from './auth/operator-auth.service';
@@ -59,6 +58,17 @@ export class CategoryService {
    */
   updateCategory(categoryId: number, category: Category): Observable<void> {
     return this.httpClient.put<void>(this.categoryBaseUri + '/'+categoryId,category,{
+      headers: this.getHeadersForOperator()
+    });
+  }
+  /**
+   * deletes a category in the backend
+   *
+   * @param categoryId the Id of the category to execute the delete action
+   * @return An Observable with no return value
+   */
+  deleteCategory(categoryId: number): Observable<void> {
+    return this.httpClient.delete<void>(this.categoryBaseUri + '/' + categoryId, {
       headers: this.getHeadersForOperator()
     });
   }
