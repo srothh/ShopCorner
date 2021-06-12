@@ -87,4 +87,14 @@ public class OperatorRepositoryTest implements TestData {
 
         assertEquals(1, operatorRepository.findAll(OperatorSpecifications.hasPermission(Permissions.admin), returnPage).getContent().size());
     }
+
+    @Test
+    public void givenOneOperator_whenSetPermissionById_thenFindAllEmployeesReturnsListWithSizeOne() {
+        operatorRepository.save(admin);
+        Pageable returnPage = PageRequest.of(0, 15);
+
+        operatorRepository.setOperatorPermissionsById(Permissions.employee, admin.getId());
+
+        assertEquals(1, operatorRepository.findAll(OperatorSpecifications.hasPermission(Permissions.employee), returnPage).getContent().size());
+    }
 }

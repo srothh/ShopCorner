@@ -23,6 +23,9 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String invoiceNumber;
+
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
@@ -39,19 +42,22 @@ public class Invoice {
     }
 
 
-    public Invoice(Long id, LocalDateTime date, double amount) {
+    public Invoice(Long id, String invoiceNumber, LocalDateTime date, double amount) {
         this.id = id;
+        this.invoiceNumber = invoiceNumber;
         this.date = date;
         this.amount = amount;
         items = new HashSet<>();
     }
 
 
-    public Invoice(LocalDateTime date, double amount, Set<InvoiceItem> items) {
+    public Invoice(String invoiceNumber, LocalDateTime date, double amount, Set<InvoiceItem> items) {
+        this.invoiceNumber = invoiceNumber;
         this.date = date;
         this.amount = amount;
         this.items = items;
     }
+
 
     public Long getId() {
         return id;
@@ -59,6 +65,14 @@ public class Invoice {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     public LocalDateTime getDate() {
@@ -104,6 +118,6 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "Invoice{" + "id=" + id + ", date=" + date + ", amount=" + amount + '}';
+        return "Invoice{" + "id=" + id + ", invoiceNumber= " + invoiceNumber + ", date=" + date + ", amount=" + amount + '}';
     }
 }

@@ -95,6 +95,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
+    this.invoiceDto.invoiceNumber = '';
     for (const item of this.t.controls) {
       if (item !== undefined) {
 

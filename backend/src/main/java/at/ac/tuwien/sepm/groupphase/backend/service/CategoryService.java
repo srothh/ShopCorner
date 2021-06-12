@@ -1,8 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import org.springframework.data.domain.Page;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+
 
 import java.util.Collection;
 import java.util.List;
@@ -46,4 +47,15 @@ public interface CategoryService {
      * @throws RuntimeException occurs during database operations
      * */
     Long getCategoriesCount();
+
+    /**
+     * Gets a category specified by the id.
+     *
+     * @param categoryId the id of the category to retrieve the associated entity
+     *
+     * @return category with the given Id
+     * @throws NotFoundException is thrown when the id could not be found in the database
+     * @throws RuntimeException is thrown when an error occurred during data processing
+     */
+    Category findCategoryById(Long categoryId);
 }
