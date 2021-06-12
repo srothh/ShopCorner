@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
@@ -179,11 +180,22 @@ public class OperatorServiceImpl implements OperatorService {
         op.setName(operator.getName());
         op.setLoginName(operator.getLoginName());
         op.setEmail(operator.getEmail());
-        //can password be updated (this easily)?
-        if (!operator.getPassword().equals("unchanged")) {
-            op.setPassword(passwordEncoder.encode(operator.getPassword()));
-        }
+
         return operatorRepository.save(op);
+    }
+
+    @Override
+    public void updatePassword(Long id, String oldPassword, String newPassword) {
+        LOGGER.trace("updatePassword({})", id);
+        Operator op = operatorRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the operator with the id %d", id)));
+
+        if (passwordEncoder.matches(oldPassword, op.getPassword())) {
+            op.setPassword(passwordEncoder.encode(newPassword));
+            operatorRepository.save(op);
+        } else {
+            throw new ValidationException("Password could not be updated");
+        }
     }
 
     @Caching(evict = {

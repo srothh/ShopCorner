@@ -53,6 +53,20 @@ export class OperatorService {
   }
 
   /**
+   * Updates the specified operator's password in the backend.
+   *
+   * @param id of the operator whose password is to be updated
+   * @param oldPassword the password to be updated
+   * @param newPassword the new password
+   */
+  updatePassword(id: number, oldPassword: string, newPassword: string): Observable<string>{
+    console.log('Update password of operator ', id);
+    return this.httpClient.post<string>(
+      this.operatorBaseUri + '/updatePassword/' + id, {oldPassword, newPassword}
+      , {headers: this.getHeadersForOperator()});
+  }
+
+  /**
    * fetches all operator accounts from backend
    *
    * @param page that is needed

@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdatePasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -138,6 +140,7 @@ public class OperatorEndpoint {
         if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id) && id.equals(operatorDto.getId())) {
 
             Operator operator = operatorMapper.dtoToEntity(operatorDto);
+
             OperatorDto result = operatorMapper.entityToDto(operatorService.update(operator));
             result.setPassword(null);
             return result;
@@ -146,7 +149,25 @@ public class OperatorEndpoint {
         throw new AccessDeniedException("Illegal access");
     }
 
-
+    /**
+     * Update the password of an existing operator.
+     *
+     * @param updatePasswordDto the old and new password
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @PostMapping("/updatePassword/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update the password of an existing operator account", security = @SecurityRequirement(name = "apiKey"))
+    public void updatePassword(@PathVariable("id") Long id, @Valid @RequestBody UpdatePasswordDto updatePasswordDto, Principal principal) {
+        LOGGER.info("POST " + BASE_URL + "/updatePassword{}", id);
+        Operator operator = operatorService.findOperatorByLoginName(principal.getName());
+        if (operator.getId().equals(id)) {
+            operatorService.updatePassword(id, updatePasswordDto.getOldPassword(),
+                updatePasswordDto.getNewPassword());
+        } else {
+            throw new AccessDeniedException("Illegal access");
+        }
+    }
 
     /**
      * Deletes the operator with the given id.
@@ -183,15 +204,15 @@ public class OperatorEndpoint {
         }
         operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }
-/*
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @PostMapping("/resetPassword")
-    public void resetPassword(@RequestParam("email") String email, HttpServletRequest request) {
+    /*
+        @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+        @PostMapping("/resetPassword")
+        public void resetPassword(@RequestParam("email") String email, HttpServletRequest request) {
 
-        Operator operator = operatorService.findOperatorByEmail(email);
+            Operator operator = operatorService.findOperatorByEmail(email);
 
-        String resetToken = UUID.randomUUID().toString();
-        operator.setResetToken(resetToken);
+            String resetToken = UUID.randomUUID().toString();
+            operator.setResetToken(resetToken);
 
-    } */
+        } */
 }

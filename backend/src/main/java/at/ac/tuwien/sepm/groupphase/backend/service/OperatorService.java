@@ -102,6 +102,22 @@ public interface OperatorService extends UserDetailsService {
      */
     Operator update(Operator operator);
 
+
+
+    /**
+     * Updates the password of the specified operator.
+     *
+     * @param id of the operator whose password is to be updated
+     * @param oldPassword the password to be updated
+     * @param newPassword the new password
+     * @throws NotFoundException if no matching operator is found in the database
+     * @throws RuntimeException  if the password could not be updated
+     */
+    void updatePassword(Long id, String oldPassword, String newPassword);
+
+
+
+
     /**
      * returns amount of employees.
      *
