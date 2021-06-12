@@ -25,8 +25,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: aus sicherheits gründen nicht meine echte auf git@gmail.com
-    password: vorzeige password
+    username: ShopCornerSepm@gmail.com
+    password: BonusEventus21
     protocol: smtp
     tls: true
     properties.mail.smtp:
