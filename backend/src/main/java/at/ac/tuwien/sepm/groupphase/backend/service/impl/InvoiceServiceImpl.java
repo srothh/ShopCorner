@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -31,7 +32,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final Validator validator;
     private final InvoiceItemService invoiceItemService;
 
-
+    @Autowired
     public InvoiceServiceImpl(InvoiceRepository invoiceRepository, Validator validator, InvoiceItemService invoiceItemService) {
         this.invoiceRepository = invoiceRepository;
         this.validator = validator;

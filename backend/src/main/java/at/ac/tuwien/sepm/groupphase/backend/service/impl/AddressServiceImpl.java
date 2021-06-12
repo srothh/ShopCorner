@@ -16,9 +16,9 @@ import java.util.List;
 public class AddressServiceImpl implements AddressService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @Autowired
     private final AddressRepository addressRepository;
 
+    @Autowired
     public AddressServiceImpl(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
     }
