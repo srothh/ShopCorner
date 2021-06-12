@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -94,6 +95,7 @@ public class ProductDataGenerator {
 
     }
 
+    @Transactional
     public void generateProductsWithTaxRate(TaxRate taxRate, Category category1, Category category2, Category category3, Category category4, Faker faker) {
         for (int i = 0; i < 10; i++) {
             Product prod = Product.ProductBuilder.getProductBuilder().withName(faker.space().nasaSpaceCraft())

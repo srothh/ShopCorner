@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.Locale;
@@ -29,6 +30,7 @@ public class OperatorDataGenerator {
         this.passwordEncoder = encoderConfig.passwordEncoder();
     }
 
+    @Transactional
     @PostConstruct
     public void generateOperators() {
         if (operatorRepository.findAll().size() > 0) {

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public class PromotionDataGenerator {
         this.promotionRepository = promotionRepository;
     }
 
+    @Transactional
     @PostConstruct
     public void generatePromotions() {
         if (promotionRepository.findAll().size() > 0) {
