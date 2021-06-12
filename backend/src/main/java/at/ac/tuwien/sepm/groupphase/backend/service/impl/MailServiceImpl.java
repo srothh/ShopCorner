@@ -32,7 +32,7 @@ public class MailServiceImpl implements MailService {
         try {
             helper.setTo("mike1997@icloud.com");
             helper.setSubject("First test mail");
-            helper.setFrom("michaelsteinkellner97@gmail.com");
+            helper.setFrom("ShopCornerSepm@gmail.com");
             email.setContent(message, "text/html");
         } catch (MessagingException e) {
             throw new RuntimeException("Fehler beim erstellen der Verifizierungs E-mail");
