@@ -8,13 +8,14 @@ import com.github.javafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 @Profile("generateData")
 @Component
@@ -34,22 +35,25 @@ public class OperatorDataGenerator {
             LOGGER.debug("operators already generated");
         } else {
             Faker faker = new Faker(new Locale("de-AT"));
+            Set<String> loginNames = new HashSet<>();
+            Set<String> emails = new HashSet<>();
             for (int i = 0; i < 10; i++) {
                 //unique constraints get skipped
-                try {
-                    operatorRepository.save(new Operator(faker.name().fullName(), faker.name().username(), passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
-                        faker.internet().emailAddress(), Permissions.admin));
-                } catch (DataIntegrityViolationException e) {
-                    continue;
+                String email = faker.internet().emailAddress();
+                String loginName = faker.name().username();
+                if (loginNames.add(loginName) && emails.add(email)) {
+                    operatorRepository.save(new Operator(faker.name().fullName(), loginName, passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
+                        email, Permissions.admin));
                 }
 
             }
             for (int i = 0; i < 90; i++) {
-                try {
-                    operatorRepository.save(new Operator(faker.name().fullName(), faker.name().username(), passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
-                        faker.internet().emailAddress(), Permissions.employee));
-                } catch (DataIntegrityViolationException e) {
-                    continue;
+                String email = faker.internet().emailAddress();
+                String loginName = faker.name().username();
+                if (loginNames.add(loginName) && emails.add(email)) {
+
+                    operatorRepository.save(new Operator(faker.name().fullName(), loginName, passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
+                        email, Permissions.employee));
                 }
 
             }
