@@ -1,9 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
-
-import javax.validation.constraints.Null;
-
 public class ProductSearchDto {
     private long categoryId = -1;
     private String name = "";
