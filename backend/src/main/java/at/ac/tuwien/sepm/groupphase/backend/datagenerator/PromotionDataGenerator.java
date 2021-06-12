@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -32,15 +33,20 @@ public class PromotionDataGenerator {
         if (promotionRepository.findAll().size() > 0) {
             LOGGER.debug("Promotions already generated");
         } else {
-            Calendar cal = Calendar.getInstance();
             LOGGER.info(new Timestamp(System.currentTimeMillis()).toString());
             Faker faker = new Faker(new Locale("de-AT"));
-            for (int i = 0; i < 200; i++) {
-                promotionRepository.save(
-                    new Promotion(faker.lorem().word(), faker.number().randomDouble(2, 1, 100), LocalDateTime.now().withNano(0), LocalDateTime
-                        .of(faker.number().numberBetween(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.YEAR) + 2), faker.number().numberBetween(1, 12), faker.number().numberBetween(1, 30),
-                            faker.number().numberBetween(1, 23), faker.number().numberBetween(1, 59), faker.number().numberBetween(0, 59)), faker.lorem().word(),
-                        faker.number().randomDouble(2, 5, 150)));
+            for (int i = 0; i < 300; i++) {
+                try {
+                    promotionRepository.save(
+                        new Promotion(faker.lorem().word(), faker.number().randomDouble(2, 1, 1000), LocalDateTime.now().withNano(0), LocalDateTime
+                            .of(faker.number().numberBetween(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.YEAR) + faker.number().numberBetween(1, 5)), faker.number().numberBetween(1, 12),
+                                faker.number().numberBetween(1, 30),
+                                faker.number().numberBetween(1, 23), faker.number().numberBetween(1, 59), faker.number().numberBetween(0, 59)), faker.lorem().word() + faker.lorem().word(),
+                            faker.number().randomDouble(2, 5, 150)));
+                } catch (DataIntegrityViolationException e) {
+                    continue;
+                }
+
             }
         }
     }

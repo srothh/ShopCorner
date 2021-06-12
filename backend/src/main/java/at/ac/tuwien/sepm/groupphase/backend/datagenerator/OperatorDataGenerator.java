@@ -8,6 +8,7 @@ import com.github.javafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -34,12 +35,23 @@ public class OperatorDataGenerator {
         } else {
             Faker faker = new Faker(new Locale("de-AT"));
             for (int i = 0; i < 10; i++) {
-                operatorRepository.save(new Operator(faker.name().fullName(), faker.name().username(), passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
-                    faker.internet().emailAddress(), Permissions.admin));
+                //unique constraints get skipped
+                try {
+                    operatorRepository.save(new Operator(faker.name().fullName(), faker.name().username(), passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
+                        faker.internet().emailAddress(), Permissions.admin));
+                } catch (DataIntegrityViolationException e) {
+                    continue;
+                }
+
             }
             for (int i = 0; i < 90; i++) {
-                operatorRepository.save(new Operator(faker.name().fullName(), faker.name().username(), passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
-                    faker.internet().emailAddress(), Permissions.employee));
+                try {
+                    operatorRepository.save(new Operator(faker.name().fullName(), faker.name().username(), passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
+                        faker.internet().emailAddress(), Permissions.employee));
+                } catch (DataIntegrityViolationException e) {
+                    continue;
+                }
+
             }
             Operator operator = new Operator("test", "logTest", "testpassw", "test@gmail.com", Permissions.admin);
             String password = passwordEncoder.encode(operator.getPassword());

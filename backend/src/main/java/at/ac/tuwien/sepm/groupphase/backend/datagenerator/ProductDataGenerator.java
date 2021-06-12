@@ -17,10 +17,10 @@ import com.github.javafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -33,12 +33,12 @@ import java.util.Set;
 @Component
 public class ProductDataGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Map<Double, Double> TAX_RATES = Map.of(10.0, 1.10, 13.00, 1.13, 20.0, 1.20);
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final TaxRateRepository taxRateRepository;
     private final InvoiceRepository invoiceRepository;
     private final InvoiceItemRepository invoiceItemRepository;
-    private static final Map<Double, Double> TAX_RATES = Map.of(10.0, 1.10, 13.00, 1.13, 20.0, 1.20);
 
     public ProductDataGenerator(ProductRepository productRepository, CategoryRepository categoryRepository, TaxRateRepository taxRateRepository, InvoiceRepository invoiceRepository, InvoiceItemRepository invoiceItemRepository) {
         this.productRepository = productRepository;
@@ -97,21 +97,26 @@ public class ProductDataGenerator {
 
     public void generateProductsWithTaxRate(TaxRate taxRate, Category category1, Category category2, Category category3, Category category4, Faker faker) {
         for (int i = 0; i < 10; i++) {
-            Product prod = Product.ProductBuilder.getProductBuilder().withName(faker.space().nasaSpaceCraft())
-                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category1).build();
-            Long prodId = productRepository.save(prod).getId();
-            Product prod1 = Product.ProductBuilder.getProductBuilder().withName(faker.food().ingredient())
-                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category2)
-                .build();
-            Long prodId1 = productRepository.save(prod1).getId();
-            Product prod2 = Product.ProductBuilder.getProductBuilder().withName(faker.food().spice())
-                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category3)
-                .build();
-            Long prodId2 = productRepository.save(prod2).getId();
-            Product prod3 = Product.ProductBuilder.getProductBuilder().withName(faker.food().vegetable())
-                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category4)
-                .build();
-            Long prodId3 = productRepository.save(prod3).getId();
+            try {
+                Product prod = Product.ProductBuilder.getProductBuilder().withName(faker.space().nasaSpaceCraft())
+                    .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category1).build();
+                Long prodId = productRepository.save(prod).getId();
+                Product prod1 = Product.ProductBuilder.getProductBuilder().withName(faker.food().ingredient())
+                    .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category2)
+                    .build();
+                Long prodId1 = productRepository.save(prod1).getId();
+                Product prod2 = Product.ProductBuilder.getProductBuilder().withName(faker.food().spice())
+                    .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category3)
+                    .build();
+                Long prodId2 = productRepository.save(prod2).getId();
+                Product prod3 = Product.ProductBuilder.getProductBuilder().withName(faker.food().vegetable())
+                    .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category4)
+                    .build();
+                Long prodId3 = productRepository.save(prod3).getId();
+            } catch (DataIntegrityViolationException e) {
+                continue;
+            }
+
         }
         generateInvoices();
 
