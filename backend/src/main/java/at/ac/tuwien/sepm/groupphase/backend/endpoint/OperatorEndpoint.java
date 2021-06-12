@@ -57,7 +57,7 @@ public class OperatorEndpoint {
     /**
      * Get all operators with certain permission for certain page.
      *
-     * @param paginationRequestDto the pagination request params
+     * @param paginationRequestDto describes the pagination request
      * @param permissions of needed operators
      * @return List with all needed operators
      */

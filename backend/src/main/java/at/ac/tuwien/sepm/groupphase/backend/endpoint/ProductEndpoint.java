@@ -67,8 +67,8 @@ public class ProductEndpoint {
     /**
      * Gets all products form the database in a paginated manner.
      *
-     * @param paginationRequestDto describes the pagination request parameters
-     * @param productSearchDto the number of entries in each page
+     * @param paginationRequestDto describes the pagination request
+     * @param productSearchDto describes the product search request
      * @return all products with all given fields in a dto - format and paginated specified by page and pageCount
      */
     @PermitAll
