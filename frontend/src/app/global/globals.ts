@@ -1,10 +1,26 @@
 import {Injectable} from '@angular/core';
+import {HttpParams} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Globals {
   readonly backendUri: string = this.findBackendUrl();
+
+  readonly requestParamKeys = {
+    pagination: {
+      page: 'page',
+      pageCount: 'pageCount',
+    },
+    products: {
+      name: 'name',
+      categoryId: 'categoryId',
+      sortBy: 'sortBy',
+    },
+    operators: {
+      permissions: 'permissions',
+    },
+  };
 
   private findBackendUrl(): string {
     if (window.location.port === '4200') { // local `ng serve`, backend at localhost:8080

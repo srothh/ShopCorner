@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
 import {Product} from '../dtos/product';
@@ -21,7 +21,7 @@ export class CategoryService {
    * Loads all categories from the backend
    */
   getCategories(): Observable<Category[]> {
-    return this.httpClient.get<Category[]>(this.categoryBaseUri +'/all');
+    return this.httpClient.get<Category[]>(this.categoryBaseUri + '/all');
   }
 
   /**
@@ -33,7 +33,12 @@ export class CategoryService {
    * @return An Observable with paginated category
    */
   getCategoriesPerPage(page: number, pageCount): Observable<Pagination<Category>> {
-    return this.httpClient.get<Pagination<Category>>(this.categoryBaseUri + '/?page='+ page + '&page_count='+pageCount, {
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount));
+
+    return this.httpClient.get<Pagination<Category>>(this.categoryBaseUri, {
+      params,
       headers: this.getHeadersForOperator()
     });
   }
@@ -45,7 +50,7 @@ export class CategoryService {
    * @return An Observable with the newly added category
    */
   addCategory(category: Category): Observable<Category> {
-    return this.httpClient.post<Category>(this.categoryBaseUri, category,{
+    return this.httpClient.post<Category>(this.categoryBaseUri, category, {
       headers: this.getHeadersForOperator()
     });
   }

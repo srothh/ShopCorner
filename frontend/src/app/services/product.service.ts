@@ -24,7 +24,7 @@ export class ProductService {
    * @return An Observable with the paginated product
    */
   getProducts(page: number, pageCount): Observable<Pagination<Product>> {
-    return this.httpClient.get<Pagination<Product>>(this.productBaseUri + '/?page='+ page + '&page_count='+pageCount);
+    return this.httpClient.get<Pagination<Product>>(this.productBaseUri + '/?page=' + page + '&pageCount=' + pageCount);
   }
   /**
    * Loads a product with the given Id, if it's present in the backend
@@ -59,7 +59,7 @@ export class ProductService {
    * @return An Observable wih no content
    */
   updateProduct(productId: number, product: Product): Observable<void> {
-      return this.httpClient.put<void>(this.productBaseUri + '/'+ productId, product, {
+      return this.httpClient.put<void>(this.productBaseUri + '/' + productId, product, {
         headers: this.getHeadersForOperator()
       } );
   }
@@ -81,7 +81,7 @@ export class ProductService {
    * @return An Observable with no content
    */
   deleteProduct(productId: number): Observable<void> {
-    return this.httpClient.delete<void>(this.productBaseUri + '/'+ productId,{
+    return this.httpClient.delete<void>(this.productBaseUri + '/' + productId, {
       headers: this.getHeadersForOperator()
     });
   }

@@ -22,11 +22,11 @@ export class ProductService {
    */
   getProducts(page: number, pageCount, name = '', sortBy = 'id', categoryId: number = -1): Observable<Pagination<Product>> {
     const params = new HttpParams()
-      .set('page', String(page))
-      .set('page_count', String(pageCount))
-      .set('name', name)
-      .set('category_id', String(categoryId))
-      .set('sortBy', sortBy);
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount))
+      .set(this.globals.requestParamKeys.products.name, String(name))
+      .set(this.globals.requestParamKeys.products.categoryId, String(categoryId))
+      .set(this.globals.requestParamKeys.products.sortBy, String(sortBy));
     console.log(params.toString());
 
     return this.httpClient.get<Pagination<Product>>(this.productBaseUri, {params});
