@@ -37,7 +37,7 @@ public class CartServiceImpl implements CartService {
     }
 
 
-    @CacheEvict(value = "counts", key = "'cartItem'")
+    @CacheEvict(value = "cartCounts", key = "#sessionId")
     @Override
     public Cart addCartItemToCart(UUID sessionId, CartItem item) {
         Cart cart = this.findCartBySessionId(sessionId);
@@ -54,7 +54,7 @@ public class CartServiceImpl implements CartService {
         return this.addItemToCart(cart);
     }
 
-    @CacheEvict(value = "counts", key = "'sessionId'")
+    @CacheEvict(value = "cartCounts", key = "#sessionId")
     @Override
     public Cart addCartItemToNewCart(UUID sessionId, CartItem item) {
         Cart cart = new Cart();
@@ -67,7 +67,7 @@ public class CartServiceImpl implements CartService {
         return this.createCart(cart);
     }
 
-    @Cacheable(value = "counts", key = "'sessionId'")
+    @Cacheable(value = "cartCounts", key = "#sessionId")
     @Override
     public long countCartItemInCartUsingSessionId(UUID sessionId) {
         return this.cartRepository.countCartItemInCartUsingSessionId(sessionId).orElseThrow(() -> new NotFoundException("Could not find cart!"));
@@ -80,7 +80,7 @@ public class CartServiceImpl implements CartService {
         return this.createCart(cart);
     }
 
-    @CacheEvict(value = "counts", key = "'sessionId'")
+    @CacheEvict(value = "cartCounts", allEntries = true)
     @Override
     public Cart updateCart(Cart cart, CartItem item) {
         if (item.getQuantity() > 12) {
@@ -111,7 +111,7 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Scheduled(cron = "0 0 0/5 * * ?")
-    @CacheEvict(value = "counts", allEntries = true)
+    @CacheEvict(value = "cartCounts", allEntries = true)
     @Override
     public void deleteCartAfterDuration() {
         LOGGER.trace("deleteCartAfterDuration()");
@@ -119,7 +119,7 @@ public class CartServiceImpl implements CartService {
         this.cartRepository.deleteCartByCreatedAtIsBefore(timeBefore);
     }
 
-    @CacheEvict(value = "counts", allEntries = true)
+    @CacheEvict(value = "cartCounts", allEntries = true)
     @Override
     public void deleteCartItemById(Long id) {
         this.cartItemService.deleteCartItemById(id);
