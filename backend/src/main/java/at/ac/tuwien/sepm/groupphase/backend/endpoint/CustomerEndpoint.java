@@ -61,13 +61,13 @@ public class CustomerEndpoint {
     /**
      * Retrieves a page of customers from the database.
      *
-     * @return A list of all the retrieved customers
+     * @return A page of customers
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Retrieve all customers", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<CustomerDto> getAllCustomers(@Valid PaginationRequestDto paginationRequestDto) {
+    @Operation(summary = "Retrieve pages of customers", security = @SecurityRequirement(name = "apiKey"))
+    public PaginationDto<CustomerDto> getAllCustomersPerPage(@Valid PaginationRequestDto paginationRequestDto) {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
         LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);

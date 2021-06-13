@@ -74,7 +74,7 @@ public class CategoryEndpoint {
     @PermitAll
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Returns all categories relating to products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
+    @Operation(summary = "Returns pages of categories", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<CategoryDto> getAllCategoriesPerPage(@Valid PaginationRequestDto paginationRequestDto) {
         LOGGER.info("GET" + BASE_URL);
         int page = paginationRequestDto.getPage();

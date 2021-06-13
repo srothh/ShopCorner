@@ -63,8 +63,8 @@ public class OperatorEndpoint {
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
-    @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<OverviewOperatorDto> getPage(@Valid PaginationRequestDto paginationRequestDto, @RequestParam("permissions") Permissions permissions) {
+    @Operation(summary = "Get pages of operators", security = @SecurityRequirement(name = "apiKey"))
+    public PaginationDto<OverviewOperatorDto> getAllOperatorsPerPage(@Valid PaginationRequestDto paginationRequestDto, @RequestParam("permissions") Permissions permissions) {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
         LOGGER.info("GET " + BASE_URL + "?{}&{}&{}", page, pageCount, permissions);
