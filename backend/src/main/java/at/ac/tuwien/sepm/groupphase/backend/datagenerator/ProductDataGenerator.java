@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
+import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -33,12 +33,12 @@ import java.util.Set;
 @Component
 public class ProductDataGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Map<Double, Double> TAX_RATES = Map.of(10.0, 1.10, 13.00, 1.13, 20.0, 1.20);
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final TaxRateRepository taxRateRepository;
     private final InvoiceRepository invoiceRepository;
     private final InvoiceItemRepository invoiceItemRepository;
-    private static final Map<Double, Double> TAX_RATES = Map.of(10.0, 1.10, 13.00, 1.13, 20.0, 1.20);
 
     public ProductDataGenerator(ProductRepository productRepository, CategoryRepository categoryRepository, TaxRateRepository taxRateRepository, InvoiceRepository invoiceRepository, InvoiceItemRepository invoiceItemRepository) {
         this.productRepository = productRepository;
@@ -95,6 +95,7 @@ public class ProductDataGenerator {
 
     }
 
+    @Transactional
     public void generateProductsWithTaxRate(TaxRate taxRate, Category category1, Category category2, Category category3, Category category4, Faker faker) {
         for (int i = 0; i < 10; i++) {
             Product prod = Product.ProductBuilder.getProductBuilder().withName(faker.space().nasaSpaceCraft())
@@ -112,6 +113,7 @@ public class ProductDataGenerator {
                 .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category4)
                 .build();
             Long prodId3 = productRepository.save(prod3).getId();
+
         }
         generateInvoices();
 
