@@ -31,6 +31,12 @@ public class OrderEndpoint {
         this.orderService = orderService;
     }
 
+    /**
+     * Place a new Order.
+     *
+     * @param orderDto the order to be saved
+     * @return saved order
+     */
     @PostMapping
     @PermitAll
     @Operation(summary = "Place a new order", security = @SecurityRequirement(name = "apiKey"))
