@@ -72,6 +72,17 @@ export class CategoryService {
       headers: this.getHeadersForOperator()
     });
   }
+  /**
+   * Gets a category specified by the id
+   *
+   * @param categoryId the Id of the category to retrieve from the database
+   * @return An observable with the requested category
+   */
+  getCategoryById(categoryId: number){
+    return this.httpClient.get<Category>(this.categoryBaseUri + '/' + categoryId, {
+      headers: this.getHeadersForOperator()
+    });
+  }
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Category} from '../../../dtos/category';
 import {CategoryService} from '../../../services/category.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-operator-category-form',
@@ -17,7 +17,10 @@ export class OperatorCategoryFormComponent implements OnInit {
   categoryForm: FormGroup;
   addCategoryEnabled: boolean;
   inEditMode: boolean;
-  constructor(private formBuilder: FormBuilder, private categoryService: CategoryService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder,
+              private categoryService: CategoryService,
+              private router: Router,
+              private activatedRouter: ActivatedRoute) { }
 
   ngOnInit(): void {
     if (this.category === undefined && this.router.url.includes('add')){
@@ -36,7 +39,21 @@ export class OperatorCategoryFormComponent implements OnInit {
     }
   }
   setFormProperties(){
-    this.categoryForm.controls['name'].setValue(this.category.name);
+    if (this.category === undefined) {
+      const categoryId = +this.activatedRouter.snapshot.paramMap.get('id');
+      this.fetchSelectedCategory(categoryId);
+    } else {
+      this.categoryForm.controls['name'].setValue(this.category.name);
+    }
+  }
+  fetchSelectedCategory(categoryId: number){
+    this.categoryService.getCategoryById(categoryId).subscribe((categoryData) => {
+      this.category = categoryData;
+      this.setFormProperties();
+    }, error => {
+      this.errorOccurred = true;
+      this.errorMessage = error.error.message;
+    });
   }
   resetState(){
     this.errorMessage = null;

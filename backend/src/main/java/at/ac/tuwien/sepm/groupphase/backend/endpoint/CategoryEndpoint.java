@@ -134,4 +134,21 @@ public class CategoryEndpoint {
         categoryService.deleteCategory(categoryId);
     }
 
+    /**
+     * Gets a specific category with the given id.
+     *
+     * @param categoryId the id of the category to retrieve from the database
+     *
+     * @return the requested category with the given id
+     *
+     */
+    @PermitAll
+    @GetMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Gets the category specified by the id", security = @SecurityRequirement(name = "apikKey"))
+    public Category getCategoryById(@PathVariable Long categoryId) {
+        return this.categoryService.getCategoryById(categoryId);
+    }
+
+
 }

@@ -17,7 +17,6 @@ export class OperatorCategoryDetailsComponent implements OnInit {
       this.selectedCategory = this.router.getCurrentNavigation().extras.state[0] as Category;
     }
   }
-
   ngOnInit(): void {
   }
   deleteCategory(){

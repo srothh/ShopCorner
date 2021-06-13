@@ -73,7 +73,27 @@ export class OperatorCategoriesComponent implements OnInit {
     });
     this.selectedCategories = [];
   }
-  deleteCategories(){}
+  deleteCategories(){
+    for (const selectedCategory of this.selectedCategories) {
+      this.categoryService.deleteCategory(selectedCategory.id).subscribe(() => {
+        if (this.selectedCategories.indexOf(selectedCategory) === this.selectedCategories.length - 1) {
+          if ((this.page + 1) * this.pageSize >= this.collectionSize &&
+            // categories per page equals selected products -> return to previous page
+            this.categories.length === this.selectedCategories.length &&
+            this.page > 0) {
+            this.previousPage();
+          } else {
+            this.fetchCategories();
+          }
+          this.collectionSize -= this.selectedCategories.length;
+          this.uncheckSelectedCategories();
+        }
+      }, error => {
+        this.errorOccurred = true;
+        this.errorMessage = error.error.message;
+      });
+    }
+  }
   previousPage() {
     if (this.page > 0) {
       this.page -= 1;
