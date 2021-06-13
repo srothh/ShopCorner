@@ -1,14 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.util;
 
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @Component
 public class MailTextBuilder {
@@ -19,7 +16,7 @@ public class MailTextBuilder {
         try {
             order = new BufferedReader(new FileReader("htmlTemplates/emailTemplate.html"));
         } catch (IOException e) {
-            throw new ValidationException("mail not work" + e);
+            throw new ServiceException(e.getMessage(), e);
         }
     }
 
@@ -38,7 +35,7 @@ public class MailTextBuilder {
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);
         }
-        message.append("Bei Fragen kontaktieren sie uns unter... <img src=\"cid:logo\">");
+        message.append("<br/><img src=\"cid:logo\">");
         return message.toString();
     }
 }
