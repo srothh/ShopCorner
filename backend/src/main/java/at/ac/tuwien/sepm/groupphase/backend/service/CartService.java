@@ -9,6 +9,16 @@ import java.util.UUID;
 
 public interface CartService {
 
+    /**
+     * Counts the Items of a cart by the sessionId assigned to the client session.
+     *
+     * @param sessionId the id of the client session
+     * @return The count of the cart items
+     * @throws NotFoundException is thrown if the specified cart does not exists
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    long countCartItemInCartUsingSessionId(UUID sessionId);
+
 
     /**
      * Creates a new empty cart with a sessionId assigned to the client session.

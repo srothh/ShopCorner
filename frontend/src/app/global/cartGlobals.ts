@@ -74,31 +74,6 @@ export class CartGlobals {
     });
     this.updateTotalCart(updatedCart);
   }
-/*
-  appendMissingItems(cart: Cart) {
-    let cartToExtend = this.getCart();
-    const cartItem = [];
-    if (cartItem.length !== this.getCartSize()) {
-      cart.cartItems.forEach((items) => {
-        cartItem.push(items);
-        if (this.getCartSize() > cartItem.length) {
-          this.resetCart();
-          cartToExtend = this.getCart();
-          this.productService.getProductById(items.productId).subscribe((product) => {
-            product.cartItemQuantity = items.quantity;
-            this.setCart(cartToExtend);
-          });
-        }
-        if (this.containsProductIdAtIndex(items.productId) === -1) {
-          this.productService.getProductById(items.productId).subscribe((product) => {
-            product.cartItemQuantity = items.quantity;
-            cartToExtend.push(product);
-            this.setCart(cartToExtend);
-          });
-        }
-      });
-    }
-  }*/
 
   addToCart(item) {
     const cart = this.getCart();

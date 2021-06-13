@@ -73,7 +73,15 @@ export class ShopProductDetailsComponent implements OnInit {
       });
       }
     }
-    this.router.navigate(['cart']).then();
+    if (!this.error) {
+      this.router.navigate(['cart']).then();
+    }
+  }
+  /**
+   * Error flag will be deactivated, which clears the error message
+   */
+  vanishError() {
+    this.error = false;
   }
 
   private fetchProduct(id: number) {
@@ -81,4 +89,6 @@ export class ShopProductDetailsComponent implements OnInit {
       this.product = product;
     });
   }
+
+
 }

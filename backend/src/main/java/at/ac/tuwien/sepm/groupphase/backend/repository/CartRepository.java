@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Cart;
 import at.ac.tuwien.sepm.groupphase.backend.entity.CartItem;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -55,4 +56,14 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
     Optional<CartItem> findCartItemInCartUsingSessionId(@Param("sessionId") UUID sessionId, @Param("productId") Long productId);
 
 
+
+    /**
+     * Counts the Items of a cart by the sessionId assigned to the client session.
+     *
+     * @param sessionId assigned to the session
+     * @return the cartItem of the cart assigned to the session
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    @Query(value = "select count(i) from Cart c INNER JOIN c.items i where c.sessionId = (:sessionId)")
+    Optional<Integer> countCartItemInCartUsingSessionId(@Param("sessionId") UUID sessionId);
 }

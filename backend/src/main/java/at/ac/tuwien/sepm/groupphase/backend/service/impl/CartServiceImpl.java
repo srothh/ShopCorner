@@ -3,16 +3,20 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Cart;
 import at.ac.tuwien.sepm.groupphase.backend.entity.CartItem;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CartRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CartService;
 import at.ac.tuwien.sepm.groupphase.backend.service.CartItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ValidationException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -32,16 +36,25 @@ public class CartServiceImpl implements CartService {
         this.cartItemService = cartItemService;
     }
 
+
+    @CacheEvict(value = "counts", key = "'cartItem'")
     @Override
     public Cart addCartItemToCart(UUID sessionId, CartItem item) {
         Cart cart = this.findCartBySessionId(sessionId);
-        if (item.getQuantity() > 12) {
-            item.setQuantity(12);
+        System.out.println(this.countCartItemInCartUsingSessionId(sessionId));
+        if (this.countCartItemInCartUsingSessionId(sessionId) <= 20) {
+            if (item.getQuantity() > 12) {
+                item.setQuantity(12);
+                throw new ServiceException("reached maximum of cart item");
+            }
+            cart.getItems().add(item);
+        } else {
+            throw new ServiceException("reached maximum of items in cart");
         }
-        cart.getItems().add(item);
         return this.addItemToCart(cart);
     }
 
+    @CacheEvict(value = "counts", key = "'cartItem'")
     @Override
     public Cart addCartItemToNewCart(UUID sessionId, CartItem item) {
         Cart cart = new Cart();
@@ -54,6 +67,11 @@ public class CartServiceImpl implements CartService {
         return this.createCart(cart);
     }
 
+    @Cacheable(value = "counts", key = "'cartItem'")
+    @Override
+    public long countCartItemInCartUsingSessionId(UUID sessionId) {
+        return this.cartRepository.countCartItemInCartUsingSessionId(sessionId).orElseThrow(() -> new NotFoundException("Could not find cart!"));
+    }
 
     @Override
     public Cart createEmptyCart(UUID sessionId) {
