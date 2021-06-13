@@ -25,10 +25,10 @@ import java.util.List;
 public class AddressEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    @Autowired
     private final AddressMapper addressMapper;
     private final AddressService addressService;
 
+    @Autowired
     public AddressEndpoint(AddressMapper addressMapper, AddressService addressService) {
         this.addressMapper = addressMapper;
         this.addressService = addressService;
