@@ -61,6 +61,9 @@ public class CartRepositoryTest implements TestData {
         assertTrue(cartRepository.existsCartBySessionId(sessionId));
         assertTrue(cartRepository.findCartItemInCartUsingSessionId(sessionId, 1L).isPresent());
         assertEquals(cartItem, cartRepository.findCartItemInCartUsingSessionId(sessionId, 1L).get());
+        assertTrue(cartRepository.countCartItemInCartUsingSessionId(sessionId).isPresent());
+        assertEquals(1 ,cartRepository.countCartItemInCartUsingSessionId(sessionId).get());
+
         cartRepository.deleteCartByCreatedAtIsBefore(LocalDateTime.now());
         assertFalse(cartRepository.existsCartBySessionId(sessionId));
 
