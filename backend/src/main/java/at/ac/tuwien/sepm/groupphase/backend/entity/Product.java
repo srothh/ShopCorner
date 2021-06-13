@@ -43,6 +43,7 @@ public class Product {
     private byte[] picture;
     @Column(name = "saleCount", columnDefinition = "BIGINT default 0")
     private Long saleCount;
+    private boolean deleted;
 
 
     public Product() {
@@ -120,6 +121,15 @@ public class Product {
         this.locked = locked;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+
     /*@PreRemove
     private void preRemove() {
         this.setCategory(null);
@@ -175,6 +185,7 @@ public class Product {
         private boolean locked;
         private TaxRate taxRate;
         private byte[] picture;
+        private boolean deleted;
 
         public ProductBuilder(){
         }
@@ -215,6 +226,11 @@ public class Product {
             return this;
         }
 
+        public ProductBuilder withDeleted(boolean deleted) {
+            this.deleted = deleted;
+            return this;
+        }
+
         public ProductBuilder withPicture(byte[] picture) {
             this.picture = picture;
             return this;
@@ -235,6 +251,7 @@ public class Product {
             product.setTaxRate(taxRate);
             product.setLocked(locked);
             product.setPicture(picture);
+            product.setDeleted(deleted);
             return product;
         }
     }

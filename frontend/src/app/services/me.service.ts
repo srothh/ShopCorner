@@ -21,6 +21,13 @@ export class MeService {
     return this.httpClient.get<Customer>(this.meBaseUri, {headers: this.getHeadersForCustomer()});
   }
 
+  /**
+   * Deletes the current customer's profile data
+   */
+  deleteMyAccount(): Observable<void> {
+    return this.httpClient.delete<void>(this.meBaseUri, {headers: this.getHeadersForCustomer()});
+  }
+
   private getHeadersForCustomer(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`);

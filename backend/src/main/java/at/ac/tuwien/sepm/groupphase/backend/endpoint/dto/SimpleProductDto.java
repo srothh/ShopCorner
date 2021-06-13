@@ -19,6 +19,7 @@ public class SimpleProductDto {
     @DecimalMin("0.0")
     private Double price;
     private TaxRate taxRate;
+    private boolean deleted;
 
 
     public SimpleProductDto() {
@@ -62,6 +63,14 @@ public class SimpleProductDto {
 
     public void setTaxRate(TaxRate taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

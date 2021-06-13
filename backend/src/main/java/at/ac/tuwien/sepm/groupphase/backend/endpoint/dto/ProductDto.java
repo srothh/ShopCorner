@@ -22,6 +22,7 @@ public class ProductDto {
     private boolean locked;
     private String picture;
     private Long saleCount;
+    private boolean deleted;
 
     public String getPicture() {
         return picture;
@@ -98,6 +99,13 @@ public class ProductDto {
         this.locked = locked;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     @Override
     public boolean equals(Object o) {
