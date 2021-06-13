@@ -84,9 +84,9 @@ public class CartEndpointTest implements TestData {
         UUID sessionId = UUID.randomUUID();
         cart.setSessionId(sessionId);
         this.cartRepository.save(cart);
-        this.cartItemRepository.save(cartItem);
+        Long id = this.cartItemRepository.save(cartItem).getId();
 
-        MvcResult mvcResult = this.mockMvc.perform(delete(CART_BASE_URI + "/" + cartItem.getProductId())
+        MvcResult mvcResult = this.mockMvc.perform(delete(CART_BASE_URI + "/" + id)
             .contentType(MediaType.APPLICATION_JSON)
             .cookie(new Cookie("sessionId", sessionId.toString())))
             .andDo(print())
