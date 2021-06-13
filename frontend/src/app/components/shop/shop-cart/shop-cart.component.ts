@@ -146,12 +146,12 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
     this.cartService.getCart().subscribe((items) => {
       updatedCart = items;
     });
-
-    if (updatedCart.cartItems.length !== this.cartGlobals.getCartSize()) {
-      this.cartGlobals.updateTotalCart(updatedCart);
-      this.products = this.cartGlobals.getCart();
+    if (updatedCart !== undefined) {
+      if (updatedCart.cartItems.length !== this.cartGlobals.getCartSize()) {
+        this.cartGlobals.updateTotalCart(updatedCart);
+        this.products = this.cartGlobals.getCart();
+      }
     }
-
   }
 
 }
