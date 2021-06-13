@@ -33,8 +33,6 @@ export class ShopProductDetailsComponent implements OnInit {
       const id = this.activatedRoute.snapshot.paramMap.get('id');
       this.fetchProduct(Number(id));
     }
-
-
   }
 
   getImageSource(product: Product): string {

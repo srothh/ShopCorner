@@ -1,13 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Product} from '../dtos/product';
 import {Cart} from '../dtos/cart';
-import {ProductService} from '../services/product.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartGlobals {
-  constructor(private productService: ProductService) {
+  constructor() {
   }
 
   public getCart() {
@@ -131,5 +130,4 @@ export class CartGlobals {
     }
     return -1;
   }
-
 }
