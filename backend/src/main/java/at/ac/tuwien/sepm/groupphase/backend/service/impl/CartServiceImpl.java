@@ -54,7 +54,7 @@ public class CartServiceImpl implements CartService {
         return this.addItemToCart(cart);
     }
 
-    @CacheEvict(value = "counts", key = "'cartItem'")
+    @CacheEvict(value = "counts", key = "'sessionId'")
     @Override
     public Cart addCartItemToNewCart(UUID sessionId, CartItem item) {
         Cart cart = new Cart();
@@ -67,7 +67,7 @@ public class CartServiceImpl implements CartService {
         return this.createCart(cart);
     }
 
-    @Cacheable(value = "counts", key = "'cartItem'")
+    @Cacheable(value = "counts", key = "'sessionId'")
     @Override
     public long countCartItemInCartUsingSessionId(UUID sessionId) {
         return this.cartRepository.countCartItemInCartUsingSessionId(sessionId).orElseThrow(() -> new NotFoundException("Could not find cart!"));
@@ -110,7 +110,7 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Scheduled(cron = "0 0 0/5 * * ?")
-    @CacheEvict(value = "counts", key = "'cartItem'")
+    @CacheEvict(value = "counts", key = "'sessionId'")
     @Override
     public void deleteCartAfterDuration() {
         LOGGER.trace("deleteCartAfterDuration()");
@@ -118,7 +118,7 @@ public class CartServiceImpl implements CartService {
         this.cartRepository.deleteCartByCreatedAtIsBefore(timeBefore);
     }
 
-    @CacheEvict(value = "counts", key = "'cartItem'")
+    @CacheEvict(value = "counts", key = "'sessionId'")
     @Override
     public void deleteCartItemById(Long id) {
         this.cartItemService.deleteCartItemById(id);
