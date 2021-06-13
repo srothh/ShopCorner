@@ -9,20 +9,20 @@ public class OrderDto {
     @NotNull
     private DetailedInvoiceDto invoice;
     @NotNull
-    private Long customerId;
+    private CustomerDto customer;
 
-    public OrderDto(Long id, DetailedInvoiceDto invoiceId, Long customerId) {
+    public OrderDto(Long id, DetailedInvoiceDto invoiceId, CustomerDto customerId) {
         this.id = id;
         this.invoice = invoiceId;
-        this.customerId = customerId;
+        this.customer = customerId;
     }
 
     public OrderDto() {
     }
 
-    public OrderDto(DetailedInvoiceDto invoiceId, Long customerId) {
+    public OrderDto(DetailedInvoiceDto invoiceId, CustomerDto customerId) {
         this.invoice = invoiceId;
-        this.customerId = customerId;
+        this.customer = customerId;
     }
 
     public Long getId() {
@@ -41,11 +41,11 @@ public class OrderDto {
         this.invoice = invoice;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public CustomerDto getCustomerId() {
+        return customer;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setCustomerId(CustomerDto customerId) {
+        this.customer = customerId;
     }
 }

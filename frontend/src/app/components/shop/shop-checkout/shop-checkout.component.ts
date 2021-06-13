@@ -18,6 +18,11 @@ export class ShopCheckoutComponent implements OnInit {
     this.fetchCustomer();
   }
 
+  getStreetAddress(): string {
+    return this.customer.address.street + ' ' + this.customer.address.houseNumber + (this.customer.address.doorNumber
+      ? '/' + this.customer.address.doorNumber : '');
+  }
+
   private fetchCustomer() {
     this.meService.getMyProfileData().subscribe(
       (customer: Customer) => {

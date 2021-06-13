@@ -53,15 +53,11 @@
     <div class="col-md-8 order-md-1">
       <h4 class="mb-3">Rechnungsdaten</h4>
       <form>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="firstName">Vorname</label>
-            <input type="text" class="form-control" id="firstName" placeholder="" value="{{customer.name}}" disabled>
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="lastName">Nachname</label>
-            <input type="text" class="form-control" id="lastName" placeholder="" value="" disabled>
-          </div>
+        <div class="mb-3">
+          <label for="firstName">Name</label>
+          <input type="text" class="form-control" id="firstName" placeholder="" value="{{customer.name}}" disabled>
+
+
         </div>
 
         <div class="mb-3">
@@ -70,26 +66,26 @@
             <div class="input-group-prepend">
               <span class="input-group-text">@</span>
             </div>
-            <input type="text" class="form-control" id="username" placeholder="Username" disabled>
+            <input type="text" class="form-control" id="username" value="{{customer.loginName}}" disabled>
           </div>
         </div>
 
         <div class="mb-3">
           <label for="email">Email</label>
-          <input type="email" class="form-control" id="email" placeholder="you@example.com" disabled>
+          <input type="email" class="form-control" id="email" value="{{customer.email}}" disabled>
 
         </div>
 
         <div class="mb-3">
           <label for="address">Addresse</label>
-          <input type="text" class="form-control" id="address"  disabled>
+          <input type="text" class="form-control" id="address" value="{{getStreetAddress()}}" disabled>
 
         </div>
 
         <div class="row">
           <div class="col-md-5 mb-3">
             <label for="country">Land</label>
-            <select class="custom-select d-block w-100" id="country"  disabled>
+            <select class="custom-select d-block w-100" id="country" disabled>
               <option value="">Österreich</option>
               <option>Österreich</option>
             </select>
@@ -99,7 +95,7 @@
           </div>
           <div class="col-md-3 mb-3">
             <label for="zip">Postleitzahl</label>
-            <input type="text" class="form-control" id="zip" placeholder=""  disabled>
+            <input type="text" class="form-control" id="zip" value="{{customer.address.postalCode}}" disabled>
           </div>
         </div>
         <hr class="mb-4">

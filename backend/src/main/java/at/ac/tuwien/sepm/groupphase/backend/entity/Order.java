@@ -7,8 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "Orders")
 public class Order {
 
     @Id
@@ -20,10 +22,10 @@ public class Order {
     private Invoice invoice;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "customerId", nullable = false, referencedColumnName = "id", updatable = false)
-    private Long customer;
+    @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "id", updatable = false)
+    private Customer customer;
 
-    public Order(Long id, Invoice invoiceId, Long customerId) {
+    public Order(Long id, Invoice invoiceId, Customer customerId) {
         this.id = id;
         this.invoice = invoiceId;
         this.customer = customerId;
@@ -32,7 +34,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Invoice invoiceId, Long customerId) {
+    public Order(Invoice invoiceId, Customer customerId) {
         this.invoice = invoiceId;
         this.customer = customerId;
     }
@@ -53,11 +55,11 @@ public class Order {
         this.invoice = invoiceId;
     }
 
-    public Long getCustomerId() {
+    public Customer getCustomerId() {
         return customer;
     }
 
-    public void setCustomerId(Long customerId) {
+    public void setCustomerId(Customer customerId) {
         this.customer = customerId;
     }
 }
