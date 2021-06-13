@@ -15,26 +15,18 @@ public interface CartItemService {
      * @return The created cartItem set
      * @throws RuntimeException upon encountering errors with the database
      */
-    Set<CartItem> createCartItem(Set<CartItem> cartItem);
+    Set<CartItem> createCartItems(Set<CartItem> cartItem);
 
     /**
      * Updates a new set of cartItems which is assigned to session.
      *
      * @param cart The cart with the sessionId
      * @param item The cartItem to be updated
-     * @return the updated cartItem
+     * @return the updated cartItem collection of the cart
      * @throws RuntimeException upon encountering errors with the database
      */
-    CartItem updateCartItem(Cart cart, CartItem item);
+    Set<CartItem> updateCartItem(Cart cart, CartItem item);
 
-    /**
-     * Deletes a cartItem from the database.
-     *
-     * @param cartItem The cartItem to be deleted
-     * @throws NotFoundException is thrown if the specified cartItem does not exists
-     * @throws RuntimeException upon encountering errors with the database
-     */
-    void deleteCartItem(CartItem cartItem);
 
     /**
      * Deletes a cartItem which is assigned to session by id.

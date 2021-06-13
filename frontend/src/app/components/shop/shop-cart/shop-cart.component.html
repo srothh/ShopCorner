@@ -22,19 +22,28 @@
         <th scope="col" class="quantity">Menge</th>
         <th scope="col" class="tax">MwSt</th>
         <th scope="col" class="price">Einzelpreis inkl. MwSt</th>
-        <th scope="col" class="total" colspan="2">Gesmatbetrag</th>
+        <th scope="col" class="total" colspan="2">Gesamtbetrag</th>
 
       </tr>
       </thead>
       <tbody class="border">
       <tr *ngFor="let product of products; let i = index" style="cursor: pointer">
-        <td class="centerContent picture" (click)="routeToDetailView(product)"><img *ngIf="product.picture != null" class="card-img-top"
-                                               src="{{getImageSource(product)}}" alt="produkt"></td>
+        <td class="centerContent picture" (click)="routeToDetailView(product)"><img *ngIf="product.picture != null"
+                                                                                    class="card-img-top"
+                                                                                    src="{{getImageSource(product)}}"
+                                                                                    alt="produkt"></td>
         <td class="name" (click)="routeToDetailView(product)">{{product.name}}</td>
-        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.quantity" (change)="updateQuantity($event, product)" (change)="changedTotal(i, $event)"></td>
+        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.quantity"
+                                    (mouseleave)="updateQuantity($event, product)"
+                                    (change)="changedTotal(i, $event);updateLocalQuantity($event, product)"></td>
         <td class="tax" (click)="routeToDetailView(product)">{{(product.taxRate.percentage)}} %</td>
-        <td class="price" (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price).toFixed(2)}} €</td>
-        <td class="total-num" (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price * product.quantity).toFixed(2)}} €</td>
+        <td class="price"
+            (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price).toFixed(2)}} €
+        </td>
+        <td class="total-num"
+            (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price * product.quantity).toFixed(2)}}
+          €
+        </td>
         <td class="delete" (click)="routeToDetailView(product)">
           <button class="btn btn-outline-danger" (click)="removeFromCart(product)">
             <fa-icon class="mr-2" [icon]="faDelete"></fa-icon>
@@ -44,19 +53,19 @@
       </tbody>
       <thead class="none-border">
       <tr>
-        <td scope="col" colspan="3"></td>
-        <td scope="col" class="subtotal-amount " colspan="2">Summe Artikel (netto):</td>
-        <td scope="col" class="amount" id="subtotal" colspan="2">{{calcSubtotal()}}</td>
+        <td colspan="3"></td>
+        <td class="subtotal-amount " colspan="2">Summe Artikel (netto):</td>
+        <td class="amount" id="subtotal" colspan="2">{{calcSubtotal()}}</td>
       </tr>
       <tr>
-        <td scope="col" colspan="3"></td>
-        <td scope="col" class="tax-amount" colspan="2">zzgl. MwSt Betrag:</td>
-        <td scope="col" class="amount" id="tax" colspan="2">{{calcTax()}}</td>
+        <td colspan="3"></td>
+        <td class="tax-amount" colspan="2">zzgl. MwSt Betrag:</td>
+        <td class="amount" id="tax" colspan="2">{{calcTax()}}</td>
       </tr>
       <tr>
-        <td scope="col" colspan="3"></td>
-        <td scope="col" class="total-amount custom-border-top" colspan="2">Gesamtbetrag:</td>
-        <td scope="col" class="custom-border-top amount" id="total" colspan="2">{{calcTotal()}}</td>
+        <td colspan="3"></td>
+        <td class="total-amount custom-border-top" colspan="2">Gesamtbetrag:</td>
+        <td class="custom-border-top amount" id="total" colspan="2">{{calcTotal()}}</td>
       </tr>
       </thead>
     </table>

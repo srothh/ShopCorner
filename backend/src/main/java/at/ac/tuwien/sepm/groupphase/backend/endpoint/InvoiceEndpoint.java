@@ -70,7 +70,7 @@ public class InvoiceEndpoint {
     @GetMapping(value = "/{id}")
     @Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
     public DetailedInvoiceDto find(@PathVariable Long id) {
-        LOGGER.info("GET /api/v1/invoice/{}", id);
+        LOGGER.info("GET /api/v1/invoices/{}", id);
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
     }
 
@@ -86,7 +86,7 @@ public class InvoiceEndpoint {
     @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<SimpleInvoiceDto> getAllInvoices(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                       @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
-        LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
+        LOGGER.info("GET api/v1/invoices?page={}&page_count={}", page, pageCount);
         Page<Invoice> operatorPage = invoiceService.getAllInvoices(page, pageCount);
         return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.getAllInvoices(page, pageCount).getContent()), page, pageCount, operatorPage.getTotalPages(), invoiceService.getInvoiceCount());
     }

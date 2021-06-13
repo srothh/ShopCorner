@@ -26,7 +26,7 @@ export class CartGlobals {
 
   updateCart(item, quantity) {
     const cart = this.getCart();
-    if (this.containsProductAtIndex(item) === -1) {
+    if (this.containsProductAtIndex(item) === -1 && cart.length <= 20) {
       item['quantity'] = 1;
       cart.push(item);
     } else {
@@ -34,6 +34,7 @@ export class CartGlobals {
     }
     this.setCart(cart);
   }
+
 
   updateTotalCart(cart: Cart) {
     const cartToUpdate = this.getCart();
@@ -49,23 +50,37 @@ export class CartGlobals {
   }
 
   appendMissingItems(cart: Cart) {
-    const cartToExtend = this.getCart();
-    cart.cartItems.forEach((items) => {
-      if (this.containsProductIdAtIndex(items.productId) === -1) {
-        this.productService.getProductById(items.productId).subscribe((product) => {
-          product['quantity'] = items.quantity;
-          cartToExtend.push(product);
-          this.setCart(cartToExtend);
-        });
-      }
-    });
+    let cartToExtend = this.getCart();
+    const cartItem = [];
+    if (cartItem.length !== this.getCartSize()) {
+      cart.cartItems.forEach((items) => {
+        cartItem.push(items);
+        if (this.getCartSize() > cartItem.length) {
+          this.resetCart();
+          cartToExtend = this.getCart();
+          this.productService.getProductById(items.productId).subscribe((product) => {
+            product.quantity = items.quantity;
+            this.setCart(cartToExtend);
+          });
+        }
+        if (this.containsProductIdAtIndex(items.productId) === -1) {
+          this.productService.getProductById(items.productId).subscribe((product) => {
+            product.quantity = items.quantity;
+            cartToExtend.push(product);
+            this.setCart(cartToExtend);
+          });
+        }
+      });
+    }
   }
 
   addToCart(item) {
     const cart = this.getCart();
-    item['quantity'] = 1;
+    if (cart.length <= 20) {
+      item['quantity'] = 1;
       cart.push(item);
-    this.setCart(cart);
+      this.setCart(cart);
+    }
   }
 
 
@@ -92,7 +107,9 @@ export class CartGlobals {
   }
 
   setCart(cart) {
-    localStorage.setItem('cart', JSON.stringify(cart));
+    if (cart.length <= 20) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
   }
 
   containsProductAtIndex(product: Product) {

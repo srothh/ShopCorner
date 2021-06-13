@@ -4,8 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -15,9 +13,9 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)
-    private Cart cart;
+    private Cart cart;*/
 
     private Long productId;
 
@@ -35,13 +33,13 @@ public class CartItem {
         return id;
     }
 
-    public Cart getCart() {
+   /* public Cart getCart() {
         return cart;
     }
 
     public void setCart(Cart cart) {
         this.cart = cart;
-    }
+    }*/
 
     public Long getProductId() {
         return productId;
@@ -68,7 +66,8 @@ public class CartItem {
             return false;
         }
         CartItem cartItem = (CartItem) o;
-        return quantity == cartItem.quantity && Objects.equals(id, cartItem.id) && Objects.equals(cart, cartItem.cart) && Objects.equals(productId, cartItem.productId);
+        //return quantity == cartItem.quantity && Objects.equals(id, cartItem.id) && Objects.equals(cart, cartItem.cart) && Objects.equals(productId, cartItem.productId);
+        return quantity == cartItem.quantity && Objects.equals(id, cartItem.id)  && Objects.equals(productId, cartItem.productId);
     }
 
     @Override
@@ -76,4 +75,13 @@ public class CartItem {
         return Objects.hash(id, productId, quantity);
     }
 
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+            "id=" + id +
+            ", productId=" + productId +
+            ", quantity=" + quantity +
+            '}';
+    }
 }

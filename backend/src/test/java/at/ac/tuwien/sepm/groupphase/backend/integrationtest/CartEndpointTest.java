@@ -58,14 +58,6 @@ public class CartEndpointTest implements TestData {
     @Autowired
     private CartItemRepository cartItemRepository;
 
-    @Autowired
-    private CartService cartService;
-
-    @Autowired
-    private CartItemService cartItemService;
-
-    @Autowired
-    private CartMapper cartMapper;
 
     @Autowired
     private CartItemMapper cartItemMapper;
@@ -73,11 +65,6 @@ public class CartEndpointTest implements TestData {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private JwtTokenizer jwtTokenizer;
-
-    @Autowired
-    private SecurityProperties securityProperties;
 
     private final Cart cart = new Cart();
     private final CartItem cartItem = new CartItem();
@@ -91,7 +78,6 @@ public class CartEndpointTest implements TestData {
 
         Set<CartItem> itemSet = new HashSet<>();
 
-        cartItem.setCart(cart);
         cartItem.setProductId(1L);
         cartItem.setQuantity(5);
         itemSet.add(cartItem);

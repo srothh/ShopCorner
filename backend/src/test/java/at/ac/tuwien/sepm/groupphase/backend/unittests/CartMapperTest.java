@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CartDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CartItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CartMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Cart;
@@ -42,7 +41,7 @@ public class CartMapperTest implements TestData {
 
         Set<CartItem> itemSet = new HashSet<>();
 
-        cartItem.setCart(cart);
+        //cartItem.setCart(cart);
         cartItem.setId(CART_ITEM_ID);
         cartItem.setProductId(CART_ITEM_PRODUCT_ID);
         cartItem.setQuantity(CART_ITEM_QUANTITY);

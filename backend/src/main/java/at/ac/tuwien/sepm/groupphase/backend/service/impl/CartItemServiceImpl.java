@@ -2,9 +2,9 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Cart;
 import at.ac.tuwien.sepm.groupphase.backend.entity.CartItem;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CartItemRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.CartRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CartItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,19 +21,21 @@ public class CartItemServiceImpl implements CartItemService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final CartItemRepository cartItemRepository;
+    private final CartRepository cartRepository;
 
     @Autowired
-    public CartItemServiceImpl(CartItemRepository cartItemRepository) {
+    public CartItemServiceImpl(CartItemRepository cartItemRepository, CartRepository cartRepository) {
         this.cartItemRepository = cartItemRepository;
+        this.cartRepository = cartRepository;
     }
 
     @Override
-    public Set<CartItem> createCartItem(Set<CartItem> cartItem) {
+    public Set<CartItem> createCartItems(Set<CartItem> cartItem) {
         LOGGER.trace("createCartItem({})", cartItem);
         Set<CartItem> newCartItems = new HashSet<>();
         for (CartItem item : cartItem) {
-            if (item != null || item.getId() != null) {
-                newCartItems.add(this.cartItemRepository.save(item));
+            if (item != null) {
+                    newCartItems.add(this.cartItemRepository.save(item));
             }
         }
         return newCartItems;
@@ -42,44 +44,26 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Transactional
     @Override
-    public CartItem updateCartItem(Cart cart, CartItem item) {
+    public Set<CartItem> updateCartItem(Cart cart,CartItem item) {
         LOGGER.trace("updateCartItem({},{})", cart, item);
-        CartItem toDelete = new CartItem();
-        for (CartItem c : cart.getItems()) {
-            if (c.getProductId().equals(item.getProductId())) {
-                toDelete = c;
-                break;
-            }
-        }
-        this.deleteCartItem(toDelete);
-        item.setCart(cart);
-        return this.cartItemRepository.save(item);
+        Set<CartItem> newCartItems = cart.getItems();
+        CartItem oldCartItem = this.cartRepository.findCartItemInCartBySessionId(cart.getSessionId(), item.getProductId()).orElseThrow(() -> new NotFoundException("Could not find cart item to delete"));
+        newCartItems.remove(oldCartItem);
+        oldCartItem.setQuantity(item.getQuantity());
+        newCartItems.add(oldCartItem);
+        cart.setItems(newCartItems);
+        return newCartItems;
 
     }
 
-    @Transactional
-    @Override
-    public void deleteCartItem(CartItem cartItem) {
-        LOGGER.trace("deleteCartItem({})", cartItem);
-        try {
-            this.cartItemRepository.deleteCartItemById(cartItem.getId());
-        } catch (RuntimeException e) {
-            throw new NotFoundException(String.format("Could not delete the cartItem %s", cartItem.toString()));
-        }
-    }
 
     @Transactional
     @Override
     public void deleteCartItemById(Cart cart, Long id) {
-        LOGGER.trace("updateCartItem({},{})", cart, id);
-        CartItem toDelete = new CartItem();
-        for (CartItem c : cart.getItems()) {
-            if (c.getProductId().equals(id)) {
-                toDelete = c;
-                break;
-            }
-        }
-        this.deleteCartItem(toDelete);
+        LOGGER.trace("deleteCartItemById({},{})", cart, id);
+        CartItem toDelete = this.cartRepository.findCartItemInCartBySessionId(cart.getSessionId(), id).orElseThrow(() -> new NotFoundException("Could not find cart item to delete"));
+        cart.getItems().remove(toDelete);
+        this.cartItemRepository.deleteCartItemById(toDelete.getId());
     }
 
 

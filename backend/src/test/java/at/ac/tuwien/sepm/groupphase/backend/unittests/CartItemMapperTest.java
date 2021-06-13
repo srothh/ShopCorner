@@ -1,10 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CartDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CartItemDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CartItemMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Cart;
 import at.ac.tuwien.sepm.groupphase.backend.entity.CartItem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

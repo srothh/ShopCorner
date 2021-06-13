@@ -10,8 +10,6 @@ public class CartDto {
 
     private Long id;
 
-
-
     @NotNull
     private Set<CartItemDto> cartItems = new HashSet<>();
 

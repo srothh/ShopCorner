@@ -2,7 +2,7 @@ import {Category} from './category';
 import {TaxRate} from './tax-rate';
 
 export class Product {
-  quantity: any;
+  quantity: number;
   constructor(
     public id: number,
     public name: string,

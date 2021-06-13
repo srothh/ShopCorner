@@ -22,12 +22,13 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   products: Product[];
   cart: Cart;
   cartItems: CartItem[];
-
+  onClick = false;
   constructor(private cartService: CartService, private globals: Globals, private cartGlobals: CartGlobals, private router: Router) {
   }
 
   ngOnInit(): void {
     this.products = this.cartGlobals.getCart();
+    console.log(this.products);
     this.cartItems = [];
   }
 
@@ -63,14 +64,22 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
     });
   }
 
+  updateLocalQuantity(event, product) {
+      this.onClick = true;
+      this.cartGlobals.updateCart(product, event.target.value);
+  }
+
   updateQuantity(event, product) {
-    this.cartService.updateToCart(new CartItem(product.id, event.target.value)).subscribe( (item) => {
-      console.log(item);
-      this.cartGlobals.appendMissingItems(item);
-    }, (error) => {
-      this.error = true;
-      this.errorMessage = error;
-    });
+    if (this.onClick) {
+      this.onClick = false;
+      this.cartService.updateToCart(new CartItem(product.id, event.target.value)).subscribe((item) => {
+        this.cartGlobals.appendMissingItems(item);
+        console.log(item);
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error;
+      });
+    }
   }
 
 
@@ -133,12 +142,16 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   }
 
   private fetchCart() {
+    let updatedCart;
     this.cartService.getCart().subscribe((items) => {
-      if (items.cartItems.length !== 0) {
-        this.cartGlobals.updateTotalCart(items);
-        this.products = this.cartGlobals.getCart();
-      }
+      updatedCart = items;
     });
+
+    if (updatedCart.cartItems.length !== this.cartGlobals.getCartSize()) {
+      this.cartGlobals.updateTotalCart(updatedCart);
+      this.products = this.cartGlobals.getCart();
+    }
+
   }
 
 }

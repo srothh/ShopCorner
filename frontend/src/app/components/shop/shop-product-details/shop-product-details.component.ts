@@ -49,7 +49,7 @@ export class ShopProductDetailsComponent implements OnInit {
     if (index === -1) {
       this.cartGlobals.addToCart(product);
       this.cartService.addProductsToCart(new CartItem(product.id, 1)).subscribe( (item) => {
-       if ((item.cartItems.length !== this.cartGlobals.getCartSize()) && (this.cartGlobals.getCartSize() < item.cartItems.length)) {
+        if ((item.cartItems.length !== this.cartGlobals.getCartSize()) && (this.cartGlobals.getCartSize() < item.cartItems.length)) {
          this.cartGlobals.appendMissingItems(item);
        }
       }, (error) => {
@@ -59,9 +59,10 @@ export class ShopProductDetailsComponent implements OnInit {
 
     } else {
       const cart  = this.cartGlobals.getCart();
-      const quantity = cart[this.cartGlobals.containsProductAtIndex(product)]['quantity'] + 1;
-      cart[this.cartGlobals.containsProductAtIndex(product)]['quantity'] = quantity;
-      this.cartGlobals.updateCart(product, quantity);
+      const quantity = Number(cart[this.cartGlobals.containsProductAtIndex(product)]['quantity']) + 1;
+      if (quantity <= 12) {
+        cart[this.cartGlobals.containsProductAtIndex(product)]['quantity'] = quantity;
+        this.cartGlobals.updateCart(product, quantity);
 
       this.cartService.updateToCart(new CartItem(product.id, quantity)).subscribe( (item) => {
         this.cartGlobals.appendMissingItems(item);
@@ -69,6 +70,7 @@ export class ShopProductDetailsComponent implements OnInit {
         this.error = true;
         this.errorMessage = error;
       });
+      }
     }
     this.router.navigate(['cart']).then();
   }
