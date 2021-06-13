@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 
 public class PdfGenerator {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private final String htmlUri = "htmlToPdfTemplate/";
+    private final String htmlUri = "htmlTemplates/";
 
     /**
      * Generates a PDF from an HTML template, parses the template into a document, which can then be changed and edited.

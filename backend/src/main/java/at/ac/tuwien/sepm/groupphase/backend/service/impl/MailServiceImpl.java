@@ -33,7 +33,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void sendMail() {
-        String message = mailTextBuilder.buildMessage();
+        String message = mailTextBuilder.buildOrderMessage();
 
         MimeMessage email = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(email, "utf-8");
