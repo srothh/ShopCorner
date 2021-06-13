@@ -104,6 +104,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public void deleteCartItemInCart(UUID sessionId, Long productId) {
+        Cart cart = this.findCartBySessionId(sessionId);
         this.cartItemService.deleteCartItemById(cart, productId);
     }
 
