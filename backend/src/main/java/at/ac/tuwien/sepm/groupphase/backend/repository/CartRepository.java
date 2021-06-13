@@ -52,7 +52,7 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
      * @throws RuntimeException upon encountering errors with the database
      */
     @Query(value = "select i from Cart c INNER JOIN c.items i where c.sessionId = (:sessionId) and i.productId=(:productId)")
-    Optional<CartItem> findCartItemInCartBySessionId(@Param("sessionId") UUID sessionId, @Param("productId") Long productId);
+    Optional<CartItem> findCartItemInCartUsingSessionId(@Param("sessionId") UUID sessionId, @Param("productId") Long productId);
 
 
 }

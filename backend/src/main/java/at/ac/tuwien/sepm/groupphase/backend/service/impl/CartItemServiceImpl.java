@@ -47,7 +47,7 @@ public class CartItemServiceImpl implements CartItemService {
     public Set<CartItem> updateCartItem(Cart cart,CartItem item) {
         LOGGER.trace("updateCartItem({},{})", cart, item);
         Set<CartItem> newCartItems = cart.getItems();
-        CartItem oldCartItem = this.cartRepository.findCartItemInCartBySessionId(cart.getSessionId(), item.getProductId()).orElseThrow(() -> new NotFoundException("Could not find cart item to delete"));
+        CartItem oldCartItem = this.cartRepository.findCartItemInCartUsingSessionId(cart.getSessionId(), item.getProductId()).orElseThrow(() -> new NotFoundException("Could not find cart item to delete"));
         newCartItems.remove(oldCartItem);
         oldCartItem.setQuantity(item.getQuantity());
         newCartItems.add(oldCartItem);
@@ -61,7 +61,7 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     public void deleteCartItemById(Cart cart, Long id) {
         LOGGER.trace("deleteCartItemById({},{})", cart, id);
-        CartItem toDelete = this.cartRepository.findCartItemInCartBySessionId(cart.getSessionId(), id).orElseThrow(() -> new NotFoundException("Could not find cart item to delete"));
+        CartItem toDelete = this.cartRepository.findCartItemInCartUsingSessionId(cart.getSessionId(), id).orElseThrow(() -> new NotFoundException("Could not find cart item to delete"));
         cart.getItems().remove(toDelete);
         this.cartItemRepository.deleteCartItemById(toDelete.getId());
     }

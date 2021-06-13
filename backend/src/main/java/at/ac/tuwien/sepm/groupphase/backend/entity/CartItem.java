@@ -13,9 +13,6 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*@ManyToOne
-    @JoinColumn(name = "cart_id", nullable = false)
-    private Cart cart;*/
 
     private Long productId;
 
@@ -33,13 +30,6 @@ public class CartItem {
         return id;
     }
 
-   /* public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }*/
 
     public Long getProductId() {
         return productId;
@@ -75,13 +65,4 @@ public class CartItem {
         return Objects.hash(id, productId, quantity);
     }
 
-
-    @Override
-    public String toString() {
-        return "CartItem{" +
-            "id=" + id +
-            ", productId=" + productId +
-            ", quantity=" + quantity +
-            '}';
-    }
 }

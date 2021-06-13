@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @ActiveProfiles("test")
 public class CartMapperTest implements TestData {
-    private static Cart cart = new Cart();
+    private static final Cart cart = new Cart();
 
     @Autowired
     private CartMapper cartMapper;

@@ -39,8 +39,7 @@ public class CartServiceImpl implements CartService {
             item.setQuantity(12);
         }
         cart.getItems().add(item);
-        Cart c = this.addItemToCart(cart);
-        return c;
+        return this.addItemToCart(cart);
     }
 
     @Override

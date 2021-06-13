@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -54,11 +56,13 @@ public class CartRepositoryTest implements TestData {
         cart.setSessionId(sessionId);
         cartRepository.save(cart);
 
-           assertEquals(cart , cartRepository.findBySessionId(sessionId).get());
-           assertEquals(true , cartRepository.existsCartBySessionId(sessionId));
-           assertEquals( cartItem , cartRepository.findCartItemInCartBySessionId(sessionId,1L).get());
-           cartRepository.deleteCartByCreatedAtIsBefore(LocalDateTime.now());
-           assertEquals(false , cartRepository.existsCartBySessionId(sessionId));
+        assertTrue(cartRepository.findBySessionId(sessionId).isPresent());
+        assertEquals(cart, cartRepository.findBySessionId(sessionId).get());
+        assertTrue(cartRepository.existsCartBySessionId(sessionId));
+        assertTrue(cartRepository.findCartItemInCartUsingSessionId(sessionId, 1L).isPresent());
+        assertEquals(cartItem, cartRepository.findCartItemInCartUsingSessionId(sessionId, 1L).get());
+        cartRepository.deleteCartByCreatedAtIsBefore(LocalDateTime.now());
+        assertFalse(cartRepository.existsCartBySessionId(sessionId));
 
     }
 }

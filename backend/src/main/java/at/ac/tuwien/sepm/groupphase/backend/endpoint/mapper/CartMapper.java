@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public interface CartMapper {
 
-    Cart cartDtoToCart(CartDto dto);
+    //Cart cartDtoToCart(CartDto dto);
 
     CartDto cartToCartDto(Cart dto);
 

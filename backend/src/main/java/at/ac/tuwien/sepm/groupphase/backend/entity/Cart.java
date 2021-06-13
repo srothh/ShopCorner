@@ -30,7 +30,6 @@ public class Cart {
     @Column(nullable = false, unique = true)
     private UUID sessionId;
 
-    //@OneToMany(mappedBy = "cart", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "cart_id")
     private Set<CartItem> items = new HashSet<>();
@@ -63,9 +62,6 @@ public class Cart {
         this.id = id;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
@@ -104,14 +100,4 @@ public class Cart {
         return Objects.hash(id, sessionId, items, createdAt);
     }
 
-
-    @Override
-    public String toString() {
-        return "Cart{" +
-            "id=" + id +
-            ", sessionId=" + sessionId +
-            ", items=" + items +
-            ", createdAt=" + createdAt +
-            '}';
-    }
 }

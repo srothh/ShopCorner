@@ -23,6 +23,4 @@ public interface CartItemMapper {
     @Named("toEntity")
     CartItem cartItemDtoToCartItem(CartItemDto cartItem);
 
-    @IterableMapping(qualifiedByName = "toEntity")
-    Set<CartItem> cartItemDtoToCartItem(Set<CartItemDto> cartItems);
 }
