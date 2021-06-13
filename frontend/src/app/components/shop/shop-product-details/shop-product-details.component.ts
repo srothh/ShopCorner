@@ -49,9 +49,8 @@ export class ShopProductDetailsComponent implements OnInit {
     if (index === -1) {
       this.cartGlobals.addToCart(product);
       this.cartService.addProductsToCart(new CartItem(product.id, 1)).subscribe( (item) => {
-        if ((item.cartItems.length !== this.cartGlobals.getCartSize()) && (this.cartGlobals.getCartSize() < item.cartItems.length)) {
-         this.cartGlobals.appendMissingItems(item);
-       }
+          this.cartGlobals.updateCartItem(item);
+
       }, (error) => {
         this.error = true;
         this.errorMessage = error;
@@ -59,13 +58,15 @@ export class ShopProductDetailsComponent implements OnInit {
 
     } else {
       const cart  = this.cartGlobals.getCart();
-      const quantity = Number(cart[this.cartGlobals.containsProductAtIndex(product)]['quantity']) + 1;
+      const quantity = Number(cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemQuantity']) + 1;
       if (quantity <= 12) {
-        cart[this.cartGlobals.containsProductAtIndex(product)]['quantity'] = quantity;
+        cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemQuantity'] = quantity;
         this.cartGlobals.updateCart(product, quantity);
-
-      this.cartService.updateToCart(new CartItem(product.id, quantity)).subscribe( (item) => {
-        this.cartGlobals.appendMissingItems(item);
+        console.log('quantity ', quantity);
+        const cartItem = new CartItem(product.id, quantity);
+        cartItem.id = cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemId'];
+      this.cartService.updateToCart(cartItem).subscribe( (item) => {
+        this.cartGlobals.updateCartItem(item);
       }, (error) => {
         this.error = true;
         this.errorMessage = error;

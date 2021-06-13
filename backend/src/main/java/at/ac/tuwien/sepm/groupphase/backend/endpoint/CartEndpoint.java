@@ -93,8 +93,7 @@ public class CartEndpoint {
             return ResponseEntity.badRequest().build();
         }
         if (this.cartService.sessionIdExists(UUID.fromString(sessionId))) {
-            UUID sessionUuid = UUID.fromString(sessionId);
-            this.cartService.deleteCartItemInCart(sessionUuid, id);
+            this.cartService.deleteCartItemById(id);
         }
         return ResponseEntity.ok().build();
     }

@@ -27,15 +27,12 @@ public interface CartItemService {
      */
     Set<CartItem> updateCartItem(Cart cart, CartItem item);
 
-
     /**
      * Deletes a cartItem which is assigned to session by id.
      *
-     * @param cart The cart with the sessionId
      * @param id The id of the cartItem to be deleted
      * @throws NotFoundException is thrown if the specified cartItem does not exists
      * @throws RuntimeException upon encountering errors with the database
      */
-    void deleteCartItemById(Cart cart, Long id);
-
+    void deleteCartItemById(Long id);
 }

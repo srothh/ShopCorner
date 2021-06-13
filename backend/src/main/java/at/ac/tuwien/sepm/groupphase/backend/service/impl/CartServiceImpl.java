@@ -99,19 +99,16 @@ public class CartServiceImpl implements CartService {
         this.cartRepository.deleteCartByCreatedAtIsBefore(timeBefore);
     }
 
-    @Transactional
+
     @Override
-    public void deleteCartItemInCart(UUID sessionId, Long productId) {
-        Cart cart = this.findCartBySessionId(sessionId);
-        this.cartItemService.deleteCartItemById(cart, productId);
+    public void deleteCartItemById(Long id) {
+        this.cartItemService.deleteCartItemById(id);
     }
 
 
     private Cart addItemToCart(Cart cart) {
         LOGGER.trace("addItemToCart({})", cart);
-
         Set<CartItem> itemSet = cart.getItems();
-
         cart.setItems(this.cartItemService.createCartItems(itemSet));
         return this.cartRepository.save(cart);
     }

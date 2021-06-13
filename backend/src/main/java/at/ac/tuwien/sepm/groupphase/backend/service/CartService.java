@@ -80,15 +80,13 @@ public interface CartService {
      */
     boolean validateSession(UUID sessionId);
 
-
     /**
-     * Deletes a single cartItem in a cart which is assigned to the client session.
+     * Deletes a single cartItem by id.
      *
-     * @param sessionId the sessionId of the session
-     * @param productId id of the product to be delete
+     * @param id the id of the cart item
      * @throws RuntimeException when no cart with the sessionId is found
      */
-    void deleteCartItemInCart(UUID sessionId, Long productId);
+    void deleteCartItemById(Long id);
 
     /**
      * Deletes carts after a certain time.

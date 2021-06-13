@@ -27,28 +27,54 @@ export class CartGlobals {
   updateCart(item, quantity) {
     const cart = this.getCart();
     if (this.containsProductAtIndex(item) === -1 && cart.length <= 20) {
-      item['quantity'] = 1;
+      item['cartItemQuantity'] = 1;
       cart.push(item);
     } else {
-      cart[this.containsProductAtIndex(item)]['quantity'] = quantity;
+      cart[this.containsProductAtIndex(item)]['cartItemQuantity'] = quantity;
+    }
+    this.setCart(cart);
+  }
+
+  updateCartId(item, quantity, cartItemId) {
+    const cart = this.getCart();
+    if (this.containsProductAtIndex(item) === -1 && cart.length <= 20) {
+      item['cartItemQuantity'] = 1;
+      item['cartItemId'] = cartItemId;
+      cart.push(item);
+    } else {
+      cart[this.containsProductAtIndex(item)]['cartItemQuantity'] = quantity;
+      cart[this.containsProductAtIndex(item)]['cartItemId'] = cartItemId;
     }
     this.setCart(cart);
   }
 
 
-  updateTotalCart(cart: Cart) {
+  updateTotalCart(cart) {
     const cartToUpdate = this.getCart();
-    cart.cartItems.forEach((item) => {
-      cartToUpdate.forEach( (cartItem) => {
-          if (item.productId === cartItem.id) {
-            if (item.quantity === cartItem.quantity) {
-              this.updateCart(cartItem, item.quantity);
-            }
+    cart.forEach((item) => {
+      cartToUpdate.forEach((cartItem) => {
+        if (item.productId === cartItem.id) {
+          if (item.quantity === cartItem.quantity) {
+            this.updateCartId(cartItem, item.quantity, item.id);
           }
-        });
+        }
+      });
     });
   }
 
+  updateCartItem(cart: Cart) {
+    const updatedCart = this.getCart();
+    cart.cartItems.forEach((cartItem) => {
+      updatedCart.forEach((updatedCartItem) => {
+        if (updatedCartItem.id === cartItem.productId) {
+          updatedCartItem.cartItemId = cartItem.id;
+          this.updateCartId(updatedCartItem, cartItem.quantity, cartItem.id);
+        }
+      });
+    });
+    this.updateTotalCart(updatedCart);
+  }
+/*
   appendMissingItems(cart: Cart) {
     let cartToExtend = this.getCart();
     const cartItem = [];
@@ -59,30 +85,29 @@ export class CartGlobals {
           this.resetCart();
           cartToExtend = this.getCart();
           this.productService.getProductById(items.productId).subscribe((product) => {
-            product.quantity = items.quantity;
+            product.cartItemQuantity = items.quantity;
             this.setCart(cartToExtend);
           });
         }
         if (this.containsProductIdAtIndex(items.productId) === -1) {
           this.productService.getProductById(items.productId).subscribe((product) => {
-            product.quantity = items.quantity;
+            product.cartItemQuantity = items.quantity;
             cartToExtend.push(product);
             this.setCart(cartToExtend);
           });
         }
       });
     }
-  }
+  }*/
 
   addToCart(item) {
     const cart = this.getCart();
     if (cart.length <= 20) {
-      item['quantity'] = 1;
+      item['cartItemQuantity'] = 1;
       cart.push(item);
       this.setCart(cart);
     }
   }
-
 
 
   deleteFromCart(product: Product) {

@@ -21,7 +21,7 @@ export class CartService {
    * @param cartItem the item to be deleted
    */
   deleteCart(cartItem: CartItem): Observable<any> {
-    return this.httpClient.delete<any>(this.cartBaseUri + '/' + cartItem.productId, {withCredentials: true});
+    return this.httpClient.delete<any>(this.cartBaseUri + '/' + cartItem.id, {withCredentials: true});
   }
 
   /**

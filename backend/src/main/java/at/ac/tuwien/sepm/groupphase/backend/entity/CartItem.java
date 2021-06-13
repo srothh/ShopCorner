@@ -56,7 +56,6 @@ public class CartItem {
             return false;
         }
         CartItem cartItem = (CartItem) o;
-        //return quantity == cartItem.quantity && Objects.equals(id, cartItem.id) && Objects.equals(cart, cartItem.cart) && Objects.equals(productId, cartItem.productId);
         return quantity == cartItem.quantity && Objects.equals(id, cartItem.id)  && Objects.equals(productId, cartItem.productId);
     }
 
@@ -64,5 +63,6 @@ public class CartItem {
     public int hashCode() {
         return Objects.hash(id, productId, quantity);
     }
+
 
 }

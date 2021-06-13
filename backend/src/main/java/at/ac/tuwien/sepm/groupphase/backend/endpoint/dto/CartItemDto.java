@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class CartItemDto {
 
+    Long id;
+
     @NotNull
     private Long productId;
 
@@ -19,6 +21,14 @@ public class CartItemDto {
     public CartItemDto(Long productId, int quantity) {
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getProductId() {
@@ -46,11 +56,13 @@ public class CartItemDto {
             return false;
         }
         CartItemDto that = (CartItemDto) o;
-        return quantity == that.quantity && Objects.equals(productId, that.productId);
+        return quantity == that.quantity && Objects.equals(productId, that.productId) && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, quantity);
+        return Objects.hash(id, productId, quantity);
     }
+
+
 }

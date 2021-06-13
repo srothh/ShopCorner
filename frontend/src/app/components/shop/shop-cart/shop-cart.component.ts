@@ -28,12 +28,12 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
 
   ngOnInit(): void {
     this.products = this.cartGlobals.getCart();
-    console.log(this.products);
     this.cartItems = [];
   }
 
   ngAfterContentInit() {
      this.fetchCart();
+
   }
 
   getImageSource(product: Product): string {
@@ -43,7 +43,8 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
     return 'Error: no picture available';
   }
 
-  removeFromCart(product: Product) {
+  removeFromCart(id) {
+    const product = this.cartGlobals.getCart()[id];
     const newProductList = [];
     this.products.forEach((item) => {
       if (item.id !== product.id) {
@@ -51,7 +52,9 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
       }
     });
     this.cartGlobals.deleteFromCart(product);
-    this.deleteCartItem(new CartItem(product.id, product.quantity));
+    const itemToDelete = new CartItem(product.id, product.cartItemQuantity);
+    itemToDelete.id = product.cartItemId;
+    this.deleteCartItem(itemToDelete);
     this.products = newProductList;
     this.calcAmount();
   }
@@ -64,17 +67,20 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
     });
   }
 
-  updateLocalQuantity(event, product) {
+  updateLocalQuantity(event, id) {
       this.onClick = true;
-      this.cartGlobals.updateCart(product, event.target.value);
+      const product = this.cartGlobals.getCart()[id];
+      this.cartGlobals.updateCartId(product, event.target.value, product.cartItemId);
   }
 
-  updateQuantity(event, product) {
+  updateQuantity(event, id) {
     if (this.onClick) {
+      const product = this.cartGlobals.getCart()[id];
       this.onClick = false;
-      this.cartService.updateToCart(new CartItem(product.id, event.target.value)).subscribe((item) => {
-        this.cartGlobals.appendMissingItems(item);
-        console.log(item);
+      const cartItem = new CartItem(product.id, event.target.value);
+      cartItem.id = product.cartItemId;
+      this.cartService.updateToCart(cartItem).subscribe((item) => {
+        this.cartGlobals.updateCartItem(item);
       }, (error) => {
         this.error = true;
         this.errorMessage = error;
@@ -88,7 +94,7 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   }
 
   changedTotal(index: number, event) {
-    this.products[index].quantity = event.target.value;
+    this.products[index].cartItemQuantity = event.target.value;
     this.cartGlobals.updateCart(this.products[index], event.target.value);
     this.calcAmount();
   }
@@ -102,7 +108,7 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   calcSubtotal() {
     let subtotal = 0;
     this.products.forEach((item) => {
-      subtotal = subtotal + (item.price * item.quantity);
+      subtotal = subtotal + (item.price * item.cartItemQuantity);
     });
     return subtotal.toFixed(2);
   }
@@ -110,7 +116,7 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   calcTax() {
     let tax = 0;
     this.products.forEach((item) => {
-      tax += item.price * (item.taxRate.calculationFactor - 1) * item.quantity;
+      tax += item.price * (item.taxRate.calculationFactor - 1) * item.cartItemQuantity;
     });
     return tax.toFixed(2);
   }
@@ -142,16 +148,10 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   }
 
   private fetchCart() {
-    let updatedCart;
     this.cartService.getCart().subscribe((items) => {
-      updatedCart = items;
+      this.cartGlobals.updateCartItem(items);
+
     });
-    if (updatedCart !== undefined) {
-      if (updatedCart.cartItems.length !== this.cartGlobals.getCartSize()) {
-        this.cartGlobals.updateTotalCart(updatedCart);
-        this.products = this.cartGlobals.getCart();
-      }
-    }
   }
 
 }

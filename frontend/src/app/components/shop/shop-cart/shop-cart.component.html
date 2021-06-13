@@ -33,19 +33,19 @@
                                                                                     src="{{getImageSource(product)}}"
                                                                                     alt="produkt"></td>
         <td class="name" (click)="routeToDetailView(product)">{{product.name}}</td>
-        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.quantity"
-                                    (mouseleave)="updateQuantity($event, product)"
-                                    (change)="changedTotal(i, $event);updateLocalQuantity($event, product)"></td>
+        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.cartItemQuantity"
+                                    (mouseleave)="updateQuantity($event, i)"
+                                    (change)="changedTotal(i, $event);updateLocalQuantity($event, i)"></td>
         <td class="tax" (click)="routeToDetailView(product)">{{(product.taxRate.percentage)}} %</td>
         <td class="price"
             (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price).toFixed(2)}} €
         </td>
         <td class="total-num"
-            (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price * product.quantity).toFixed(2)}}
+            (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price * product.cartItemQuantity).toFixed(2)}}
           €
         </td>
         <td class="delete" (click)="routeToDetailView(product)">
-          <button class="btn btn-outline-danger" (click)="removeFromCart(product)">
+          <button class="btn btn-outline-danger" (click)="removeFromCart(i)">
             <fa-icon class="mr-2" [icon]="faDelete"></fa-icon>
           </button>
         </td>
