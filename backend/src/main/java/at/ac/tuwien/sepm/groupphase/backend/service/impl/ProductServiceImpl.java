@@ -81,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
         if (categoryId == null) {
             product.setCategory(null);
         } else {
-            Category category = categoryService.findCategoryById(categoryId);
+            Category category = categoryService.getCategoryById(categoryId);
             product.setCategory(category);
         }
     }

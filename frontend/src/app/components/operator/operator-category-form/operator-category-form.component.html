@@ -25,7 +25,7 @@
       Speichern
     </button>
   </div>
-  <div *ngIf="addCategoryEnabled === false && inEditMode === true">
+  <div *ngIf="addCategoryEnabled === false && inEditMode === true && getPermission() == 'ADMIN'">
     <button class="btn btn-primary" type="submit" (click)="enableEditing()">
       Bearbeiten
     </button>

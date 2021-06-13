@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import org.slf4j.Logger;
@@ -28,14 +29,14 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository, ProductService productService) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
-        this.productService = productService;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -70,6 +71,11 @@ public class CategoryServiceImpl implements CategoryService {
         return this.categoryRepository.count();
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "productPages", allEntries = true),
+        @CacheEvict(value = "counts", key = "'products'"),
+        @CacheEvict(value = "categoryCounts", allEntries = true)
+    })
     @Override
     public void updateCategory(Long categoryId, Category category) {
         LOGGER.trace("updateCategory({})", category);
@@ -89,7 +95,7 @@ public class CategoryServiceImpl implements CategoryService {
         LOGGER.trace("deleteCategory({})", categoryId);
         this.categoryRepository
             .findById(categoryId).orElseThrow(() -> new NotFoundException("Could not find category with Id:" + categoryId));
-        List<Product> products = productService.getAllProductsByCategory(categoryId);
+        List<Product> products = productRepository.findAllByCategoryId(categoryId);
         for (Product p : products) {
             p.setCategory(null);
         }

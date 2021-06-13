@@ -3,6 +3,7 @@ import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/form
 import {Category} from '../../../dtos/category';
 import {CategoryService} from '../../../services/category.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 
 @Component({
   selector: 'app-operator-category-form',
@@ -20,7 +21,8 @@ export class OperatorCategoryFormComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private categoryService: CategoryService,
               private router: Router,
-              private activatedRouter: ActivatedRoute) { }
+              private activatedRouter: ActivatedRoute,
+              private authService: OperatorAuthService) { }
 
   ngOnInit(): void {
     if (this.category === undefined && this.router.url.includes('add')){
@@ -104,5 +106,7 @@ export class OperatorCategoryFormComponent implements OnInit {
   goBackToCategoriesOverview(){
     this.router.navigate(['operator/categories']).then();
   }
-
+  getPermission(): string {
+    return this.authService.getUserRole();
+  }
 }
