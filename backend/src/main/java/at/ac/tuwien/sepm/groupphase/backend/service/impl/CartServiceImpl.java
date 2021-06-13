@@ -110,6 +110,7 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Scheduled(cron = "0 0 0/5 * * ?")
+    @CacheEvict(value = "counts", key = "'cartItem'")
     @Override
     public void deleteCartAfterDuration() {
         LOGGER.trace("deleteCartAfterDuration()");
@@ -117,7 +118,7 @@ public class CartServiceImpl implements CartService {
         this.cartRepository.deleteCartByCreatedAtIsBefore(timeBefore);
     }
 
-
+    @CacheEvict(value = "counts", key = "'cartItem'")
     @Override
     public void deleteCartItemById(Long id) {
         this.cartItemService.deleteCartItemById(id);
