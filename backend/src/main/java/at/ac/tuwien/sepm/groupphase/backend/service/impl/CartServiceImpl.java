@@ -55,7 +55,6 @@ public class CartServiceImpl implements CartService {
     }
 
 
-
     @Override
     public Cart createEmptyCart(UUID sessionId) {
         LOGGER.trace("createCart()");
@@ -68,7 +67,7 @@ public class CartServiceImpl implements CartService {
         if (item.getQuantity() > 12) {
             item.setQuantity(12);
         }
-        cart.setItems(this.cartItemService.updateCartItem(cart,item));
+        cart.setItems(this.cartItemService.updateCartItem(cart, item));
         return this.cartRepository.save(cart);
     }
 

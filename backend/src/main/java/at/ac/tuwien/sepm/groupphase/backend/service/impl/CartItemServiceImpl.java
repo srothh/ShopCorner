@@ -35,7 +35,7 @@ public class CartItemServiceImpl implements CartItemService {
         Set<CartItem> newCartItems = new HashSet<>();
         for (CartItem item : cartItem) {
             if (item != null) {
-                    newCartItems.add(this.cartItemRepository.save(item));
+                newCartItems.add(this.cartItemRepository.save(item));
             }
         }
         return newCartItems;
@@ -44,7 +44,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Transactional
     @Override
-    public Set<CartItem> updateCartItem(Cart cart,CartItem item) {
+    public Set<CartItem> updateCartItem(Cart cart, CartItem item) {
         LOGGER.trace("updateCartItem({},{})", cart, item);
         Set<CartItem> newCartItems = cart.getItems();
         CartItem oldCartItem = this.cartRepository.findCartItemInCartUsingSessionId(cart.getSessionId(), item.getProductId()).orElseThrow(() -> new NotFoundException("Could not find cart item to delete"));
