@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,6 +30,9 @@ export class Globals {
       return window.location.protocol + '//' + window.location.host + window.location.pathname + 'api/v1';
     }
   }
+
+
+
 }
 
 

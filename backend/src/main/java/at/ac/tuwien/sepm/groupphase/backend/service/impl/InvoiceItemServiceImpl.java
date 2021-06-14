@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
@@ -22,6 +23,7 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
     private final InvoiceItemRepository invoiceItemRepository;
     private final Validator validator;
 
+    @Autowired
     public InvoiceItemServiceImpl(InvoiceItemRepository invoiceItemRepository, Validator validator) {
         this.invoiceItemRepository = invoiceItemRepository;
         this.validator = validator;

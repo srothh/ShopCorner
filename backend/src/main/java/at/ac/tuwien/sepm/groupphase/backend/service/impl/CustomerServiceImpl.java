@@ -32,13 +32,13 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    @Autowired
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final AddressService addressService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final Validator validator;
 
+    @Autowired
     public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService, Validator validator) {
         this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository;

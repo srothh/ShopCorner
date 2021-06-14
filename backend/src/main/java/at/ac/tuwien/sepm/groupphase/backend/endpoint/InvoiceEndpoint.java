@@ -71,7 +71,7 @@ public class InvoiceEndpoint {
     @GetMapping(value = "/{id}")
     @Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
     public DetailedInvoiceDto find(@PathVariable Long id) {
-        LOGGER.info("GET /invoice/{}", id);
+        LOGGER.info("GET /api/v1/invoices/{}", id);
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
     }
 
@@ -88,7 +88,7 @@ public class InvoiceEndpoint {
     public PaginationDto<SimpleInvoiceDto> getAllInvoices(@Valid PaginationRequestDto paginationRequestDto) {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
-        LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
+        LOGGER.info("GET api/v1/invoices?page={}&page_count={}", page, pageCount);
         Page<Invoice> operatorPage = invoiceService.getAllInvoices(page, pageCount);
         return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.getAllInvoices(page, pageCount).getContent()), page, pageCount, operatorPage.getTotalPages(), invoiceService.getInvoiceCount());
     }
@@ -105,7 +105,7 @@ public class InvoiceEndpoint {
     @PostMapping(produces = "application/pdf")
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("POST /invoices/ {}", invoiceDto);
+        LOGGER.info("POST /api/v1/invoices/ {}", invoiceDto);
 
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
         PdfGenerator pdf = new PdfGenerator();
@@ -128,7 +128,7 @@ public class InvoiceEndpoint {
     @GetMapping(value = "/{id}/pdf", produces = "application/pdf")
     @Operation(summary = "Retrieve new invoice as pdf", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
-        LOGGER.info("GET /invoices/{}/pdf", id);
+        LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
         PdfGenerator pdf = new PdfGenerator();
         final byte[] contents = pdf.generatePdfOperator(invoice);
