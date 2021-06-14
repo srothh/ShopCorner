@@ -103,6 +103,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public Category getCategoryById(Long categoryId) {
+        LOGGER.trace("getCategoryById({})", categoryId);
         return this.categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Could not find category with Id:" + categoryId));
     }
 
