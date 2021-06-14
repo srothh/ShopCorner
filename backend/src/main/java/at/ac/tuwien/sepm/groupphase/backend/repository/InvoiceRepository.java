@@ -2,8 +2,6 @@ package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -14,9 +12,9 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
 
     /**
-     * Find all message entries ordered by published at date (descending).
+     * Find all invoice entries.
      *
-     * @return ordered list of al message entries
+     * @return list of al invoice entries
      * @throws RuntimeException upon encountering errors with the database
      */
     List<Invoice> findAll();
