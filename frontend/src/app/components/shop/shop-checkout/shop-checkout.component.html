@@ -2,10 +2,21 @@
 <div class="container ">
   <div class="row">
     <div class="col-md-4 order-md-2 mb-4">
-      <div>Gesamtpreis ohne Steuern: 1€</div>
-      <div>Steuern: 1€</div>
-      <hr>
-      <span>Gesamt: 1€</span>
+      <ul class="list-group mb-3 overflow-auto">
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Gesamtpreis ohne Steuern </span>
+          <strong>{{getTotalPriceWithoutTaxes().toFixed(2)}} €</strong>
+        </li>
+
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Steuern </span>
+          <strong>{{getTotalTaxes().toFixed(2)}} €</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Gesamt </span>
+          <strong>{{getTotalPrice().toFixed(2)}} €</strong>
+        </li>
+      </ul>
       <button class="btn btn-primary btn-lg btn-block" type="submit">Bezahlen mit Paypal</button>
 
     </div>
@@ -19,9 +30,6 @@
         <div class="mb-3">
           <label for="username">Nutzername</label>
           <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">@</span>
-            </div>
             <input type="text" class="form-control" id="username" value="{{customer.loginName}}" disabled>
           </div>
         </div>
@@ -39,7 +47,7 @@
         </div>
 
         <div class="row">
-          <div class="col-md-5 mb-3">
+          <div class="col-md-6 mb-3">
             <label for="country">Land</label>
             <select class="custom-select d-block w-100" id="country" disabled>
               <option value="">Österreich</option>
@@ -49,112 +57,29 @@
               Please select a valid country.
             </div>
           </div>
-          <div class="col-md-3 mb-3">
+          <div class="col-md-6 mb-3">
             <label for="zip">Postleitzahl</label>
             <input type="text" class="form-control" id="zip" value="{{customer.address.postalCode}}" disabled>
           </div>
         </div>
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="d-flex justify-content-between align-items-center mb-3 mt-4">
           <span class="text-muted">Warenkorb</span>
-          <span class="badge badge-secondary badge-pill">3</span>
+          <span class="badge badge-secondary badge-pill">{{getCartSize() != 0? +getCartSize():''}}</span>
         </h4>
         <hr class="mb-4">
         <ul class="list-group mb-3 overflow-auto">
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <li class="list-group-item d-flex justify-content-between lh-condensed" *ngFor="let product of products">
             <div>
-              <h6 class="my-0">Product name</h6>
-              <small class="text-muted">Brief description</small>
+              <h6 class="my-0">{{product.name}}</h6>
+              <small class="text-muted">{{product.description}}</small>
             </div>
-            <span class="text-muted">$12</span>
+            <span class="text-muted">{{product.price}} €</span>
           </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Second product</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$8</span>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Gesamtpreis </span>
+            <strong>{{getTotalPrice().toFixed(2)}} €</strong>
           </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-
-
         </ul>
-
         <button class="btn btn-primary btn-lg btn-block" type="submit">Bezahlen mit Paypal</button>
       </form>
 
