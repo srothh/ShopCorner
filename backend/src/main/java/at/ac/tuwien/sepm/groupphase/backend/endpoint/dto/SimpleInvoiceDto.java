@@ -9,7 +9,6 @@ public class SimpleInvoiceDto {
 
     private Long id;
 
-
     private String invoiceNumber;
 
     @NotNull(message = "LocalDateTime can not be null")
