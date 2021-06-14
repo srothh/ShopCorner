@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Product} from '../../../dtos/product';
-import {ProductService} from '../../../services/product.service';
+import {ProductService} from '../../../services/product/product.service';
 import {Globals} from '../../../global/globals';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {CartItem} from '../../../dtos/cartItem';
@@ -19,9 +19,12 @@ export class ShopProductDetailsComponent implements OnInit {
 
   product: Product;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute,
-              private productService: ProductService, private globals: Globals,
-              private cartGlobals: CartGlobals, private cartService: CartService) {
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
+              private productService: ProductService,
+              private globals: Globals,
+              private cartGlobals: CartGlobals,
+              private cartService: CartService) {
     const state = this.router.getCurrentNavigation().extras.state;
     if (state) {
       this.product = state.product;
@@ -75,6 +78,7 @@ export class ShopProductDetailsComponent implements OnInit {
       this.router.navigate(['cart']).then();
     }
   }
+
   /**
    * Error flag will be deactivated, which clears the error message
    */

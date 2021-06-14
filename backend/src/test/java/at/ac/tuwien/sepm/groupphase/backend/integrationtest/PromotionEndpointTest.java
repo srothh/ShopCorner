@@ -127,7 +127,7 @@ public class PromotionEndpointTest implements TestData {
 
     @Test
     public void givenNothing_whenFindAllCustomers_thenEmptyList() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get(PROMOTION_BASE_URI + "?page=0&page_count=1")
+        MvcResult mvcResult = this.mockMvc.perform(get(PROMOTION_BASE_URI + "?page=0&pageCount=1")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();

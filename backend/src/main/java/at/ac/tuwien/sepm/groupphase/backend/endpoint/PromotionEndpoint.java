@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PromotionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PromotionMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Promotion;
@@ -58,8 +59,9 @@ public class PromotionEndpoint {
      */
     @GetMapping
     @Secured("ROLE_ADMIN")
-    public PaginationDto<PromotionDto> getAllPages(@RequestParam(name = "page", defaultValue = "1") Integer page,
-                                                   @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
+    public PaginationDto<PromotionDto> getAllPages(@Valid PaginationRequestDto paginationRequestDto) {
+        int page = paginationRequestDto.getPage();
+        int pageCount = paginationRequestDto.getPageCount();
         LOGGER.info("GET api/v1/promotions?page={}&page_count={}", page, pageCount);
         Page<Promotion> promotionPage = promotionService.getAllPromotions(page, pageCount);
         return new PaginationDto<>(promotionMapper.promotionListToPromotionDtoList(promotionPage.getContent()), page, pageCount, promotionPage.getTotalPages(), promotionService.getPromotionCount());
