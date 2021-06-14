@@ -6,7 +6,6 @@ import {Invoice} from '../dtos/invoice';
 import {Product} from '../dtos/product';
 import {OperatorAuthService} from './auth/operator-auth.service';
 import {Pagination} from '../dtos/pagination';
-import {Customer} from '../dtos/customer';
 
 @Injectable({
   providedIn: 'root'
@@ -85,7 +84,6 @@ export class InvoiceService {
    * @return pdf generated from the given invoice and invoice entry
    */
   createInvoiceAsPdf(invoice: Invoice): Observable<any> {
-
     return this.httpClient.post(this.invoiceBaseUri, invoice , this.getPdfHeadersForOperator());
   }
 

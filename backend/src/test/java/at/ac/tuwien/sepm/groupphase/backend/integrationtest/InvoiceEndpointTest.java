@@ -279,7 +279,7 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenNothing_whenFindById_then404() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get( INVOICE_BASE_URI + "/" +0L)
+        MvcResult mvcResult = this.mockMvc.perform(get( INVOICE_BASE_URI + "/" + 0L)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();

@@ -26,6 +26,7 @@ public interface TestData {
     String CUSTOMER_BASE_URI = BASE_URI + "/customers";
     String INVOICE_BASE_URI = BASE_URI + "/invoices";
     String PROMOTION_BASE_URI = BASE_URI + "/promotions";
+    String CART_BASE_URI = BASE_URI + "/carts";
 
     //TEST PROPERTIES FOR PRODUCTS, TAX-RATES AND CATEGORIES
     String PRODUCTS_BASE_URI = "/api/v1/products";
@@ -98,6 +99,14 @@ public interface TestData {
     LocalDateTime TEST_INVOICE_DATE = null;
     Double TEST_INVOICE_AMOUNT = 20.0;
 
+    //TEST PROPERTIES FOR CART
+    Long CART_ID = 0L;
+    Long CART_ITEM_ID = 0L;
+    Long CART_ITEM_PRODUCT_ID = 0L;
+    int CART_ITEM_QUANTITY = 5 ;
 
-
+    Long CART_ID_2 = 1L;
+    Long CART_ITEM_ID_2 = 1L;
+    Long CART_ITEM_PRODUCT_ID_2 = 1L;
+    int CART_ITEM_QUANTITY_2 = 10 ;
 }

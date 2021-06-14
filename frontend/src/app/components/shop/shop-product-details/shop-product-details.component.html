@@ -1,4 +1,10 @@
 <div class="container mt-5">
+  <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Problems!</strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
   <div class="d-flex justify-content-around">
     <img class="zoom" *ngIf="product.picture != null" src="{{getImageSource(product)}}" width="500px"
          height="400px"
