@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
 import at.ac.tuwien.sepm.groupphase.backend.util.MailTextBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class MailServiceImpl implements MailService {
 
 
     @Override
-    public void sendMail() {
+    public void sendMail(Order order) {
         String message = mailTextBuilder.buildOrderMessage();
 
         MimeMessage email = emailSender.createMimeMessage();
