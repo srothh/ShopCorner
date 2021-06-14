@@ -19,21 +19,21 @@ export class OperatorProductFormComponent implements OnInit {
   newCategoryId: number;
   @Input()
   newTaxRateId: number;
-  //properties for drop-down
+  // properties for drop-down
   @Input()
   categories: Category[];
   @Input()
   taxRates: TaxRate[];
-  //properties for the image
+  // properties for the image
   @ViewChild('fileInput')
   fileInput: ElementRef;
   fileToUpload: File;
   fileSource: string | ArrayBuffer;
-  //Form for creating a new product
+  // Form for creating a new product
   productForm: FormGroup;
-  //properties for the newly to be added product
+  // properties for the newly to be added product
 
-  //util properties
+  // util properties
   shouldFetch: boolean;
   errorOccurred: boolean;
   errorMessage: string;
@@ -52,16 +52,16 @@ export class OperatorProductFormComponent implements OnInit {
   ngOnInit(): void {
     if (this.newProduct === undefined && this.router.url.includes('add')) {
       this.newProduct = this.createNewProduct();
-      //keeping track of which type of form we are currently in
+      // keeping track of which type of form we are currently in
       // in this case we are currently trying to save a brand new product entity
       this.addProductEnabled = true;
       this.inEditMode = false;
     } else {
-      //in this case we are trying to edit a existing product entity
+      // in this case we are trying to edit a existing product entity
       this.addProductEnabled = false;
       this.inEditMode = true;
     }
-    //build form
+    // build form
     this.productForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.whiteSpaceValidator]],
       description: [null, Validators.maxLength(70)],
@@ -108,7 +108,7 @@ export class OperatorProductFormComponent implements OnInit {
       this.productForm.controls['locked'].setValue(this.newProduct.locked);
       this.productForm.controls['taxRate'].setValue(this.newProduct.taxRate.id, {onlySelf: true});
       this.productForm.controls['category'].setValue(this.newProduct.category?.id, {onlySelf: true});
-      if (this.newProduct.category == null){
+      if (this.newProduct.category == null) {
         this.newProduct.category = new Category(null, null);
       }
       if (this.newProduct.picture != null) {
@@ -141,7 +141,7 @@ export class OperatorProductFormComponent implements OnInit {
         this.router.navigate(['operator/products']).then();
       }, error => {
         this.errorOccurred = true;
-        //NOTE: not all error types supported yet because of the way how the interceptor is handling errors
+        // NOTE: not all error types supported yet because of the way how the interceptor is handling errors
         this.errorMessage = error.error.message;
       });
     } else {
@@ -150,7 +150,7 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   updateProduct() {
-    this.productService.updateProduct(this.newProduct.id,this.newProduct).subscribe(() => {
+    this.productService.updateProduct(this.newProduct.id, this.newProduct).subscribe(() => {
         this.inEditMode = true;
         this.addProductEnabled = false;
         this.productForm.disable();
@@ -171,7 +171,7 @@ export class OperatorProductFormComponent implements OnInit {
 
   enableEditing(): void {
     this.productForm.enable();
-    //it is possible to edit the product and eventually make it 'save-able'
+    // it is possible to edit the product and eventually make it 'save-able'
     this.addProductEnabled = true;
   }
 
@@ -192,7 +192,7 @@ export class OperatorProductFormComponent implements OnInit {
     const reader = new FileReader();
     reader.readAsDataURL(this.fileToUpload);
     reader.onload = ((loadEvent) => {
-      //fileSource should be string in a base64-encoded format
+      // fileSource should be string in a base64-encoded format
       this.fileSource = loadEvent.target.result;
       if (typeof this.fileSource === 'string') {
         this.newProduct.picture = this.fileSource.split(',')[1];

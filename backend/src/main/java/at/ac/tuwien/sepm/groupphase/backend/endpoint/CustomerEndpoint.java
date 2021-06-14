@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
@@ -60,14 +61,15 @@ public class CustomerEndpoint {
     /**
      * Retrieves a page of customers from the database.
      *
-     * @return A list of all the retrieved customers
+     * @return A page of customers
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Retrieve all customers", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<CustomerDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                      @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
+    @Operation(summary = "Retrieve pages of customers", security = @SecurityRequirement(name = "apiKey"))
+    public PaginationDto<CustomerDto> getAllCustomersPerPage(@Valid PaginationRequestDto paginationRequestDto) {
+        int page = paginationRequestDto.getPage();
+        int pageCount = paginationRequestDto.getPageCount();
         LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
         Page<Customer> customerPage = customerService.getAllCustomers(page, pageCount);
         return new PaginationDto<>(customerMapper.customerListToCustomerDtoList(customerPage.getContent()), page, pageCount, customerPage.getTotalPages(), customerService.getCustomerCount());

@@ -107,6 +107,9 @@ public class ProductServiceImpl implements ProductService {
         } else {
             pages = PageRequest.of(page, pageCount, Sort.by(sortBy).descending());
         }
+        name = name
+            .replace("%", "\\%")
+            .replace("_", "\\_");
         if (!name.isEmpty() && categoryId == -1) {
             return this.productRepository.findAllByName(name, pages);
         } else if (!name.isEmpty() && categoryId > 0) {
