@@ -20,7 +20,7 @@ export class ProductService {
    *
    * @return observable of type Pagination<Product>
    */
-  getProducts(page = 1, pageCount = 15, name = '', sortBy = 'id', categoryId = -1): Observable<Pagination<Product>> {
+  getProducts(page = 0, pageCount = 15, name = '', sortBy = 'id', categoryId = -1): Observable<Pagination<Product>> {
     const params = new HttpParams()
       .set(this.globals.requestParamKeys.pagination.page, String(page))
       .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount))
