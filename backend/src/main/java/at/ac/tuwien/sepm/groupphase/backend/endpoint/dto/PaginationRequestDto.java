@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 public class PaginationRequestDto {
-    private int page = 1;
+    private int page = 0;
     private int pageCount = 15;
 
     public PaginationRequestDto() { }
