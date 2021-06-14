@@ -139,14 +139,14 @@ public class InvoiceEndpoint {
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
     }
 
-    /*@PermitAll
+    @PermitAll
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/mail")
     @Operation(summary = "Send test mail", security = @SecurityRequirement(name = "apiKey"))
     public void sendTestMail() {
         LOGGER.info("GET /invoices/mail");
         mailService.sendMail();
-    }*/
+    }
 
 
     /**

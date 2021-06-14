@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
-import at.ac.tuwien.sepm.groupphase.backend.util.MailTextBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,22 +16,28 @@ import javax.mail.internet.MimeMultipart;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
 @Service
 public class MailServiceImpl implements MailService {
 
     private final JavaMailSender emailSender;
-    private final MailTextBuilder mailTextBuilder;
+    private final TemplateEngine thymeleafTemplateEngine;
 
     @Autowired
-    public MailServiceImpl(JavaMailSender emailSender, MailTextBuilder mailTextBuilder) {
+    public MailServiceImpl(JavaMailSender emailSender, TemplateEngine thymeleafTemplateEngine) {
         this.emailSender = emailSender;
-        this.mailTextBuilder = mailTextBuilder;
+        this.thymeleafTemplateEngine = thymeleafTemplateEngine;
     }
 
-
     @Override
-    public void sendMail(Order order) {
-        String message = mailTextBuilder.buildOrderMessage();
+    public void sendMail() {
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariable("sum", 10);
+        thymeleafContext.setVariable("tax", 20);
+        thymeleafContext.setVariable("end", 12);
+        String htmlBody = thymeleafTemplateEngine.process("emailTemplate.html", thymeleafContext);
 
         MimeMessage email = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(email, "utf-8");
@@ -43,7 +47,7 @@ public class MailServiceImpl implements MailService {
             helper.setFrom("ShopCornerSepm@gmail.com");
             MimeMultipart multipart = new MimeMultipart();
             MimeBodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setContent(message, "text/html");
+            messageBodyPart.setContent(htmlBody, "text/html");
             multipart.addBodyPart(messageBodyPart);
             messageBodyPart = new MimeBodyPart();
             DataSource fds = new URLDataSource(new URL("https://i.imgur.com/zMBx1FY.png"));

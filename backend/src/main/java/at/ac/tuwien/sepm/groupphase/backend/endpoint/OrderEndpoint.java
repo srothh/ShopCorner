@@ -8,10 +8,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
@@ -39,9 +37,10 @@ public class OrderEndpoint {
      */
     @PostMapping
     @PermitAll
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Place a new order", security = @SecurityRequirement(name = "apiKey"))
     public OrderDto placeNewOrder(@Valid @RequestBody OrderDto orderDto) {
-        LOGGER.info("POST" + BASE_URL);
+        LOGGER.info("POST" + BASE_URL + "/{}", orderDto);
         return orderMapper.orderToOrderDto(orderService.placeNewOrder(orderMapper.orderDtoToOrder(orderDto)));
     }
 

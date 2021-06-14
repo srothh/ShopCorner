@@ -26,7 +26,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placeNewOrder(Order order) {
         LOGGER.trace("placeNewOrder({})", order);
-        mailService.sendMail(order);
+        //mailService.sendMail(order);
         return orderRepository.save(order);
     }
 }
