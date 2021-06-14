@@ -34,6 +34,8 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendMail() {
         Context thymeleafContext = new Context();
+        thymeleafContext.setVariable("name", "Karl");
+        thymeleafContext.setVariable("address", "Wien");
         thymeleafContext.setVariable("sum", 10);
         thymeleafContext.setVariable("tax", 20);
         thymeleafContext.setVariable("end", 12);

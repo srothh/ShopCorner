@@ -17,6 +17,10 @@
             height: 100%;
         }
 
+        .money {
+            padding-left: 5rem;
+        }
+
     </style>
 
 </head>
@@ -25,7 +29,7 @@
 <a href="http://localhost:4200/#/account/profile"> Mein Konto</a>
 <a href="http://localhost:4200/#/account/orders"> Meine Bestellungen</a>
 <hr/>
-<h3>Guten Tag,</h3>
+<h2>Guten Tag,</h2>
 Wir wollen Ihnen hiermit mitteilen, dass Ihre Bestellung bei uns Eingegangen ist.
 <br/>
 <br/>
@@ -33,22 +37,22 @@ Ihre Bestellung wird schnellstm&ouml;glich behandelt. M&ouml;chten Sie Ihre Best
  <a href="http://localhost:4200/#/account/orders">Meine Bestellungen</a>
  auf der unserer <a href="http://localhost:4200/#/home">Website</a>.
 <hr/>
-<b>Diese Sendung wird gesendet an: </b> <i>Hier wird Adresse und Name noch eingef&uuml;gt</i>
+<b>Diese Bestellung wird gesendet an: </b> <span th:text="${name}"></span>, <span th:text="${address}"></span>
 <hr/>
-<h3>Bestell&uuml;bersicht</h3>
+<h3 style="color: #041459">Bestell&uuml;bersicht</h3>
 <table>
     <tbody>
     <tr>
         <td>Zwischensumme</td>
-        <td><span th:text="${sum}"></span></td>
+        <td class="money"><span th:text="${sum}"></span>&euro;</td>
     </tr>
     <tr>
         <td>Umsatzsteuer</td>
-        <td><span th:text="${tax}"></span></td>
+        <td class="money"><span th:text="${tax}"></span>&euro;</td>
     </tr>
     <tr>
-        <td><b>Endbetrag inkl. USt.</b></td>
-        <td><span th:text="${end}"></span></td>
+        <td>Endbetrag inkl. USt.</td>
+        <td class="money"><span th:text="${end}"></span>&euro;</td>
     </tr>
     </tbody>
 </table>
