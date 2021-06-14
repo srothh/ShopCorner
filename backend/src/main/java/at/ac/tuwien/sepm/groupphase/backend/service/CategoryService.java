@@ -54,7 +54,6 @@ public interface CategoryService {
      * @param categoryId the id of the category to execute the update
      * @param category the new category with updated fields
      */
-
     void updateCategory(Long categoryId, Category category);
 
     /**
@@ -63,9 +62,7 @@ public interface CategoryService {
      * @param categoryId the id of the category to execute the delete action
      *
      */
-
     void deleteCategory(Long categoryId);
-
 
     /**
      * Gets the category entity  with the given Id.

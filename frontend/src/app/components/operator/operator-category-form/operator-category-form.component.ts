@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Category} from '../../../dtos/category';
 import {CategoryService} from '../../../services/category.service';
+import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute, Router} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 
@@ -18,6 +19,7 @@ export class OperatorCategoryFormComponent implements OnInit {
   categoryForm: FormGroup;
   addCategoryEnabled: boolean;
   inEditMode: boolean;
+  faEdit = faEdit;
   constructor(private formBuilder: FormBuilder,
               private categoryService: CategoryService,
               private router: Router,

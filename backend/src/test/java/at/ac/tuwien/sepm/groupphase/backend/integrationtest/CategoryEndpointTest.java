@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -138,11 +140,14 @@ public class CategoryEndpointTest implements TestData {
     @Test
     public void givenACategory_whenPutByNonExistingId_then400() throws Exception {
         categoryRepository.save(category);
-        category.setId(-100L);
-        CategoryDto categoryDto = categoryMapper.entityToDto(category);
+        System.out.println("All categories in repository: " + this.categoryRepository.findAll());
+        Category newCategory = new Category();
+        newCategory.setId(-100L);
+        newCategory.setName("Changed Cat");
+        CategoryDto categoryDto = categoryMapper.entityToDto(newCategory);
         String body = objectMapper.writeValueAsString(categoryDto);
         ResultActions mvcResult = this.mockMvc.perform(
-        put(CATEGORY_BASE_URI + "/" + category.getId())
+        put(CATEGORY_BASE_URI + "/" + newCategory.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
             .content(body))

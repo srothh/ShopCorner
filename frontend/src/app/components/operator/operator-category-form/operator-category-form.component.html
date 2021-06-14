@@ -10,7 +10,7 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="operator-category-header mt-3" style="display:flex;justify-content: space-between">
+<div class="operator-category-header d-flex justify-content-between mt-3">
   <div *ngIf="addCategoryEnabled===false&& inEditMode === true">
     <h3>Kategorie - Detail</h3>
   </div>
@@ -27,6 +27,7 @@
   </div>
   <div *ngIf="addCategoryEnabled === false && inEditMode === true && getPermission() == 'ADMIN'">
     <button class="btn btn-primary" type="submit" (click)="enableEditing()">
+      <fa-icon class="mr-2" [icon]="faEdit"></fa-icon>
       Bearbeiten
     </button>
   </div>

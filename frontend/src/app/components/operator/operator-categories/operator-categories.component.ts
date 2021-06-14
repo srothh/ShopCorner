@@ -3,6 +3,10 @@ import {Category} from '../../../dtos/category';
 import {CategoryService} from '../../../services/category.service';
 import {Router, UrlSerializer} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {faEdit, faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {NgdbModalActionComponent} from '../../common/ngbd-modal-action/ngdb-modal-action.component';
+
 
 @Component({
   selector: 'app-operator-categories',
@@ -18,11 +22,26 @@ export class OperatorCategoriesComponent implements OnInit {
   pageSize = 10;
   collectionSize = 0;
   selectedCategories: Category[] = [];
-  constructor(private categoryService: CategoryService, private router: Router, private urlSerializer: UrlSerializer,
-              private authService: OperatorAuthService) { }
+  faPlusCircle = faPlusCircle;
+  faMinusCircle = faMinusCircle;
+  constructor(private categoryService: CategoryService,
+              private router: Router,
+              private urlSerializer: UrlSerializer,
+              private authService: OperatorAuthService,
+              private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.fetchCategories();
+  }
+  attemptToDeleteMultipleCategories(){
+    const modalRef = this.modalService.open(NgdbModalActionComponent);
+    modalRef.componentInstance.title = 'Warnung';
+    modalRef.componentInstance.body = `Wollen Sie ${this.selectedCategories.length} Kategorie(n) löschen?`;
+    modalRef.componentInstance.actionButtonTitle = 'Löschen';
+    modalRef.componentInstance.actionButtonStyle = 'danger';
+    modalRef.componentInstance.action = () => {
+      this.deleteCategories();
+    };
   }
 
   /**

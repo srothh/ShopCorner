@@ -129,12 +129,6 @@ public class Product {
         this.deleted = deleted;
     }
 
-
-    /*@PreRemove
-    private void preRemove() {
-        this.setCategory(null);
-    }*/
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
