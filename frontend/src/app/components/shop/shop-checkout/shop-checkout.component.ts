@@ -11,6 +11,7 @@ import {formatDate} from '@angular/common';
 import {Cart} from '../../../dtos/cart';
 import {OrderService} from '../../../services/order.service';
 import {Order} from '../../../dtos/order';
+import {Address} from '../../../dtos/address';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -19,7 +20,8 @@ import {Order} from '../../../dtos/order';
 })
 export class ShopCheckoutComponent implements OnInit {
 
-  customer: Customer;
+  customer: Customer = new Customer(0,'','','','',new Address(0,'',0, '', 0, '')
+    ,'');
   products: Product[];
   invoiceDto: Invoice;
   cart: Cart;
@@ -91,7 +93,6 @@ export class ShopCheckoutComponent implements OnInit {
   placeNewOrder() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer);
-    console.log(order);
     this.orderService.placeNewOrder(order).subscribe(() => {
     });
   }
