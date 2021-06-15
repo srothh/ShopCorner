@@ -5,6 +5,9 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A service class handling InvoiceItems.
+ */
 public interface InvoiceItemService {
 
     /**

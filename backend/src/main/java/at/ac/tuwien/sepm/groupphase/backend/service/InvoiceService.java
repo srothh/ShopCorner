@@ -5,6 +5,9 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
+/**
+ * A service class handling Invoices.
+ */
 public interface InvoiceService {
 
     /**
