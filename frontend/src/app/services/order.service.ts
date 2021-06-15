@@ -14,6 +14,11 @@ export class OrderService {
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
 
+  /** Places a new order
+   *
+   * @param order dto containing information on the order
+   * @return the order dto as returned from the backend
+   */
   placeNewOrder(order: Order): Observable<Order> {
     return this.httpClient.post<Order>(this.orderBaseURI, order);
   }
