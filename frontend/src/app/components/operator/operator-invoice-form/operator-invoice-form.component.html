@@ -26,18 +26,18 @@
       <h6>Gesamt Betrag</h6>
     </div>
   </div>
-  <div *ngFor="let item of t['controls']; let id = index" class="list-group list-group-flush">
+  <div *ngFor="let item of invoiceFormArray['controls']; let id = index" class="list-group list-group-flush">
     <div class="row" [formGroup]="item">
       <div class="col-4 center-block text-center">
         <select class="form-select form-control productName" formControlName="name" id="productName"
-                [ngClass]="{ 'is-invalid': submitted && item.controls.name.errors}"
+                [ngClass]="{ 'is-invalid': submitted && formControls(item).name.errors}"
                 (change)="calculateAmount(); updateProducts()">
           <option value="" selected disabled>(none)</option>
           <option *ngFor="let product of products; let i = index;" [ngValue]="product"
                   [class.hidden]="selectedProducts.includes(product)">{{product.name}}</option>
         </select>
-        <div *ngIf="submitted && item.controls.name.errors" class="invalid-feedback">
-          <div *ngIf="item.controls.name.errors.required">Wählen Sie ein Produkt</div>
+        <div *ngIf="submitted && formControls(item).name.errors" class="invalid-feedback">
+          <div *ngIf="formControls(item).name.errors.required">Wählen Sie ein Produkt</div>
         </div>
       </div>
       <div class="col-3 center-block text-center">
@@ -47,9 +47,9 @@
       <div class="col-2 center-block text-center">
         <input type="number" class="form-control" formControlName="quantity" name="quantity" id="quantity"
                (change)="calculateAmount()"
-               [ngClass]="{ 'is-invalid': submitted && this.item.controls.quantity.errors}" min="1">
-        <div *ngIf="submitted && item.controls.quantity.errors" class="invalid-feedback">
-          <div *ngIf="item.controls.quantity.errors.required">Geben Sie die Anzahl der Produkte an</div>
+               [ngClass]="{ 'is-invalid': submitted && formControls(item).quantity.errors}" min="1">
+        <div *ngIf="submitted && formControls(item).quantity.errors" class="invalid-feedback">
+          <div *ngIf="formControls(item).quantity.errors.required">Geben Sie die Anzahl der Produkte an</div>
         </div>
       </div>
       <div class="col-2 text-center align-items-center">
@@ -69,7 +69,7 @@
     </div>
     <div class="col-3 center-block text-center">
 
-      <input class="form-control" id="netAmount"
+      <input class="form-control"
              style="border: none;background-color:white; text-align: center"
              formControlName="subtotal" name="subtotal" id="subtotal" readonly
              value="{{isNotANumber(newInvoiceForm.value.subtotal)?'0.00':newInvoiceForm.value.subtotal}}">
@@ -80,7 +80,7 @@
       <span class="form-control" style="border: none; text-align: right">Steuern:</span>
     </div>
     <div class="col-3 center-block text-center">
-      <input class="form-control" id="taxAmount"
+      <input class="form-control"
              style="border: none;background-color:white; text-align: center"
              formControlName="tax" name="tax" id="tax" readonly
              value="{{newInvoiceForm.value.tax}}">
@@ -92,7 +92,7 @@
       <span class="form-control" style="border: none;  text-align: right">Gesamtbetrag:</span>
     </div>
     <div class="col-3 center-block text-center">
-      <input class="form-control" id="totalAmount"
+      <input class="form-control"
              style="border: none;background-color:white; text-align: center"
              formControlName="total" name="total" id="total" readonly
              value="{{newInvoiceForm.value.total}}">

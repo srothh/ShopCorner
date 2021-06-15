@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @ActiveProfiles("test")
 public class InvoiceItemMappingTest implements TestData {
-        private static InvoiceItem invoiceItem = new InvoiceItem();
-        private static InvoiceItem invoiceItem2 = new InvoiceItem();
+        private static final InvoiceItem invoiceItem = new InvoiceItem();
+        private static final InvoiceItem invoiceItem2 = new InvoiceItem();
 
     @Autowired
     private InvoiceItemMapper invoiceItemMapper;

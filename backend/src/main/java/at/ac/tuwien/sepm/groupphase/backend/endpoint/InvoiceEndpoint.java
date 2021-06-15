@@ -9,15 +9,13 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
 import java.util.Set;
 
-import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
+import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 
 import javax.validation.Valid;
@@ -39,7 +37,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,12 +49,14 @@ public class InvoiceEndpoint {
     private final InvoiceMapper invoiceMapper;
     private final InvoiceService invoiceService;
     private final InvoiceItemMapper invoiceItemMapper;
+    private final PdfGeneratorService pdfGeneratorService;
 
     @Autowired
-    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService) {
+    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService, PdfGeneratorService pdfGeneratorService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
+        this.pdfGeneratorService = pdfGeneratorService;
     }
 
     /**
@@ -108,11 +107,10 @@ public class InvoiceEndpoint {
         LOGGER.info("POST /api/v1/invoices/ {}", invoiceDto);
 
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
-        PdfGenerator pdf = new PdfGenerator();
         Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
         invoice.setItems(items);
         Invoice createdInvoice = invoiceService.createInvoice(invoice);
-        final byte[] contents = pdf.generatePdfOperator(invoiceService.findOneById(createdInvoice.getId()));
+        final byte[] contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoiceService.findOneById(createdInvoice.getId()));
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
@@ -130,8 +128,7 @@ public class InvoiceEndpoint {
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
         LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
-        PdfGenerator pdf = new PdfGenerator();
-        final byte[] contents = pdf.generatePdfOperator(invoice);
+        final byte[] contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
     }
