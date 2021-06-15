@@ -43,6 +43,11 @@ import {ShopProductDetailsComponent} from './components/shop/shop-product-detail
 import {ShopAccountOrdersComponent} from './components/shop/shop-account-orders/shop-account-orders.component';
 import {ShopAccountProfileComponent} from './components/shop/shop-account-profile/shop-account-profile.component';
 import { BaseProductSearchBarComponent } from './components/common/base-product-search-bar/base-product-search-bar.component';
+import {NgbdModalInfoComponent} from './components/common/ngbd-modal-info/ngbd-modal-info.component';
+import {NgdbModalActionComponent} from './components/common/ngbd-modal-action/ngdb-modal-action.component';
+import { OperatorCategoryDetailsComponent } from './components/operator/operator-category-details/operator-category-details.component';
+import { OperatorCategoryFormComponent } from './components/operator/operator-category-form/operator-category-form.component';
+import { OperatorPromotionFormComponent } from './components/operator/operator-promotion-form/operator-promotion-form.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +73,7 @@ import { BaseProductSearchBarComponent } from './components/common/base-product-
     ShopProductComponent,
     ShopCartComponent,
     OperatorRegistrationComponent,
+    OperatorPromotionFormComponent,
     OperatorAddProductComponent,
     ShopRegistrationComponent,
     OperatorEditAccountComponent,
@@ -84,6 +90,11 @@ import { BaseProductSearchBarComponent } from './components/common/base-product-
     ShopAccountOrdersComponent,
     ShopAccountProfileComponent,
     BaseProductSearchBarComponent,
+    NgbdModalInfoComponent,
+    NgdbModalActionComponent,
+    ShopAccountProfileComponent,
+    OperatorCategoryDetailsComponent,
+    OperatorCategoryFormComponent
   ],
   imports: [
     BrowserModule,

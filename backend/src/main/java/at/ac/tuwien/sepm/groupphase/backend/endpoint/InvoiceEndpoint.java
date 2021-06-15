@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
@@ -13,6 +14,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
@@ -64,12 +66,12 @@ public class InvoiceEndpoint {
      * @param id is the id of the invoice
      * @return DetailedInvoiceDto with all given information of the invoice
      */
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
     @Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
     public DetailedInvoiceDto find(@PathVariable Long id) {
-        LOGGER.info("GET /invoice/{}", id);
+        LOGGER.info("GET /api/v1/invoices/{}", id);
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
     }
 
@@ -83,11 +85,11 @@ public class InvoiceEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<SimpleInvoiceDto> getAllCustomers(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                      @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
-        LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
+    public PaginationDto<SimpleInvoiceDto> getAllInvoices(@Valid PaginationRequestDto paginationRequestDto) {
+        int page = paginationRequestDto.getPage();
+        int pageCount = paginationRequestDto.getPageCount();
+        LOGGER.info("GET api/v1/invoices?page={}&page_count={}", page, pageCount);
         Page<Invoice> operatorPage = invoiceService.getAllInvoices(page, pageCount);
-
         return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.getAllInvoices(page, pageCount).getContent()), page, pageCount, operatorPage.getTotalPages(), invoiceService.getInvoiceCount());
     }
 
@@ -98,12 +100,12 @@ public class InvoiceEndpoint {
      * @param invoiceDto which should be saved in the database
      * @return ResponseEntity with the generated pdf
      */
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = "application/pdf")
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("POST /invoices/ {}", invoiceDto);
+        LOGGER.info("POST /api/v1/invoices/ {}", invoiceDto);
 
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
         PdfGenerator pdf = new PdfGenerator();
@@ -121,12 +123,12 @@ public class InvoiceEndpoint {
      * @param id id of the invoice
      * @return ResponseEntity with the generated pdf
      */
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}/pdf", produces = "application/pdf")
     @Operation(summary = "Retrieve new invoice as pdf", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
-        LOGGER.info("GET /invoices/{}/pdf", id);
+        LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
         PdfGenerator pdf = new PdfGenerator();
         final byte[] contents = pdf.generatePdfOperator(invoice);

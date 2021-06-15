@@ -1,9 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
+import java.security.Principal;
 import java.util.Collection;
 
 @RestController
@@ -55,15 +57,16 @@ public class OperatorEndpoint {
     /**
      * Get all operators with certain permission for certain page.
      *
-     * @param page which should be fetched
-     * @param pageCount amount per page
+     * @param paginationRequestDto describes the pagination request
      * @param permissions of needed operators
      * @return List with all needed operators
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
-    @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam("permissions") Permissions permissions) {
+    @Operation(summary = "Get pages of operators", security = @SecurityRequirement(name = "apiKey"))
+    public PaginationDto<OverviewOperatorDto> getAllOperatorsPerPage(@Valid PaginationRequestDto paginationRequestDto, @RequestParam("permissions") Permissions permissions) {
+        int page = paginationRequestDto.getPage();
+        int pageCount = paginationRequestDto.getPageCount();
         LOGGER.info("GET " + BASE_URL + "?{}&{}&{}", page, pageCount, permissions);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -129,18 +132,10 @@ public class OperatorEndpoint {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Edit an existing operator account", security = @SecurityRequirement(name = "apiKey"))
-    public OperatorDto editOperator(@PathVariable("id") Long id, @Valid @RequestBody OperatorDto operatorDto) {
+    public OperatorDto editOperator(@PathVariable("id") Long id, @Valid @RequestBody OperatorDto operatorDto, Principal principal) {
         LOGGER.info("PUT " + BASE_URL + "/{}", id);
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = "";
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-
-        if (operatorService.findOperatorByLoginName(username).getId().equals(id) && id.equals(operatorDto.getId())) {
+        if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id) && id.equals(operatorDto.getId())) {
 
             Operator operator = operatorMapper.dtoToEntity(operatorDto);
             OperatorDto result = operatorMapper.entityToDto(operatorService.update(operator));
@@ -151,32 +146,40 @@ public class OperatorEndpoint {
         throw new AccessDeniedException("Illegal access");
     }
 
+
+
     /**
-     * Deletes an employee with given id.
+     * Deletes the operator with the given id.
      *
-     * @param id of employee that should be deleted
+     * @param id of the operator to be deleted
      */
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id, Principal principal) {
         LOGGER.info("DELETE " + BASE_URL + "/{}", id);
+
+        if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id)) {
+            throw new AccessDeniedException("Admins cannot delete their own accounts");
+        }
         operatorService.delete(id);
+
     }
 
     /**
-     * Changes Permssions of Employee to Admin.
+     * Changes Permissions of the operator with the given id.
      *
-     * @param id of employee that needs new permissions
+     * @param id of operator that needs new permissions
      * @param operatorPermissionChangeDto Dto with permission that should be updated
      */
     @Secured({"ROLE_ADMIN"})
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void changePermissions(@PathVariable("id") Long id, @Valid @RequestBody OperatorPermissionChangeDto operatorPermissionChangeDto) {
+    public void changePermissions(@PathVariable("id") Long id, @Valid @RequestBody OperatorPermissionChangeDto operatorPermissionChangeDto, Principal principal) {
         LOGGER.info("PATCH " + BASE_URL + "/{}: {}", id, operatorPermissionChangeDto);
-        if (operatorPermissionChangeDto.getPermissions() != Permissions.admin) {
-            throw new IllegalArgumentException("Permission has to be admin");
+
+        if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id)) {
+            throw new AccessDeniedException("Admins cannot change their own permissions");
         }
         operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }

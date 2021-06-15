@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Product} from '../../../dtos/product';
 import {ProductService} from '../../../services/product/product.service';
+import {Globals} from '../../../global/globals';
+import {CartGlobals} from '../../../global/cartGlobals';
+import {CartItem} from '../../../dtos/cartItem';
+import {CartService} from '../../../services/cart.service';
 
 @Component({
   selector: 'app-shop-product-details',
@@ -10,9 +14,17 @@ import {ProductService} from '../../../services/product/product.service';
 })
 export class ShopProductDetailsComponent implements OnInit {
 
+  error = false;
+  errorMessage = '';
+
   product: Product;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private productService: ProductService) {
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
+              private productService: ProductService,
+              private globals: Globals,
+              private cartGlobals: CartGlobals,
+              private cartService: CartService) {
     const state = this.router.getCurrentNavigation().extras.state;
     if (state) {
       this.product = state.product;
@@ -34,8 +46,44 @@ export class ShopProductDetailsComponent implements OnInit {
   }
 
   addToCart(product: Product) {
-    // TODO: add to cart logic ...
-    this.router.navigate(['cart']).then();
+    const index = this.cartGlobals.containsProductAtIndex(product);
+    if (index === -1) {
+      this.cartGlobals.addToCart(product);
+      this.cartService.addProductsToCart(new CartItem(product.id, 1)).subscribe( (item) => {
+          this.cartGlobals.updateCartItem(item);
+
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error;
+      });
+
+    } else {
+      const cart  = this.cartGlobals.getCart();
+      const quantity = Number(cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemQuantity']) + 1;
+      if (quantity <= 12) {
+        cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemQuantity'] = quantity;
+        this.cartGlobals.updateCart(product, quantity);
+        console.log('quantity ', quantity);
+        const cartItem = new CartItem(product.id, quantity);
+        cartItem.id = cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemId'];
+      this.cartService.updateToCart(cartItem).subscribe( (item) => {
+        this.cartGlobals.updateCartItem(item);
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error;
+      });
+      }
+    }
+    if (!this.error) {
+      this.router.navigate(['cart']).then();
+    }
+  }
+
+  /**
+   * Error flag will be deactivated, which clears the error message
+   */
+  vanishError() {
+    this.error = false;
   }
 
   private fetchProduct(id: number) {
@@ -43,4 +91,6 @@ export class ShopProductDetailsComponent implements OnInit {
       this.product = product;
     });
   }
+
+
 }

@@ -18,15 +18,12 @@ import java.util.Set;
 @Entity
 public class Category {
     @Id
-    //@SequenceGenerator(name="category_sequence", sequenceName = "category_sequence")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
     @Size(min = 3, max = 20)
     private String name;
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = true)
-    @JsonIgnore
-    private Set<Product> products = new HashSet<>();
+
 
     public Category(){}
 
@@ -44,21 +41,6 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
-
-    @PreRemove
-    public void preRemove() {
-        for (Product product : products) {
-            product.setCategory(null);
-        }
     }
 
     public boolean equals(Object o) {
@@ -86,7 +68,6 @@ public class Category {
             +
             ", name='" + name + '\''
             +
-            //", products=" + products +
             '}';
     }
 

@@ -10,6 +10,4 @@ import java.util.List;
 
 @Repository
 public interface TaxRateRepository extends JpaRepository<TaxRate, Long> {
-    @Query("SELECT DISTINCT t FROM TaxRate t LEFT JOIN FETCH t.products")
-    public List<TaxRate> getAllTaxRates();
 }

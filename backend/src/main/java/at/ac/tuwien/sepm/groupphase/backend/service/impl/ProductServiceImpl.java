@@ -1,12 +1,16 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
+import at.ac.tuwien.sepm.groupphase.backend.service.TaxRateService;
+import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,20 +27,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-    private final TaxRateRepository taxRateRepository;
+    private final CategoryService categoryService;
+    private final TaxRateService taxRateService;
+    private final InvoiceItemService invoiceItemService;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, TaxRateRepository taxRateRepository) {
+    public ProductServiceImpl(
+        ProductRepository productRepository,
+        CategoryService categoryService,
+        TaxRateService taxRateService,
+        InvoiceItemService invoiceItemService) {
         this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.taxRateRepository = taxRateRepository;
+        this.categoryService = categoryService;
+        this.taxRateService = taxRateService;
+        this.invoiceItemService = invoiceItemService;
     }
 
     @Caching(evict = {
@@ -70,17 +81,14 @@ public class ProductServiceImpl implements ProductService {
         if (categoryId == null) {
             product.setCategory(null);
         } else {
-            Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("Could not find category!"));
+            Category category = categoryService.getCategoryById(categoryId);
             product.setCategory(category);
-
         }
     }
 
     private void assignProductToTaxRate(Product product, Long taxRateId) {
         LOGGER.trace("assignProductToTaxRate({}{})", product, taxRateId);
-        TaxRate taxRate = taxRateRepository.findById(taxRateId)
-            .orElseThrow(() -> new NotFoundException("Could not find tax-rate!"));
+        TaxRate taxRate = taxRateService.findTaxRateById(taxRateId);
         product.setTaxRate(taxRate);
     }
 
@@ -99,6 +107,9 @@ public class ProductServiceImpl implements ProductService {
         } else {
             pages = PageRequest.of(page, pageCount, Sort.by(sortBy).descending());
         }
+        name = name
+            .replace("%", "\\%")
+            .replace("_", "\\_");
         if (!name.isEmpty() && categoryId == -1) {
             return this.productRepository.findAllByName(name, pages);
         } else if (!name.isEmpty() && categoryId > 0) {
@@ -114,6 +125,11 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getAllProducts() {
         LOGGER.trace("getAllProducts()");
         return this.productRepository.findAll();
+    }
+
+    public List<Product> getAllProductsByCategory(Long categoryId) {
+        LOGGER.trace("getAllProductsByCategory(categoryId)");
+        return this.productRepository.findAllByCategoryId(categoryId);
     }
 
     public void validateProperty(String description) {
@@ -172,9 +188,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProductById(Long productId) {
         LOGGER.trace("deleteProductById{}", productId);
-        productRepository.findById(productId)
+        boolean softDelete = false;
+        Product productToDelete = productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
-        productRepository.deleteById(productId);
+        softDelete = this.invoiceItemService.findAllInvoicesItems().stream()
+            .map(InvoiceItem::getProduct)
+            .anyMatch(product -> product.getId().equals(productId));
+
+        if (!softDelete) {
+            productRepository.deleteById(productId);
+        } else {
+            productToDelete.setDeleted(true);
+            productRepository.save(productToDelete);
+        }
+
     }
 
     @Override

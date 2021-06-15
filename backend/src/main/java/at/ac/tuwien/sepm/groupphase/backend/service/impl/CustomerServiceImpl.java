@@ -32,13 +32,13 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    @Autowired
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final AddressService addressService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final Validator validator;
 
+    @Autowired
     public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService, Validator validator) {
         this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository;
@@ -66,6 +66,17 @@ public class CustomerServiceImpl implements CustomerService {
             return customer;
         }
         throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'customers'"),
+        @CacheEvict(value = "customerPages", allEntries = true)
+    })
+    @Override
+    public void deleteCustomerByLoginName(String loginName) {
+        LOGGER.trace("deleteCustomerByLoginName({})", loginName);
+        Customer customer = customerRepository.findByLoginName(loginName);
+        customerRepository.delete(customer);
     }
 
     @Transactional

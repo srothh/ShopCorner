@@ -1,14 +1,19 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.Id;
+import javax.persistence.Entity;
+import javax.persistence.GenerationType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.Column;
+import javax.persistence.PreRemove;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -28,6 +33,7 @@ public class Product {
     private Double price;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
     private boolean locked;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -37,6 +43,7 @@ public class Product {
     private byte[] picture;
     @Column(name = "saleCount", columnDefinition = "BIGINT default 0")
     private Long saleCount;
+    private boolean deleted;
 
 
     public Product() {
@@ -114,6 +121,14 @@ public class Product {
         this.locked = locked;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -164,6 +179,7 @@ public class Product {
         private boolean locked;
         private TaxRate taxRate;
         private byte[] picture;
+        private boolean deleted;
 
         public ProductBuilder(){
         }
@@ -204,6 +220,11 @@ public class Product {
             return this;
         }
 
+        public ProductBuilder withDeleted(boolean deleted) {
+            this.deleted = deleted;
+            return this;
+        }
+
         public ProductBuilder withPicture(byte[] picture) {
             this.picture = picture;
             return this;
@@ -224,6 +245,7 @@ public class Product {
             product.setTaxRate(taxRate);
             product.setLocked(locked);
             product.setPicture(picture);
+            product.setDeleted(deleted);
             return product;
         }
     }

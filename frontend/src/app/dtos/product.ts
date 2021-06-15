@@ -2,6 +2,8 @@ import {Category} from './category';
 import {TaxRate} from './tax-rate';
 
 export class Product {
+  cartItemId: number;
+  cartItemQuantity: number;
   constructor(
     public id: number,
     public name: string,
@@ -11,6 +13,7 @@ export class Product {
     public taxRate: TaxRate,
     public locked: boolean,
     public picture: string | ArrayBuffer,
+    public deleted: boolean,
   ) {
   }
 }

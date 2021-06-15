@@ -8,15 +8,16 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface InvoiceService {
 
     /**
-     * Find a single message entry by id.
+     * Find a single invoice entry by id.
      *
-     * @param id the id of the message entry
-     * @return the message entry
+     * @param id the id of the invoice entry
+     * @return the invoice entry
      * @throws NotFoundException when no invoice with the id is found
      */
     Invoice findOneById(Long id);
@@ -40,6 +41,14 @@ public interface InvoiceService {
      */
     long getInvoiceCount();
 
+    /**
+     * Returns the number of Invoices from one given year in the database.
+     *
+     * @return The amount of invoices in the database
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    long getInvoiceCountByYear(LocalDateTime year);
+
 
     /**
      * Create new invoice.
@@ -49,7 +58,6 @@ public interface InvoiceService {
      * @throws ServiceException upon encountering errors with the database
      */
     Invoice createInvoice(Invoice invoice);
-
 
 
 }

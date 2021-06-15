@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +24,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
@@ -64,19 +67,23 @@ public class ProductEndpoint {
     /**
      * Gets all products form the database in a paginated manner.
      *
-     * @param page describes the number of the page
-     * @param pageCount the number of entries in each page
+     * @param paginationRequestDto describes the pagination request
+     * @param productSearchDto describes the product search request
      * @return all products with all given fields in a dto - format and paginated specified by page and pageCount
      */
     @PermitAll
-    @GetMapping(params = {"page"})
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount,
-                                                           @RequestParam(defaultValue = "id") String sortBy,
-                                                           @RequestParam(required = false, defaultValue = "") String name,
-                                                           @RequestParam(name = "category_id", required = false, defaultValue = "-1") Long categoryId) {
+    public PaginationDto<ProductDto> getAllProductsPerPage(@Valid PaginationRequestDto paginationRequestDto, @Valid ProductSearchDto productSearchDto) {
         LOGGER.info("GET " + BASE_URL);
+
+        int page = paginationRequestDto.getPage();
+        int pageCount = paginationRequestDto.getPageCount();
+        long categoryId = productSearchDto.getCategoryId();
+        String name = productSearchDto.getName();
+        String sortBy = productSearchDto.getSortBy();
+
         Page<Product> productPage = this.productService.getAllProductsPerPage(page, pageCount, categoryId, sortBy, name);
         Long productCount;
         if (name.isEmpty() && categoryId == -1) {
@@ -88,6 +95,7 @@ public class ProductEndpoint {
         return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
+            .filter(productDto -> !productDto.isDeleted())
             .collect(Collectors.toList()), page, pageCount, productPage.getTotalPages(), productCount);
     }
 
@@ -108,6 +116,7 @@ public class ProductEndpoint {
         return this.productService.getAllProducts()
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
+            .filter(productDto -> !productDto.isDeleted())
             .collect(Collectors.toList());
     }
 

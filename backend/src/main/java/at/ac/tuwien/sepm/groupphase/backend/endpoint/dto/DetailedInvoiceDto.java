@@ -10,7 +10,6 @@ import java.util.Set;
 public class DetailedInvoiceDto extends SimpleInvoiceDto {
 
     @NotNull(message = "Set<InvoiceItemDto> can not be null")
-    //private Set<InvoiceItemDto> items = new HashSet<>();
     private Set<InvoiceItemDto> items = new HashSet<>();
 
 
