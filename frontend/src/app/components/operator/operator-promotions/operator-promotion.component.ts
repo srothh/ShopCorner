@@ -66,7 +66,6 @@ export class OperatorPromotionComponent implements OnInit {
   }
 
   isAdmin() {
-    console.log(this.authService.getUserRole());
     return this.authService.getUserRole() === this.globals.roles.admin;
   }
 
