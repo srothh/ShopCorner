@@ -3,26 +3,22 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 import javax.validation.constraints.NotNull;
 
 public class OrderDto {
-
-
     private Long id;
-    @NotNull
-    private DetailedInvoiceDto invoice;
-    @NotNull
     private CustomerDto customer;
+    private DetailedInvoiceDto invoice;
 
-    public OrderDto(Long id, DetailedInvoiceDto invoiceId, CustomerDto customerId) {
+    public OrderDto(Long id, CustomerDto customer, DetailedInvoiceDto invoice) {
         this.id = id;
-        this.invoice = invoiceId;
-        this.customer = customerId;
+        this.invoice = invoice;
+        this.customer = customer;
     }
 
     public OrderDto() {
     }
 
-    public OrderDto(DetailedInvoiceDto invoiceId, CustomerDto customerId) {
-        this.invoice = invoiceId;
-        this.customer = customerId;
+    public OrderDto(CustomerDto customer, DetailedInvoiceDto invoice) {
+        this.invoice = invoice;
+        this.customer = customer;
     }
 
     public Long getId() {

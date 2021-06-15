@@ -31,7 +31,6 @@ export class ShopCheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.fetchCustomer();
     this.products = this.cartGlobals.getCart();
-    this.getCartItems();
   }
 
   getStreetAddress(): string {
@@ -77,13 +76,13 @@ export class ShopCheckoutComponent implements OnInit {
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
-    for (const item of this.cart.cartItems) {
-      if (item !== undefined) {
-        const invItem = new InvoiceItem(new InvoiceItemKey(item.id), this.products.filter(prod =>
-          prod.id === item.productId)[0], item.quantity);
-        this.invoiceDto.items.push(invItem);
 
+    for (const item of this.products) {
+      if (item !== undefined) {
+        const invItem = new InvoiceItem(new InvoiceItemKey(item.id), item, item.cartItemQuantity);
+        this.invoiceDto.items.push(invItem);
       }
+
     }
     this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
@@ -92,13 +91,16 @@ export class ShopCheckoutComponent implements OnInit {
   placeNewOrder() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer);
-    this.orderService.placeNewOrder(order).subscribe();
+    console.log(order);
+    this.orderService.placeNewOrder(order).subscribe(() => {
+    });
   }
 
   private fetchCustomer() {
     this.meService.getMyProfileData().subscribe(
       (customer: Customer) => {
         this.customer = customer;
+        this.getCartItems();
       }
     );
   }
