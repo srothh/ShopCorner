@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice.service';
-import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-operator-invoice-detailview',
@@ -37,7 +36,6 @@ export class OperatorInvoiceDetailviewComponent implements OnInit {
 
   downloadInvoiceById() {
     this.invoiceService.getInvoiceAsPdfById(this.value.id ).subscribe((data) => {
-      const newBlob  = new Blob([data], {type: 'application/pdf'});
       const downloadURL = window.URL.createObjectURL(data);
       const link = document.createElement('a');
       link.href = downloadURL;

@@ -94,10 +94,9 @@ export class InvoiceService {
   }
 
   private getPdfHeadersForOperator(): any {
-    const httpOptions = {
+    return {
       responseType: 'blob' as 'json',
       headers: new HttpHeaders().set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`).set('Accept', 'application/pdf')
     };
-    return httpOptions;
   }
 }

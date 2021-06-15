@@ -36,7 +36,9 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   constructor(private invoiceService: InvoiceService, private formBuilder: FormBuilder) {
   }
-
+  static validateInputNumbers(item) {
+    return (item.taxRate !== undefined && item.quantity !== undefined) || (item.taxRate !== '' && item.quantity !== '');
+  }
 
   ngOnInit() {
     this.newInvoiceForm = this.formBuilder.group({
@@ -60,6 +62,14 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   formControls(item) {
     return item.controls;
+  }
+
+  formControlsQuantity(item) {
+    return this.formControls(item).quantity;
+  }
+
+  formControlsName(item) {
+    return this.formControls(item).name;
   }
 
   addProductOnClick() {
@@ -201,10 +211,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
     }
   }
 
-  /**
-   * @param error
-   * @private
-   */
 
 
   private fetchData(): void {
@@ -221,7 +227,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
     for (const item of this.invoiceFormArray.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        if (product.taxRate !== undefined && this.validateInputNumbers(item.value)) {
+        if (product.taxRate !== undefined && OperatorInvoiceFormComponent.validateInputNumbers(item.value)) {
           amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
         }
       }
@@ -234,7 +240,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
     for (const item of this.invoiceFormArray.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        if (product.taxRate !== undefined && this.validateInputNumbers(item.value)) {
+        if (product.taxRate !== undefined && OperatorInvoiceFormComponent.validateInputNumbers(item.value)) {
           amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
         }
       }
@@ -248,7 +254,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
     for (const item of this.invoiceFormArray.controls) {
       if (item !== undefined && item.value !== undefined) {
         const product = item.value.name;
-        if (product.taxRate !== undefined && this.validateInputNumbers(item.value)) {
+        if (product.taxRate !== undefined && OperatorInvoiceFormComponent.validateInputNumbers(item.value)) {
           amount += product.price * item.value.quantity;
         }
       }
@@ -257,8 +263,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   }
 
-  private validateInputNumbers(item) {
-    return (item.taxRate !== undefined && item.quantity !== undefined) || (item.taxRate !== '' && item.quantity !== '');
-  }
+
 
 }
