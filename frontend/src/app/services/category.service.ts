@@ -32,16 +32,12 @@ export class CategoryService {
    * @return An Observable with paginated category
    */
   getCategoriesPerPage(page: number, pageCount): Observable<Pagination<Category>> {
-<<<<<<< HEAD
-    return this.httpClient.get<Pagination<Category>>(this.categoryBaseUri + '/?page=' + page + '&page_count=' + pageCount, {
-=======
     const params = new HttpParams()
       .set(this.globals.requestParamKeys.pagination.page, String(page))
       .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount));
 
     return this.httpClient.get<Pagination<Category>>(this.categoryBaseUri, {
       params,
->>>>>>> develop
       headers: this.getHeadersForOperator()
     });
   }
@@ -54,8 +50,6 @@ export class CategoryService {
    */
   addCategory(category: Category): Observable<Category> {
     return this.httpClient.post<Category>(this.categoryBaseUri, category, {
-<<<<<<< HEAD
-=======
       headers: this.getHeadersForOperator()
     });
   }
@@ -68,7 +62,7 @@ export class CategoryService {
    * @return An Observable with no return value
    */
   updateCategory(categoryId: number, category: Category): Observable<void> {
-    return this.httpClient.put<void>(this.categoryBaseUri + '/'+categoryId,category,{
+    return this.httpClient.put<void>(this.categoryBaseUri + '/' + categoryId, category, {
       headers: this.getHeadersForOperator()
     });
   }
@@ -89,12 +83,12 @@ export class CategoryService {
    * @param categoryId the Id of the category to retrieve from the database
    * @return An observable with the requested category
    */
-  getCategoryById(categoryId: number){
+  getCategoryById(categoryId: number) {
     return this.httpClient.get<Category>(this.categoryBaseUri + '/' + categoryId, {
->>>>>>> develop
       headers: this.getHeadersForOperator()
     });
   }
+
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
