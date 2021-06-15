@@ -42,7 +42,7 @@ export class BaseProductSearchBarComponent implements OnInit {
       } else {
         this.errorMessage = error.error;
       }
-      this.errorOccurred.emit({error, errorMessage: this.errorMessage});
+      this.errorOccurred.emit({error, errorMessage: `Categories - ${this.errorMessage}`});
     });
   }
 

@@ -11,7 +11,7 @@ import {OperatorAuthService} from './auth/operator-auth.service';
 })
 export class CategoryService {
 
-  private categoryBaseUri: string = this.globals.backendUri + '/categoris';
+  private categoryBaseUri: string = this.globals.backendUri + '/categories';
 
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }

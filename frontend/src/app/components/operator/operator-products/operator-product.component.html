@@ -30,7 +30,8 @@
         <div class="button_block"></div>
       </div>
     </div>
-    <app-base-product-search-bar (resetAndFetchProducts)="resetAndFetchProducts($event)"></app-base-product-search-bar>
+    <app-base-product-search-bar (errorOccurred)="error = $event.error; errorMessage = $event.errorMessage"
+                                 (resetAndFetchProducts)="resetAndFetchProducts($event)"></app-base-product-search-bar>
   </div>
 
   <hr>

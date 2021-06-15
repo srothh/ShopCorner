@@ -39,6 +39,7 @@ export class ShopProductComponent implements OnInit {
     this.pageableProducts.searchQuery = {
       name: searchForm.controls.searchText.value,
       categoryId: searchForm.controls.categoryId.value,
+      sortBy: 'id',
     };
     this.pageableProducts.resetAndFetchProducts();
   }

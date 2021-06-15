@@ -18,6 +18,7 @@ export class PageableProducts implements IPageable<Product> {
   searchQuery = {
     name: '',
     categoryId: -1,
+    sortBy: 'id',
   };
 
   error = false;
@@ -38,7 +39,7 @@ export class PageableProducts implements IPageable<Product> {
   }
 
   fetchProducts() {
-    this.productService.getProducts(this.page, this.pageSize, this.searchQuery.name, undefined, this.searchQuery.categoryId)
+    this.productService.getProducts(this.page, this.pageSize, this.searchQuery.name, this.searchQuery.sortBy, this.searchQuery.categoryId)
       .subscribe((productData) => {
         this.items = productData.items;
         this.totalPages = productData.totalPages;

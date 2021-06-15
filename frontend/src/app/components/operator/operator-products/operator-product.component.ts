@@ -35,7 +35,6 @@ export class OperatorProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchProducts();
-    this.fetchCategories();
   }
 
   /**
@@ -55,26 +54,13 @@ export class OperatorProductComponent implements OnInit {
     this.pageableProducts.searchQuery = {
       name: searchForm.controls.searchText.value,
       categoryId: searchForm.controls.categoryId.value,
+      sortBy: 'id',
     };
     this.pageableProducts.resetAndFetchProducts();
   }
 
   getPaginatedProducts() {
     return this.pageableProducts.items;
-  }
-
-  fetchCategories() {
-    this.categoryService.getCategories().subscribe((categories) => {
-      this.categories = categories;
-    }, error => {
-      console.log(error);
-      this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
-    });
   }
 
   addNewProduct(): void {
