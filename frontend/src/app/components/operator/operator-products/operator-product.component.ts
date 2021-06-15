@@ -49,6 +49,7 @@ export class OperatorProductComponent implements OnInit {
       this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
       .subscribe(([productsData, categoriesData, taxRatesData]) => {
         this.products = productsData.items;
+        console.log(this.products);
         this.collectionSize = productsData.totalItemCount;
         this.categories = categoriesData;
         this.taxRates = taxRatesData;

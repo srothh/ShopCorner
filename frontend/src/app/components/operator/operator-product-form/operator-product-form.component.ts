@@ -132,8 +132,9 @@ export class OperatorProductFormComponent implements OnInit {
       this.newProduct.category.id = this.productForm.get('category')?.value;
     }
     this.newProduct.locked = this.productForm.get('locked').value;
+    this.newProduct.deleted = false;
+    console.log(this.newProduct);
     if (this.router.url.includes('add')) {
-      // const baseURL = this.router.url.substring(0, this.router.url.lastIndexOf('/'));
       this.productService.addProduct(this.newProduct).subscribe(data => {
         this.newProduct.id = data.id;
         this.errorOccurred = false;

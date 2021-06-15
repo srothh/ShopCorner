@@ -81,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
         if (categoryId == null) {
             product.setCategory(null);
         } else {
-            Category category = categoryService.findCategoryById(categoryId);
+            Category category = categoryService.getCategoryById(categoryId);
             product.setCategory(category);
         }
     }
@@ -125,6 +125,11 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getAllProducts() {
         LOGGER.trace("getAllProducts()");
         return this.productRepository.findAll();
+    }
+
+    public List<Product> getAllProductsByCategory(Long categoryId) {
+        LOGGER.trace("getAllProductsByCategory(categoryId)");
+        return this.productRepository.findAllByCategoryId(categoryId);
     }
 
     public void validateProperty(String description) {
