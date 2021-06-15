@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -133,6 +134,7 @@ public class ProductDataGenerator {
                 invoice.setDate(LocalDateTime.now().minus(i, ChronoUnit.DAYS));
                 invoice.setAmount((item.getNumberOfItems() * (p.getPrice() * p.getTaxRate().getCalculationFactor())));
                 invoice.setInvoiceNumber(i + "" + invoice.getDate().getYear());
+                invoice.setType(InvoiceType.operator);
                 Invoice newInvoice = invoiceRepository.save(invoice);
                 item.setInvoice(newInvoice);
 

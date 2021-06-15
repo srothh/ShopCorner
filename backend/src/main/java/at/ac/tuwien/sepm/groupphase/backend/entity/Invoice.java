@@ -4,6 +4,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -36,6 +39,9 @@ public class Invoice {
     @Fetch(value = FetchMode.SELECT)
     private Set<InvoiceItem> items;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    InvoiceType type;
 
     public Invoice() {
         items = new HashSet<>();
@@ -99,6 +105,14 @@ public class Invoice {
         this.items = items;
     }
 
+    public InvoiceType getType() {
+        return type;
+    }
+
+    public void setType(InvoiceType type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -108,16 +122,16 @@ public class Invoice {
             return false;
         }
         Invoice invoice = (Invoice) o;
-        return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && date.equals(invoice.date) && items.equals(invoice.items);
+        return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && date.equals(invoice.date) && items.equals(invoice.items) && type.equals(invoice.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, amount, items);
+        return Objects.hash(id, date, amount, items, type);
     }
 
     @Override
     public String toString() {
-        return "Invoice{" + "id=" + id + ", invoiceNumber= " + invoiceNumber + ", date=" + date + ", amount=" + amount + '}';
+        return "Invoice{" + "id=" + id + ", invoiceNumber= " + invoiceNumber + ", date=" + date + ", amount=" + amount + ", typ=" + type + '}';
     }
 }

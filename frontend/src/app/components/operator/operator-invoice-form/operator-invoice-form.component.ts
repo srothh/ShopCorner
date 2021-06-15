@@ -7,7 +7,7 @@ import {InvoiceService} from '../../../services/invoice.service';
 import {formatDate} from '@angular/common';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {InvoiceItem} from '../../../dtos/invoiceItem';
-import {forkJoin} from 'rxjs';
+import {InvoiceType} from '../../../dtos/invoiceType.enum';
 
 
 @Component({
@@ -31,7 +31,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
   subtotal = 0;
   total = 0;
   tax = 0;
-
   download = false;
   show = false;
 
@@ -116,6 +115,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
     }
     this.invoiceDto.amount = +this.total.toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
+    this.invoiceDto.type = InvoiceType.operator;
   }
 
 
