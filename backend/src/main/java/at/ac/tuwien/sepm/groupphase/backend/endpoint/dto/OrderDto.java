@@ -6,8 +6,10 @@ import javax.validation.constraints.NotNull;
 public class OrderDto {
     private Long id;
     @Valid
+    @NotNull
     private CustomerDto customer;
     @Valid
+    @NotNull
     private DetailedInvoiceDto invoice;
 
     public OrderDto(Long id, CustomerDto customer, DetailedInvoiceDto invoice) {

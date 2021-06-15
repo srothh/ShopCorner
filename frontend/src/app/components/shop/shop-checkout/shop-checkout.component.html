@@ -7,7 +7,6 @@
           <span>Gesamtpreis ohne Steuern </span>
           <strong>{{getTotalPriceWithoutTaxes().toFixed(2)}} €</strong>
         </li>
-
         <li class="list-group-item d-flex justify-content-between">
           <span>Steuern </span>
           <strong>{{getTotalTaxes().toFixed(2)}} €</strong>
@@ -17,7 +16,7 @@
           <strong>{{getTotalPrice().toFixed(2)}} €</strong>
         </li>
       </ul>
-      <button class="btn btn-primary btn-lg btn-block" type="submit">Bezahlen mit Paypal</button>
+      <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="placeNewOrder()">Bezahlen mit Paypal</button>
 
     </div>
     <div class="col-md-8 order-md-1">
