@@ -40,8 +40,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order placeNewOrder(Order order) {
-        LOGGER.info("placeNewOrder({})", order.getInvoiceId().getAmount());
-        order.setInvoiceId(this.invoiceService.createInvoice(order.getInvoiceId()));
+        LOGGER.info("placeNewOrder({})", order);
+        order.setInvoice(this.invoiceService.createInvoice(order.getInvoice()));
         return orderRepository.save(order);
     }
 

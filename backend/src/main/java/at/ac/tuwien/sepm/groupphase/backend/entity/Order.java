@@ -25,18 +25,18 @@ public class Order {
     @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "id", updatable = false)
     private Customer customer;
 
-    public Order(Long id, Invoice invoiceId, Customer customerId) {
+    public Order(Long id, Invoice invoice, Customer customer) {
         this.id = id;
-        this.invoice = invoiceId;
-        this.customer = customerId;
+        this.invoice = invoice;
+        this.customer = customer;
     }
 
     public Order() {
     }
 
-    public Order(Invoice invoiceId, Customer customerId) {
-        this.invoice = invoiceId;
-        this.customer = customerId;
+    public Order(Invoice invoice, Customer customer) {
+        this.invoice = invoice;
+        this.customer = customer;
     }
 
     public Long getId() {
@@ -47,19 +47,19 @@ public class Order {
         this.id = id;
     }
 
-    public Invoice getInvoiceId() {
+    public Invoice getInvoice() {
         return invoice;
     }
 
-    public void setInvoiceId(Invoice invoiceId) {
+    public void setInvoice(Invoice invoiceId) {
         this.invoice = invoiceId;
     }
 
-    public Customer getCustomerId() {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomerId(Customer customerId) {
+    public void setCustomer(Customer customerId) {
         this.customer = customerId;
     }
 }

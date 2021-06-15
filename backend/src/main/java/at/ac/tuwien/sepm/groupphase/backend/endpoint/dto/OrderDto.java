@@ -1,10 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class OrderDto {
     private Long id;
+    @Valid
     private CustomerDto customer;
+    @Valid
     private DetailedInvoiceDto invoice;
 
     public OrderDto(Long id, CustomerDto customer, DetailedInvoiceDto invoice) {
@@ -29,19 +32,19 @@ public class OrderDto {
         this.id = id;
     }
 
-    public DetailedInvoiceDto getInvoiceId() {
+    public DetailedInvoiceDto getInvoice() {
         return invoice;
     }
 
-    public void setInvoiceId(DetailedInvoiceDto invoice) {
+    public void setInvoice(DetailedInvoiceDto invoice) {
         this.invoice = invoice;
     }
 
-    public CustomerDto getCustomerId() {
+    public CustomerDto getCustomer() {
         return customer;
     }
 
-    public void setCustomerId(CustomerDto customerId) {
+    public void setCustomer(CustomerDto customerId) {
         this.customer = customerId;
     }
 }
