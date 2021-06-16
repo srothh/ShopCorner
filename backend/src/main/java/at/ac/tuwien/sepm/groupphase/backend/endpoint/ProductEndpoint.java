@@ -85,13 +85,7 @@ public class ProductEndpoint {
         String sortBy = productSearchDto.getSortBy();
 
         Page<Product> productPage = this.productService.getAllProductsPerPage(page, pageCount, categoryId, sortBy, name);
-        Long productCount;
-        if (name.isEmpty() && categoryId == -1) {
-            productCount = this.productService.getProductsCount();
-        } else {
-            // Temporarily don't cache with filters
-            productCount = this.productService.getCountByCategory(productPage, categoryId);
-        }
+        long productCount = productPage.getTotalElements();
         return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
