@@ -6,6 +6,8 @@ import {Product} from '../../dtos/product';
 import {OperatorAuthService} from '../auth/operator-auth.service';
 import {Pagination} from '../../dtos/pagination';
 import {map} from 'rxjs/operators';
+import {Category} from '../../dtos/category';
+import {TaxRate} from '../../dtos/tax-rate';
 
 @Injectable({
   providedIn: 'root'

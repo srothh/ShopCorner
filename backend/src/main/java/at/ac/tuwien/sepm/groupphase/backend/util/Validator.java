@@ -1,11 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.util;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Promotion;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
@@ -139,4 +140,25 @@ public class Validator {
         }
     }
 
+    public void validateProduct(Product product) {
+        LOGGER.trace("validateProduct({})", product);
+        if (product.getDescription() != null) {
+            if (!product.getDescription().isEmpty()) {
+                if (product.getDescription().trim().isEmpty()) {
+                    throw new IllegalArgumentException("Only whiteSpaces not allowed!");
+                }
+            }
+            if (product.getDescription().trim().length() > 70) {
+                throw new IllegalArgumentException("description is too long");
+            }
+        }
+
+        if (product.getExpiresAt() != null) {
+            LocalDateTime now = LocalDateTime.now();
+            if (product.getExpiresAt().isBefore(now)) {
+                throw new ValidationException("Expiration date cannot be in the past");
+            }
+        }
+    }
 }
+

@@ -23,6 +23,9 @@ export class Product {
       return 'Nicht verfügbar';
     }
     if (this.hasExpiration) {
+      if (this.hasExpired) {
+        return 'Nicht verfügbar';
+      }
       return `Bis ${this.formattedDateString} verfügbar`;
     }
     return 'Auf Lager';
@@ -30,6 +33,12 @@ export class Product {
 
   get hasExpiration() {
     return this.expiresAt !== null;
+  }
+
+  get hasExpired() {
+    const now = Date.now();
+    const expiresAt = new Date(this.expiresAt);
+    return now > expiresAt.getTime();
   }
 
   get formattedDateString() {

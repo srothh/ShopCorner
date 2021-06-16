@@ -76,7 +76,7 @@ export class OperatorProductFormComponent implements OnInit {
         day: this.today.getDate(),
         month: this.today.getMonth() + 1,
         year: this.today.getFullYear()
-      }, Validators.required],
+      }, [Validators.required]],
     });
     // if the form is a 'edit-product-form' then set all properties in the form and make them readonly
     if (this.addProductEnabled === false) {
@@ -190,7 +190,7 @@ export class OperatorProductFormComponent implements OnInit {
 
       }, error => {
         this.errorOccurred = true;
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       }
     );
   }

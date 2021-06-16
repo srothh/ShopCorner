@@ -27,8 +27,8 @@
           <!-- Possibilities: In stock, Unavailable, Available until ...-->
           <span class="card-text availability"
                 [class.in-stock]="!product.locked"
-                [class.locked]="product.locked"
-                [class.expires]="product.hasExpiration">{{product.availabilityText}}</span>
+                [class.locked]="product.locked || (product.hasExpiration && product.hasExpired)"
+                [class.expires]="product.hasExpiration && !product.hasExpired">{{product.availabilityText}}</span>
         </div>
         <button class="btn btn-primary" [disabled]="product.locked" (click)="addToCart(product)">In den Einkaufswagen</button>
       </div>
