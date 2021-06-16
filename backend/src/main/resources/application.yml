@@ -41,5 +41,5 @@ security:
 
 paypal:
   mode: "sandbox"
-  client-id: ARMHZU8hHL8JkY47eoCG0FKS7iaveTbOT5quDs9O7K_7GuS7oI5KW9a3GyP5cJ_H4wqgAjfmUC2XgWBi
-  client-secret: EAtnFnPTPc0QteIDra7r1_G9XS1JeKCaoPboqoORHZCOYxU7GPvGJbfpf2_OcCYdsY7rEjBdw33XJtlz
+  client-id: AYgQlI8InUA2UdmK_Q8K6DSfDejf3AWy7_kIwZUC8yvTtGIAiIThgVntKHZzX5QVGyVnRNC5uwm5qlAR
+  client-secret: ED06Gl9pCWn9RAvqzVF353D_q3tWaYYoG1uS28fdNaPvz5k8luY2fntbuUlHMia3NFtPc7OkbtN7PNV-
