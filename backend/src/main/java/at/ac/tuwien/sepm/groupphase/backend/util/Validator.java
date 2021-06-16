@@ -142,14 +142,6 @@ public class Validator {
 
     public void validateProduct(Product product) {
         LOGGER.trace("validateProduct({})", product);
-        if (product.getDescription() != null) {
-            if (!product.getDescription().isEmpty()) {
-                if (product.getDescription().trim().isEmpty()) {
-                    throw new IllegalArgumentException("Only whiteSpaces not allowed!");
-                }
-            }
-        }
-
         if (product.getExpiresAt() != null) {
             LocalDateTime now = LocalDateTime.now();
             if (product.getExpiresAt().isBefore(now)) {
