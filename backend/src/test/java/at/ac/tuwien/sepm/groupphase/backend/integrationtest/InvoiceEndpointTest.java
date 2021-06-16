@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
@@ -75,7 +76,6 @@ public class InvoiceEndpointTest implements TestData {
 
     @Autowired
     private InvoiceMapper invoiceMapper;
-
 
     @Autowired
     private JwtTokenizer jwtTokenizer;
@@ -143,6 +143,7 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
+        invoice1.setType(InvoiceType.operator);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice1);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
@@ -163,6 +164,8 @@ public class InvoiceEndpointTest implements TestData {
     public void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
         Set<InvoiceItem> set1 = invoice1.getItems();
         invoice1.setItems(null);
+        invoice1.setType(InvoiceType.operator);
+
         Invoice newInvoice = invoiceRepository.save(invoice1);
         for(InvoiceItem item: set1){
             item.setInvoice(newInvoice);
@@ -184,12 +187,14 @@ public class InvoiceEndpointTest implements TestData {
         Set<InvoiceItem> set = invoice1.getItems();
         invoice1.setItems(null);
         invoice1.setDate(LocalDateTime.now());
+        invoice1.setType(InvoiceType.operator);
         Invoice newInvoice = invoiceRepository.save(invoice1);
         for(InvoiceItem item: set){
             item.setInvoice(newInvoice);
             invoiceItemRepository.save(item);
         }
         newInvoice.setItems(set);
+        newInvoice.setType(InvoiceType.operator);
 
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/"+newInvoice.getId())
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -206,7 +211,8 @@ public class InvoiceEndpointTest implements TestData {
             () -> assertNotNull(detailedInvoiceDto.getId()),
             () -> assertNotNull(detailedInvoiceDto.getDate()),
             () -> assertEquals(newInvoice.getAmount(), detailedInvoiceDto.getAmount()),
-            () -> assertEquals(newInvoice.getItems().size(), detailedInvoiceDto.getItems().size())
+            () -> assertEquals(newInvoice.getItems().size(), detailedInvoiceDto.getItems().size()),
+            () -> assertEquals(newInvoice.getType(), detailedInvoiceDto.getType())
         );
     }
 
@@ -217,14 +223,15 @@ public class InvoiceEndpointTest implements TestData {
         invoiceRepository.deleteAll();
         Set<InvoiceItem> set = invoice1.getItems();
         invoice1.setItems(null);
+        invoice1.setType(InvoiceType.operator);
         Invoice newInvoice1 = invoiceRepository.save(invoice1);
         for(InvoiceItem item: set){
             item.setInvoice(newInvoice1);
             invoiceItemRepository.save(item);
         }
         newInvoice1.setItems(set);
-
         invoice2.setItems(null);
+        invoice2.setType(InvoiceType.customer);
         Invoice newInvoice2 = invoiceRepository.save(invoice2);
         for(InvoiceItem item: set){
             item.setInvoice(newInvoice2);
@@ -316,7 +323,7 @@ public class InvoiceEndpointTest implements TestData {
                 String content = response.getContentAsString();
                 content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
                 String[] errors = content.split(",");
-                assertEquals(3, errors.length);
+                assertEquals(4, errors.length);
             }
         );
     }

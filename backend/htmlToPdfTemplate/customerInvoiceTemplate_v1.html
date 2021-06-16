@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice</title>
-    <link rel="stylesheet" type="text/css" href="invoiceTemplate_v1.css">
+    <link rel="stylesheet" type="text/css" href="htmlToPdfTemplate/operatorInvoiceTemplate_v1.css">
 
 </head>
-<body style="font-family: 'Arial Black'">
-<table width="100%" border="0" class="table-grid">
+<body>
+<table class="table-grid">
     <tr>
         <td class="center" colspan="3">
             <img src="https://i.imgur.com/zMBx1FY.png" alt="Logo">
@@ -21,7 +21,7 @@
 
     <tr>
         <td class="right" style="width: 100%">
-            <table class="right" border="0" style="margin-top: 1rem">
+            <table class="right" style="margin-top: 1rem">
                 <tr>
                     <td class="left customer-name">
                         <a>{{customerName}}</a>
@@ -41,7 +41,7 @@
         </td>
         <td class="right" style="width: 100%"></td>
         <td class="right">
-            <table class="right" border="0" style="margin-top: 1rem">
+            <table class="right none-border" style="margin-top: 1rem">
                 <tr>
                     <td class="left">
                         <a>Date: </a>
@@ -55,7 +55,7 @@
                         <a>Zahlungsart: </a>
                     </td>
                     <td class="left">
-                        <a>Paypal</a>
+                        <a>Barzahlung</a>
                     </td>
                 </tr>
                 <tr>
@@ -70,16 +70,11 @@
                     <td class="left">
                         <a>Bestellnummer: </a>
                     </td>
-                    <td class="left order-number">
+                    <td class="left">
                         <a>{{number}}</a>
                     </td>
                 </tr>
             </table>
-        </td>
-    </tr>
-    <tr>
-        <td class="left" colspan="3">
-            <h5>Vielen Dank für Ihre Bestellung!</h5>
         </td>
     </tr>
     <tr>
@@ -149,7 +144,12 @@
             <td class="center email" style="width: 50%">{{companyEmail}}</td>
         </tr>
 
+
+
     </table>
+
 </footer>
 </body>
 </html>
+
+

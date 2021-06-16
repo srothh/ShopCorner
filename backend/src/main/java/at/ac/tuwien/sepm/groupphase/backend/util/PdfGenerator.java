@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.util;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
@@ -23,12 +24,15 @@ import java.util.stream.Collectors;
 @Component
 public class PdfGenerator {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private final String html;
+    private final String htmlOpterator;
+    private final String htmlCustomer;
 
     public PdfGenerator() {
         try {
             BufferedReader in = new BufferedReader(new FileReader("htmlToPdfTemplate/operatorInvoiceTemplate_v1.html"));
-            html = in.lines().collect(Collectors.joining());
+            htmlOpterator = in.lines().collect(Collectors.joining());
+            in = new BufferedReader(new FileReader("htmlToPdfTemplate/operatorInvoiceTemplate_v1.html"));
+            htmlCustomer = in.lines().collect(Collectors.joining());
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -41,41 +45,32 @@ public class PdfGenerator {
      * @return byte array with generated pdf
      */
     public byte[] generatePdfOperator(Invoice invoice) {
-        byte[] pdfAsBytes;
+        final Document document = Jsoup.parse(htmlOpterator);
+        this.addInvoiceInformation(document, invoice);
+        this.addProductTable(document, invoice);
+        this.addCompanyFooter(document);
 
-
-            String html = new String(Files.readAllBytes(Paths.get(htmlUri + "invoiceTemplate_v1.html")));
-
-            final Document document = Jsoup.parse(html);
-            this.addInvoiceInformation(document, invoice);
-            this.addProductTable(document, invoice);
-            this.addCompanyFooter(document);
-
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            ConverterProperties properties = new ConverterProperties();
-            HtmlConverter.convertToPdf(document.html(), buffer, properties);
-            return buffer.toByteArray();
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ConverterProperties properties = new ConverterProperties();
+        HtmlConverter.convertToPdf(document.html(), buffer, properties);
+        return buffer.toByteArray();
     }
 
 
-
     public byte[] generatePdfCustomer(Customer customer, Invoice invoice) {
-        byte[] pdfAsBytes;
 
+        final Document document = Jsoup.parse(htmlCustomer);
+        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+        this.addCustomerInformation(document, customer);
+        this.addInvoiceInformation(document, invoice);
+        this.addOrderInformation(document, invoice);
+        this.addProductTable(document, invoice);
+        this.addCompanyFooter(document);
+
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         ConverterProperties properties = new ConverterProperties();
 
-
-            String html = new String(Files.readAllBytes(Paths.get(htmlUri + "invoiceTemplate_v1.html")));
-            final Document document = Jsoup.parse(html);
-            document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-            this.addCustomerInformation(document, customer);
-            this.addInvoiceInformation(document, invoice);
-            this.addOrderInformation(document, invoice);
-            this.addProductTable(document, invoice);
-            this.addCompanyFooter(document);
-
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            HtmlConverter.convertToPdf(document.html(), buffer, properties);
+        HtmlConverter.convertToPdf(document.html(), buffer, properties);
         return buffer.toByteArray();
     }
 
@@ -146,10 +141,10 @@ public class PdfGenerator {
         }
         tableItemStringBuilder.append("</table>");
         tableArticle.html(tableItemStringBuilder.toString());
-        addTotalTable(document, total, subtotal, tax );
+        addTotalTable(document, total, subtotal, tax);
     }
 
-    private void addTotalTable(Document document, double total, double subtotal, double tax ) {
+    private void addTotalTable(Document document, double total, double subtotal, double tax) {
         StringBuilder tableTotalStringBuilder = new StringBuilder();
         final Element tableAmount = document.body().select(".total").first();
         tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
