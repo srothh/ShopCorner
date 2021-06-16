@@ -59,7 +59,7 @@ public class MailServiceImpl implements MailService {
             multipart.addBodyPart(messageBodyPart);
             email.setContent(multipart);
         } catch (MessagingException | MalformedURLException e) {
-            throw new RuntimeException("Fehler beim erstellen der Verifizierungs E-mail");
+            throw new RuntimeException("Fehler beim erstellen der Verifizierungs E-mail", e);
         }
         emailSender.send(email);
     }

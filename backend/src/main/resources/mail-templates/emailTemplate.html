@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Title</title>
     <style>
 
         html {
             height: 100%;
-            font-family: Arial,serif;
         }
 
         body {
@@ -33,9 +32,10 @@
 Wir wollen Ihnen hiermit mitteilen, dass Ihre Bestellung bei uns Eingegangen ist.
 <br/>
 <br/>
-Ihre Bestellung wird schnellstm&ouml;glich behandelt. M&ouml;chten Sie Ihre Bestellungen sehen oder verwalten, k&ouml;nnen sie das unter
- <a href="http://localhost:4200/#/account/orders">Meine Bestellungen</a>
- auf der unserer <a href="http://localhost:4200/#/home">Website</a>.
+Ihre Bestellung wird schnellstm&ouml;glich behandelt. M&ouml;chten Sie Ihre Bestellungen sehen oder verwalten, k&ouml;nnen
+sie das unter
+<a href="http://localhost:4200/#/account/orders">Meine Bestellungen</a>
+auf der unserer <a href="http://localhost:4200/#/home">Website</a>.
 <hr/>
 <b>Diese Bestellung wird gesendet an: </b> <span th:text="${name}"></span>, <span th:text="${address}"></span>
 <hr/>
@@ -57,8 +57,9 @@ Ihre Bestellung wird schnellstm&ouml;glich behandelt. M&ouml;chten Sie Ihre Best
     </tbody>
 </table>
 <hr/>
-Angeh&auml;ngt finden sie Ihre Rechnung. Sie k&ouml;nnen diese auch unter <a href="http://localhost:4200/#/account/orders">Meine Bestellungen</a>
- einsehen.
+Angeh&auml;ngt finden sie Ihre Rechnung. Sie k&ouml;nnen diese auch unter <a
+    href="http://localhost:4200/#/account/orders">Meine Bestellungen</a>
+einsehen.
 <br/>
 <br/>
 Wir freuen uns auf Ihren n&auml;chsten Besuch!
@@ -69,5 +70,7 @@ Ihr <a href="http://localhost:4200/#/home">ShopCorner</a> Team
     Sie k&ouml;nnen ihr Bestellung innerhalb eines Zeitraums von <i>'Hier Zeitraum noch einf&uuml;ge'</i> unter
     <a href="http://localhost:4200/#/account/orders">Meine Bestellungen</a> stornieren.
 </small>
+<br/>
+<img src="cid:logo" alt="shop logo"/>
 </body>
 </html>
