@@ -15,6 +15,8 @@ public class SimpleInvoiceDto {
 
     private String invoiceNumber;
 
+    private String orderNumber;
+
     @NotNull(message = "LocalDateTime can not be null")
     private LocalDateTime date;
 
@@ -65,6 +67,14 @@ public class SimpleInvoiceDto {
         this.type = type;
     }
 
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -74,12 +84,12 @@ public class SimpleInvoiceDto {
             return false;
         }
         SimpleInvoiceDto that = (SimpleInvoiceDto) o;
-        return Double.compare(that.amount, amount) == 0 && id.equals(that.id) && date.equals(that.date) && type.equals(that.type);
+        return Double.compare(that.amount, amount) == 0 && id.equals(that.id) && date.equals(that.date) && type.equals(that.type) && orderNumber.equals(that.orderNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, amount, type);
+        return Objects.hash(id, date, amount, type, orderNumber, invoiceNumber);
     }
 
     @Override

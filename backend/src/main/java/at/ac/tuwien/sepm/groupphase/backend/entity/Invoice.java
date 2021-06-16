@@ -29,6 +29,9 @@ public class Invoice {
     @Column(nullable = false, unique = true)
     private String invoiceNumber;
 
+    @Column(unique = true)
+    private String orderNumber;
+
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
@@ -113,6 +116,14 @@ public class Invoice {
         this.type = type;
     }
 
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -122,12 +133,12 @@ public class Invoice {
             return false;
         }
         Invoice invoice = (Invoice) o;
-        return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && date.equals(invoice.date) && items.equals(invoice.items) && type.equals(invoice.type);
+        return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && date.equals(invoice.date) && items.equals(invoice.items) && type.equals(invoice.type) && orderNumber.equals(invoice.orderNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, amount, items, type);
+        return Objects.hash(id, date, amount, items, type, orderNumber);
     }
 
     @Override

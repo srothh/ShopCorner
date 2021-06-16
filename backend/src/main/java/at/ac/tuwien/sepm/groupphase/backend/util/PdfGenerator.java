@@ -126,10 +126,11 @@ public class PdfGenerator {
 
         try {
             String html = new String(Files.readAllBytes(Paths.get(htmlUri + "invoiceTemplate_v1.html")));
-
             final Document document = Jsoup.parse(html);
+            document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
             this.addCustomerInformation(document, customer);
             this.addInvoiceInformation(document, invoice);
+            this.addOrderInformation(document, invoice);
             this.addProductTable(document, invoice);
             this.addCompanyFooter(document);
 
@@ -143,7 +144,6 @@ public class PdfGenerator {
         }
         return pdfAsBytes;
     }
-
 
 
     private void addCustomerInformation(Document document, Customer customer) {
@@ -167,9 +167,11 @@ public class PdfGenerator {
 
     }
 
+    private void addOrderInformation(Document document, Invoice invoice) {
+        document.body().select(".order-number").html(invoice.getOrderNumber());
+    }
 
     private void addInvoiceInformation(Document document, Invoice invoice) {
-        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         document.body().select(".invoice-date").html(invoice.getDate().format(dateFormatter));
         document.body().select(".invoice-number").html(invoice.getInvoiceNumber());
     }
