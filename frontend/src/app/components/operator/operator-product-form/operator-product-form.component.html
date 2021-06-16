@@ -5,7 +5,7 @@
   </button>
 </div>
 <div *ngIf="errorOccurred===false" class="alert alert-success" role="alert">
-  Ihr neues Produkt wurde erfolgreich in ihrem Sortiment hinzugefügt!
+  Ihr neues Produkt wurde erfolgreich in Ihrem Sortiment hinzugefügt!
   <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetForm()">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -84,8 +84,8 @@
         <option *ngFor="let taxRate of this.taxRates" [value]="taxRate.id">{{taxRate.percentage + '%'}}</option>
       </select>
       <div *ngIf="productFormControl.taxRate.touched && productFormControl.taxRate.invalid">
-        <div class="text-danger" *ngIf="productFormControl.taxRate.errors.required">Bitte einen Steuersatz für ihr
-          Produkt angeben
+        <div class="text-danger" *ngIf="productFormControl.taxRate.errors.required">
+          Bitte einen Steuersatz für Ihr Produkt angeben
         </div>
       </div>
     </div>
@@ -109,9 +109,9 @@
       <textarea class="form-control" id="inputDescription" rows="2"
                 name="input4" placeholder="Beschreiben Sie ihr Produkt" formControlName="description"></textarea>
       <div *ngIf="productFormControl.description.invalid">
-        <div class="text-danger" *ngIf="productFormControl.description.errors.maxlength">Die Beschreibung ist zu lang.
-          Bitte wählen
-          Sie eine kürzere Beschreibung Namen.
+        <div class="text-danger" *ngIf="productFormControl.description.errors.maxlength">
+          Die Beschreibung ist zu lang.
+          Bitte wählen Sie eine kürzere Beschreibung.
         </div>
       </div>
 
