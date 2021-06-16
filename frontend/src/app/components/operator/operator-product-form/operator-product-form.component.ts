@@ -153,7 +153,7 @@ export class OperatorProductFormComponent implements OnInit {
     }
     this.newProduct.locked = this.productForm.get('locked').value;
     this.newProduct.deleted = false;
-    if (this.productHasExpiration) {
+    if (this.newProduct.hasExpiration) {
       const expirationDate = this.productForm.get('expirationDate').value;
       const time = this.productForm.get('time').value;
       this.newProduct.expiresAt = new Date(Date.UTC(
@@ -253,7 +253,7 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   toggleExpiration() {
-    if (this.productHasExpiration) {
+    if (this.newProduct.hasExpiration) {
       this.newProduct.expiresAt = null;
     } else {
       const expirationDate = this.productForm.get('expirationDate').value;
@@ -266,10 +266,6 @@ export class OperatorProductFormComponent implements OnInit {
         time.minute
       ));
     }
-  }
-
-  get productHasExpiration() {
-    return this.newProduct.expiresAt !== null;
   }
 
   get productFormControl() {
