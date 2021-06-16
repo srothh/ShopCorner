@@ -1,11 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A service class handling InvoiceItems.
+ */
 public interface InvoiceItemService {
 
     /**

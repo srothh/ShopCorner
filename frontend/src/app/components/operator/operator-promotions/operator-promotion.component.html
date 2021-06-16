@@ -6,11 +6,10 @@
     </button>
   </div>
   <br>
-  <h2>Aktionen</h2>
-  <div [hidden]="form" class="d-flex justify-content-end">
-    <button type="button" *ngIf="!form" class="btn btn-primary" (click)="toggleForm()">Aktion erstellen</button>
+  <div [hidden]="form" class="d-flex justify-content-between">
+    <h2>Aktionen</h2>
+    <button type="button" *ngIf="!form && isAdmin()" class="btn btn-primary" (click)="toggleForm()">Aktion erstellen</button>
     <button type="button" *ngIf="form" class="btn btn-primary" (click)="toggleForm()">Zurück</button>
-
   </div>
 
   <hr>

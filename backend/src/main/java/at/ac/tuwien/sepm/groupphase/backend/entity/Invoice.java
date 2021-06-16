@@ -36,28 +36,9 @@ public class Invoice {
     @Fetch(value = FetchMode.SELECT)
     private Set<InvoiceItem> items;
 
-
     public Invoice() {
         items = new HashSet<>();
     }
-
-
-    public Invoice(Long id, String invoiceNumber, LocalDateTime date, double amount) {
-        this.id = id;
-        this.invoiceNumber = invoiceNumber;
-        this.date = date;
-        this.amount = amount;
-        items = new HashSet<>();
-    }
-
-
-    public Invoice(String invoiceNumber, LocalDateTime date, double amount, Set<InvoiceItem> items) {
-        this.invoiceNumber = invoiceNumber;
-        this.date = date;
-        this.amount = amount;
-        this.items = items;
-    }
-
 
     public Long getId() {
         return id;

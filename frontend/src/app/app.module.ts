@@ -49,6 +49,7 @@ import {NgdbModalActionComponent} from './components/common/ngbd-modal-action/ng
 import { OperatorCategoryDetailsComponent } from './components/operator/operator-category-details/operator-category-details.component';
 import { OperatorCategoryFormComponent } from './components/operator/operator-category-form/operator-category-form.component';
 import { ShopOrderSuccessComponent } from './components/shop/shop-order-success/shop-order-success.component';
+import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-checkout.component';
 
 @NgModule({
   declarations: [
@@ -96,6 +97,8 @@ import { ShopOrderSuccessComponent } from './components/shop/shop-order-success/
     OperatorCategoryDetailsComponent,
     OperatorCategoryFormComponent,
     ShopOrderSuccessComponent
+    OperatorCategoryFormComponent,
+    ShopCheckoutComponent,
   ],
   imports: [
     BrowserModule,

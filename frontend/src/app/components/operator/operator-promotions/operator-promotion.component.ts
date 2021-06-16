@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Pagination} from '../../../dtos/pagination';
 import {Promotion} from '../../../dtos/promotion';
 import {PromotionService} from '../../../services/promotion.service';
+import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
+import {Globals} from '../../../global/globals';
 
 @Component({
   selector: 'app-operator-promotions',
@@ -18,7 +20,9 @@ export class OperatorPromotionComponent implements OnInit {
   collectionSize = 0;
   form = false;
 
-  constructor(private promotionService: PromotionService) {
+  constructor(private promotionService: PromotionService,
+              private authService: OperatorAuthService,
+              private globals: Globals) {
   }
 
   ngOnInit(): void {
@@ -61,6 +65,9 @@ export class OperatorPromotionComponent implements OnInit {
     this.form = !this.form;
   }
 
+  isAdmin() {
+    return this.authService.getUserRole() === this.globals.roles.admin;
+  }
 
   /**
    * calls on Service class to fetch all customer accounts from backend

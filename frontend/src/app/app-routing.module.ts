@@ -32,6 +32,7 @@ import {ShopProductDetailsComponent} from './components/shop/shop-product-detail
 import {ShopAccountProfileComponent} from './components/shop/shop-account-profile/shop-account-profile.component';
 import {ShopAccountOrdersComponent} from './components/shop/shop-account-orders/shop-account-orders.component';
 import {OperatorAdminGuard} from './guards/operator-admin.guard';
+import {ShopCheckoutComponent} from './components/shop/shop-checkout/shop-checkout.component';
 import {OperatorCategoryDetailsComponent} from './components/operator/operator-category-details/operator-category-details.component';
 import {ShopOrderSuccessComponent} from './components/shop/shop-order-success/shop-order-success.component';
 
@@ -49,6 +50,8 @@ const routes: Routes = [
       {path: 'cart', component: ShopCartComponent},
       {path: 'register', component: ShopRegistrationComponent},
       {path: 'order-success', component: ShopOrderSuccessComponent}
+      {path: 'register', component: ShopRegistrationComponent},
+      {path: 'checkout', canActivate: [CustomerAuthGuard], component: ShopCheckoutComponent}
     ]
   },
   {
