@@ -75,6 +75,23 @@ public class Validator {
 
     }
 
+    public void validateUpdatedCustomer(Customer customer, CustomerService customerService) {
+        LOGGER.trace("validateUpdatedCustomer({})", customer);
+
+        List<Customer> customers = customerService.findAll();
+        for (Customer customer1 : customers) {
+
+            if (!customer1.getId().equals(customer.getId()) && customer1.getEmail().equals(customer.getEmail())) {
+                throw new ValidationException("Account already exists");
+            }
+
+            if (!customer1.getId().equals(customer.getId()) && customer1.getLoginName().equals(customer.getLoginName())) {
+                throw new ValidationException("Account already exists");
+            }
+        }
+
+    }
+
     public void validateNewInvoice(Invoice invoice) {
         LOGGER.trace("validateNewInvoice({})", invoice);
         LocalDateTime today = LocalDateTime.now();

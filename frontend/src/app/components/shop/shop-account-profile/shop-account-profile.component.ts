@@ -105,13 +105,23 @@ export class ShopAccountProfileComponent implements OnInit {
     this.myProfile = new Customer(
       this.myProfile.id,
       this.editForm.value.loginName,
-      this.editForm.value.password,
+      'standard',
       this.editForm.value.name,
       this.editForm.value.email,
       address,
       this.editForm.value.phoneNumber
     );
     // TODO: save myProfile to the database, updates can be done on PUT /me
+
+    this.meService.updateProfileData(this.myProfile).subscribe(() => {}, error => {
+      console.log(error);
+      this.error = true;
+      if (typeof error.error === 'object') {
+        this.errorMessage = error.error.error;
+      } else {
+        this.errorMessage = error.error;
+      }
+    });
   }
 
   /**

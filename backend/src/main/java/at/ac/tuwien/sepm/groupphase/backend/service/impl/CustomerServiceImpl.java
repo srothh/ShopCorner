@@ -94,6 +94,25 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.save(customer);
     }
 
+    public Customer update(Customer customer) {
+        LOGGER.trace("update({})", customer);
+        validator.validateUpdatedCustomer(customer, this);
+        Customer c = customerRepository.findById(customer.getId())
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", customer.getId())));
+
+        if (!customer.getAddress().equals(c.getAddress())) {
+            Address address = addressService.addNewAddress(customer.getAddress());
+            assignAddressToCustomer(c, address.getId());
+        }
+
+        c.setEmail(customer.getEmail());
+        c.setLoginName(customer.getLoginName());
+        c.setName(customer.getName());
+        c.setPhoneNumber(customer.getPhoneNumber());
+
+        return customerRepository.save(c);
+    }
+
     @Override
     @Cacheable(value = "customerPages")
     public Page<Customer> getAllCustomers(int page, int pageCount) {

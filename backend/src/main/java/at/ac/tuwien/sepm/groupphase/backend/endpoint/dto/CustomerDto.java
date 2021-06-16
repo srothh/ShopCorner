@@ -76,4 +76,12 @@ public class CustomerDto {
     public void setAddress(AddressDto address) {
         this.address = address;
     }
+
+    public String getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

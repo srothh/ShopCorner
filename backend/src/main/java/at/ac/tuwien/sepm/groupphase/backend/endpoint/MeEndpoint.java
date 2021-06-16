@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -10,13 +13,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.security.Principal;
 
@@ -56,5 +64,22 @@ public class MeEndpoint {
     public void deleteCustomerByUsername(Principal principal) {
         LOGGER.info("DELETE " + BASE_URL);
         customerService.deleteCustomerByLoginName(principal.getName());
+    }
+
+
+    @Secured({"ROLE_CUSTOMER"})
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Edit an existing customer account", security = @SecurityRequirement(name = "apiKey"))
+    public CustomerRegistrationDto editCustomer(@Valid @RequestBody CustomerRegistrationDto customerDto, Principal principal) {
+        LOGGER.info("PUT " + BASE_URL);
+        if (principal.getName().equals(customerDto.getLoginName())) {
+            Customer customer = customerMapper.customerDtoToCustomer(customerDto);
+            CustomerRegistrationDto result = customerMapper.customerToCustomerRegistrationDto(customerService.update(customer));
+            result.setPassword(null);
+            return result;
+        }
+
+        throw new AccessDeniedException("Illegal Access");
     }
 }

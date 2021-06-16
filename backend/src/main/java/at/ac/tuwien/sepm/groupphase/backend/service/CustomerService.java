@@ -54,6 +54,16 @@ public interface CustomerService extends UserDetailsService {
     Customer registerNewCustomer(Customer customer);
 
     /**
+     * Updates the specified customer.
+     *
+     * @param customer to be updated
+     * @return the customer that has just been updated.
+     * @throws NotFoundException if no matching customer is found in the database
+     * @throws RuntimeException  if the updated customer account already exists
+     */
+    Customer update(Customer customer);
+
+    /**
      * Retrieves a PaginationDto containing a Page of customers from the database.
      *
      * @param page The number of the page to retrieve
