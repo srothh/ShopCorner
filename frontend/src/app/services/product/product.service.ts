@@ -18,6 +18,10 @@ export class ProductService {
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
 
+  static productMapper(p: Product) {
+    return new Product(p.id, p.name, p.description, p.price, p.category, p.taxRate, p.locked, p.picture, p.expiresAt, p.deleted);
+  }
+
   /**
    * Get page of products from the backend
    *
@@ -33,7 +37,7 @@ export class ProductService {
     console.log(params.toString());
     return this.httpClient.get<Pagination<Product>>(this.productBaseUri, {params}).pipe(
       map((pagination) => {
-        pagination.items = pagination.items.map(this.productMapper);
+        pagination.items = pagination.items.map(ProductService.productMapper);
         return pagination;
       })
     );
@@ -46,7 +50,7 @@ export class ProductService {
    */
   getProductById(id: number): Observable<Product> {
     return this.httpClient.get<Product>(this.productBaseUri + '/' + id).pipe(
-      map(this.productMapper)
+      map(ProductService.productMapper)
     );
   }
 
@@ -89,8 +93,4 @@ export class ProductService {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
-
-  // tslint:disable-next-line:max-line-length
-  // eslint-disable-next-line max-len
-  private productMapper = (p) => new Product(p.id, p.name, p.description, p.price, p.category, p.taxRate, p.locked, p.picture, p.expiresAt, p.deleted);
 }
