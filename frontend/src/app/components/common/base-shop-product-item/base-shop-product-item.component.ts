@@ -11,7 +11,7 @@ export class BaseShopProductItemComponent implements OnInit {
 
   @Input() public product: Product;
 
-  constructor(private globals: Globals) { }
+  constructor() { }
 
   ngOnInit(): void {
   }
