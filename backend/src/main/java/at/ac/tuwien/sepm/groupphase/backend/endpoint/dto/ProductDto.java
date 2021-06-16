@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ProductDto {
@@ -22,6 +23,7 @@ public class ProductDto {
     private boolean locked;
     private String picture;
     private Long saleCount;
+    private LocalDateTime expiresAt;
     private boolean deleted;
 
     public String getPicture() {
@@ -107,6 +109,14 @@ public class ProductDto {
         this.deleted = deleted;
     }
 
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -121,12 +131,13 @@ public class ProductDto {
             && Objects.equals(description, productDto.description)
             && Objects.equals(price, productDto.price)
             && Objects.equals(category, productDto.category)
-            && Objects.equals(taxRate, productDto.taxRate);
+            && Objects.equals(taxRate, productDto.taxRate)
+            && Objects.equals(expiresAt, productDto.expiresAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, category, taxRate);
+        return Objects.hash(id, name, description, price, category, taxRate, expiresAt);
     }
 
     @Override
@@ -146,6 +157,8 @@ public class ProductDto {
             ", isLocked=" + locked
             +
             ", taxRate=" + taxRate
+            +
+            ", expiresAt=" + expiresAt
             +
             '}';
     }

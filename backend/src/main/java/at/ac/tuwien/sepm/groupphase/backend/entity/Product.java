@@ -17,6 +17,7 @@ import javax.persistence.PreRemove;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -24,26 +25,37 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     @Size(min = 3, max = 50, message = "name should contain at least 3 characters and 50 at most")
     private String name;
+
     @Size(max = 200)
     private String description;
+
     @DecimalMin("0.0")
     private Double price;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
-    private boolean locked;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tax_rate", nullable = false)
     private TaxRate taxRate;
+
     @Lob
     private byte[] picture;
+
     @Column(name = "saleCount", columnDefinition = "BIGINT default 0")
     private Long saleCount;
+
+    @Column()
+    private LocalDateTime expiresAt;
+
     private boolean deleted;
+    private boolean locked;
 
 
     public Product() {
@@ -127,6 +139,14 @@ public class Product {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
     }
 
     @Override

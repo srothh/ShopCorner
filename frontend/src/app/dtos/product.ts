@@ -13,6 +13,7 @@ export class Product {
     public taxRate: TaxRate,
     public locked: boolean,
     public picture: string | ArrayBuffer,
+    public expiresAt: string,
     public deleted: boolean,
   ) {
   }

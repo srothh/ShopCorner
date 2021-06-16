@@ -33,6 +33,9 @@ export class OperatorProductFormComponent implements OnInit {
   productForm: FormGroup;
   // properties for the newly to be added product
 
+  expiresAtEnabled = false;
+  today = new Date(Date.now());
+
   // util properties
   shouldFetch: boolean;
   errorOccurred: boolean;
@@ -68,7 +71,13 @@ export class OperatorProductFormComponent implements OnInit {
       price: ['', Validators.required],
       taxRate: [null, Validators.required],
       category: [null],
-      locked: [false]
+      locked: [false],
+      time: [{hour: 0, minute: 0}, Validators.required],
+      expirationDate: [{
+        day: this.today.getDate(),
+        month: this.today.getMonth() + 1,
+        year: this.today.getFullYear()
+      }, Validators.required],
     });
     // if the form is a 'edit-product-form' then set all properties in the form and make them readonly
     if (this.addProductEnabled === false) {
@@ -95,8 +104,10 @@ export class OperatorProductFormComponent implements OnInit {
       new TaxRate(null, null, null),
       false,
       null,
+      null,
       false);
   }
+
   setFormProperties(): void {
     if (this.newProduct === undefined) {
       const productId = +this.activatedRouter.snapshot.paramMap.get('id');
@@ -133,7 +144,19 @@ export class OperatorProductFormComponent implements OnInit {
     }
     this.newProduct.locked = this.productForm.get('locked').value;
     this.newProduct.deleted = false;
-    console.log(this.newProduct);
+    if (this.expiresAtEnabled) {
+      const expirationDate = this.productForm.get('expirationDate').value;
+      const time = this.productForm.get('time').value;
+      const date = new Date(Date.UTC(expirationDate.year,
+        expirationDate.month - 1,
+        expirationDate.day,
+        time.hour,
+        time.minute
+      ));
+      this.newProduct.expiresAt = date.toISOString();
+    } else {
+      this.newProduct.expiresAt = null;
+    }
     if (this.router.url.includes('add')) {
       this.productService.addProduct(this.newProduct).subscribe(data => {
         this.newProduct.id = data.id;
@@ -219,6 +242,10 @@ export class OperatorProductFormComponent implements OnInit {
     });
   }
 
+  toggleExpiration() {
+    this.expiresAtEnabled = !this.expiresAtEnabled;
+  }
+
   get productFormControl() {
     return this.productForm.controls;
   }
@@ -229,4 +256,7 @@ export class OperatorProductFormComponent implements OnInit {
     return isValid ? null : {whitespace: true};
   }
 
+  private addLeadingZero(num: number): string {
+    return num < 10 ? '0' + num : num.toString();
+  }
 }
