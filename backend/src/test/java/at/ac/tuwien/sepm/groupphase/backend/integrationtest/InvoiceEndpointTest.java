@@ -162,7 +162,6 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
         Set<InvoiceItem> set1 = invoice1.getItems();
-        Set<InvoiceItem> set2 = invoice2.getItems();
         invoice1.setItems(null);
         Invoice newInvoice = invoiceRepository.save(invoice1);
         for(InvoiceItem item: set1){
@@ -245,10 +244,10 @@ public class InvoiceEndpointTest implements TestData {
         PaginationDto<SimpleInvoiceDto> paginationDto = objectMapper.readValue(response.getContentAsString(),
             new TypeReference<>() {
             });
-        List<SimpleInvoiceDto> simpleInvoiceDtos = paginationDto.getItems();
+        List<SimpleInvoiceDto> simpleInvoiceDtoList = paginationDto.getItems();
 
-        assertEquals(2, simpleInvoiceDtos.size());
-        SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtos.get(0);
+        assertEquals(2, simpleInvoiceDtoList.size());
+        SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtoList.get(0);
         assertAll(
             () -> assertEquals(newInvoice1.getId(), simpleInvoiceDto.getId()),
             () -> assertNotNull(simpleInvoiceDto.getDate()),
@@ -270,11 +269,11 @@ public class InvoiceEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
-        PaginationDto<SimpleInvoiceDto> overviewOperatorDtos = objectMapper.readValue(response.getContentAsString(),
+        PaginationDto<SimpleInvoiceDto> paginationDto = objectMapper.readValue(response.getContentAsString(),
             new TypeReference<>() {
             });
 
-        assertEquals(0, overviewOperatorDtos.getItems().size());
+        assertEquals(0, paginationDto.getItems().size());
     }
 
     @Test
@@ -317,7 +316,7 @@ public class InvoiceEndpointTest implements TestData {
                 String content = response.getContentAsString();
                 content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
                 String[] errors = content.split(",");
-                assertEquals(2, errors.length);
+                assertEquals(3, errors.length);
             }
         );
     }

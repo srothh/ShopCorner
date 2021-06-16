@@ -1,5 +1,4 @@
 import {Component,  OnInit} from '@angular/core';
-import {forkJoin} from 'rxjs';
 import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice.service';
 import {Pagination} from '../../../dtos/pagination';
@@ -58,9 +57,9 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
   /**
-   * toggles to the detailview.
+   * toggles to the detailView.
    *
-   * @param id of the invoice
+   * @param invoice destination invoice
    */
   getDetailedView(invoice: Invoice) {
     this.toggleDetialview = true;
