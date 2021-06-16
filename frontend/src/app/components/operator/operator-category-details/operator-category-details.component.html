@@ -1,0 +1,10 @@
+<div class="operator-category-details-container">
+  <div class="float-right ml-2" *ngIf="getPermission() === 'ADMIN'">
+    <button type="button" class="btn btn-outline-danger" (click)="attemptToDeleteCategory()">
+      <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
+      Löschen
+    </button>
+  </div>
+  <app-operator-category-form [category]="selectedCategory"></app-operator-category-form>
+</div>
+

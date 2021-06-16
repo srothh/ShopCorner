@@ -84,5 +84,14 @@ public interface ProductService {
      */
     Long getCountByCategory(Page page, Long category);
 
+    /**
+     * Gets all products that are associated to a specific category.
+     *
+     * @param categoryId the id to search in the database
+     * @throws NotFoundException if the entity is not available in the database
+     * @throws RuntimeException occurs during database operations
+     */
+    List<Product> getAllProductsByCategory(Long categoryId);
+
 
 }

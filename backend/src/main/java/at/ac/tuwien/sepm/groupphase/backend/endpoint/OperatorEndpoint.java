@@ -1,9 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdatePasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
@@ -60,15 +61,16 @@ public class OperatorEndpoint {
     /**
      * Get all operators with certain permission for certain page.
      *
-     * @param page which should be fetched
-     * @param pageCount amount per page
+     * @param paginationRequestDto describes the pagination request
      * @param permissions of needed operators
      * @return List with all needed operators
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
-    @Operation(summary = "Get list of operators", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<OverviewOperatorDto> getPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount, @RequestParam("permissions") Permissions permissions) {
+    @Operation(summary = "Get pages of operators", security = @SecurityRequirement(name = "apiKey"))
+    public PaginationDto<OverviewOperatorDto> getAllOperatorsPerPage(@Valid PaginationRequestDto paginationRequestDto, @RequestParam("permissions") Permissions permissions) {
+        int page = paginationRequestDto.getPage();
+        int pageCount = paginationRequestDto.getPageCount();
         LOGGER.info("GET " + BASE_URL + "?{}&{}&{}", page, pageCount, permissions);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -140,7 +142,6 @@ public class OperatorEndpoint {
         if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id) && id.equals(operatorDto.getId())) {
 
             Operator operator = operatorMapper.dtoToEntity(operatorDto);
-
             OperatorDto result = operatorMapper.entityToDto(operatorService.update(operator));
             result.setPassword(null);
             return result;

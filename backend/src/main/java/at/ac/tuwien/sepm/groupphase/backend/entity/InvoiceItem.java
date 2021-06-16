@@ -38,11 +38,6 @@ public class InvoiceItem {
         this.product = new Product();
     }
 
-    public InvoiceItem(Invoice invoice, Product product) {
-        this.invoice = invoice;
-        this.product = product;
-    }
-
     public InvoiceItemKey getId() {
         return id;
     }

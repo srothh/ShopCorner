@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -28,11 +27,6 @@ public class InvoiceItemDto {
     public InvoiceItemDto() {
         this.invoice = new Invoice();
         this.product = new Product();
-    }
-
-    public InvoiceItemDto(Invoice invoice, Product product) {
-        this.invoice = invoice;
-        this.product = product;
     }
 
     public InvoiceItemKey getId() {

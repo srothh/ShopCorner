@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Set;
@@ -31,7 +31,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final Validator validator;
     private final InvoiceItemService invoiceItemService;
 
-
+    @Autowired
     public InvoiceServiceImpl(InvoiceRepository invoiceRepository, Validator validator, InvoiceItemService invoiceItemService) {
         this.invoiceRepository = invoiceRepository;
         this.validator = validator;
@@ -60,7 +60,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Cacheable(value = "counts", key = "'invoicesByYear'")
-    @Override
     public long getInvoiceCountByYear(LocalDateTime firstDateOfYear) {
         LOGGER.trace("getInvoiceCount()");
         return invoiceRepository.countInvoiceByDateAfter(firstDateOfYear);
