@@ -24,9 +24,11 @@
             <span class="price">€ {{(this.product.taxRate.calculationFactor * this.product.price).toFixed(2)}}</span>
             <span class="text-muted small">Preisangaben inkl. USt.</span>
           </div>
-          <!-- Possibilities: In stock, Unavailable -->
-          <span class="availability" [class.in-stock]="!product.locked"
-                [class.locked]="product.locked">{{product.locked ? 'Nicht verfügbar' : 'Auf Lager'}}</span>
+          <!-- Possibilities: In stock, Unavailable, Available until ...-->
+          <span class="card-text availability"
+                [class.in-stock]="!product.locked"
+                [class.locked]="product.locked"
+                [class.expires]="product.hasExpiration">{{product.availabilityText}}</span>
         </div>
         <button class="btn btn-primary" [disabled]="product.locked" (click)="addToCart(product)">In den Einkaufswagen</button>
       </div>

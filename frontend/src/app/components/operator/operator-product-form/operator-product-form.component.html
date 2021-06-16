@@ -129,18 +129,18 @@
       <div class="d-flex flex-column">
         <div>
           <div class="custom-control custom-checkbox">
-            <input [disabled]="!addProductEnabled && !this.expiresAtEnabled" type="checkbox" class="custom-control-input" id="expirationDateCheck" (click)="toggleExpiration()">
+            <input [checked]="productHasExpiration" [disabled]="!addProductEnabled" type="checkbox" class="custom-control-input" id="expirationDateCheck" (click)="toggleExpiration()">
             <label class="custom-control-label" for="expirationDateCheck">Produkt als auslaufend markieren
             </label>
           </div>
         </div>
-        <form *ngIf="addProductEnabled && this.expiresAtEnabled" class="w-50" [formGroup]="productForm">
+        <form *ngIf="productHasExpiration" class="w-50" [formGroup]="productForm">
           <div class="form-group d-flex align-items-center">
             <div class="input-group mr-2">
               <input class="form-control" placeholder="yyyy-mm-dd"
                      formControlName="expirationDate" ngbDatepicker #d="ngbDatepicker">
               <div class="input-group-append">
-                <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                <button [disabled]="!addProductEnabled" class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
                 </button>
               </div>
             </div>

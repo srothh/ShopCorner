@@ -37,6 +37,7 @@ export class OperatorProductDetailsComponent implements OnInit {
       this.categories = this.router.getCurrentNavigation().extras.state[0] as Category[];
       this.taxRates = this.router.getCurrentNavigation().extras.state[1] as TaxRate[];
       this.product = this.router.getCurrentNavigation().extras.state[2] as Product;
+      console.log(this.product);
       this.shouldFetch = false;
     } else {
       this.shouldFetch = true;

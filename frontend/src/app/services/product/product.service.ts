@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {Product} from '../../dtos/product';
 import {OperatorAuthService} from '../auth/operator-auth.service';
 import {Pagination} from '../../dtos/pagination';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +29,12 @@ export class ProductService {
       .set(this.globals.requestParamKeys.products.categoryId, String(categoryId))
       .set(this.globals.requestParamKeys.products.sortBy, String(sortBy));
     console.log(params.toString());
-
-    return this.httpClient.get<Pagination<Product>>(this.productBaseUri, {params});
+    return this.httpClient.get<Pagination<Product>>(this.productBaseUri, {params}).pipe(
+      map((pagination) => {
+        pagination.items = pagination.items.map(this.productMapper);
+        return pagination;
+      })
+    );
   }
 
   /**
@@ -38,7 +43,9 @@ export class ProductService {
    * @return observable of type Product
    */
   getProductById(id: number): Observable<Product> {
-    return this.httpClient.get<Product>(this.productBaseUri + '/' + id);
+    return this.httpClient.get<Product>(this.productBaseUri + '/' + id).pipe(
+      map((prod) => this.productMapper(prod))
+    );
   }
 
   /**
@@ -81,5 +88,5 @@ export class ProductService {
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
 
-
+  private productMapper = (p) => new Product(p.id, p.name, p.description, p.price, p.category, p.taxRate, p.locked, p.picture, p.expiresAt, p.deleted);
 }

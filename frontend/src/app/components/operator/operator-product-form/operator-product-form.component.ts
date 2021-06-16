@@ -119,6 +119,16 @@ export class OperatorProductFormComponent implements OnInit {
       this.productForm.controls['locked'].setValue(this.newProduct.locked);
       this.productForm.controls['taxRate'].setValue(this.newProduct.taxRate.id, {onlySelf: true});
       this.productForm.controls['category'].setValue(this.newProduct.category?.id, {onlySelf: true});
+      const date = new Date(this.newProduct.expiresAt);
+      this.productForm.controls['expirationDate'].setValue({
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+      });
+      this.productForm.controls['time'].setValue({
+        hour: date.getHours(),
+        minute: date.getMinutes(),
+      });
       if (this.newProduct.category == null) {
         this.newProduct.category = new Category(null, null);
       }
@@ -144,16 +154,16 @@ export class OperatorProductFormComponent implements OnInit {
     }
     this.newProduct.locked = this.productForm.get('locked').value;
     this.newProduct.deleted = false;
-    if (this.expiresAtEnabled) {
+    if (this.productHasExpiration) {
       const expirationDate = this.productForm.get('expirationDate').value;
       const time = this.productForm.get('time').value;
-      const date = new Date(Date.UTC(expirationDate.year,
+      this.newProduct.expiresAt = new Date(Date.UTC(
+        expirationDate.year,
         expirationDate.month - 1,
         expirationDate.day,
         time.hour,
         time.minute
       ));
-      this.newProduct.expiresAt = date.toISOString();
     } else {
       this.newProduct.expiresAt = null;
     }
@@ -173,6 +183,7 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   updateProduct() {
+    console.log(this.newProduct);
     this.productService.updateProduct(this.newProduct.id, this.newProduct).subscribe(() => {
         this.inEditMode = true;
         this.addProductEnabled = false;
@@ -243,7 +254,23 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   toggleExpiration() {
-    this.expiresAtEnabled = !this.expiresAtEnabled;
+    if (this.productHasExpiration) {
+      this.newProduct.expiresAt = null;
+    } else {
+      const expirationDate = this.productForm.get('expirationDate').value;
+      const time = this.productForm.get('time').value;
+      this.newProduct.expiresAt = new Date(Date.UTC(
+        expirationDate.year,
+        expirationDate.month - 1,
+        expirationDate.day,
+        time.hour,
+        time.minute
+      ));
+    }
+  }
+
+  get productHasExpiration() {
+    return this.newProduct.expiresAt !== null;
   }
 
   get productFormControl() {
@@ -254,9 +281,5 @@ export class OperatorProductFormComponent implements OnInit {
     const isWhitespace = (control.value || '').trim().length < 3;
     const isValid = !isWhitespace;
     return isValid ? null : {whitespace: true};
-  }
-
-  private addLeadingZero(num: number): string {
-    return num < 10 ? '0' + num : num.toString();
   }
 }

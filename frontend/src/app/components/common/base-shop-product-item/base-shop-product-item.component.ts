@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Product} from '../../../dtos/product';
+import {Globals} from '../../../global/globals';
 
 @Component({
   selector: 'app-base-shop-product-item',
@@ -10,7 +11,7 @@ export class BaseShopProductItemComponent implements OnInit {
 
   @Input() public product: Product;
 
-  constructor() { }
+  constructor(private globals: Globals) { }
 
   ngOnInit(): void {
   }

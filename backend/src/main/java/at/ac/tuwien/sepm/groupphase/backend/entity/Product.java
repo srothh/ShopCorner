@@ -51,7 +51,7 @@ public class Product {
     @Column(name = "saleCount", columnDefinition = "BIGINT default 0")
     private Long saleCount;
 
-    @Column()
+    @Column(name = "expiresAt")
     private LocalDateTime expiresAt;
 
     private boolean deleted;
