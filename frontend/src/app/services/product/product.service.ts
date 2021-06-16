@@ -90,5 +90,6 @@ export class ProductService {
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
 
+  // tslint:disable-next-line:max-line-length
   private productMapper = (p) => new Product(p.id, p.name, p.description, p.price, p.category, p.taxRate, p.locked, p.picture, p.expiresAt, p.deleted);
 }
