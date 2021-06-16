@@ -46,7 +46,7 @@ export class ProductService {
    */
   getProductById(id: number): Observable<Product> {
     return this.httpClient.get<Product>(this.productBaseUri + '/' + id).pipe(
-      map((prod) => this.productMapper(prod))
+      map(this.productMapper)
     );
   }
 
