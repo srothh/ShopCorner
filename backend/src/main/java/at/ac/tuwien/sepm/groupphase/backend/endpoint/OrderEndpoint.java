@@ -56,16 +56,16 @@ public class OrderEndpoint {
     }
 
     /**
-     * Retrieves a page of customers from the database.
+     * Retrieves a page of orders from the database.
      *
      * @return A list of all the retrieved orders
      */
-    @PermitAll
+    @Secured("ROLE_ADMIN")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all orders", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<OrderDto> getAllOrders(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                   @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
+                                                @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
         LOGGER.info("GET api/v1/orders?page={}&page_count={}", page, pageCount);
         Page<Order> orderPage = orderService.getAllOrders(page, pageCount);
         return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderService.getOrderCount());
