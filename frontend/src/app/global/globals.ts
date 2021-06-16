@@ -7,6 +7,12 @@ import {Injectable} from '@angular/core';
 export class Globals {
   readonly backendUri: string = this.findBackendUrl();
 
+  readonly roles = {
+    admin: 'ADMIN',
+    employee: 'EMPLOYEE',
+    customer: 'CUSTOMER',
+  };
+
   readonly requestParamKeys = {
     pagination: {
       page: 'page',
