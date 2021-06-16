@@ -22,7 +22,7 @@ public class CustomerDto {
     private String loginName;
     @Valid
     private AddressDto address;
-    @Size(max = 128, message = "House number must not have more than 64 Characters")
+    @Size(max = 128, message = "Phone number must not have more than 128 characters")
     private String phoneNumber;
 
     public CustomerDto() {
