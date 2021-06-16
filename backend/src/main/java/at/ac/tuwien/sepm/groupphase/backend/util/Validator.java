@@ -148,9 +148,6 @@ public class Validator {
                     throw new IllegalArgumentException("Only whiteSpaces not allowed!");
                 }
             }
-            if (product.getDescription().trim().length() > 70) {
-                throw new IllegalArgumentException("description is too long");
-            }
         }
 
         if (product.getExpiresAt() != null) {

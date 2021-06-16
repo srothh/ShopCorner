@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
@@ -14,7 +15,7 @@ public class ProductDto {
     @NotBlank
     @Size(min = 3, max = 50, message = "name should contain at least 3 characters and 50 at most")
     private String name;
-    @Size(max = 200)
+    @Length(max = 200)
     private String description;
     @DecimalMin("0.0")
     private Double price;
