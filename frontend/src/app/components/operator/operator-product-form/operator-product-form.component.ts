@@ -33,7 +33,6 @@ export class OperatorProductFormComponent implements OnInit {
   productForm: FormGroup;
   // properties for the newly to be added product
 
-  expiresAtEnabled = false;
   today = new Date(Date.now());
 
   // util properties
