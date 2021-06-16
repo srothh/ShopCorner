@@ -21,21 +21,8 @@ public class InvoiceItemKey implements Serializable {
     public InvoiceItemKey() {
     }
 
-    public InvoiceItemKey(Long invoiceId, Long productId) {
-        this.invoiceId = invoiceId;
-        this.productId = productId;
-    }
-
-    public Long getInvoiceId() {
-        return invoiceId;
-    }
-
     public void setInvoiceId(Long invoiceId) {
         this.invoiceId = invoiceId;
-    }
-
-    public Long getProductId() {
-        return productId;
     }
 
     public void setProductId(Long productId) {

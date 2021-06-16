@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 
@@ -42,7 +40,7 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
         validator.validateNewInvoiceItem(invoiceItems);
         Set<InvoiceItem> newInvoiceItems = new HashSet<>();
         for (InvoiceItem item : invoiceItems) {
-            if (item != null || item.getId() != null) {
+            if (item != null) {
                 newInvoiceItems.add(this.invoiceItemRepository.save(item));
             }
         }

@@ -17,40 +17,6 @@ export class OperatorAddCategoryComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private categoryService: CategoryService, private router: Router) { }
 
   ngOnInit(): void {
-    if (this.newCategory === undefined){
-      this.newCategory = this.createDefaultCategory();
-    }
-    this.categoryForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.whiteSpaceValidator]]});
-  }
-  resetState(){
-    this.errorMessage = null;
-    this.errorOccurred = undefined;
-  }
-  createDefaultCategory(){
-    return new Category(null, null);
-  }
-  submitCategory(){
-    this.newCategory.name = this.categoryForm.get('name').value;
-    this.categoryService.addCategory(this.newCategory).subscribe((categoryData)=>{
-      this.newCategory.id = categoryData.id;
-      this.errorOccurred = false;
-      this.router.navigate(['operator/categories']).then();
-    },error => {
-      this.errorOccurred = true;
-      this.errorMessage = error.error.message;
-    });
-  }
-  get categoryFormControl() {
-    return this.categoryForm.controls;
-  }
-  whiteSpaceValidator(control: AbstractControl) {
-    const isWhitespace = (control.value || '').trim().length < 3;
-    const isValid = !isWhitespace;
-    return isValid ? null : {whitespace: true};
-  }
-  goBackToCategoriesOverview(){
-    this.router.navigate(['operator/categories']).then();
   }
 
 }

@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Set;
@@ -61,7 +60,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Cacheable(value = "counts", key = "'invoicesByYear'")
-    @Override
     public long getInvoiceCountByYear(LocalDateTime firstDateOfYear) {
         LOGGER.trace("getInvoiceCount()");
         return invoiceRepository.countInvoiceByDateAfter(firstDateOfYear);

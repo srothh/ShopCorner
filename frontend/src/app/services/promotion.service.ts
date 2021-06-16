@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {OperatorAuthService} from './auth/operator-auth.service';
 import {Observable} from 'rxjs';
@@ -35,10 +35,11 @@ export class PromotionService {
    */
   getAllPromotionsForPage(page: number, pageCount: number): Observable<Pagination<Promotion>> {
     console.log('Get promotions for page', page);
-    return this.httpClient.get<Pagination<Promotion>>(
-      this.promotionBaseUri + '?page=' + page + '&page_count=' + pageCount,
-      {headers: this.getHeadersForOperator()}
-    );
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount));
+
+    return this.httpClient.get<Pagination<Promotion>>(this.promotionBaseUri, {params, headers: this.getHeadersForOperator()});
   }
 
 

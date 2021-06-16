@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CategoryMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
@@ -18,12 +19,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
@@ -66,17 +70,18 @@ public class CategoryEndpoint {
     /**
      * Gets all categories that are currently saved in the database in a paginated manner specified by the current page and the pageCount.
      *
-     * @param page describes the current page
-     * @param pageCount number of entries in a page
+     * @param paginationRequestDto describes the pagination request
      *
      * @return all categories specified by the current page and the pageCount
      */
     @PermitAll
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Returns all categories relating to products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<CategoryDto> getAllCategoriesPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
+    @Operation(summary = "Returns pages of categories", security = @SecurityRequirement(name = "apiKey"))
+    public PaginationDto<CategoryDto> getAllCategoriesPerPage(@Valid PaginationRequestDto paginationRequestDto) {
         LOGGER.info("GET" + BASE_URL);
+        int page = paginationRequestDto.getPage();
+        int pageCount = paginationRequestDto.getPageCount();
         Page<Category> categoryPage = this.categoryService.getAllCategoriesPerPage(page, pageCount);
         return new PaginationDto<CategoryDto>(categoryPage.getContent()
             .stream()
@@ -101,4 +106,51 @@ public class CategoryEndpoint {
             .map(this.categoryMapper::entityToDto)
             .collect(Collectors.toList());
     }
+
+    /**
+     * Updates an already existing category entity in the database.
+     *
+     * @param categoryId the Id of the category to execute the update
+     * @param categoryDto the categoryDto with updated fields
+     */
+    @Secured("ROLE_ADMIN")
+    @PutMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Updates an already existing category entity in the database", security = @SecurityRequirement(name = "apiKey"))
+    public void updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryDto categoryDto) {
+        LOGGER.info("PUT category{}" + BASE_URL, categoryDto);
+        categoryService.updateCategory(categoryId, categoryMapper.dtoToEntity(categoryDto));
+    }
+
+    /**
+     * Deletes a category entity in the database with the given id.
+     *
+     * @param categoryId the Id of the category to execute the delete action
+     */
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Deletes a category entity in the database", security = @SecurityRequirement(name = "apiKey"))
+    public void deleteCategory(@PathVariable Long categoryId) {
+        LOGGER.info("DELETE category with Id{}" + BASE_URL, categoryId);
+        categoryService.deleteCategory(categoryId);
+    }
+
+    /**
+     * Gets a specific category with the given id.
+     *
+     * @param categoryId the id of the category to retrieve from the database
+     *
+     * @return the requested category with the given id
+     *
+     */
+    @PermitAll
+    @GetMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Gets the category specified by the id", security = @SecurityRequirement(name = "apikKey"))
+    public Category getCategoryById(@PathVariable Long categoryId) {
+        return this.categoryService.getCategoryById(categoryId);
+    }
+
+
 }
