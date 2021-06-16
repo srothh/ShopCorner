@@ -23,6 +23,7 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   cart: Cart;
   cartItems: CartItem[];
   onClick = false;
+
   constructor(private cartService: CartService, private globals: Globals, private cartGlobals: CartGlobals, private router: Router) {
   }
 
@@ -32,7 +33,7 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-     this.fetchCart();
+    this.fetchCart();
 
   }
 
@@ -68,9 +69,9 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   }
 
   updateLocalQuantity(event, id) {
-      this.onClick = true;
-      const product = this.cartGlobals.getCart()[id];
-      this.cartGlobals.updateCartId(product, event.target.value, product.cartItemId);
+    this.onClick = true;
+    const product = this.cartGlobals.getCart()[id];
+    this.cartGlobals.updateCartId(product, event.target.value, product.cartItemId);
   }
 
   updateQuantity(event, id) {
@@ -128,6 +129,10 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   routeToDetailView(product: Product) {
     this.router.navigate(['products/' + product.id]).then();
 
+  }
+
+  routeToCheckout() {
+    this.router.navigate(['checkout']);
   }
 
   routeBackToShop() {
