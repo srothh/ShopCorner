@@ -7,7 +7,6 @@ import {InvoiceService} from '../../../services/invoice.service';
 import {formatDate} from '@angular/common';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {InvoiceItem} from '../../../dtos/invoiceItem';
-import {InvoiceType} from '../../../dtos/invoiceType.enum';
 
 
 @Component({
@@ -36,7 +35,9 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   constructor(private invoiceService: InvoiceService, private formBuilder: FormBuilder) {
   }
-
+  static validateInputNumbers(item) {
+    return (item.taxRate !== undefined && item.quantity !== undefined) || (item.taxRate !== '' && item.quantity !== '');
+  }
 
   ngOnInit() {
     this.newInvoiceForm = this.formBuilder.group({
@@ -50,17 +51,28 @@ export class OperatorInvoiceFormComponent implements OnInit {
     this.selectedProducts = [];
   }
 
-  get f() {
+  get invoiceFrom() {
     return this.newInvoiceForm.controls;
   }
 
-  get t() {
-    return this.f.items as FormArray;
+  get invoiceFormArray() {
+    return this.invoiceFrom.items as FormArray;
   }
 
+  formControls(item) {
+    return item.controls;
+  }
+
+  formControlsQuantity(item) {
+    return this.formControls(item).quantity;
+  }
+
+  formControlsName(item) {
+    return this.formControls(item).name;
+  }
 
   addProductOnClick() {
-    this.t.push(this.formBuilder.group({
+    this.invoiceFormArray.push(this.formBuilder.group({
       name: ['', Validators.required],
       price: [''],
       quantity: ['', [Validators.required]],
@@ -95,7 +107,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
-    for (const item of this.t.controls) {
+    for (const item of this.invoiceFormArray.controls) {
       if (item !== undefined) {
 
         const numOfItems = item.value.quantity;
@@ -115,7 +127,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
     }
     this.invoiceDto.amount = +this.total.toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
-    this.invoiceDto.type = InvoiceType.operator;
   }
 
 
@@ -132,22 +143,22 @@ export class OperatorInvoiceFormComponent implements OnInit {
   onReset() {
     this.submitted = false;
     this.newInvoiceForm.reset();
-    this.t.clear();
+    this.invoiceFormArray.clear();
     this.addProductOnClick();
     this.updateProducts();
   }
 
   updateProducts() {
     this.selectedProducts = [];
-    for (const item of this.t.controls) {
+    for (const item of this.invoiceFormArray.controls) {
       const index = this.products.indexOf(item.value.name);
       this.selectedProducts.push(this.products[index]);
     }
   }
 
   deleteProductFromInvoice(id: number) {
-    if (this.t.length > 1) {
-      this.t.removeAt(id);
+    if (this.invoiceFormArray.length > 1) {
+      this.invoiceFormArray.removeAt(id);
     } else {
       this.errorHandling('Es können nicht alle Elemente einer Rechnung gelöscht werden');
     }
@@ -164,7 +175,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   downloadInvoice() {
     this.invoiceService.createInvoiceAsPdf(this.invoiceDto).subscribe((data) => {
-      const newBlob  = new Blob([data], {type: 'application/pdf'});
       const downloadURL = window.URL.createObjectURL(data);
       const link = document.createElement('a');
       link.href = downloadURL;
@@ -188,7 +198,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
   }
 
   /**
-   * @param error
+   * @param errorMessage
    * @private
    */
   private errorHandling(errorMessage: string) {
@@ -200,10 +210,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
     }
   }
 
-  /**
-   * @param error
-   * @private
-   */
 
 
   private fetchData(): void {
@@ -217,10 +223,10 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   private calcTotal() {
     let amount = 0.00;
-    for (const item of this.t.controls) {
+    for (const item of this.invoiceFormArray.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        if (product.taxRate !== undefined && this.validateInputNumbers(item.value)) {
+        if (product.taxRate !== undefined && OperatorInvoiceFormComponent.validateInputNumbers(item.value)) {
           amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
         }
       }
@@ -230,10 +236,10 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   private calcTotalTax() {
     let amount = 0.00;
-    for (const item of this.t.controls) {
+    for (const item of this.invoiceFormArray.controls) {
       if (item !== undefined) {
         const product = item.value.name;
-        if (product.taxRate !== undefined && this.validateInputNumbers(item.value)) {
+        if (product.taxRate !== undefined && OperatorInvoiceFormComponent.validateInputNumbers(item.value)) {
           amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
         }
       }
@@ -244,10 +250,10 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   private calcSubtotal() {
     let amount = 0;
-    for (const item of this.t.controls) {
+    for (const item of this.invoiceFormArray.controls) {
       if (item !== undefined && item.value !== undefined) {
         const product = item.value.name;
-        if (product.taxRate !== undefined && this.validateInputNumbers(item.value)) {
+        if (product.taxRate !== undefined && OperatorInvoiceFormComponent.validateInputNumbers(item.value)) {
           amount += product.price * item.value.quantity;
         }
       }
@@ -256,8 +262,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
   }
 
-  private validateInputNumbers(item) {
-    return (item.taxRate !== undefined && item.quantity !== undefined) || (item.taxRate !== '' && item.quantity !== '');
-  }
+
 
 }

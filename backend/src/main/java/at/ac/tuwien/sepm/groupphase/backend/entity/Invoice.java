@@ -50,24 +50,6 @@ public class Invoice {
         items = new HashSet<>();
     }
 
-
-    public Invoice(Long id, String invoiceNumber, LocalDateTime date, double amount) {
-        this.id = id;
-        this.invoiceNumber = invoiceNumber;
-        this.date = date;
-        this.amount = amount;
-        items = new HashSet<>();
-    }
-
-
-    public Invoice(String invoiceNumber, LocalDateTime date, double amount, Set<InvoiceItem> items) {
-        this.invoiceNumber = invoiceNumber;
-        this.date = date;
-        this.amount = amount;
-        this.items = items;
-    }
-
-
     public Long getId() {
         return id;
     }
@@ -106,22 +88,6 @@ public class Invoice {
 
     public void setItems(Set<InvoiceItem> items) {
         this.items = items;
-    }
-
-    public InvoiceType getType() {
-        return type;
-    }
-
-    public void setType(InvoiceType type) {
-        this.type = type;
-    }
-
-    public String getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
     }
 
     @Override
