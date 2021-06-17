@@ -61,18 +61,14 @@ public class InvoiceEndpoint {
     private final InvoiceService invoiceService;
     private final InvoiceItemMapper invoiceItemMapper;
     private final PdfGeneratorService pdfGeneratorService;
-    private final CustomerMapper customerMapper;
-    private final OrderService orderService;
 
     @Autowired
     public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService,
-                           PdfGeneratorService pdfGeneratorService, CustomerMapper customerMapper, OrderService orderService) {
+                           PdfGeneratorService pdfGeneratorService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
         this.pdfGeneratorService = pdfGeneratorService;
-        this.customerMapper = customerMapper;
-        this.orderService = orderService;
     }
 
     /**
@@ -166,22 +162,7 @@ public class InvoiceEndpoint {
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
     }
 
-    /**
-     * Get specific Customer of a specific order from invoiceId.
-     *
-     * @param invoiceId is the id of the invoice
-     * @return DetailedInvoiceDto with all given information of the invoice
-     */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @GetMapping("customers")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Retrieve customer from order", security = @SecurityRequirement(name = "apiKey"))
-    public CustomerDto getCustomerFromOrderByInvoiceId(@RequestParam(name = "invoice") Long invoiceId) {
-        LOGGER.info("GET api/v1/invoices?invoice={}", invoiceId);
-        Invoice invoice = this.invoiceService.findOneById(invoiceId);
-        Customer customer = this.orderService.getOrderByInvoice(invoice).getCustomer();
-        return this.customerMapper.customerToCustomerDto(customer);
-    }
+
 
 
     /**

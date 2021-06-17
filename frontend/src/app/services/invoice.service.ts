@@ -7,7 +7,6 @@ import {Product} from '../dtos/product';
 import {OperatorAuthService} from './auth/operator-auth.service';
 import {Pagination} from '../dtos/pagination';
 import {InvoiceType} from '../dtos/invoiceType.enum';
-import {absoluteFromSourceFile} from '@angular/compiler-cli/src/ngtsc/file_system';
 import {Customer} from '../dtos/customer';
 
 @Injectable({
@@ -17,6 +16,7 @@ export class InvoiceService {
 
   private invoiceBaseUri: string = this.globals.backendUri + '/invoices';
   private productBaseUri: string = this.globals.backendUri + '/products';
+  private customerBaseUri: string = this.globals.backendUri + '/customers';
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
 
@@ -56,7 +56,7 @@ export class InvoiceService {
    */
   getCustomerByInvoiceId(id: number): Observable<Customer> {
     const params = new HttpParams().set('invoice', String(id));
-    return this.httpClient.get<Customer>(this.invoiceBaseUri + '/customers', {params,
+    return this.httpClient.get<Customer>(this.customerBaseUri + '/order', {params,
       headers: this.getHeadersForOperator()
     });
   }

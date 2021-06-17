@@ -6,7 +6,10 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
+import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
+import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
@@ -34,11 +37,15 @@ public class CustomerEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final CustomerMapper customerMapper;
     private final CustomerService customerService;
+    private final OrderService orderService;
+    private final InvoiceService invoiceService;
 
     @Autowired
-    public CustomerEndpoint(CustomerMapper customerMapper, CustomerService customerService) {
+    public CustomerEndpoint(CustomerMapper customerMapper, CustomerService customerService, InvoiceService invoiceService, OrderService orderService) {
         this.customerMapper = customerMapper;
         this.customerService = customerService;
+        this.invoiceService = invoiceService;
+        this.orderService = orderService;
     }
 
     /**
@@ -88,4 +95,22 @@ public class CustomerEndpoint {
         LOGGER.info("GET api/v1/customers");
         return customerService.getCustomerCount();
     }
+
+    /**
+     * Get specific Customer of a specific order from invoiceId.
+     *
+     * @param invoiceId is the id of the invoice
+     * @return DetailedInvoiceDto with all given information of the invoice
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping("/order")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Retrieve customer from order", security = @SecurityRequirement(name = "apiKey"))
+    public CustomerDto getCustomerFromOrderByInvoiceId(@RequestParam(name = "invoice") Long invoiceId) {
+        LOGGER.info("GET api/v1/invoices?invoice={}", invoiceId);
+        Invoice invoice = this.invoiceService.findOneById(invoiceId);
+        Customer customer = this.orderService.getOrderByInvoice(invoice).getCustomer();
+        return this.customerMapper.customerToCustomerDto(customer);
+    }
+
 }
