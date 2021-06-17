@@ -17,6 +17,7 @@ import javax.persistence.PreRemove;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -199,6 +200,7 @@ public class Product {
         private boolean locked;
         private TaxRate taxRate;
         private byte[] picture;
+        private LocalDateTime expiresAt;
         private boolean deleted;
 
         public ProductBuilder(){
@@ -235,6 +237,11 @@ public class Product {
             return this;
         }
 
+        public ProductBuilder withExpiresAt(LocalDateTime expiresAt) {
+            this.expiresAt = expiresAt;
+            return this;
+        }
+
         public ProductBuilder withLocked(boolean locked) {
             this.locked = locked;
             return this;
@@ -266,6 +273,7 @@ public class Product {
             product.setLocked(locked);
             product.setPicture(picture);
             product.setDeleted(deleted);
+            product.setExpiresAt(expiresAt);
             return product;
         }
     }
