@@ -230,7 +230,7 @@ public class InvoiceEndpointTest implements TestData {
         }
         newInvoice1.setItems(set);
         invoice2.setItems(null);
-        invoice2.setInvoiceType(InvoiceType.customer);
+        invoice2.setInvoiceType(InvoiceType.operator);
         Invoice newInvoice2 = invoiceRepository.save(invoice2);
         for(InvoiceItem item: set){
             item.setInvoice(newInvoice2);
@@ -251,7 +251,7 @@ public class InvoiceEndpointTest implements TestData {
             new TypeReference<>() {
             });
 
-        assertEquals(0, paginationDto.getItems().size());
+        assertEquals(2, paginationDto.getItems().size());
 
         List<SimpleInvoiceDto> simpleInvoiceDtoList = paginationDto.getItems();
         SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtoList.get(0);
