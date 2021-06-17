@@ -27,14 +27,19 @@ public class PdfGenerator {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final String htmlOpterator;
     private final String htmlCustomer;
-
+    private final String htmlCanceledOpterator;
+    private final String htmlCanceldCustomer;
     public PdfGenerator() {
         String directory = "htmlToPdfTemplate";
         try {
             BufferedReader in = new BufferedReader(new FileReader(directory + "/operatorInvoiceTemplate_v1.html"));
             htmlOpterator = in.lines().collect(Collectors.joining());
-            in = new BufferedReader(new FileReader(directory + "/operatorInvoiceTemplate_v1.html"));
+            in = new BufferedReader(new FileReader(directory + "/customerInvoiceTemplate_v1.html"));
             htmlCustomer = in.lines().collect(Collectors.joining());
+            in = new BufferedReader(new FileReader(directory + "/canceledOperatorInvoiceTemplate_v1.html"));
+            htmlCanceledOpterator = in.lines().collect(Collectors.joining());
+            in = new BufferedReader(new FileReader(directory + "/canceledCustomerInvoiceTemplate_v1.html"));
+            htmlCanceldCustomer = in.lines().collect(Collectors.joining());
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -49,7 +54,7 @@ public class PdfGenerator {
     public byte[] generatePdfOperator(Invoice invoice) {
         final Document document = Jsoup.parse(htmlOpterator);
         this.addInvoiceInformation(document, invoice);
-        this.addProductTable(document, invoice);
+        this.addProductTable(document, invoice, 1);
         this.addCompanyFooter(document);
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -58,7 +63,12 @@ public class PdfGenerator {
         return buffer.toByteArray();
     }
 
-
+    /**
+     * Generates a PDF from an HTML template, parses the template into a document, which can then be changed and edited.
+     *
+     * @param order order with the a created invoice
+     * @return byte array with generated pdf
+     */
     public byte[] generatePdfCustomer(Order order) {
         Invoice invoice = order.getInvoice();
         final Document document = Jsoup.parse(htmlCustomer);
@@ -66,7 +76,50 @@ public class PdfGenerator {
         this.addCustomerInformation(document, order.getCustomer());
         this.addInvoiceInformation(document, invoice);
         this.addOrderInformation(document, invoice);
-        this.addProductTable(document, invoice);
+        this.addProductTable(document, invoice, 1);
+        this.addCompanyFooter(document);
+
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ConverterProperties properties = new ConverterProperties();
+
+        HtmlConverter.convertToPdf(document.html(), buffer, properties);
+        return buffer.toByteArray();
+    }
+
+    /**
+     * Generates a canceled Invoice PDF from an HTML template, parses the template into a document,
+     * which can then be changed and edited.
+     *
+     * @param invoice Invoice to generate a pdf
+     * @return byte array with generated pdf
+     */
+    public byte[] generatePdfOperatorCanceled(Invoice invoice) {
+        final Document document = Jsoup.parse(htmlOpterator);
+        this.addInvoiceInformation(document, invoice);
+        this.addProductTable(document, invoice, -1);
+        this.addCompanyFooter(document);
+
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ConverterProperties properties = new ConverterProperties();
+        HtmlConverter.convertToPdf(document.html(), buffer, properties);
+        return buffer.toByteArray();
+    }
+
+    /**
+     * Generates a canceled Invoice PDF from an HTML template, parses the template into a document,
+     * which can then be changed and edited.
+     *
+     * @param order order with the a created invoice
+     * @return byte array with generated pdf
+     */
+    public byte[] generatePdfCustomerCanceled(Order order) {
+        Invoice invoice = order.getInvoice();
+        final Document document = Jsoup.parse(htmlCustomer);
+        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+        this.addCustomerInformation(document, order.getCustomer());
+        this.addInvoiceInformation(document, invoice);
+        this.addOrderInformation(document, invoice);
+        this.addProductTable(document, invoice, -1);
         this.addCompanyFooter(document);
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -108,7 +161,7 @@ public class PdfGenerator {
     }
 
 
-    private void addProductTable(Document document, Invoice invoice) {
+    private void addProductTable(Document document, Invoice invoice, int calculationFactor) {
         final Element tableArticle = document.body().select(".article").first();
         StringBuilder tableItemStringBuilder = new StringBuilder();
         tableItemStringBuilder.append("<tr >");
@@ -143,23 +196,23 @@ public class PdfGenerator {
         }
         tableItemStringBuilder.append("</table>");
         tableArticle.html(tableItemStringBuilder.toString());
-        addTotalTable(document, total, subtotal, tax);
+        addTotalTable(document, total, subtotal, tax, calculationFactor);
     }
 
-    private void addTotalTable(Document document, double total, double subtotal, double tax) {
+    private void addTotalTable(Document document, double total, double subtotal, double tax, int calculationFactor) {
         StringBuilder tableTotalStringBuilder = new StringBuilder();
         final Element tableAmount = document.body().select(".total").first();
         tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
         tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Zwischensumme</span></td>");
-        tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", subtotal));
+        tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", subtotal * calculationFactor));
 
         tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
         tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Steuer</span></td>");
-        tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", tax));
+        tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", tax * calculationFactor));
 
         tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
         tableTotalStringBuilder.append("<td class=\"right total-text\"><span>Summe</span></td>");
-        tableTotalStringBuilder.append(String.format("<td class=\"center\"><span>%1.2f €</span></td></tr>", total));
+        tableTotalStringBuilder.append(String.format("<td class=\"center\"><span>%1.2f €</span></td></tr>", total * calculationFactor));
         tableTotalStringBuilder.append("</table>");
         tableAmount.html(tableTotalStringBuilder.toString());
     }

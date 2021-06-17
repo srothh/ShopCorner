@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <link rel="stylesheet" type="text/css" href="htmlToPdfTemplate/operatorInvoiceTemplate_v1.css">
+
+</head>
+<body>
+<table class="table-grid main-table">
+    <tr>
+        <td class="center" colspan="3">
+            <img src="https://i.imgur.com/zMBx1FY.png" alt="Logo">
+        </td>
+    </tr>
+    <tr>
+        <td class="center" colspan="3">
+            <h3>Stornorechnung</h3>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="right" style="width: 100%">
+        </td>
+        <td class="right" style="width: 100%"></td>
+        <td class="right">
+            <table class="right none-border" style="margin-top: 1rem">
+                <tr>
+                    <td class="left">
+                        <a>Date: </a>
+                    </td>
+                    <td class="left invoice-date">
+                        <a>{{invoiceDate}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left">
+                        <a>Zahlungsart: </a>
+                    </td>
+                    <td class="left">
+                        <a>Barzahlung</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left">
+                        <a>Rechnungsnummer: </a>
+                    </td>
+                    <td class="left invoice-number">
+                        <a>{{invoiceNumber}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left">
+                        <a>Bestellnummer: </a>
+                    </td>
+                    <td class="left">
+                        <a>{{number}}</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class="left underline" colspan="3">
+            <h4>Bestellte Artikel</h4>
+        </td>
+    </tr>
+
+    <tr style="width: 100%;">
+        <td class="center" style="width: 100%;" colspan="3">
+            <table class="center table-grid article" style="width: 100%;">
+                <tr>
+                    <th class="center product">
+                        <a>Produkt</a>
+                    </th>
+                    <th class="center price">
+                        <a>Preis</a>
+                    </th>
+                    <th class="center quantity">
+                        <a>Anzahl</a>
+                    </th>
+                    <th class="center tax">
+                        <a>Steuer</a>
+                    </th>
+                    <th class="center amount">
+                        <a>Betrag</a>
+                    </th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr style="width: 100%;">
+        <td class="center" style="width: 100%;" colspan="3">
+            <table class="center total none-table-grid" style="width: 100%;">
+                <tr>
+                    <td class="right span none-border" colspan="3"></td>
+                    <td class="right total-text none-border"><span>Zwischensumme</span></td>
+                    <td class="center none-border"><span>hallo</span></td>
+                </tr>
+                <tr>
+                    <td class="right span none-border" colspan="3"></td>
+                    <td class="right total-text none-border"><span>Zwischensumme</span></td>
+                    <td class="center none-border"><span>hallo</span></td>
+                </tr>
+                <tr>
+                    <td class="right span" colspan="3"></td>
+                    <td class="right total-text"><span>Zwischensumme</span></td>
+                    <td class="center"><span>hallo</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<div>
+
+</div>
+<footer class="footer">
+    <table style="width: 100%">
+        <tr>
+            <td class="center name" style="width: 50%">{{companyName}}</td>
+            <!--td class="left qr" style="width: 50%" rowspan="4"> Nein</td-->
+        <tr>
+            <td class="center address" style="width: 50%">{{companyAddress}}</td>
+        <tr>
+            <td class="center phone" style="width: 50%">{{companyPhone}}</td>
+        <tr>
+            <td class="center email" style="width: 50%">{{companyEmail}}</td>
+        </tr>
+
+
+
+    </table>
+
+</footer>
+</body>
+</html>
+
+
