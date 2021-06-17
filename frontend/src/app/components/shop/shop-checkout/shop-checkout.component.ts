@@ -12,6 +12,7 @@ import {Cart} from '../../../dtos/cart';
 import {OrderService} from '../../../services/order.service';
 import {Order} from '../../../dtos/order';
 import {Address} from '../../../dtos/address';
+import {InvoiceType} from '../../../dtos/invoiceType.enum';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -84,11 +85,15 @@ export class ShopCheckoutComponent implements OnInit {
     }
     this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
+    this.invoiceDto.customerId = this.customer.id;
+    this.invoiceDto.invoiceType = InvoiceType.customer;
   }
 
   placeNewOrder() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer);
+    console.log(this.invoiceDto);
+    console.log(this.customer);
     this.orderService.placeNewOrder(order).subscribe(() => {
     });
   }

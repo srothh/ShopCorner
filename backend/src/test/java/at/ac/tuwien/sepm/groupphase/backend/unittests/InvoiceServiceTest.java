@@ -13,30 +13,36 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
-@DataJpaTest
+@SpringBootTest
 @ActiveProfiles("test")
-public class InvoiceItemRepositoryTest implements TestData {
+public class InvoiceServiceTest implements TestData {
     private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
     private final InvoiceItem invoiceItem = new InvoiceItem();
     private final Invoice invoice = new Invoice();
     private final Product product = new Product();
     private final Category category = new Category();
     private final TaxRate taxRate = new TaxRate();
+
+    @Autowired
+    InvoiceService invoiceService;
 
     @Autowired
     private InvoiceRepository invoiceRepository;
@@ -55,6 +61,7 @@ public class InvoiceItemRepositoryTest implements TestData {
 
     @BeforeEach
     public void beforeEach() {
+        invoiceRepository.deleteAll();
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -83,6 +90,9 @@ public class InvoiceItemRepositoryTest implements TestData {
         invoiceItem.setNumberOfItems(10);
 
         // invoiceItem to invoice
+        Set<InvoiceItem> invoiceItemSet = new HashSet<>();
+        invoiceItemSet.add(invoiceItem);
+        invoice.setItems(invoiceItemSet);
         invoice.setInvoiceNumber(TEST_INVOICE_NUMBER_1);
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
@@ -90,17 +100,53 @@ public class InvoiceItemRepositoryTest implements TestData {
 
     }
 
+    @Test
+    public void createInvoice() {
+       Invoice created = invoiceService.createInvoice(invoice);
+       assertNotNull(created);
+    }
 
     @Test
-    public void givenAllProperties_whenSaveInvoiceItem_thenFindListWithOneInvoiceAndFindElementById() {
+    public void createInvoiceAndGetTotalInvoiceCount() {
+        Invoice created = invoiceService.createInvoice(invoice);
+        Long count = invoiceService.getInvoiceCount();
+        assertNotNull(created);
+        assertEquals(1L, count);
+    }
 
-        invoiceItem.setInvoice(invoiceRepository.save(invoice));
-        invoiceItemRepository.save(invoiceItem);
+    @Test
+    public void createInvoiceAndGetCustomerInvoiceCount() {
+        invoice.setInvoiceType(InvoiceType.customer);
+        Invoice created = invoiceService.createInvoice(invoice);
+        Long count = invoiceService.getCustomerInvoiceCount();
+        assertNotNull(created);
+        assertEquals(1L, count);
+    }
 
-        assertAll(
-            () -> assertEquals(1, invoiceRepository.findAll().size()),
-            () -> assertNotNull(invoiceRepository.findById(invoice.getId()))
-        );
+    @Test
+    public void createInvoiceAndFindOneById() {
+        invoice.setInvoiceType(InvoiceType.customer);
+        Invoice created = invoiceService.createInvoice(invoice);
+        Invoice foundInvoice = invoiceService.findOneById(created.getId());
+        assertNotNull(created);
+        assertNotNull(foundInvoice);
+        assertEquals(created.getId(), foundInvoice.getId());
+        assertEquals(created.getAmount(), foundInvoice.getAmount());
+        assertEquals(created.getItems().size(), foundInvoice.getItems().size());
+        assertEquals(created.getInvoiceNumber(), foundInvoice.getInvoiceNumber());
+    }
 
+    @Test
+    public void createInvoiceAndGetInvoicePage() {
+        invoice.setInvoiceType(InvoiceType.customer);
+        Invoice created = invoiceService.createInvoice(invoice);
+        Page<Invoice> invoicePage = invoiceService.findAll(0, 15, InvoiceType.customer);
+
+        assertNotNull(created);
+        assertNotNull(invoicePage);
+        assertEquals(created.getId(), invoicePage.getContent().get(0).getId());
+        assertEquals(created.getAmount(), invoicePage.getContent().get(0).getAmount());
+        assertEquals(created.getItems().size(), invoicePage.getContent().get(0).getItems().size());
+        assertEquals(created.getInvoiceNumber(), invoicePage.getContent().get(0).getInvoiceNumber());
     }
 }
