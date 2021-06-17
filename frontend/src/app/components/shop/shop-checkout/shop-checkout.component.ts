@@ -92,8 +92,6 @@ export class ShopCheckoutComponent implements OnInit {
   placeNewOrder() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer);
-    console.log(this.invoiceDto);
-    console.log(this.customer);
     this.orderService.placeNewOrder(order).subscribe(() => {
     });
   }
