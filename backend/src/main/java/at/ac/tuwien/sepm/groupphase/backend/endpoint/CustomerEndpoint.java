@@ -105,6 +105,7 @@ public class CustomerEndpoint {
     @Operation(summary = "Retrieve customer from order", security = @SecurityRequirement(name = "apiKey"))
     public CustomerDto getCustomerById(@PathVariable  Long id) {
         LOGGER.info("GET api/v1/invoices?invoice={}", id);
+        System.out.println(id);
         return this.customerMapper.customerToCustomerDto(this.customerService.findCustomerById(id));
     }
 

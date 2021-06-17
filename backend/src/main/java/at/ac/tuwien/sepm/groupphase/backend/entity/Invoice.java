@@ -137,6 +137,6 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "Invoice{" + "id=" + id + ", invoiceNumber= " + invoiceNumber + ", date=" + date + ", amount=" + amount + ", typ=" + invoiceType + '}';
+        return "Invoice{" + "id=" + id + ", invoiceNumber= " + invoiceNumber + ", date=" + date + ", amount=" + amount + ", typ=" + invoiceType + ", customer=" + customerId + '}';
     }
 }

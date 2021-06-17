@@ -25,7 +25,7 @@ public class SimpleInvoiceDto {
     @DecimalMin(value = "0.01", message = "The amount can not be smaller than 0.01")
     private double amount;
 
-    @NotNull
+    @NotNull(message = "InvoiceType must not be null")
     @Enumerated(EnumType.STRING)
     private InvoiceType invoiceType;
 

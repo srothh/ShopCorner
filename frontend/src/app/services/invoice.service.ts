@@ -33,7 +33,6 @@ export class InvoiceService {
       .set(this.globals.requestParamKeys.pagination.page, String(page))
       .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount))
       .set(this.globals.requestParamKeys.invoice.invoiceType, String(type));
-    console.log('->', params);
     return this.httpClient.get<Pagination<Invoice>>(this.invoiceBaseUri, {params, headers: this.getHeadersForOperator()});
   }
 

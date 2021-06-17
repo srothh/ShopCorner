@@ -5,11 +5,11 @@ export class Invoice {
   id: number;
   orderNumber: string;
   invoiceNumber: string;
-  customer: number;
+  customerId: number;
   date: string;
   amount: number;
   items: InvoiceItem[];
-  type: InvoiceType;
+  invoiceType: InvoiceType;
   constructor(
     ) {
     this.items = [];

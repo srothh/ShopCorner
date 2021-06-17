@@ -117,7 +117,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
 
         this.invoiceDto.items.push(invItem);
         this.subtotal += product.price * item.value.quantity;
-        this.tax += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
+        this.tax += product.price * item.value.quantity * ((product.taxRate.calculationFactor - 1));
         this.total = this.subtotal + this.tax;
 
         this.mapItem['product'] = item.value.name;
@@ -128,7 +128,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
     }
     this.invoiceDto.amount = +this.total.toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
-    this.invoiceDto.type = InvoiceType.operator;
+    this.invoiceDto.invoiceType = InvoiceType.operator;
     console.log(this.invoiceDto);
   }
 
@@ -230,7 +230,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
       if (item !== undefined) {
         const product = item.value.name;
         if (product.taxRate !== undefined && OperatorInvoiceFormComponent.validateInputNumbers(item.value)) {
-          amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100) + 1);
+          amount += product.price * item.value.quantity * product.taxRate.calculationFactor;
         }
       }
     }
@@ -243,7 +243,7 @@ export class OperatorInvoiceFormComponent implements OnInit {
       if (item !== undefined) {
         const product = item.value.name;
         if (product.taxRate !== undefined && OperatorInvoiceFormComponent.validateInputNumbers(item.value)) {
-          amount += product.price * item.value.quantity * ((product.taxRate.percentage / 100));
+          amount += product.price * item.value.quantity * ((product.taxRate.calculationFactor - 1));
         }
       }
     }

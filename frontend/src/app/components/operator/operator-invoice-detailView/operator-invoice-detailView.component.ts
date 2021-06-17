@@ -12,7 +12,7 @@ import {Customer} from '../../../dtos/customer';
 export class OperatorInvoiceDetailViewComponent implements OnInit {
   @Input() value: Invoice;
   detailedInvoice: Invoice;
-  customer: Customer;
+  customer: Customer = new Customer( 0, '', '', '', '', null, '');
   error = false;
   errorMessage = '';
   download = false;
@@ -24,12 +24,13 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
     this.detailedInvoice = new Invoice();
     this.detailedInvoice.date = '';
     this.detailedInvoice.amount = 0;
-    this.customerExists = this.value.type === InvoiceType.customer;
+    this.customerExists = this.value.invoiceType === InvoiceType.customer;
     if (this.customerExists) {
-      this.fetchCustomerData(this.value.id);
+      this.fetchCustomerData(this.value);
     } else {
       this.fetchInvoiceData(this.value.id);
     }
+
   }
 
   onSubmit(event) {
@@ -69,28 +70,25 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
   private fetchInvoiceData(id: number) {
     this.invoiceService.getInvoiceById(id).subscribe( (item) => {
       this.detailedInvoice = item;
-      console.log(this.detailedInvoice);
 
     }, (error) => {
       this.error = true;
       this.errorMessage = error;
     });
   }
-  private fetchCustomerData(id: number) {
-    this.invoiceService.getInvoiceById(id).subscribe( (item) => {
+  private fetchCustomerData(invoice: Invoice) {
+    this.invoiceService.getInvoiceById(invoice.id).subscribe( (item) => {
       this.detailedInvoice = item;
 
     }, (error) => {
       this.error = true;
       this.errorMessage = error;
     });
-    if (this.detailedInvoice.customer !== undefined) {
-      this.invoiceService.getCustomerById(this.detailedInvoice.customer).subscribe((item) => {
+      this.invoiceService.getCustomerById(invoice.customerId).subscribe((item) => {
         this.customer = item;
       }, (error) => {
         this.error = true;
         this.errorMessage = error;
       });
-    }
   }
 }

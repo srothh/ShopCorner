@@ -1,15 +1,15 @@
 <div class="row" *ngIf="customerExists">
-  <div class="col-sm">
+  <div class="col-sm-1">
     Kunde:
   </div>
   <div class="col-sm">
     {{customer.name}}
   </div>
-  <div class="col-sm">
+  <div class="col-sm-1">
     Adresse:
   </div>
   <div class="col-sm">
-    {{customer.address}}
+    {{customer.address.postalCode + ' ' + customer.address.street + ' ' + customer.address.houseNumber}}
   </div>
 </div>
 <div class="row">
