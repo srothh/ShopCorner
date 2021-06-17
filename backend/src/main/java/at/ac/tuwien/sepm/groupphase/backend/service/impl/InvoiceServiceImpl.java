@@ -91,7 +91,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice createInvoice(Invoice invoice) {
         LOGGER.trace("createInvoice({})", invoice);
-        System.out.println(invoice);
         validator.validateNewInvoice(invoice);
         validator.validateNewInvoiceItem(invoice.getItems());
         Set<InvoiceItem> items = invoice.getItems();

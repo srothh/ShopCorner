@@ -17,6 +17,8 @@ public class SimpleInvoiceDto {
 
     private String orderNumber;
 
+    private Long customerId;
+
     @NotNull(message = "LocalDateTime can not be null")
     private LocalDateTime date;
 
@@ -75,6 +77,14 @@ public class SimpleInvoiceDto {
         this.orderNumber = orderNumber;
     }
 
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -84,12 +94,13 @@ public class SimpleInvoiceDto {
             return false;
         }
         SimpleInvoiceDto that = (SimpleInvoiceDto) o;
-        return Double.compare(that.amount, amount) == 0 && id.equals(that.id) && date.equals(that.date) && invoiceType.equals(that.invoiceType) && orderNumber.equals(that.orderNumber);
+        return Double.compare(that.amount, amount) == 0 && id.equals(that.id) && date.equals(that.date) && invoiceType.equals(that.invoiceType)
+            && orderNumber.equals(that.orderNumber) && customerId.equals(that.customerId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, amount, invoiceType, orderNumber, invoiceNumber);
+        return Objects.hash(id, date, amount, invoiceType, orderNumber, invoiceNumber, customerId);
     }
 
     @Override

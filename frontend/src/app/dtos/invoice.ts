@@ -5,6 +5,7 @@ export class Invoice {
   id: number;
   orderNumber: string;
   invoiceNumber: string;
+  customer: number;
   date: string;
   amount: number;
   items: InvoiceItem[];

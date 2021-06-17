@@ -37,15 +37,12 @@ public class CustomerEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final CustomerMapper customerMapper;
     private final CustomerService customerService;
-    private final OrderService orderService;
-    private final InvoiceService invoiceService;
+
 
     @Autowired
-    public CustomerEndpoint(CustomerMapper customerMapper, CustomerService customerService, InvoiceService invoiceService, OrderService orderService) {
+    public CustomerEndpoint(CustomerMapper customerMapper, CustomerService customerService) {
         this.customerMapper = customerMapper;
         this.customerService = customerService;
-        this.invoiceService = invoiceService;
-        this.orderService = orderService;
     }
 
     /**
@@ -97,20 +94,18 @@ public class CustomerEndpoint {
     }
 
     /**
-     * Get specific Customer of a specific order from invoiceId.
+     * Get specific Customer by id.
      *
-     * @param id is the id of the invoice
-     * @return DetailedInvoiceDto with all given information of the invoice
+     * @param id is the id of the customer
+     * @return CustomerDto with all given information of the customer
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve customer from order", security = @SecurityRequirement(name = "apiKey"))
-    public CustomerDto getCustomerFromOrderByInvoiceId(@PathVariable  Long id) {
+    public CustomerDto getCustomerById(@PathVariable  Long id) {
         LOGGER.info("GET api/v1/invoices?invoice={}", id);
-        Invoice invoice = this.invoiceService.findOneById(id);
-        Customer customer = this.orderService.getOrderByInvoice(invoice).getCustomer();
-        return this.customerMapper.customerToCustomerDto(customer);
+        return this.customerMapper.customerToCustomerDto(this.customerService.findCustomerById(id));
     }
 
 }

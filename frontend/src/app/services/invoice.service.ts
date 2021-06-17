@@ -54,9 +54,8 @@ export class InvoiceService {
    * @param id of the invoice
    * @return customer
    */
-  getCustomerByInvoiceId(id: number): Observable<Customer> {
-    const params = new HttpParams().set('invoice', String(id));
-    return this.httpClient.get<Customer>(this.customerBaseUri + '/order', {params,
+  getCustomerById(id: number): Observable<Customer> {
+    return this.httpClient.get<Customer>(this.customerBaseUri + '/' + id, {
       headers: this.getHeadersForOperator()
     });
   }

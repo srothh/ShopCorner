@@ -84,12 +84,13 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
       this.error = true;
       this.errorMessage = error;
     });
-    this.invoiceService.getCustomerByInvoiceId(id).subscribe( (item) => {
-      this.customer = item;
-
-    }, (error) => {
-      this.error = true;
-      this.errorMessage = error;
-    });
+    if (this.detailedInvoice.customer !== undefined) {
+      this.invoiceService.getCustomerById(this.detailedInvoice.customer).subscribe((item) => {
+        this.customer = item;
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error;
+      });
+    }
   }
 }
