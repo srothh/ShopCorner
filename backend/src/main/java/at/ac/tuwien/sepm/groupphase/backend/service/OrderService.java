@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 public interface OrderService {
 
     /**
-     * Saves the specified order.
+     * Saves the specified order and calls MailService to send email
      *
      * @param order to be saved
      * @return the order that has just been saved.
