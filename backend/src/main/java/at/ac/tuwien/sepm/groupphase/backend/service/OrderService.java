@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
 public interface OrderService {
@@ -31,4 +33,14 @@ public interface OrderService {
      * @throws RuntimeException upon encountering errors with the database
      */
     long getOrderCount();
+
+    /**
+     * Returns Order of a given invoice.
+     *
+     * @param invoice the invoice of the order
+     * @return The saved order
+     * @throws NotFoundException when no order with the invoice is found
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    Order getOrderByInvoice(Invoice invoice);
 }

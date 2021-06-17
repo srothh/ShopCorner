@@ -14,6 +14,7 @@ import {Order} from '../../../dtos/order';
 import {Address} from '../../../dtos/address';
 import {PaypalService} from '../../../services/paypal.service';
 import {Router} from '@angular/router';
+import {InvoiceType} from '../../../dtos/invoiceType.enum';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -48,27 +49,23 @@ export class ShopCheckoutComponent implements OnInit {
   }
 
   getTotalPrice() {
-    let price = 0;
-    for (const item of this.products) {
-      price += item.price;
-    }
-    return price;
+    return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes() ;
   }
 
-  getTotalPriceWithoutTaxes() {
-    let price = 0;
-    for (const item of this.products) {
-      price += item.price - ((item.price / (item.taxRate.percentage)));
-    }
-    return price;
+  getTotalPriceWithoutTaxes(): number {
+    let subtotal = 0;
+    this.products.forEach((item) => {
+      subtotal += (item.price * item.cartItemQuantity);
+    });
+    return subtotal;
   }
 
-  getTotalTaxes() {
-    let price = 0;
-    for (const item of this.products) {
-      price += (item.price / (item.taxRate.percentage));
-    }
-    return price;
+  getTotalTaxes(): number {
+    let tax = 0;
+    this.products.forEach((item) => {
+      tax += item.price * (item.taxRate.calculationFactor - 1) * item.cartItemQuantity;
+    });
+    return tax;
   }
 
   getCartItems() {
@@ -91,6 +88,8 @@ export class ShopCheckoutComponent implements OnInit {
     }
     this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
+    this.invoiceDto.customerId = this.customer.id;
+    this.invoiceDto.invoiceType = InvoiceType.customer;
   }
 
   placeNewOrder() {

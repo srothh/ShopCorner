@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
-import at.ac.tuwien.sepm.groupphase.backend.service.CartService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -35,6 +34,7 @@ public class OrderEndpoint {
     private final OrderMapper orderMapper;
     private final OrderService orderService;
 
+
     @Autowired
     public OrderEndpoint(OrderMapper orderMapper, OrderService orderService) {
         this.orderMapper = orderMapper;
@@ -53,7 +53,6 @@ public class OrderEndpoint {
     @Operation(summary = "Place a new order", security = @SecurityRequirement(name = "apiKey"))
     public OrderDto placeNewOrder(@Valid @RequestBody OrderDto orderDto, @CookieValue(name = "sessionId", defaultValue = "default") String sessionId) {
         LOGGER.info("POST " + BASE_URL);
-        LOGGER.info(orderDto.getId().toString());
         return orderMapper.orderToOrderDto(orderService.placeNewOrder(orderMapper.orderDtoToOrder(orderDto), sessionId));
     }
 
@@ -73,6 +72,7 @@ public class OrderEndpoint {
         Page<Order> orderPage = orderService.getAllOrders(page, pageCount);
         return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderService.getOrderCount());
     }
+
 
 
 }

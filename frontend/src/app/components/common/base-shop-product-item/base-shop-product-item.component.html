@@ -7,15 +7,19 @@
   <div class="card-body">
     <div class="d-flex flex-column justify-content-between">
       <h6 class="card-title">{{product.name}}</h6>
-      <span class="card-subtitle text-muted category">{{product.category ? product.category.name : 'Ohne Kategorie'}}</span>
+      <span
+        class="card-subtitle text-muted category">{{product.category ? product.category.name : 'Ohne Kategorie'}}</span>
     </div>
   </div>
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-center flex-wrap">
-      <span class="card-text price">€ {{(this.product.taxRate.calculationFactor * this.product.price).toFixed(2)}}</span>
-      <!-- Possibilities: In stock, Unavailable -->
-      <span class="card-text availability" [class.in-stock]="!product.locked"
-            [class.locked]="product.locked">{{product.locked ? 'Nicht verfügbar' : 'Auf Lager'}}</span>
+      <span
+        class="card-text price">€ {{(this.product.taxRate.calculationFactor * this.product.price).toFixed(2)}}</span>
+      <!-- Possibilities: In stock, Unavailable, Available until ...-->
+      <span class="card-text availability"
+            [class.in-stock]="!product.locked"
+            [class.locked]="product.locked || (product.hasExpiration && product.hasExpired)"
+            [class.expires]="product.hasExpiration && !product.hasExpired">{{product.availabilityText}}</span>
     </div>
   </div>
 </div>

@@ -28,15 +28,13 @@ import {OperatorRegistrationComponent} from './components/operator/operator-regi
 import {OperatorAddProductComponent} from './components/operator/operator-add-product/operator-add-product.component';
 import {ShopRegistrationComponent} from './components/shop/shop-registration/shop-registration.component';
 import {ShopAccountComponent} from './components/shop/shop-account/shop-account.component';
-import { OperatorPromotionFormComponent } from './components/operator/operator-promotion-form/operator-promotion-form.component';
 import {OperatorEditAccountComponent} from './components/operator/operator-edit-account/operator-edit-account.component';
-
 import {OperatorProductDetailsComponent} from './components/operator/operator-product-details/operator-product-details.component';
 import {OperatorProductFormComponent} from './components/operator/operator-product-form/operator-product-form.component';
 import {BaseLoginComponent} from './components/common/base-login/base-login.component';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
-import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
+import {OperatorInvoiceDetailViewComponent} from './components/operator/operator-invoice-detailView/operator-invoice-detailView.component';
 import {OperatorCategoriesComponent} from './components/operator/operator-categories/operator-categories.component';
 import {OperatorAddCategoryComponent} from './components/operator/operator-add-category/operator-add-category.component';
 import {BaseShopProductItemComponent} from './components/common/base-shop-product-item/base-shop-product-item.component';
@@ -44,11 +42,13 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ShopProductDetailsComponent} from './components/shop/shop-product-details/shop-product-details.component';
 import {ShopAccountOrdersComponent} from './components/shop/shop-account-orders/shop-account-orders.component';
 import {ShopAccountProfileComponent} from './components/shop/shop-account-profile/shop-account-profile.component';
+import { BaseProductSearchBarComponent } from './components/common/base-product-search-bar/base-product-search-bar.component';
 import {NgbdModalInfoComponent} from './components/common/ngbd-modal-info/ngbd-modal-info.component';
 import {NgdbModalActionComponent} from './components/common/ngbd-modal-action/ngdb-modal-action.component';
 import { OperatorCategoryDetailsComponent } from './components/operator/operator-category-details/operator-category-details.component';
 import { OperatorCategoryFormComponent } from './components/operator/operator-category-form/operator-category-form.component';
 import { ShopOrderSuccessComponent } from './components/shop/shop-order-success/shop-order-success.component';
+import { OperatorPromotionFormComponent } from './components/operator/operator-promotion-form/operator-promotion-form.component';
 import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-checkout.component';
 
 @NgModule({
@@ -83,7 +83,7 @@ import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-chec
     OperatorProductDetailsComponent,
     OperatorInvoiceFormComponent,
     OperatorInvoiceComponent,
-    OperatorInvoiceDetailviewComponent,
+    OperatorInvoiceDetailViewComponent,
     BaseShopProductItemComponent,
     OperatorCategoriesComponent,
     OperatorAddCategoryComponent,
@@ -91,6 +91,7 @@ import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-chec
     ShopProductDetailsComponent,
     ShopAccountOrdersComponent,
     ShopAccountProfileComponent,
+    BaseProductSearchBarComponent,
     NgbdModalInfoComponent,
     NgdbModalActionComponent,
     ShopAccountProfileComponent,
