@@ -220,7 +220,6 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenTwoInvoices_whenFindAllWithPageAndPermission_thenListWithSizeTwoAndOverviewOfAllInvoices()
         throws Exception {
-        invoiceRepository.deleteAll();
         Set<InvoiceItem> set = invoice1.getItems();
         invoice1.setItems(null);
         invoice1.setInvoiceType(InvoiceType.operator);
@@ -239,7 +238,7 @@ public class InvoiceEndpointTest implements TestData {
         }
         newInvoice2.setItems(set);
 
-        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=15&invoiceType=operator")
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&invoiceType=operator")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
