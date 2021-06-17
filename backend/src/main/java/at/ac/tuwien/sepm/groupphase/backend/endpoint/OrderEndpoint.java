@@ -53,7 +53,6 @@ public class OrderEndpoint {
     @Operation(summary = "Place a new order", security = @SecurityRequirement(name = "apiKey"))
     public OrderDto placeNewOrder(@Valid @RequestBody OrderDto orderDto, @CookieValue(name = "sessionId", defaultValue = "default") String sessionId) {
         LOGGER.info("POST " + BASE_URL);
-        LOGGER.info(orderDto.getId().toString());
         return orderMapper.orderToOrderDto(orderService.placeNewOrder(orderMapper.orderDtoToOrder(orderDto), sessionId));
     }
 
