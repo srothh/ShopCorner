@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 
@@ -13,11 +14,11 @@ public interface PayPalService {
     /**
      * Initiates a Payment transaction with PayPal's API.
      *
-     * @param price the price the payer has to pay
+     * @param order the order containing all information for the payment process
      *
      * @return a redirect URL to confirm the payment
      */
-    public String createPayment(Double price) throws PayPalRESTException;
+    public String createPayment(Order order) throws PayPalRESTException;
 
     /**
      * Confirms a payment with the specified PayerID and PaymentID in the request.

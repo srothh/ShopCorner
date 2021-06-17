@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.PayPalProperties;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.PayPalService;
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Transaction;
@@ -34,10 +36,11 @@ public class PayPalServiceImpl implements PayPalService {
 
 
     @Override
-    public String createPayment(Double price) throws PayPalRESTException {
+    public String createPayment(Order order) throws PayPalRESTException {
+        Invoice invoice = order.getInvoice();
         Amount amount = new Amount();
         amount.setCurrency("EUR");
-        amount.setTotal(price.toString());
+        amount.setTotal(String.valueOf(invoice.getAmount()));
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         List<Transaction> transactions = new ArrayList<>();
@@ -52,8 +55,8 @@ public class PayPalServiceImpl implements PayPalService {
         payment.setTransactions(transactions);
 
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:4200/#/cancel");
-        redirectUrls.setReturnUrl("http://localhost:4200/#/home");
+        redirectUrls.setCancelUrl("http://localhost:4200/#/checkout");
+        redirectUrls.setReturnUrl("http://localhost:4200/#/order-success");
 
         payment.setRedirectUrls(redirectUrls);
 

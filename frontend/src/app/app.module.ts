@@ -96,7 +96,7 @@ import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-chec
     ShopAccountProfileComponent,
     OperatorCategoryDetailsComponent,
     OperatorCategoryFormComponent,
-    ShopOrderSuccessComponent
+    ShopOrderSuccessComponent,
     OperatorCategoryFormComponent,
     ShopCheckoutComponent,
   ],

@@ -12,6 +12,8 @@ import {Cart} from '../../../dtos/cart';
 import {OrderService} from '../../../services/order.service';
 import {Order} from '../../../dtos/order';
 import {Address} from '../../../dtos/address';
+import {PaypalService} from '../../../services/paypal.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -20,14 +22,15 @@ import {Address} from '../../../dtos/address';
 })
 export class ShopCheckoutComponent implements OnInit {
 
-  customer: Customer = new Customer(0,'','','','',new Address(0,'',0, '', 0, '')
-    ,'');
+  customer: Customer = new Customer(0, '', '', '', '', new Address(0, '', 0, '', 0, '')
+    , '');
   products: Product[];
   invoiceDto: Invoice;
   cart: Cart;
+  loading: boolean;
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
-              private orderService: OrderService) {
+              private orderService: OrderService, private paypalService: PaypalService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -93,8 +96,13 @@ export class ShopCheckoutComponent implements OnInit {
   placeNewOrder() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer);
-    this.orderService.placeNewOrder(order).subscribe(() => {
+
+    this.paypalService.createPayment(order).subscribe((redirectUrl) => {
+      window.location.href = redirectUrl;
+      this.loading = true;
     });
+    /*this.orderService.placeNewOrder(order).subscribe(() => {
+    });*/
   }
 
   private fetchCustomer() {
