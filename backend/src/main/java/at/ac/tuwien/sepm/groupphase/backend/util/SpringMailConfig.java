@@ -26,7 +26,6 @@ public class SpringMailConfig implements ApplicationContextAware, EnvironmentAwa
     @Bean
     public TemplateEngine emailTemplateEngine() {
         final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        // Resolver for HTML emails (except the editable one)
         templateEngine.addTemplateResolver(htmlTemplateResolver());
         templateEngine.setTemplateEngineMessageSource(emailMessageSource());
         return templateEngine;

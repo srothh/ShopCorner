@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
     <title>Title</title>
     <style>
 
@@ -37,7 +38,7 @@ sie das unter
 <a href="http://localhost:4200/#/account/orders">Meine Bestellungen</a>
 auf der unserer <a href="http://localhost:4200/#/home">Website</a>.
 <hr/>
-<b>Diese Bestellung wird gesendet an: </b> <span th:text="${name}"></span>, <span th:text="${address}"></span>
+<b>Diese Bestellung wird gesendet an: </b> <span th:utext="${name}"></span>, <span th:utext="${address}"></span>
 <hr/>
 <h3 style="color: #041459">Bestell&uuml;bersicht</h3>
 <table>

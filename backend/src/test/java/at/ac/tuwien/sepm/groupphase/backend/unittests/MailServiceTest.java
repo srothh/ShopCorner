@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit.GreenMailRule;
@@ -31,9 +32,11 @@ public class MailServiceTest {
     @Autowired
     private MailService mailService;
 
+    private Order order;
+
     @Test
     public void sendsMail() {
-        mailService.sendMail();
+        mailService.sendMail(order);
         MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
         assertNotNull(receivedMessage);
     }
