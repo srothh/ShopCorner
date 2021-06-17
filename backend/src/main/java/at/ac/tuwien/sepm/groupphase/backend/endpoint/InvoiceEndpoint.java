@@ -130,7 +130,6 @@ public class InvoiceEndpoint {
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("POST /api/v1/invoices/ {}", invoiceDto);
-        System.out.println("invoiceDto");
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
         Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
         invoice.setItems(items);
@@ -159,7 +158,6 @@ public class InvoiceEndpoint {
         } else if (invoice.getInvoiceType() == InvoiceType.customer) {
             contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
         } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
-            System.out.println("invoiceCanceled");
             // TODO: createPdfInvoiceCanceled
         } else {
             return ResponseEntity.status(402).build();
@@ -174,12 +172,12 @@ public class InvoiceEndpoint {
      * @param invoiceId is the id of the invoice
      * @return DetailedInvoiceDto with all given information of the invoice
      */
-    @PermitAll
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("customers")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve customer from order", security = @SecurityRequirement(name = "apiKey"))
     public CustomerDto getCustomerFromOrderByInvoiceId(@RequestParam(name = "invoice") Long invoiceId) {
-        LOGGER.info("GET api/v1/orders?invoice={}", invoiceId);
+        LOGGER.info("GET api/v1/invoices?invoice={}", invoiceId);
         Invoice invoice = this.invoiceService.findOneById(invoiceId);
         Customer customer = this.orderService.getOrderByInvoice(invoice).getCustomer();
         return this.customerMapper.customerToCustomerDto(customer);

@@ -44,7 +44,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     @Cacheable(value = "invoicePages")
     public Page<Invoice> findAll(int page, int pageCount, InvoiceType invoiceType) {
-        LOGGER.trace("findAll({})", page);
+        LOGGER.trace("findAll({},{},{})", page, pageCount, invoiceType);
         if (pageCount == 0) {
             pageCount = 15;
         } else if (pageCount > 50) {
