@@ -34,7 +34,7 @@ import {OperatorProductFormComponent} from './components/operator/operator-produ
 import {BaseLoginComponent} from './components/common/base-login/base-login.component';
 import {OperatorLoginComponent} from './components/operator/operator-login/operator-login.component';
 import {OperatorInvoiceComponent} from './components/operator/operator-invoice/operator-invoice.component';
-import {OperatorInvoiceDetailviewComponent} from './components/operator/operator-invoice-detailview/operator-invoice-detailview.component';
+import {OperatorInvoiceDetailViewComponent} from './components/operator/operator-invoice-detailView/operator-invoice-detailView.component';
 import {OperatorCategoriesComponent} from './components/operator/operator-categories/operator-categories.component';
 import {OperatorAddCategoryComponent} from './components/operator/operator-add-category/operator-add-category.component';
 import {BaseShopProductItemComponent} from './components/common/base-shop-product-item/base-shop-product-item.component';
@@ -82,7 +82,7 @@ import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-chec
     OperatorProductDetailsComponent,
     OperatorInvoiceFormComponent,
     OperatorInvoiceComponent,
-    OperatorInvoiceDetailviewComponent,
+    OperatorInvoiceDetailViewComponent,
     BaseShopProductItemComponent,
     OperatorCategoriesComponent,
     OperatorAddCategoryComponent,
