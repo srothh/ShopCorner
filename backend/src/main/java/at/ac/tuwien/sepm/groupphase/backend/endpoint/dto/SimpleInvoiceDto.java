@@ -25,7 +25,7 @@ public class SimpleInvoiceDto {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private InvoiceType type;
+    private InvoiceType invoiceType;
 
     public Long getId() {
         return id;
@@ -59,12 +59,12 @@ public class SimpleInvoiceDto {
         this.amount = amount;
     }
 
-    public InvoiceType getType() {
-        return type;
+    public InvoiceType getInvoiceType() {
+        return invoiceType;
     }
 
-    public void setType(InvoiceType type) {
-        this.type = type;
+    public void setInvoiceType(InvoiceType invoiceType) {
+        this.invoiceType = invoiceType;
     }
 
     public String getOrderNumber() {
@@ -84,16 +84,16 @@ public class SimpleInvoiceDto {
             return false;
         }
         SimpleInvoiceDto that = (SimpleInvoiceDto) o;
-        return Double.compare(that.amount, amount) == 0 && id.equals(that.id) && date.equals(that.date) && type.equals(that.type) && orderNumber.equals(that.orderNumber);
+        return Double.compare(that.amount, amount) == 0 && id.equals(that.id) && date.equals(that.date) && invoiceType.equals(that.invoiceType) && orderNumber.equals(that.orderNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, amount, type, orderNumber, invoiceNumber);
+        return Objects.hash(id, date, amount, invoiceType, orderNumber, invoiceNumber);
     }
 
     @Override
     public String toString() {
-        return "SimpleInvoiceDto{" + "id=" + id + ", invoiceNumber=" + invoiceNumber + ", date=" + date + ", amount=" + amount + ", type=" + type +  '}';
+        return "SimpleInvoiceDto{" + "id=" + id + ", invoiceNumber=" + invoiceNumber + ", date=" + date + ", amount=" + amount + ", type=" + invoiceType +  '}';
     }
 }

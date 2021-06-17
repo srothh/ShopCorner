@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.util;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import com.itextpdf.html2pdf.ConverterProperties;
@@ -57,11 +58,11 @@ public class PdfGenerator {
     }
 
 
-    public byte[] generatePdfCustomer(Customer customer, Invoice invoice) {
-
+    public byte[] generatePdfCustomer(Order order) {
+        Invoice invoice = order.getInvoice();
         final Document document = Jsoup.parse(htmlCustomer);
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-        this.addCustomerInformation(document, customer);
+        this.addCustomerInformation(document, order.getCustomer());
         this.addInvoiceInformation(document, invoice);
         this.addOrderInformation(document, invoice);
         this.addProductTable(document, invoice);

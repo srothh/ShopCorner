@@ -26,6 +26,9 @@ export class Globals {
     operators: {
       permissions: 'permissions',
     },
+    invoice: {
+      invoiceType: 'invoiceType',
+    },
   };
 
   private findBackendUrl(): string {

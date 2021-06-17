@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
@@ -11,6 +12,8 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
@@ -40,6 +43,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -89,12 +93,21 @@ public class InvoiceEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<SimpleInvoiceDto> getAllInvoices(@Valid PaginationRequestDto paginationRequestDto) {
+    public PaginationDto<SimpleInvoiceDto> getAllInvoices(@Valid PaginationRequestDto paginationRequestDto, @RequestParam("invoiceType") InvoiceType invoiceType) {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
-        LOGGER.info("GET api/v1/invoices?page={}&page_count={}", page, pageCount);
-        Page<Invoice> operatorPage = invoiceService.getAllInvoices(page, pageCount);
-        return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.getAllInvoices(page, pageCount).getContent()), page, pageCount, operatorPage.getTotalPages(), invoiceService.getInvoiceCount());
+        LOGGER.info("GET api/v1/invoices?page={}&page_count={}&invoiceType={}", page, pageCount,invoiceType);
+        PaginationDto<SimpleInvoiceDto> dto;
+        Page<Invoice> invoicePage = invoiceService.findAll(page, pageCount, invoiceType);
+        if (invoiceType == InvoiceType.operator) {
+            dto =
+                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getInvoiceCount());
+        } else {
+            dto =
+                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
+        }
+        return dto;
+
     }
 
 
@@ -110,7 +123,7 @@ public class InvoiceEndpoint {
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
         LOGGER.info("POST /api/v1/invoices/ {}", invoiceDto);
-
+        System.out.println("invoiceDto");
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
         Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
         invoice.setItems(items);
@@ -134,14 +147,14 @@ public class InvoiceEndpoint {
         LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
         byte[] contents = null;
-        if (invoice.getType() == InvoiceType.operator) {
-            contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
-        } else if (invoice.getType() == InvoiceType.operator) {
-            contents = this.pdfGeneratorService.createPdfInvoiceCustomer(invoice);
-        } else {
+      //  if (invoice.getType() == InvoiceType.operator) {
+        contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
+       // } else if (invoice.getType() == InvoiceType.operator) {
+       //     contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
+       // } else {
             //contents = this.pdfGeneratorService.createPdfInvoiceCustomer(customer, invoice);
             // TODO: createPdfInvoiceCanceled
-        }
+       // }
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
     }

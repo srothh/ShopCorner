@@ -143,7 +143,7 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
-        invoice1.setType(InvoiceType.operator);
+        invoice1.setInvoiceType(InvoiceType.operator);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice1);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
@@ -164,7 +164,7 @@ public class InvoiceEndpointTest implements TestData {
     public void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
         Set<InvoiceItem> set1 = invoice1.getItems();
         invoice1.setItems(null);
-        invoice1.setType(InvoiceType.operator);
+        invoice1.setInvoiceType(InvoiceType.operator);
 
         Invoice newInvoice = invoiceRepository.save(invoice1);
         for(InvoiceItem item: set1){
@@ -187,14 +187,14 @@ public class InvoiceEndpointTest implements TestData {
         Set<InvoiceItem> set = invoice1.getItems();
         invoice1.setItems(null);
         invoice1.setDate(LocalDateTime.now());
-        invoice1.setType(InvoiceType.operator);
+        invoice1.setInvoiceType(InvoiceType.operator);
         Invoice newInvoice = invoiceRepository.save(invoice1);
         for(InvoiceItem item: set){
             item.setInvoice(newInvoice);
             invoiceItemRepository.save(item);
         }
         newInvoice.setItems(set);
-        newInvoice.setType(InvoiceType.operator);
+        newInvoice.setInvoiceType(InvoiceType.operator);
 
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/"+newInvoice.getId())
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -212,7 +212,7 @@ public class InvoiceEndpointTest implements TestData {
             () -> assertNotNull(detailedInvoiceDto.getDate()),
             () -> assertEquals(newInvoice.getAmount(), detailedInvoiceDto.getAmount()),
             () -> assertEquals(newInvoice.getItems().size(), detailedInvoiceDto.getItems().size()),
-            () -> assertEquals(newInvoice.getType(), detailedInvoiceDto.getType())
+            () -> assertEquals(newInvoice.getInvoiceType(), detailedInvoiceDto.getInvoiceType())
         );
     }
 
@@ -223,7 +223,7 @@ public class InvoiceEndpointTest implements TestData {
         invoiceRepository.deleteAll();
         Set<InvoiceItem> set = invoice1.getItems();
         invoice1.setItems(null);
-        invoice1.setType(InvoiceType.operator);
+        invoice1.setInvoiceType(InvoiceType.operator);
         Invoice newInvoice1 = invoiceRepository.save(invoice1);
         for(InvoiceItem item: set){
             item.setInvoice(newInvoice1);
@@ -231,7 +231,7 @@ public class InvoiceEndpointTest implements TestData {
         }
         newInvoice1.setItems(set);
         invoice2.setItems(null);
-        invoice2.setType(InvoiceType.customer);
+        invoice2.setInvoiceType(InvoiceType.customer);
         Invoice newInvoice2 = invoiceRepository.save(invoice2);
         for(InvoiceItem item: set){
             item.setInvoice(newInvoice2);

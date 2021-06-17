@@ -2,10 +2,12 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
+import at.ac.tuwien.sepm.groupphase.backend.util.InvoiceSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -38,7 +41,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         this.invoiceItemService = invoiceItemService;
     }
 
-
+/*
     @Override
     public Page<Invoice> getAllInvoices(int page, int pageCount) {
         LOGGER.trace("getAllInvoices({})", page);
@@ -49,15 +52,35 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         Pageable returnPage = PageRequest.of(page, pageCount);
         return invoiceRepository.findAll(returnPage);
+    }*/
+
+    @Override
+    @Cacheable(value = "invoicePages")
+    public Page<Invoice> findAll(int page, int pageCount, InvoiceType invoiceType) {
+        LOGGER.trace("findAll({})", page);
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable returnPage = PageRequest.of(page, pageCount);
+        return this.invoiceRepository.findAll(InvoiceSpecifications.hasInvoiceType(invoiceType), returnPage);
     }
 
-
-    @Cacheable(value = "counts", key = "'invoices'")
     @Override
-    public long getInvoiceCount() {
+    @Cacheable(value = "counts", key = "'invoices'")
+    public Long getInvoiceCount() {
         LOGGER.trace("getInvoiceCount()");
         return invoiceRepository.count();
     }
+
+    @Override
+    @Cacheable(value = "counts", key = "'customerInvoices'")
+    public Long getCustomerInvoiceCount() {
+        LOGGER.trace("getEmployeeCount()");
+        return invoiceRepository.count(InvoiceSpecifications.hasInvoiceType(InvoiceType.customer));
+    }
+
 
     @Cacheable(value = "counts", key = "'invoicesByYear'")
     public long getInvoiceCountByYear(LocalDateTime firstDateOfYear) {
@@ -73,12 +96,15 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Caching(evict = {
         @CacheEvict(value = "counts", key = "'invoices'"),
-        @CacheEvict(value = "counts", key = "'invoicesByYear'")
+        @CacheEvict(value = "counts", key = "'customerInvoices'"),
+        @CacheEvict(value = "counts", key = "'invoicesByYear'"),
+        @CacheEvict(value = "invoicePages", allEntries = true)
     })
     @Transactional
     @Override
     public Invoice createInvoice(Invoice invoice) {
         LOGGER.trace("createInvoice({})", invoice);
+        System.out.println(invoice);
         validator.validateNewInvoice(invoice);
         validator.validateNewInvoiceItem(invoice.getItems());
         Set<InvoiceItem> items = invoice.getItems();
@@ -93,4 +119,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         return createdInvoice;
 
     }
+
+
 }

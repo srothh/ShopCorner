@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OrderRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CartService;
@@ -71,4 +73,11 @@ public class OrderServiceImpl implements OrderService {
     public long getOrderCount() {
         return orderRepository.count();
     }
+
+
+    @Override
+    public Order getOrderByInvoice(Invoice invoice) {
+        return this.orderRepository.findOrderByInvoice(invoice).orElseThrow(() -> new NotFoundException("Could not find order"));
+    }
+
 }

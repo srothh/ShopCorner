@@ -43,8 +43,9 @@ public class Invoice {
     private Set<InvoiceItem> items;
 
     @NotNull
+    @Column(name = "invoiceType")
     @Enumerated(EnumType.STRING)
-    InvoiceType type;
+    InvoiceType invoiceType;
 
     public Invoice() {
         items = new HashSet<>();
@@ -98,12 +99,12 @@ public class Invoice {
         this.orderNumber = orderNumber;
     }
 
-    public InvoiceType getType() {
-        return type;
+    public InvoiceType getInvoiceType() {
+        return invoiceType;
     }
 
-    public void setType(InvoiceType type) {
-        this.type = type;
+    public void setInvoiceType(InvoiceType invoiceType) {
+        this.invoiceType = invoiceType;
     }
 
     @Override
@@ -115,16 +116,16 @@ public class Invoice {
             return false;
         }
         Invoice invoice = (Invoice) o;
-        return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && date.equals(invoice.date) && items.equals(invoice.items) && type.equals(invoice.type) && orderNumber.equals(invoice.orderNumber);
+        return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && invoiceNumber.equals(invoice.invoiceNumber) && date.equals(invoice.date) && items.equals(invoice.items) && invoiceType.equals(invoice.invoiceType) && orderNumber.equals(invoice.orderNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, amount, items, type, orderNumber);
+        return Objects.hash(id, invoiceNumber, date, amount, items, invoiceType, orderNumber);
     }
 
     @Override
     public String toString() {
-        return "Invoice{" + "id=" + id + ", invoiceNumber= " + invoiceNumber + ", date=" + date + ", amount=" + amount + ", typ=" + type + '}';
+        return "Invoice{" + "id=" + id + ", invoiceNumber= " + invoiceNumber + ", date=" + date + ", amount=" + amount + ", typ=" + invoiceType + '}';
     }
 }

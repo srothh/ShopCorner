@@ -3,6 +3,7 @@ import {InvoiceType} from './invoiceType.enum';
 
 export class Invoice {
   id: number;
+  orderNumber: string;
   invoiceNumber: string;
   date: string;
   amount: number;

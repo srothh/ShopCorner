@@ -134,7 +134,7 @@ public class ProductDataGenerator {
                 invoice.setDate(LocalDateTime.now().minus(i, ChronoUnit.DAYS));
                 invoice.setAmount((item.getNumberOfItems() * (p.getPrice() * p.getTaxRate().getCalculationFactor())));
                 invoice.setInvoiceNumber(i + "" + invoice.getDate().getYear());
-                invoice.setType(InvoiceType.operator);
+                invoice.setInvoiceType(InvoiceType.operator);
                 Invoice newInvoice = invoiceRepository.save(invoice);
                 item.setInvoice(newInvoice);
 

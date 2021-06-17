@@ -1,27 +1,35 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice.service';
+import {InvoiceType} from '../../../dtos/invoiceType.enum';
+import {Customer} from '../../../dtos/customer';
 
 @Component({
-  selector: 'app-operator-invoice-detailview',
-  templateUrl: './operator-invoice-detailview.component.html',
-  styleUrls: ['./operator-invoice-detailview.component.scss']
+  selector: 'app-operator-invoice-detail-view',
+  templateUrl: './operator-invoice-detailView.component.html',
+  styleUrls: ['./operator-invoice-detailView.component.scss']
 })
-export class OperatorInvoiceDetailviewComponent implements OnInit {
+export class OperatorInvoiceDetailViewComponent implements OnInit {
   @Input() value: Invoice;
-  detailedInvocie: Invoice;
+  detailedInvoice: Invoice;
+  customer: Customer;
   error = false;
   errorMessage = '';
   download = false;
+  customerExists = false;
 
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
-    this.detailedInvocie = new Invoice();
-    this.detailedInvocie.date = '';
-    this.detailedInvocie.amount = 0;
-
-    this.fetchData(this.value.id);
+    this.detailedInvoice = new Invoice();
+    this.detailedInvoice.date = '';
+    this.detailedInvoice.amount = 0;
+    this.customerExists = this.value.type === InvoiceType.customer;
+    if (this.customerExists) {
+      this.fetchCustomerData(this.value.id);
+    } else {
+      this.fetchInvoiceData(this.value.id);
+    }
   }
 
   onSubmit(event) {
@@ -58,10 +66,26 @@ export class OperatorInvoiceDetailviewComponent implements OnInit {
     });
   }
 
-  private fetchData(id: number) {
+  private fetchInvoiceData(id: number) {
     this.invoiceService.getInvoiceById(id).subscribe( (item) => {
-      this.detailedInvocie = item;
-      console.log(this.detailedInvocie);
+      this.detailedInvoice = item;
+      console.log(this.detailedInvoice);
+
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
+    });
+  }
+  private fetchCustomerData(id: number) {
+    this.invoiceService.getInvoiceById(id).subscribe( (item) => {
+      this.detailedInvoice = item;
+
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
+    });
+    this.invoiceService.getCustomerByInvoiceId(id).subscribe( (item) => {
+      this.customer = item;
 
     }, (error) => {
       this.error = true;

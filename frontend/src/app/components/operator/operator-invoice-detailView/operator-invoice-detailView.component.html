@@ -1,21 +1,35 @@
+<div class="row" *ngIf="customerExists">
+  <div class="col-sm">
+    Kunde:
+  </div>
+  <div class="col-sm">
+    {{customer.name}}
+  </div>
+  <div class="col-sm">
+    Adresse:
+  </div>
+  <div class="col-sm">
+    {{customer.address}}
+  </div>
+</div>
 <div class="row">
   <div class="col-sm-2">
     Rechnungsnummer:
   </div>
   <div class="col-sm-2">
-    {{detailedInvocie.invoiceNumber}}
+    {{detailedInvoice.invoiceNumber}}
   </div>
   <div class="col-sm-1">
     Datum:
   </div>
   <div class="col-sm-4">
-    {{detailedInvocie.date.split("T", 1)}}
+    {{detailedInvoice.date.split("T", 1)}}
   </div>
   <div class="col-sm-1">
     Betrag:
   </div>
   <div class="col-sm-1">
-    {{detailedInvocie.amount.toFixed(2)}} €
+    {{detailedInvoice.amount.toFixed(2)}} €
   </div>
 </div>
 <div class="row">
@@ -34,7 +48,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let item of detailedInvocie.items">
+        <tr *ngFor="let item of detailedInvoice.items">
           <td><span>{{item.product.name}}</span></td>
           <td><span>{{item.numberOfItems}}</span></td>
           <td><span>{{item.product.taxRate.percentage}} %</span></td>
