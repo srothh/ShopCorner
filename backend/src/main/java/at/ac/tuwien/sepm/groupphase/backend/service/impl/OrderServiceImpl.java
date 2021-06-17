@@ -51,9 +51,9 @@ public class OrderServiceImpl implements OrderService {
     })
     public Order placeNewOrder(Order order, String session) {
         LOGGER.info("placeNewOrder({})", order);
-        /*if (session.equals("default") || !this.cartService.validateSession(UUID.fromString(session))) {
+        if (session.equals("default") || !this.cartService.validateSession(UUID.fromString(session))) {
             throw new ServiceException("invalid sessionId");
-        }*/
+        }
         order.setInvoice(this.invoiceService.createInvoice(order.getInvoice()));
         mailService.sendMail(order);
         return orderRepository.save(order);
