@@ -62,7 +62,7 @@ export class CategoryService {
    * @return An Observable with no return value
    */
   updateCategory(categoryId: number, category: Category): Observable<void> {
-    return this.httpClient.put<void>(this.categoryBaseUri + '/'+categoryId,category,{
+    return this.httpClient.put<void>(this.categoryBaseUri + '/' + categoryId, category, {
       headers: this.getHeadersForOperator()
     });
   }
@@ -83,11 +83,12 @@ export class CategoryService {
    * @param categoryId the Id of the category to retrieve from the database
    * @return An observable with the requested category
    */
-  getCategoryById(categoryId: number){
+  getCategoryById(categoryId: number) {
     return this.httpClient.get<Category>(this.categoryBaseUri + '/' + categoryId, {
       headers: this.getHeadersForOperator()
     });
   }
+
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
