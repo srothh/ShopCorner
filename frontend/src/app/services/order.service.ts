@@ -20,7 +20,7 @@ export class OrderService {
    * @return the order dto as returned from the backend
    */
   placeNewOrder(order: Order): Observable<Order> {
-    return this.httpClient.post<Order>(this.orderBaseURI, order);
+    return this.httpClient.post<Order>(this.orderBaseURI, order, {withCredentials: true});
   }
 
 }
