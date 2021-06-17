@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.util;
+package at.ac.tuwien.sepm.groupphase.backend.config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
