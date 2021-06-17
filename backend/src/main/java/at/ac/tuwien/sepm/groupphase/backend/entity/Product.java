@@ -9,15 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
-import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.Column;
-import javax.persistence.PreRemove;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
