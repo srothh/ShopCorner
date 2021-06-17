@@ -17,7 +17,6 @@ export class InvoiceService {
 
   private invoiceBaseUri: string = this.globals.backendUri + '/invoices';
   private productBaseUri: string = this.globals.backendUri + '/products';
-  private orderBasUri: string = this.globals.backendUri + '/orders';
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
 
@@ -50,14 +49,14 @@ export class InvoiceService {
   }
 
   /**
-   * Loads invoice by id from the backend
+   * Loads customer by invoiceId from the backend
    *
    * @param id of the invoice
-   * @return invoice
+   * @return customer
    */
   getCustomerByInvoiceId(id: number): Observable<Customer> {
     const params = new HttpParams().set('invoice', String(id));
-    return this.httpClient.get<Customer>(this.orderBasUri + '/' + id, {params,
+    return this.httpClient.get<Customer>(this.invoiceBaseUri + '/customers', {params,
       headers: this.getHeadersForOperator()
     });
   }

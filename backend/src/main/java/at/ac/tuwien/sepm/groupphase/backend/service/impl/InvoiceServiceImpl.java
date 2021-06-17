@@ -24,7 +24,6 @@ import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -65,14 +64,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     @Cacheable(value = "counts", key = "'customerInvoices'")
     public Long getCustomerInvoiceCount() {
-        LOGGER.trace("getEmployeeCount()");
+        LOGGER.trace("getCustomerInvoiceCount()");
         return invoiceRepository.count(InvoiceSpecifications.hasInvoiceType(InvoiceType.customer));
     }
 
 
     @Cacheable(value = "counts", key = "'invoicesByYear'")
     public long getInvoiceCountByYear(LocalDateTime firstDateOfYear) {
-        LOGGER.trace("getInvoiceCount()");
+        LOGGER.trace("getInvoiceCountByYear()");
         return invoiceRepository.countInvoiceByDateAfter(firstDateOfYear);
     }
 

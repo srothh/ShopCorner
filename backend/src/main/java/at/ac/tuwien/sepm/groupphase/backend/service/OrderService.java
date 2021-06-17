@@ -35,7 +35,7 @@ public interface OrderService {
     long getOrderCount();
 
     /**
-     * Returns Order of a given Id.
+     * Returns Order of a given invoice.
      *
      * @param invoice the invoice of the order
      * @return The saved order

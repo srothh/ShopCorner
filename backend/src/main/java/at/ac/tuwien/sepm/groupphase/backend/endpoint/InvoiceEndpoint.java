@@ -61,18 +61,16 @@ public class InvoiceEndpoint {
     private final InvoiceService invoiceService;
     private final InvoiceItemMapper invoiceItemMapper;
     private final PdfGeneratorService pdfGeneratorService;
-    private final CustomerService customerService;
     private final CustomerMapper customerMapper;
     private final OrderService orderService;
 
     @Autowired
     public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService,
-                           PdfGeneratorService pdfGeneratorService, CustomerService customerService, CustomerMapper customerMapper, OrderService orderService) {
+                           PdfGeneratorService pdfGeneratorService, CustomerMapper customerMapper, OrderService orderService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
         this.pdfGeneratorService = pdfGeneratorService;
-        this.customerService = customerService;
         this.customerMapper = customerMapper;
         this.orderService = orderService;
     }
@@ -158,10 +156,13 @@ public class InvoiceEndpoint {
         byte[] contents = null;
         if (invoice.getInvoiceType() == InvoiceType.operator) {
             contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
-        } else if (invoice.getInvoiceType() == InvoiceType.operator) {
+        } else if (invoice.getInvoiceType() == InvoiceType.customer) {
             contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
-        } else {
+        } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
+            System.out.println("invoiceCanceled");
             // TODO: createPdfInvoiceCanceled
+        } else {
+            return ResponseEntity.status(402).build();
         }
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
@@ -174,7 +175,7 @@ public class InvoiceEndpoint {
      * @return DetailedInvoiceDto with all given information of the invoice
      */
     @PermitAll
-    @GetMapping("customer")
+    @GetMapping("customers")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve customer from order", security = @SecurityRequirement(name = "apiKey"))
     public CustomerDto getCustomerFromOrderByInvoiceId(@RequestParam(name = "invoice") Long invoiceId) {

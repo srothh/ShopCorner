@@ -10,7 +10,7 @@ public class InvoiceSpecifications {
 
 
     /**
-     * returns specification that searches for given Permissions.
+     * returns specification that searches for given invoiceType.
      *
      * @param invoiceType that need to be searched for
      * @return specification (includes root, criteriaQuery and criteriaBuilder)

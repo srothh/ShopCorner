@@ -8,6 +8,12 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
+    /**
+     * Find order by an given invoice entry.
+     *
+     * @return order with the specific invoice
+     * @throws RuntimeException upon encountering errors with the database
+     */
     Optional<Order> findOrderByInvoice(Invoice invoice);
 
 }
