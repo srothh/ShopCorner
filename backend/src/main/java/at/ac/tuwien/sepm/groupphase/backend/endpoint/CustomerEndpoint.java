@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,7 +71,8 @@ public class CustomerEndpoint {
      *
      * @return A page of customers
      */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    //@Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @PermitAll
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve pages of customers", security = @SecurityRequirement(name = "apiKey"))
@@ -99,16 +101,17 @@ public class CustomerEndpoint {
     /**
      * Get specific Customer of a specific order from invoiceId.
      *
-     * @param invoiceId is the id of the invoice
+     * @param id is the id of the invoice
      * @return DetailedInvoiceDto with all given information of the invoice
      */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @GetMapping("/order")
+    //@Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @PermitAll
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve customer from order", security = @SecurityRequirement(name = "apiKey"))
-    public CustomerDto getCustomerFromOrderByInvoiceId(@RequestParam(name = "invoice") Long invoiceId) {
-        LOGGER.info("GET api/v1/invoices?invoice={}", invoiceId);
-        Invoice invoice = this.invoiceService.findOneById(invoiceId);
+    public CustomerDto getCustomerFromOrderByInvoiceId(@PathVariable  Long id) {
+        LOGGER.info("GET api/v1/invoices?invoice={}", id);
+        Invoice invoice = this.invoiceService.findOneById(id);
         Customer customer = this.orderService.getOrderByInvoice(invoice).getCustomer();
         return this.customerMapper.customerToCustomerDto(customer);
     }
