@@ -71,8 +71,7 @@ public class CustomerEndpoint {
      *
      * @return A page of customers
      */
-    //@Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @PermitAll
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve pages of customers", security = @SecurityRequirement(name = "apiKey"))
@@ -104,8 +103,7 @@ public class CustomerEndpoint {
      * @param id is the id of the invoice
      * @return DetailedInvoiceDto with all given information of the invoice
      */
-    //@Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @PermitAll
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve customer from order", security = @SecurityRequirement(name = "apiKey"))
