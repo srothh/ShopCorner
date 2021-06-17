@@ -250,9 +250,10 @@ public class InvoiceEndpointTest implements TestData {
         PaginationDto<SimpleInvoiceDto> paginationDto = objectMapper.readValue(response.getContentAsString(),
             new TypeReference<>() {
             });
-        List<SimpleInvoiceDto> simpleInvoiceDtoList = paginationDto.getItems();
 
-        assertEquals(1, simpleInvoiceDtoList.size());
+        assertEquals(0, paginationDto.getItems().size());
+
+        List<SimpleInvoiceDto> simpleInvoiceDtoList = paginationDto.getItems();
         SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtoList.get(0);
         assertAll(
             () -> assertEquals(newInvoice1.getId(), simpleInvoiceDto.getId()),
