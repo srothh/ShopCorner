@@ -49,13 +49,33 @@ public interface CategoryService {
     Long getCategoriesCount();
 
     /**
-     * Gets a category specified by the id.
+     * Updates an already existing category entity in the database with the given Id.
      *
-     * @param categoryId the id of the category to retrieve the associated entity
-     *
-     * @return category with the given Id
-     * @throws NotFoundException is thrown when the id could not be found in the database
-     * @throws RuntimeException is thrown when an error occurred during data processing
+     * @param categoryId the id of the category to execute the update
+     * @param category the new category with updated fields
      */
-    Category findCategoryById(Long categoryId);
+    void updateCategory(Long categoryId, Category category);
+
+    /**
+     * Deletes a category entity in the database with the given Id.
+     *
+     * @param categoryId the id of the category to execute the delete action
+     *
+     */
+    void deleteCategory(Long categoryId);
+
+    /**
+     * Gets the category entity  with the given Id.
+     *
+     * @param categoryId the id of the category to retrieve from the database
+     *
+     * @return the requested category specified by the id
+     * @throws NotFoundException is being thrown when the request category is not found
+     * @throws RuntimeException is being thrown if some error occurs during data processing
+     *
+     */
+    Category getCategoryById(Long categoryId);
+
+
+
 }

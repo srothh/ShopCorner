@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
 import {Invoice} from '../dtos/invoice';
 import {Product} from '../dtos/product';
 import {OperatorAuthService} from './auth/operator-auth.service';
 import {Pagination} from '../dtos/pagination';
-import {Customer} from '../dtos/customer';
 
 @Injectable({
   providedIn: 'root'
@@ -28,10 +27,11 @@ export class InvoiceService {
    */
   getAllInvoicesForPage(page: number, pageCount: number): Observable<Pagination<Invoice>> {
     console.log('Get customers for page', page);
-    return this.httpClient.get<Pagination<Invoice>>(
-      this.invoiceBaseUri + '?page=' + page + '&page_count=' + pageCount,
-      {headers: this.getHeadersForOperator()}
-    );
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount));
+
+    return this.httpClient.get<Pagination<Invoice>>(this.invoiceBaseUri, {params, headers: this.getHeadersForOperator()});
   }
 
   /**
@@ -85,7 +85,6 @@ export class InvoiceService {
    * @return pdf generated from the given invoice and invoice entry
    */
   createInvoiceAsPdf(invoice: Invoice): Observable<any> {
-
     return this.httpClient.post(this.invoiceBaseUri, invoice , this.getPdfHeadersForOperator());
   }
 
@@ -95,10 +94,9 @@ export class InvoiceService {
   }
 
   private getPdfHeadersForOperator(): any {
-    const httpOptions = {
+    return {
       responseType: 'blob' as 'json',
       headers: new HttpHeaders().set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`).set('Accept', 'application/pdf')
     };
-    return httpOptions;
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Operator} from '../dtos/operator';
 import {Observable} from 'rxjs';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Permissions} from '../dtos/permissions.enum';
 import {Globals} from '../global/globals';
 import {OperatorAuthService} from './auth/operator-auth.service';
@@ -61,8 +61,12 @@ export class OperatorService {
    */
   getOperatorsPage(page: number, pageCount: number, permissions: Permissions): Observable<Pagination<Operator>> {
     console.log('Get Operators with permission: ', permissions, ' for page: ', page);
-    return this.httpClient.get<Pagination<Operator>>(this.operatorBaseUri + '?page=' + page + '&page_count=' + pageCount +
-      '&permissions=' + permissions, {headers: this.getHeadersForOperator()});
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount))
+      .set(this.globals.requestParamKeys.operators.permissions, String(permissions));
+
+    return this.httpClient.get<Pagination<Operator>>(this.operatorBaseUri, {params, headers: this.getHeadersForOperator()});
   }
 
   /**

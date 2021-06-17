@@ -2,25 +2,22 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
 import java.util.Set;
 
-import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
-import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
+import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 
-import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 
 
@@ -40,7 +37,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,15 +49,14 @@ public class InvoiceEndpoint {
     private final InvoiceMapper invoiceMapper;
     private final InvoiceService invoiceService;
     private final InvoiceItemMapper invoiceItemMapper;
-    private final MailService mailService;
+    private final PdfGeneratorService pdfGeneratorService;
 
     @Autowired
-    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService,
-                           MailService mailService) {
+    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService, PdfGeneratorService pdfGeneratorService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
-        this.mailService = mailService;
+        this.pdfGeneratorService = pdfGeneratorService;
     }
 
     /**
@@ -75,7 +70,7 @@ public class InvoiceEndpoint {
     @GetMapping(value = "/{id}")
     @Operation(summary = "Get information for specific invoice", security = @SecurityRequirement(name = "apiKey"))
     public DetailedInvoiceDto find(@PathVariable Long id) {
-        LOGGER.info("GET /invoice/{}", id);
+        LOGGER.info("GET /api/v1/invoices/{}", id);
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
     }
 
@@ -89,9 +84,10 @@ public class InvoiceEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<SimpleInvoiceDto> getAllInvoices(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                      @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount) {
-        LOGGER.info("GET api/v1/customers?page={}&page_count={}", page, pageCount);
+    public PaginationDto<SimpleInvoiceDto> getAllInvoices(@Valid PaginationRequestDto paginationRequestDto) {
+        int page = paginationRequestDto.getPage();
+        int pageCount = paginationRequestDto.getPageCount();
+        LOGGER.info("GET api/v1/invoices?page={}&page_count={}", page, pageCount);
         Page<Invoice> operatorPage = invoiceService.getAllInvoices(page, pageCount);
         return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.getAllInvoices(page, pageCount).getContent()), page, pageCount, operatorPage.getTotalPages(), invoiceService.getInvoiceCount());
     }
@@ -108,14 +104,13 @@ public class InvoiceEndpoint {
     @PostMapping(produces = "application/pdf")
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> createInvoiceAsPdf(@Valid @RequestBody DetailedInvoiceDto invoiceDto) {
-        LOGGER.info("POST /invoices/ {}", invoiceDto);
+        LOGGER.info("POST /api/v1/invoices/ {}", invoiceDto);
 
         Invoice invoice = invoiceMapper.simpleInvoiceDtoToInvoice(invoiceDto);
-        PdfGenerator pdf = new PdfGenerator();
         Set<InvoiceItem> items = invoiceItemMapper.dtoToEntity(invoiceDto.getItems());
         invoice.setItems(items);
         Invoice createdInvoice = invoiceService.createInvoice(invoice);
-        final byte[] contents = pdf.generatePdfOperator(invoiceService.findOneById(createdInvoice.getId()));
+        final byte[] contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoiceService.findOneById(createdInvoice.getId()));
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
@@ -131,21 +126,11 @@ public class InvoiceEndpoint {
     @GetMapping(value = "/{id}/pdf", produces = "application/pdf")
     @Operation(summary = "Retrieve new invoice as pdf", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
-        LOGGER.info("GET /invoices/{}/pdf", id);
+        LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
-        PdfGenerator pdf = new PdfGenerator();
-        final byte[] contents = pdf.generatePdfOperator(invoice);
+        final byte[] contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
-    }
-
-    @PermitAll
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/mail")
-    @Operation(summary = "Send test mail", security = @SecurityRequirement(name = "apiKey"))
-    public void sendTestMail() {
-        LOGGER.info("GET /invoices/mail");
-        mailService.sendMail();
     }
 
 

@@ -42,15 +42,4 @@ public class DetailedInvoiceDto extends SimpleInvoiceDto {
         return Objects.hash(super.hashCode(), items);
     }
 
-    @Override
-    public String toString() {
-        String s = "";
-        if (items == null) {
-            items = new HashSet<>();
-        }
-        for (InvoiceItemDto i : items) {
-            s = s + ", " + i.toString();
-        }
-        return "DetailedInvoiceDto{" + "items=" + s + '}';
-    }
 }
