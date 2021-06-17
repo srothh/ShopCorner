@@ -4,12 +4,12 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import org.springframework.data.domain.Page;
 
 /**
- * Service that handles Orders of Customers
+ * Service that handles Orders of Customers.
  */
 public interface OrderService {
 
     /**
-     * Saves the specified order and calls MailService to send email
+     * Saves the specified order and calls MailService to send email.
      *
      * @param order to be saved
      * @return the order that has just been saved.

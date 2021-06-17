@@ -1,6 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.*;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
+import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
 import org.slf4j.Logger;
@@ -85,8 +89,8 @@ public class MailServiceImpl implements MailService {
     }
 
     private String replaceSpecialChar(String string) {
-        return string.replace("ö","&ouml").replace("ä","&auml").replace("ü","&uuml")
-            .replace("Ö","&Ouml").replace("Ä","&Auml").replace("Ü","&Uuml")
-            .replace("ß","&szlig;");
+        return string.replace("ö", "&ouml").replace("ä", "&auml").replace("ü", "&uuml")
+            .replace("Ö", "&Ouml").replace("Ä", "&Auml").replace("Ü", "&Uuml")
+            .replace("ß", "&szlig;");
     }
 }
