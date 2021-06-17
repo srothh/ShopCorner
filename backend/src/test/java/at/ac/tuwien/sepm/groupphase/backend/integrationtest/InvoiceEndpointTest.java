@@ -19,6 +19,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
+import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,6 +59,9 @@ public class InvoiceEndpointTest implements TestData {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
+
+    @Autowired
+    private InvoiceService invoiceService;
 
     @Autowired
     private InvoiceItemRepository invoiceItemRepository;
@@ -133,17 +137,18 @@ public class InvoiceEndpointTest implements TestData {
         invoice1.setDate(LocalDateTime.now());
         invoice1.setAmount(TEST_INVOICE_AMOUNT);
         invoice1.setItems(items);
+        invoice1.setInvoiceType(InvoiceType.operator);
 
         invoice2.setInvoiceNumber(TEST_INVOICE_NUMBER_2);
         invoice2.setDate(LocalDateTime.now());
         invoice2.setAmount(TEST_INVOICE_AMOUNT);
         invoice2.setItems(items);
+        invoice2.setInvoiceType(InvoiceType.operator);
 
     }
 
     @Test
     public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
-        invoice1.setInvoiceType(InvoiceType.operator);
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice1);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
@@ -164,7 +169,6 @@ public class InvoiceEndpointTest implements TestData {
     public void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
         Set<InvoiceItem> set1 = invoice1.getItems();
         invoice1.setItems(null);
-        invoice1.setInvoiceType(InvoiceType.operator);
 
         Invoice newInvoice = invoiceRepository.save(invoice1);
         for(InvoiceItem item: set1){
@@ -187,14 +191,12 @@ public class InvoiceEndpointTest implements TestData {
         Set<InvoiceItem> set = invoice1.getItems();
         invoice1.setItems(null);
         invoice1.setDate(LocalDateTime.now());
-        invoice1.setInvoiceType(InvoiceType.operator);
         Invoice newInvoice = invoiceRepository.save(invoice1);
         for(InvoiceItem item: set){
             item.setInvoice(newInvoice);
             invoiceItemRepository.save(item);
         }
         newInvoice.setItems(set);
-        newInvoice.setInvoiceType(InvoiceType.operator);
 
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/"+newInvoice.getId())
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -220,23 +222,12 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenTwoInvoices_whenFindAllWithPageAndPermission_thenListWithSizeTwoAndOverviewOfAllInvoices()
         throws Exception {
-        Set<InvoiceItem> set = invoice1.getItems();
-        invoice1.setItems(null);
-        invoice1.setInvoiceType(InvoiceType.operator);
-        Invoice newInvoice1 = invoiceRepository.save(invoice1);
-        for(InvoiceItem item: set){
-            item.setInvoice(newInvoice1);
-            invoiceItemRepository.save(item);
-        }
-        newInvoice1.setItems(set);
-        invoice2.setItems(null);
-        invoice2.setInvoiceType(InvoiceType.operator);
-        Invoice newInvoice2 = invoiceRepository.save(invoice2);
-        for(InvoiceItem item: set){
-            item.setInvoice(newInvoice2);
-            invoiceItemRepository.save(item);
-        }
-        newInvoice2.setItems(set);
+        Invoice newInvoice1 = this.invoiceService.createInvoice(invoice1);
+
+        Invoice newInvoice2 = this.invoiceService.createInvoice(invoice2);
+
+
+
 
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&invoiceType=operator")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -323,7 +314,7 @@ public class InvoiceEndpointTest implements TestData {
                 String content = response.getContentAsString();
                 content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
                 String[] errors = content.split(",");
-                assertEquals(4, errors.length);
+                assertEquals(3, errors.length);
             }
         );
     }
