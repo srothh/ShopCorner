@@ -24,11 +24,15 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
+
 import java.util.Locale;
 import java.util.Map;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Profile("generateData")
 @Component
@@ -99,19 +103,47 @@ public class ProductDataGenerator {
     @Transactional
     public void generateProductsWithTaxRate(TaxRate taxRate, Category category1, Category category2, Category category3, Category category4, Faker faker) {
         for (int i = 0; i < 10; i++) {
-            Product prod = Product.ProductBuilder.getProductBuilder().withName(faker.space().nasaSpaceCraft())
-                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category1).build();
+            Date past = faker.date().past(10, 4, TimeUnit.DAYS);
+            LocalDateTime pastLocalDateTime = LocalDateTime.ofInstant(past.toInstant(), ZoneId.of("UTC"));
+
+            Date future = faker.date().future(10, 4, TimeUnit.DAYS);
+            LocalDateTime futureLocalDateTime = LocalDateTime.ofInstant(future.toInstant(), ZoneId.of("UTC"));
+
+            Product prod = Product.ProductBuilder.getProductBuilder()
+                .withName(faker.space().nasaSpaceCraft())
+                .withDescription(faker.lorem().sentence(2))
+                .withPrice(faker.number().randomDouble(2, 1, 200))
+                .withTaxRate(taxRate)
+                .withCategory(category1)
+                .withExpiresAt(futureLocalDateTime)
+                .build();
             Long prodId = productRepository.save(prod).getId();
-            Product prod1 = Product.ProductBuilder.getProductBuilder().withName(faker.food().ingredient())
-                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category2)
+
+            Product prod1 = Product.ProductBuilder.getProductBuilder()
+                .withName(faker.food().ingredient())
+                .withDescription(faker.lorem().sentence(2))
+                .withPrice(faker.number().randomDouble(2, 1, 200))
+                .withTaxRate(taxRate)
+                .withCategory(category2)
+                .withExpiresAt(pastLocalDateTime)
                 .build();
             Long prodId1 = productRepository.save(prod1).getId();
-            Product prod2 = Product.ProductBuilder.getProductBuilder().withName(faker.food().spice())
-                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category3)
+
+            Product prod2 = Product.ProductBuilder.getProductBuilder()
+                .withName(faker.food().spice())
+                .withDescription(faker.lorem().sentence(2))
+                .withPrice(faker.number().randomDouble(2, 1, 200))
+                .withTaxRate(taxRate)
+                .withCategory(category3)
                 .build();
             Long prodId2 = productRepository.save(prod2).getId();
-            Product prod3 = Product.ProductBuilder.getProductBuilder().withName(faker.food().vegetable())
-                .withDescription(faker.lorem().sentence(2)).withPrice(faker.number().randomDouble(2, 1, 200)).withTaxRate(taxRate).withCategory(category4)
+
+            Product prod3 = Product.ProductBuilder.getProductBuilder()
+                .withName(faker.food().vegetable())
+                .withDescription(faker.lorem().sentence(2))
+                .withPrice(faker.number().randomDouble(2, 1, 200))
+                .withTaxRate(taxRate)
+                .withCategory(category4)
                 .build();
             Long prodId3 = productRepository.save(prod3).getId();
 
