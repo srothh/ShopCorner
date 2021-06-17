@@ -24,16 +24,6 @@ public interface InvoiceService {
 
 
     /**
-     * Retrieves a PaginationDto containing a Page of invoices from the database.
-     *
-     * @param page      The number of the page to retrieve
-     * @param pageCount The size of the page to retrieve
-     * @return A PaginationDto containing data about the retrieved items
-     * @throws RuntimeException upon encountering errors with the database
-     */
-    //Page<Invoice> getAllInvoices(int page, int pageCount);
-
-    /**
      * Returns amount of invoices in the database.
      *
      * @return The amount of invoices in the database

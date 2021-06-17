@@ -1,10 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
@@ -21,9 +23,11 @@ import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 
+import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 
+import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 
 
@@ -58,14 +62,19 @@ public class InvoiceEndpoint {
     private final InvoiceItemMapper invoiceItemMapper;
     private final PdfGeneratorService pdfGeneratorService;
     private final CustomerService customerService;
+    private final CustomerMapper customerMapper;
+    private final OrderService orderService;
 
     @Autowired
-    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService, PdfGeneratorService pdfGeneratorService, CustomerService customerService) {
+    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService,
+                           PdfGeneratorService pdfGeneratorService, CustomerService customerService, CustomerMapper customerMapper, OrderService orderService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
         this.pdfGeneratorService = pdfGeneratorService;
         this.customerService = customerService;
+        this.customerMapper = customerMapper;
+        this.orderService = orderService;
     }
 
     /**
@@ -96,7 +105,7 @@ public class InvoiceEndpoint {
     public PaginationDto<SimpleInvoiceDto> getAllInvoices(@Valid PaginationRequestDto paginationRequestDto, @RequestParam("invoiceType") InvoiceType invoiceType) {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
-        LOGGER.info("GET api/v1/invoices?page={}&page_count={}&invoiceType={}", page, pageCount,invoiceType);
+        LOGGER.info("GET api/v1/invoices?page={}&page_count={}&invoiceType={}", page, pageCount, invoiceType);
         PaginationDto<SimpleInvoiceDto> dto;
         Page<Invoice> invoicePage = invoiceService.findAll(page, pageCount, invoiceType);
         if (invoiceType == InvoiceType.operator) {
@@ -147,16 +156,32 @@ public class InvoiceEndpoint {
         LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
         byte[] contents = null;
-      //  if (invoice.getType() == InvoiceType.operator) {
-        contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
-       // } else if (invoice.getType() == InvoiceType.operator) {
-       //     contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
-       // } else {
-            //contents = this.pdfGeneratorService.createPdfInvoiceCustomer(customer, invoice);
+        if (invoice.getInvoiceType() == InvoiceType.operator) {
+            contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
+        } else if (invoice.getInvoiceType() == InvoiceType.operator) {
+            contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
+        } else {
             // TODO: createPdfInvoiceCanceled
-       // }
+        }
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
+    }
+
+    /**
+     * Get specific Customer of a specific order from invoiceId.
+     *
+     * @param invoiceId is the id of the invoice
+     * @return DetailedInvoiceDto with all given information of the invoice
+     */
+    @PermitAll
+    @GetMapping("customer")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Retrieve customer from order", security = @SecurityRequirement(name = "apiKey"))
+    public CustomerDto getCustomerFromOrderByInvoiceId(@RequestParam(name = "invoice") Long invoiceId) {
+        LOGGER.info("GET api/v1/orders?invoice={}", invoiceId);
+        Invoice invoice = this.invoiceService.findOneById(invoiceId);
+        Customer customer = this.orderService.getOrderByInvoice(invoice).getCustomer();
+        return this.customerMapper.customerToCustomerDto(customer);
     }
 
 

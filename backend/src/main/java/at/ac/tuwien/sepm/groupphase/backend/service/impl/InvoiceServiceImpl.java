@@ -41,18 +41,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         this.invoiceItemService = invoiceItemService;
     }
 
-/*
-    @Override
-    public Page<Invoice> getAllInvoices(int page, int pageCount) {
-        LOGGER.trace("getAllInvoices({})", page);
-        if (pageCount == 0) {
-            pageCount = 15;
-        } else if (pageCount > 50) {
-            pageCount = 50;
-        }
-        Pageable returnPage = PageRequest.of(page, pageCount);
-        return invoiceRepository.findAll(returnPage);
-    }*/
 
     @Override
     @Cacheable(value = "invoicePages")

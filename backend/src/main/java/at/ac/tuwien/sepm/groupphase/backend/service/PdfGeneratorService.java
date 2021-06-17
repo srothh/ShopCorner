@@ -26,9 +26,9 @@ public interface PdfGeneratorService {
     byte[] createPdfInvoiceCustomerFromInvoice(Invoice invoice);
 
     /**
-     * Creates a pdf for customers from a given invoice.
+     * Creates a pdf for customers from a given order.
      *
-     * @param order
+     * @param order to generate a pdf of it
      * @return byte array includes pdf.
      */
     byte[] createPdfInvoiceCustomer(Order order);

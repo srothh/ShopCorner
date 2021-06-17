@@ -116,7 +116,8 @@ public class Invoice {
             return false;
         }
         Invoice invoice = (Invoice) o;
-        return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && invoiceNumber.equals(invoice.invoiceNumber) && date.equals(invoice.date) && items.equals(invoice.items) && invoiceType.equals(invoice.invoiceType) && orderNumber.equals(invoice.orderNumber);
+        return Double.compare(invoice.amount, amount) == 0 && id.equals(invoice.id) && invoiceNumber.equals(invoice.invoiceNumber)
+            && date.equals(invoice.date) && items.equals(invoice.items) && invoiceType.equals(invoice.invoiceType) && orderNumber.equals(invoice.orderNumber);
     }
 
     @Override
