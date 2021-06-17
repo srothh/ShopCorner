@@ -60,8 +60,8 @@ public class MailServiceImpl implements MailService {
         String addressString = address.getStreet() + ' ' + address.getHouseNumber() + '/' + address.getDoorNumber() + ", " + address.getPostalCode();
         thymeleafContext.setVariable("name", replaceSpecialChar(order.getCustomer().getName()));
         thymeleafContext.setVariable("address", replaceSpecialChar(addressString));
-        thymeleafContext.setVariable("sum", subtotal);
-        thymeleafContext.setVariable("tax", tax);
+        thymeleafContext.setVariable("sum", (double) Math.round(subtotal * 100) / 100);
+        thymeleafContext.setVariable("tax", (double) Math.round(tax * 100) / 100);
         thymeleafContext.setVariable("end", order.getInvoice().getAmount());
         String htmlBody = thymeleafTemplateEngine.process("emailTemplate.html", thymeleafContext);
 
