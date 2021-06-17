@@ -239,7 +239,7 @@ public class CartEndpointTest implements TestData {
                 String content = response.getContentAsString();
                 content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
                 String[] errors = content.split(",");
-                assertEquals(2, errors.length);
+                assertEquals(3, errors.length);
             }
         );
     }

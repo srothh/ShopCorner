@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import org.junit.jupiter.api.BeforeAll;
@@ -79,6 +80,7 @@ public class InvoiceMappingTest implements TestData {
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
         invoice.setItems(items);
+        invoice.setInvoiceType(InvoiceType.operator);
 
     }
 
