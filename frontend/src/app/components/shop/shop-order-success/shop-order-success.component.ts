@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {faCheckCircle} from '@fortawesome/free-solid-svg-icons';
 import {PaypalService} from '../../../services/paypal.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -14,15 +14,20 @@ export class ShopOrderSuccessComponent implements OnInit {
   payerId: string;
   paymentSucceeded: boolean;
 
-  constructor(private paypalService: PaypalService, private activatedRoute: ActivatedRoute) { }
+  constructor(private paypalService: PaypalService, private activatedRoute: ActivatedRoute) {
+  }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(params => {
       this.paymentId = params['paymentId'];
       this.payerId = params['PayerID'];
       this.paypalService.confirmPayment(this.payerId, this.paymentId).subscribe((finalisedPaymentData) => {
-        console.log('finalised payment:', finalisedPaymentData);
-      });
+        if (finalisedPaymentData.includes('Payment successful')) {
+          this.paymentSucceeded = true;
+        }
+      }, error => {
+        this.paymentSucceeded = false;
+      } );
     });
   }
 }

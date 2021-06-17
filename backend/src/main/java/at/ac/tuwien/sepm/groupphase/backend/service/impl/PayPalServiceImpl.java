@@ -2,14 +2,18 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.PayPalProperties;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.PayPalService;
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Transaction;
 import com.paypal.api.payments.Payment;
+import com.paypal.api.payments.ItemList;
 import com.paypal.api.payments.Payer;
 import com.paypal.api.payments.RedirectUrls;
 import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Item;
+
 import com.paypal.api.payments.PaymentExecution;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
@@ -43,6 +47,24 @@ public class PayPalServiceImpl implements PayPalService {
         amount.setTotal(String.valueOf(invoice.getAmount()));
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
+        transaction.setInvoiceNumber(order.getInvoice().getInvoiceNumber());
+        ItemList itemList = new ItemList();
+        List<Item> items = new ArrayList<>();
+        for (InvoiceItem invoiceItem : order.getInvoice().getItems()) {
+            Item item = new Item();
+            item.setName(invoiceItem.getProduct().getName());
+            item.setDescription(invoiceItem.getProduct().getDescription());
+            item.setCurrency("EUR");
+            item.setPrice(invoiceItem.getProduct().getPrice().toString());
+            item.setQuantity("1");
+            items.add(item);
+
+
+        }
+        itemList.setItems(items);
+        transaction.setItemList(itemList);
+
+
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);
 
