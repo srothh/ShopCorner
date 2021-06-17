@@ -239,7 +239,7 @@ public class InvoiceEndpointTest implements TestData {
         }
         newInvoice2.setItems(set);
 
-        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&permissions=admin")
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=15&invoiceType=operator")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
@@ -253,7 +253,7 @@ public class InvoiceEndpointTest implements TestData {
             });
         List<SimpleInvoiceDto> simpleInvoiceDtoList = paginationDto.getItems();
 
-        assertEquals(2, simpleInvoiceDtoList.size());
+        assertEquals(1, simpleInvoiceDtoList.size());
         SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtoList.get(0);
         assertAll(
             () -> assertEquals(newInvoice1.getId(), simpleInvoiceDto.getId()),
@@ -267,7 +267,7 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenNothing_whenFindPage_thenEmptyList() throws Exception {
         invoiceRepository.deleteAll();
-        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&permissions=admin")
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&invoiceType=operator")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();

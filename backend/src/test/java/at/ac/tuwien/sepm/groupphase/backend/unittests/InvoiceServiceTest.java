@@ -124,6 +124,7 @@ public class InvoiceServiceTest implements TestData {
 
     @Test
     public void createInvoiceAndFindOneById() {
+        invoiceRepository.deleteAll();
         invoice.setInvoiceType(InvoiceType.customer);
         Invoice created = invoiceService.createInvoice(invoice);
         Invoice foundInvoice = invoiceService.findOneById(created.getId());
@@ -137,6 +138,7 @@ public class InvoiceServiceTest implements TestData {
 
     @Test
     public void createInvoiceAndGetInvoicePage() {
+        invoiceRepository.deleteAll();
         invoice.setInvoiceType(InvoiceType.customer);
         Invoice created = invoiceService.createInvoice(invoice);
         Page<Invoice> invoicePage = invoiceService.findAll(0, 15, InvoiceType.customer);
