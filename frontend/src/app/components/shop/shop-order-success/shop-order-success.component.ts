@@ -51,15 +51,14 @@ export class ShopOrderSuccessComponent implements OnInit {
         this.payerId = params['PayerID'];
         this.confirmedPayment = new ConfirmedPayment(0,this.paymentId, this.payerId);
         this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
-          console.log('finalisedPaymentData', finalisedPaymentData);
           if (finalisedPaymentData.includes('Payment successful')) {
             this.paymentSucceeded = true;
             this.placeNewOrder();
+            this.cartGlobals.resetCart();
             //after payment -> discard paymentId and payerID
           }
         }, error => {
           this.paymentSucceeded = false;
-          console.log(error);
         });
     });
   }
