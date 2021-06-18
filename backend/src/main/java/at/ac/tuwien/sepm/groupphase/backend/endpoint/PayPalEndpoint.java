@@ -53,7 +53,6 @@ public class PayPalEndpoint {
     @Operation(summary = "Confirms a payment", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<String> confirmPayment(@RequestBody ConfirmedPaymentDto confirmedPaymentDto) throws PayPalRESTException {
         LOGGER.info("Confirms a payment");
-        System.out.println("confirmedPaymentDto" + confirmedPaymentDto.toString());
         Payment confirmedPayment = this.payPalService.confirmPayment(this.paymentMapper.confirmedPaymentDtoToConfirmedPayment(confirmedPaymentDto));
         if (confirmedPayment != null) {
             return new ResponseEntity<>("Payment successful", HttpStatus.OK);
