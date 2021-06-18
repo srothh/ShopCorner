@@ -34,6 +34,7 @@ import {ShopAccountOrdersComponent} from './components/shop/shop-account-orders/
 import {OperatorAdminGuard} from './guards/operator-admin.guard';
 import {ShopCheckoutComponent} from './components/shop/shop-checkout/shop-checkout.component';
 import {OperatorCategoryDetailsComponent} from './components/operator/operator-category-details/operator-category-details.component';
+import {OperatorOrderSettingsComponent} from './components/operator/operator-order-settings/operator-order-settings.component';
 
 const routes: Routes = [
   {
@@ -60,7 +61,11 @@ const routes: Routes = [
       {path: 'categories', component: OperatorCategoriesComponent},
       {path: 'categories/add', canActivate: [OperatorAdminGuard], component: OperatorAddCategoryComponent},
       {path: 'categories/:id', component: OperatorCategoryDetailsComponent},
-      {path: 'orders', component: OperatorOrderComponent},
+      {
+        path: 'orders', component: OperatorOrderComponent, children: [
+          {path: '/settings', component: OperatorOrderSettingsComponent}
+        ]
+      },
       {path: 'products', component: OperatorProductComponent},
       {path: 'products/add', canActivate: [OperatorAdminGuard], component: OperatorAddProductComponent},
       {path: 'products/:id', component: OperatorProductDetailsComponent},
@@ -68,7 +73,7 @@ const routes: Routes = [
       {path: 'statistics', component: OperatorStatisticComponent},
       {path: 'customers', component: OperatorCustomerComponent},
       {path: 'accounts', component: OperatorAccountComponent},
-      {path: 'registration', canActivate: [OperatorAdminGuard],  component: OperatorRegistrationComponent},
+      {path: 'registration', canActivate: [OperatorAdminGuard], component: OperatorRegistrationComponent},
       {path: 'account/edit', component: OperatorEditAccountComponent},
     ],
   },
