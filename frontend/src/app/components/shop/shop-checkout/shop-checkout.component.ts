@@ -74,34 +74,12 @@ export class ShopCheckoutComponent implements OnInit {
       this.cart = cart;
     });
   }
-
-  creatInvoiceDto() {
-    this.invoiceDto = new Invoice();
-    this.invoiceDto.invoiceNumber = '';
-
-    for (const item of this.products) {
-      if (item !== undefined) {
-        const invItem = new InvoiceItem(new InvoiceItemKey(item.id), item, item.cartItemQuantity);
-        this.invoiceDto.items.push(invItem);
-      }
-
-    }
-    this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
-    this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
-    this.invoiceDto.customerId = this.customer.id;
-    this.invoiceDto.invoiceType = InvoiceType.customer;
-  }
-
-  placeNewOrder() {
-    this.creatInvoiceDto();
+  proceedToPay() {
     const order: Order = new Order(0, this.invoiceDto, this.customer);
-
     this.paypalService.createPayment(order).subscribe((redirectUrl) => {
       window.location.href = redirectUrl;
       this.loading = true;
     });
-    /*this.orderService.placeNewOrder(order).subscribe(() => {
-    });*/
   }
 
   private fetchCustomer() {

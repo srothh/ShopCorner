@@ -45,7 +45,6 @@ public class PayPalServiceImpl implements PayPalService {
         Amount amount = new Amount();
         amount.setCurrency("EUR");
         double total = invoice.getAmount();
-        System.out.println("total" + total);
         amount.setTotal(String.valueOf(total));
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
