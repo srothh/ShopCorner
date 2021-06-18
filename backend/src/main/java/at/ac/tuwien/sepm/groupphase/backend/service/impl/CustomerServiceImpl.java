@@ -88,7 +88,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
-        validator.validateNewCustomer(customer, this);
+        validator.validateNewCustomer(customer, customerRepository);
         Address address = addressService.addNewAddress(customer.getAddress());
         assignAddressToCustomer(customer, address.getId());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
@@ -103,7 +103,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer update(Customer customer) {
         LOGGER.trace("update({})", customer);
-        validator.validateUpdatedCustomer(customer, this);
+        validator.validateUpdatedCustomer(customer, customerRepository);
         Customer c = customerRepository.findById(customer.getId())
             .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", customer.getId())));
 
