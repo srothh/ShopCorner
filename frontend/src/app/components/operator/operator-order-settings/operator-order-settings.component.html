@@ -1,5 +1,5 @@
 <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Authentication problems!</strong> {{ errorMessage }}
+  <strong>Errors!</strong> {{ errorMessage }}
   <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -12,7 +12,7 @@
 
       <div class="card rounded-0">
         <div class="card-header">
-          <h3 class="mb-0">Login</h3>
+          <h3 class="mb-0">Stornierzeitraum festlegen</h3>
         </div>
 
         <div class="card-body">
@@ -32,7 +32,7 @@
                 </small>
               </div>
             </div>
-            <button type="button" (click)="setCancellationPeriod()" class="btn btn-primary">Einloggen</button>
+            <button type="button" (click)="setCancellationPeriod()" class="btn btn-primary">Zeitraum speichern</button>
           </form>
         </div>
 

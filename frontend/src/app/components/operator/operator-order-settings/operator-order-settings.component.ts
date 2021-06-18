@@ -14,12 +14,13 @@ export class OperatorOrderSettingsComponent implements OnInit {
   error = false;
   errorMessage = '';
   cancellationPeriodForm: FormGroup;
+
   constructor(private orderService: OrderService, private formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
     this.cancellationPeriodForm = this.formBuilder.group({
-      days : [0, Validators.required, Validators.min(0)]
+      days: [0, Validators.required, Validators.min(0)]
     });
   }
 

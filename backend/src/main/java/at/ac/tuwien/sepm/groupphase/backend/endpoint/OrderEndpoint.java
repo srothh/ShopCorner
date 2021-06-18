@@ -78,7 +78,13 @@ public class OrderEndpoint {
         return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderService.getOrderCount());
     }
 
-    @PermitAll
+    /**
+     * Sets the cancellation period for orders.
+     *
+     * @param dto the dto containing the info on the cancellation Period
+     * @return dto containing info on the cancellation period
+     */
+    @Secured("ROLE_ADMIN")
     @PutMapping(value = "/settings")
     @Operation(summary = "set cancellation period for orders", security = @SecurityRequirement(name = "apiKey"))
     public CancellationPeriodDto setCancellationPeriod(@RequestBody CancellationPeriodDto dto) {
@@ -86,6 +92,11 @@ public class OrderEndpoint {
         return cancellationPeriodMapper.cancellationPeriodToCancellationPeriodDto(orderService.setCancellationPeriod(cancellationPeriodMapper.cancellationPeriodDtoToCancellationPeriod(dto)));
     }
 
+    /**
+     * Returns a dto containing information on the cancellation period.
+     *
+     * @return The cancellation period Dto
+     */
     @PermitAll
     @GetMapping(value = "/settings")
     @Operation(summary = "Retrieve cancellation period", security = @SecurityRequirement(name = "apiKey"))

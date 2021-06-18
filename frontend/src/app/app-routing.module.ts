@@ -61,11 +61,8 @@ const routes: Routes = [
       {path: 'categories', component: OperatorCategoriesComponent},
       {path: 'categories/add', canActivate: [OperatorAdminGuard], component: OperatorAddCategoryComponent},
       {path: 'categories/:id', component: OperatorCategoryDetailsComponent},
-      {
-        path: 'orders', component: OperatorOrderComponent, children: [
-          {path: 'settings', component: OperatorOrderSettingsComponent}
-        ]
-      },
+      {path: 'orders', component: OperatorOrderComponent},
+      {path: 'orders/settings', component: OperatorOrderSettingsComponent},
       {path: 'products', component: OperatorProductComponent},
       {path: 'products/add', canActivate: [OperatorAdminGuard], component: OperatorAddProductComponent},
       {path: 'products/:id', component: OperatorProductDetailsComponent},

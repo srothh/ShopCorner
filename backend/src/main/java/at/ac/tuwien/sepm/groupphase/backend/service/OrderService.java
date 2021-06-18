@@ -41,11 +41,22 @@ public interface OrderService {
      * @param invoice the invoice of the order
      * @return The saved order
      * @throws NotFoundException when no order with the invoice is found
-     * @throws RuntimeException upon encountering errors with the database
+     * @throws RuntimeException  upon encountering errors with the database
      */
     Order getOrderByInvoice(Invoice invoice);
 
+    /**
+     * Sets the cancellation period for orders.
+     *
+     * @param cancellationPeriod the cancellationperiod to set
+     * @return the cancellationperiod as persisted
+     */
     CancellationPeriod setCancellationPeriod(CancellationPeriod cancellationPeriod);
 
+    /**
+     * Returns the cancellation period for orders.
+     *
+     * @return the cancellation period for orders
+     */
     CancellationPeriod getCancellationPeriod();
 }

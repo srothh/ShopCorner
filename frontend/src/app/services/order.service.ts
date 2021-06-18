@@ -24,12 +24,21 @@ export class OrderService {
     return this.httpClient.post<Order>(this.orderBaseURI, order, {withCredentials: true});
   }
 
+  /** sets the cancellation period for orders.
+   *
+   * @param cancellationPeriod the dto containing the information on the cancellation period
+   * @return the dto as returned from the backend
+   */
   setCancellationPeriod(cancellationPeriod: CancellationPeriod): Observable<CancellationPeriod> {
     return this.httpClient.put<CancellationPeriod>(this.orderBaseURI + '/settings', cancellationPeriod);
   }
 
+  /** gets the cancellation period from the backend
+   *
+   * @return the cancellation period
+   */
   getCancellationPeriod(): Observable<CancellationPeriod> {
-    return this.httpClient.get<CancellationPeriod>(this.orderBaseURI + 'settings');
+    return this.httpClient.get<CancellationPeriod>(this.orderBaseURI + '/settings');
   }
 
 }
