@@ -1,10 +1,11 @@
-.table th { border-top: none; }
-.table td { font-weight: lighter; }
-.product_options {
-  margin-top: 10px;
-  float: right;
-  margin-left: 10px;
+.table th {
+  border-top: none;
 }
+
+.table td {
+  font-weight: lighter;
+}
+
 .button_block:after {
   clear: both;
   content: ".";
@@ -12,9 +13,17 @@
   height: 10px;
   visibility: hidden;
 }
+
+.product-header {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .button_block {
   display: inline-block;
 }
+
 .button_block {
   display: block;
 }

@@ -58,7 +58,7 @@ public class PromotionEndpoint {
      * @return A list of all the retrieved promotions
      */
     @GetMapping
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     public PaginationDto<PromotionDto> getAllPages(@Valid PaginationRequestDto paginationRequestDto) {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();

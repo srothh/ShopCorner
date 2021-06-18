@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import at.ac.tuwien.sepm.groupphase.backend.util.InvoiceSpecifications;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -88,6 +90,7 @@ public class InvoiceRepositoryTest implements TestData {
         invoice.setInvoiceNumber(TEST_INVOICE_NUMBER_1);
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
+        invoice.setInvoiceType(InvoiceType.operator);
 
     }
 
@@ -96,9 +99,12 @@ public class InvoiceRepositoryTest implements TestData {
     public void givenAllProperties_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
         invoiceItemRepository.save(invoiceItem);
+        Pageable returnPage = PageRequest.of(0, 15);
         assertAll(
             () -> assertEquals(1, invoiceRepository.findAll().size()),
-            () -> assertNotNull(invoiceRepository.findById(invoice.getId()))
+            () -> assertNotNull(invoiceRepository.findById(invoice.getId())),
+            () -> assertNotNull(invoiceRepository.findAll(InvoiceSpecifications.hasInvoiceType(InvoiceType.operator), returnPage).getContent()),
+            () -> assertEquals(1, invoiceRepository.findAll(InvoiceSpecifications.hasInvoiceType(InvoiceType.operator), returnPage).getContent().size())
         );
     }
 

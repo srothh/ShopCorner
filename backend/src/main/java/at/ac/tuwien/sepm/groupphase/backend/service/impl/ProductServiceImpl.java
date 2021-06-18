@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
@@ -12,6 +13,8 @@ import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
 import at.ac.tuwien.sepm.groupphase.backend.service.TaxRateService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
+import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,17 +42,20 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
     private final TaxRateService taxRateService;
     private final InvoiceItemService invoiceItemService;
+    private final Validator validator;
 
     @Autowired
     public ProductServiceImpl(
         ProductRepository productRepository,
         CategoryService categoryService,
         TaxRateService taxRateService,
-        InvoiceItemService invoiceItemService) {
+        InvoiceItemService invoiceItemService,
+        Validator validator) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.taxRateService = taxRateService;
         this.invoiceItemService = invoiceItemService;
+        this.validator = validator;
     }
 
     @Caching(evict = {
@@ -58,9 +66,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product createProduct(Product product) {
         LOGGER.trace("createProduct({})", product);
-        if (product.getDescription() != null) {
-            this.validateProperty(product.getDescription());
-        }
+        validator.validateProduct(product);
         if (product.getCategory() != null) {
             Category category = product.getCategory();
             assignProductToCategory(product, category.getId());
@@ -132,27 +138,13 @@ public class ProductServiceImpl implements ProductService {
         return this.productRepository.findAllByCategoryId(categoryId);
     }
 
-    public void validateProperty(String description) {
-        LOGGER.trace("validateProperty({})", description);
-        if (!description.isEmpty()) {
-            if (description.trim().isEmpty()) {
-                throw new IllegalArgumentException("Only whiteSpaces not allowed!");
-            }
-        }
-        if (description.trim().length() > 70) {
-            throw new IllegalArgumentException("description is too long");
-        }
-    }
-
     @Caching(evict = {
         @CacheEvict(value = "categoryCounts", allEntries = true),
         @CacheEvict(value = "productPages", allEntries = true)
     })
     public void updateProduct(Long productId, Product product) {
         LOGGER.trace("updateProduct({})", product);
-        if (product.getDescription() != null) {
-            this.validateProperty(product.getDescription());
-        }
+        validator.validateProduct(product);
         Product updateProduct = this.productRepository
             .findById(productId).orElseThrow(() -> new NotFoundException("Could not find product with Id:" + productId));
         updateProduct.setName(product.getName());
@@ -160,6 +152,7 @@ public class ProductServiceImpl implements ProductService {
         updateProduct.setPrice(product.getPrice());
         updateProduct.setLocked(product.isLocked());
         updateProduct.setPicture(product.getPicture());
+        updateProduct.setExpiresAt(product.getExpiresAt());
         Category updateCategory = product.getCategory();
         TaxRate updateTaxRate = product.getTaxRate();
         assignProductToCategory(updateProduct, updateCategory.getId());
