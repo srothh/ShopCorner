@@ -63,7 +63,11 @@ public class MailServiceImpl implements MailService {
             tax = tax + taxPerProduct;
         }
         Address address = order.getCustomer().getAddress();
-        String addressString = address.getStreet() + ' ' + address.getHouseNumber() + '/' + address.getDoorNumber() + ", " + address.getPostalCode();
+        String addressString = address.getStreet() + ' ' + address.getHouseNumber();
+        if (!address.getDoorNumber().isBlank()) {
+            addressString += '/' + address.getDoorNumber();
+        }
+        addressString += ", " + address.getPostalCode();
         thymeleafContext.setVariable("name", replaceSpecialChar(order.getCustomer().getName()));
         thymeleafContext.setVariable("address", replaceSpecialChar(addressString));
         thymeleafContext.setVariable("sum", (double) Math.round(subtotal * 100) / 100);
