@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.CancellationPeriod;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.Properties;
 import java.util.UUID;
 
 @Service
@@ -29,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final InvoiceService invoiceService;
     private final CartService cartService;
+    private final Properties properties = new Properties();
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
@@ -78,6 +81,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrderByInvoice(Invoice invoice) {
         return this.orderRepository.findOrderByInvoice(invoice).orElseThrow(() -> new NotFoundException("Could not find order"));
+    }
+
+    @Override
+    public CancellationPeriod setCancellationPeriod(CancellationPeriod cancellationPeriod) {
+        properties.setProperty("cancellationPeriod", String.valueOf(cancellationPeriod.getDays()));
+        return cancellationPeriod;
+    }
+
+    @Override
+    public CancellationPeriod getCancellationPeriod() {
+        return new CancellationPeriod(Integer.parseInt(properties.getProperty("cancellationPeriod", "0")));
     }
 
 }

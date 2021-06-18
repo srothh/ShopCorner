@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CancellationPeriodDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CancellationPeriodMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
@@ -16,6 +18,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,12 +36,14 @@ public class OrderEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final OrderMapper orderMapper;
     private final OrderService orderService;
+    private final CancellationPeriodMapper cancellationPeriodMapper;
 
 
     @Autowired
-    public OrderEndpoint(OrderMapper orderMapper, OrderService orderService) {
+    public OrderEndpoint(OrderMapper orderMapper, OrderService orderService, CancellationPeriodMapper cancellationPeriodMapper) {
         this.orderMapper = orderMapper;
         this.orderService = orderService;
+        this.cancellationPeriodMapper = cancellationPeriodMapper;
     }
 
     /**
@@ -73,6 +78,21 @@ public class OrderEndpoint {
         return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderService.getOrderCount());
     }
 
+    @PermitAll
+    @PutMapping(value = "/settings")
+    @Operation(summary = "set cancellation period for orders", security = @SecurityRequirement(name = "apiKey"))
+    public CancellationPeriodDto setCancellationPeriod(@RequestBody CancellationPeriodDto dto) {
+        LOGGER.info("PUT " + BASE_URL + "/settings");
+        return cancellationPeriodMapper.cancellationPeriodToCancellationPeriodDto(orderService.setCancellationPeriod(cancellationPeriodMapper.cancellationPeriodDtoToCancellationPeriod(dto)));
+    }
+
+    @PermitAll
+    @GetMapping(value = "/settings")
+    @Operation(summary = "Retrieve cancellation period", security = @SecurityRequirement(name = "apiKey"))
+    public CancellationPeriodDto getCancellationPeriod() {
+        LOGGER.info("GET " + BASE_URL + "/settings");
+        return cancellationPeriodMapper.cancellationPeriodToCancellationPeriodDto(orderService.getCancellationPeriod());
+    }
 
 
 }
