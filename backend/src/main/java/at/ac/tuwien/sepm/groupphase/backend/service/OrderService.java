@@ -5,10 +5,13 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
+/**
+ * Service that handles Orders of Customers.
+ */
 public interface OrderService {
 
     /**
-     * Saves the specified order.
+     * Saves the specified order and calls MailService to send email.
      *
      * @param order to be saved
      * @return the order that has just been saved.
@@ -19,7 +22,7 @@ public interface OrderService {
     /**
      * Retrieves a PaginationDto containing a Page of orders from the database.
      *
-     * @param page      The number of the page to retrieve
+     * @param page The number of the page to retrieve
      * @param pageCount The size of the page to retrieve
      * @return A PaginationDto containing data about the retrieved items
      * @throws RuntimeException upon encountering errors with the database

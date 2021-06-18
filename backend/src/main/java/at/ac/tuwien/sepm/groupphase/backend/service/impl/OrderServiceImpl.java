@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OrderRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.CartService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
+import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +30,17 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final InvoiceService invoiceService;
     private final CartService cartService;
+    private final MailService mailService;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             InvoiceService invoiceService,
-                            CartService cartService) {
+                            CartService cartService,
+                            MailService mailService) {
         this.orderRepository = orderRepository;
         this.invoiceService = invoiceService;
         this.cartService = cartService;
+        this.mailService = mailService;
     }
 
     @Override
@@ -51,6 +55,7 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("invalid sessionId");
         }
         order.setInvoice(this.invoiceService.createInvoice(order.getInvoice()));
+        mailService.sendMail(order);
         return orderRepository.save(order);
     }
 
