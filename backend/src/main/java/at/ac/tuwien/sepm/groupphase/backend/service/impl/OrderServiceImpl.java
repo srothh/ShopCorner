@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +47,6 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             InvoiceService invoiceService,
-                            CartService cartService) throws FileNotFoundException {
                             CartService cartService,
                             MailService mailService) {
         this.orderRepository = orderRepository;
