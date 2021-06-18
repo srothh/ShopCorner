@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -95,10 +94,13 @@ public class MailServiceTest implements TestData {
     }
 
     @Test
-    public void sendsMailToCustomer() throws MessagingException {
+    public void sendsMailToCustomer() {
         mailService.sendMail(order);
         MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
-        assertNotNull(receivedMessage);
-        assertEquals(customer.getEmail(),receivedMessage.getAllRecipients()[0].toString());
+        assertAll(
+            () -> assertNotNull(receivedMessage),
+            () -> assertEquals(1, receivedMessage.getAllRecipients().length),
+            () -> assertEquals(customer.getEmail(),receivedMessage.getAllRecipients()[0].toString())
+        );
     }
 }
