@@ -44,26 +44,12 @@ public class PayPalServiceImpl implements PayPalService {
         Invoice invoice = order.getInvoice();
         Amount amount = new Amount();
         amount.setCurrency("EUR");
-        amount.setTotal(String.valueOf(invoice.getAmount()));
+        double total = invoice.getAmount();
+        System.out.println("total" + total);
+        amount.setTotal(String.valueOf(total));
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setInvoiceNumber(order.getInvoice().getInvoiceNumber());
-        ItemList itemList = new ItemList();
-        List<Item> items = new ArrayList<>();
-        for (InvoiceItem invoiceItem : order.getInvoice().getItems()) {
-            Item item = new Item();
-            item.setName(invoiceItem.getProduct().getName());
-            item.setDescription(invoiceItem.getProduct().getDescription());
-            item.setCurrency("EUR");
-            item.setPrice(invoiceItem.getProduct().getPrice().toString());
-            item.setQuantity("1");
-            items.add(item);
-
-
-        }
-        itemList.setItems(items);
-        transaction.setItemList(itemList);
-
 
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);
