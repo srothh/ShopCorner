@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.CanceledInvoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 
@@ -16,6 +17,13 @@ public interface PdfGeneratorService {
      */
     byte[] createPdfInvoiceOperator(Invoice invoice);
 
+    /**
+     * Creates a pdf for operators from a given canceled invoice.
+     *
+     * @param canceledInvoice the canceled invoice to be create as pdf
+     * @return byte array includes pdf.
+     */
+    byte[] createPdfCanceledInvoiceOperator(CanceledInvoice canceledInvoice);
 
     /**
      * Creates a pdf of a customer for operator from a given invoice.

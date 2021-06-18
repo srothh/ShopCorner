@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.CanceledInvoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
@@ -31,6 +32,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
         return pdfGenerator.generatePdfOperator(invoice);
     }
 
+
     @Override
     public byte[] createPdfInvoiceCustomerFromInvoice(Invoice invoice) {
         LOGGER.trace("createPdfInvoiceCustomerFromInvoice({})", invoice);
@@ -41,5 +43,11 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     public byte[] createPdfInvoiceCustomer(Order order) {
         LOGGER.trace("createPdfInvoiceCustomer({})", order);
         return pdfGenerator.generatePdfCustomer(order);
+    }
+
+    @Override
+    public byte[] createPdfCanceledInvoiceOperator(CanceledInvoice canceledInvoiceService) {
+        LOGGER.trace("createPdfInvoiceCustomer({})", canceledInvoiceService);
+        return pdfGenerator.generatePdfOperatorCanceled(canceledInvoiceService);
     }
 }

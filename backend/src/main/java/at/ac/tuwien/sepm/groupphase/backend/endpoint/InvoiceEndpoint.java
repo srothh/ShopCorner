@@ -110,7 +110,6 @@ public class InvoiceEndpoint {
                 new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
         }
         return dto;
-
     }
 
 
@@ -161,8 +160,6 @@ public class InvoiceEndpoint {
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
     }
-
-
 
 
     /**

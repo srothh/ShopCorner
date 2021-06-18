@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.util;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.CanceledInvoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.CanceledInvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
@@ -90,13 +92,13 @@ public class PdfGenerator {
      * Generates a canceled Invoice PDF from an HTML template, parses the template into a document,
      * which can then be changed and edited.
      *
-     * @param invoice Invoice to generate a pdf
+     * @param canceledInvoice Invoice to generate a pdf
      * @return byte array with generated pdf
      */
-    public byte[] generatePdfOperatorCanceled(Invoice invoice) {
+    public byte[] generatePdfOperatorCanceled(CanceledInvoice canceledInvoice) {
         final Document document = Jsoup.parse(htmlOpterator);
-        this.addInvoiceInformation(document, invoice);
-        this.addProductTable(document, invoice, -1);
+        this.addCanceledInvoiceInformation(document, canceledInvoice);
+        this.addCanceledInvoiceProductTable(document, canceledInvoice);
         this.addCompanyFooter(document);
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -105,30 +107,60 @@ public class PdfGenerator {
         return buffer.toByteArray();
     }
 
-    /**
-     * Generates a canceled Invoice PDF from an HTML template, parses the template into a document,
-     * which can then be changed and edited.
-     *
-     * @param order order with the a created invoice
-     * @return byte array with generated pdf
-     */
-    public byte[] generatePdfCustomerCanceled(Order order) {
-        Invoice invoice = order.getInvoice();
-        final Document document = Jsoup.parse(htmlCustomer);
-        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-        this.addCustomerInformation(document, order.getCustomer());
-        this.addInvoiceInformation(document, invoice);
-        this.addOrderInformation(document, invoice);
-        this.addProductTable(document, invoice, -1);
-        this.addCompanyFooter(document);
-
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        ConverterProperties properties = new ConverterProperties();
-
-        HtmlConverter.convertToPdf(document.html(), buffer, properties);
-        return buffer.toByteArray();
+    private void addCanceledInvoiceInformation(Document document, CanceledInvoice canceledInvoice) {
+        document.body().select(".invoice-date").html(canceledInvoice.getDate().format(dateFormatter));
+        document.body().select(".invoice-number").html(canceledInvoice.getInvoiceNumber());
     }
 
+    private void addCanceledInvoiceProductTable(Document document, CanceledInvoice canceledInvoice) {
+        final Element tableArticle = this.getElement(document, ".article");
+        StringBuilder tableItemStringBuilder = new StringBuilder();
+        tableItemStringBuilder.append("<tr >");
+        tableItemStringBuilder.append("<th class=\"center product\"><span>Produkt</span></th>");
+        tableItemStringBuilder.append("<th class=\"center price\"><span>Preis</span></th>");
+        tableItemStringBuilder.append("<th class=\"center quantity\"><span>Anzahl</span></th>");
+        tableItemStringBuilder.append("<th class=\"center tax\"><span>Steuer</span></th>");
+        tableItemStringBuilder.append("<th class=\"center amount\"><span>Betrag</span></th>");
+        tableItemStringBuilder.append("</tr>");
+        double total = 0;
+        double subtotal = 0;
+        double tax = 0;
+
+        for (CanceledInvoiceItem i : canceledInvoice.getCanceledInvoiceItems()) {
+            double subtotalPerProduct = i.getProductPrice() * i.getNumberOfItems();
+            double taxPerProduct = i.getProductPrice() * i.getNumberOfItems() * (i.getProductTax() - 1);
+            double totalPerProduct = subtotalPerProduct + taxPerProduct;
+            subtotal = subtotal + subtotalPerProduct;
+            total = total + totalPerProduct;
+            // Tabel header
+            tableItemStringBuilder.append("<tr>");
+            tableItemStringBuilder.append("<td class=\"center product\"><span>").append(i.getProductName()).append("</span></td>");
+            tableItemStringBuilder.append(String.format("<td class=\"center price\"><span>%s</span></td>", i.getProductPrice() + " €"));
+            tableItemStringBuilder.append(String.format("<td class=\"center quantity\"><span>%s</span></td>", i.getNumberOfItems()));
+            tableItemStringBuilder.append(String.format("<td class=\"center tax\"><span>%s</span></td>", String.format("%.2f ", (i.getProductTax() - 1) * 100) + "%"));
+            tableItemStringBuilder.append(String.format("<td class=\"center amount\"><span>%s</span></td>", String.format("%.2f €", totalPerProduct)));
+            tableItemStringBuilder.append("</tr>");
+
+        }
+        tableItemStringBuilder.append("</table>");
+        tableArticle.html(tableItemStringBuilder.toString());
+
+        StringBuilder tableTotalStringBuilder = new StringBuilder();
+        final Element tableAmount = document.body().select(".total").first();
+        tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
+        tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Zwischensumme</span></td>");
+        tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", canceledInvoice.getSubtotal()));
+
+        tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
+        tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Steuer</span></td>");
+        tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", canceledInvoice.getTaxAmount()));
+
+        tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
+        tableTotalStringBuilder.append("<td class=\"right total-text\"><span>Summe</span></td>");
+        tableTotalStringBuilder.append(String.format("<td class=\"center\"><span>%1.2f €</span></td></tr>", canceledInvoice.getTotal()));
+        tableTotalStringBuilder.append("</table>");
+        tableAmount.html(tableTotalStringBuilder.toString());
+    }
 
     private void addCustomerInformation(Document document, Customer customer) {
         String street = customer.getAddress().getStreet();
@@ -162,7 +194,7 @@ public class PdfGenerator {
 
 
     private void addProductTable(Document document, Invoice invoice, int calculationFactor) {
-        final Element tableArticle = document.body().select(".article").first();
+        final Element tableArticle = this.getElement(document, ".article");
         StringBuilder tableItemStringBuilder = new StringBuilder();
         tableItemStringBuilder.append("<tr >");
         tableItemStringBuilder.append("<th class=\"center product\"><span>Produkt</span></th>");
@@ -201,7 +233,7 @@ public class PdfGenerator {
 
     private void addTotalTable(Document document, double total, double subtotal, double tax, int calculationFactor) {
         StringBuilder tableTotalStringBuilder = new StringBuilder();
-        final Element tableAmount = document.body().select(".total").first();
+        final Element tableAmount = getElement(document, ".total");
         tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
         tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Zwischensumme</span></td>");
         tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", subtotal * calculationFactor));
@@ -223,5 +255,9 @@ public class PdfGenerator {
         document.body().select(".address").html("Favoritenstraße 9/11, 1040 Wien");
         document.body().select(".phone").html("01 5880119501");
         document.body().select(".email").html("admin@shop-corner.at");
+    }
+
+    private Element getElement(Document document, String cssClass) {
+        return document.body().select(cssClass).first();
     }
 }
