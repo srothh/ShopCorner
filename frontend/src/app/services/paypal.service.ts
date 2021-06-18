@@ -27,7 +27,13 @@ export class PaypalService {
     };
     return this.httpClient.post(this.paypalBaseURI, order ,options);
   }
-
+  /** Confirm the previously created new payment
+   *
+   * @param payerId identifying the payer
+   * @param paymentId identifying the payment process
+   *
+   * @return the text with either 'successful payment' or 'not successful payment'
+   */
   confirmPayment(payerId: string, paymentId: string): Observable<string> {
     const options  = {
       headers: new HttpHeaders()

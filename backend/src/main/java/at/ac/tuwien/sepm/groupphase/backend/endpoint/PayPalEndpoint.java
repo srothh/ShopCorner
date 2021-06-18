@@ -46,6 +46,7 @@ public class PayPalEndpoint {
     @PostMapping()
     @Operation(summary = "Posts a new request to PayPal's API to initiate a payment", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<String> createPayment(@Valid @RequestBody OrderDto orderDto) throws PayPalRESTException {
+        LOGGER.info("Creates a payment");
         return new ResponseEntity<>(this.payPalService.createPayment(this.orderMapper.orderDtoToOrder(orderDto)), HttpStatus.CREATED);
     }
 
@@ -53,6 +54,7 @@ public class PayPalEndpoint {
     @PostMapping("/confirm")
     @Operation(summary = "Confirms a payment", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<String> confirmPayment(HttpServletRequest request) throws PayPalRESTException {
+        LOGGER.info("Confirms a payment");
         Payment confirmedPayment = this.payPalService.confirmPayment(request);
         if (confirmedPayment != null) {
             return new ResponseEntity<>("Payment successful", HttpStatus.OK);

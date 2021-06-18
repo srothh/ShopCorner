@@ -41,6 +41,7 @@ public class PayPalServiceImpl implements PayPalService {
 
     @Override
     public String createPayment(Order order) throws PayPalRESTException {
+        LOGGER.trace("createPayment({})", order);
         Invoice invoice = order.getInvoice();
         Amount amount = new Amount();
         amount.setCurrency("EUR");
@@ -81,6 +82,7 @@ public class PayPalServiceImpl implements PayPalService {
     }
 
     public Payment confirmPayment(HttpServletRequest request) throws  PayPalRESTException {
+        LOGGER.trace("confirmPayment({})", request);
         Payment payment = new Payment();
         payment.setId(request.getParameter("paymentId"));
         PaymentExecution paymentExecution = new PaymentExecution();
