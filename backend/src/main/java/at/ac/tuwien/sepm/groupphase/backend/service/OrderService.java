@@ -6,6 +6,8 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
+import java.io.IOException;
+
 public interface OrderService {
 
     /**
@@ -51,12 +53,12 @@ public interface OrderService {
      * @param cancellationPeriod the cancellationperiod to set
      * @return the cancellationperiod as persisted
      */
-    CancellationPeriod setCancellationPeriod(CancellationPeriod cancellationPeriod);
+    CancellationPeriod setCancellationPeriod(CancellationPeriod cancellationPeriod) throws IOException;
 
     /**
      * Returns the cancellation period for orders.
      *
      * @return the cancellation period for orders
      */
-    CancellationPeriod getCancellationPeriod();
+    CancellationPeriod getCancellationPeriod() throws IOException;
 }

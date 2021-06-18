@@ -10,7 +10,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 })
 export class OperatorOrderSettingsComponent implements OnInit {
 
-  days = 0;
   error = false;
   errorMessage = '';
   cancellationPeriodForm: FormGroup;
@@ -20,7 +19,7 @@ export class OperatorOrderSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.cancellationPeriodForm = this.formBuilder.group({
-      days: [0, Validators.required, Validators.min(0)]
+      days: [0, [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -29,7 +28,7 @@ export class OperatorOrderSettingsComponent implements OnInit {
   }
 
   setCancellationPeriod() {
-    const period = new CancellationPeriod(this.days);
+    const period = new CancellationPeriod(this.cancellationPeriodForm.controls.days.value);
     this.orderService.setCancellationPeriod(period).subscribe(() => {
 
     }, (error) => {

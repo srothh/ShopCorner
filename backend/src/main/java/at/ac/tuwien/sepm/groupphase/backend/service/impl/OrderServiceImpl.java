@@ -21,6 +21,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Properties;
 import java.util.UUID;
@@ -32,11 +36,12 @@ public class OrderServiceImpl implements OrderService {
     private final InvoiceService invoiceService;
     private final CartService cartService;
     private final Properties properties = new Properties();
+    private final FileOutputStream stream = new FileOutputStream("src/main/resources/orderSettings.config");
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             InvoiceService invoiceService,
-                            CartService cartService) {
+                            CartService cartService) throws FileNotFoundException {
         this.orderRepository = orderRepository;
         this.invoiceService = invoiceService;
         this.cartService = cartService;
@@ -84,13 +89,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public CancellationPeriod setCancellationPeriod(CancellationPeriod cancellationPeriod) {
+    public CancellationPeriod setCancellationPeriod(CancellationPeriod cancellationPeriod) throws IOException {
+        LOGGER.trace("setCancellationPeriod({})", cancellationPeriod);
         properties.setProperty("cancellationPeriod", String.valueOf(cancellationPeriod.getDays()));
+        properties.store(stream, "OrderSettings");
         return cancellationPeriod;
     }
 
     @Override
-    public CancellationPeriod getCancellationPeriod() {
+    public CancellationPeriod getCancellationPeriod() throws IOException {
+        LOGGER.trace("getCancellationPeriod()");
+        FileInputStream in = new FileInputStream("src/main/resources/orderSettings.config");
+        properties.load(in);
         return new CancellationPeriod(Integer.parseInt(properties.getProperty("cancellationPeriod", "0")));
     }
 

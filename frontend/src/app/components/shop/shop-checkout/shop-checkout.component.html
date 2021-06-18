@@ -85,7 +85,7 @@
         </ul>
         <div>
           <small *ngIf="cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
-          <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} nach dem Bestellungseingang stornierbar.</small>
+          <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} Tag(en) nach dem Bestellungseingang stornierbar.</small>
 
           <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="placeNewOrder()">Bezahlen mit Paypal
           </button>

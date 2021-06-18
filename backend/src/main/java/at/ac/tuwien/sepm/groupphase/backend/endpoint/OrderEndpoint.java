@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 @RestController
@@ -87,7 +88,7 @@ public class OrderEndpoint {
     @Secured("ROLE_ADMIN")
     @PutMapping(value = "/settings")
     @Operation(summary = "set cancellation period for orders", security = @SecurityRequirement(name = "apiKey"))
-    public CancellationPeriodDto setCancellationPeriod(@RequestBody CancellationPeriodDto dto) {
+    public CancellationPeriodDto setCancellationPeriod(@RequestBody CancellationPeriodDto dto) throws IOException {
         LOGGER.info("PUT " + BASE_URL + "/settings");
         return cancellationPeriodMapper.cancellationPeriodToCancellationPeriodDto(orderService.setCancellationPeriod(cancellationPeriodMapper.cancellationPeriodDtoToCancellationPeriod(dto)));
     }
@@ -100,7 +101,7 @@ public class OrderEndpoint {
     @PermitAll
     @GetMapping(value = "/settings")
     @Operation(summary = "Retrieve cancellation period", security = @SecurityRequirement(name = "apiKey"))
-    public CancellationPeriodDto getCancellationPeriod() {
+    public CancellationPeriodDto getCancellationPeriod() throws IOException {
         LOGGER.info("GET " + BASE_URL + "/settings");
         return cancellationPeriodMapper.cancellationPeriodToCancellationPeriodDto(orderService.getCancellationPeriod());
     }
