@@ -9,3 +9,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+  mail:
+    host: localhost
+    port: 3025
+    username: test
+    password: test
+    protocol: smtp
+    tls: true
+    properties.mail:
+      debug: true
+      smtp:
+        auth: true
+        starttls.enable: true
