@@ -34,6 +34,20 @@ export class MeService {
   }
 
   /**
+   * Updates the logged in customer's password in the backend.
+   *
+   * @param oldPassword the password to be updated
+   * @param newPassword the new password
+   */
+  updatePassword(oldPassword: string, newPassword: string): Observable<string>{
+    console.log('Update password');
+    return this.httpClient.post<string>(
+      this.meBaseUri + '/updatePassword', {oldPassword, newPassword}
+      , {headers: this.getHeadersForCustomer()});
+  }
+
+
+  /**
    * Deletes the current customer's profile data
    */
   deleteMyAccount(): Observable<void> {

@@ -64,6 +64,18 @@ public interface CustomerService extends UserDetailsService {
     Customer update(Customer customer);
 
     /**
+     * Updates the password of the specified customer.
+     *
+     * @param id of the customer whose password is to be updated
+     * @param oldPassword the password to be updated
+     * @param newPassword the new password
+     * @throws NotFoundException if no matching customer is found in the database
+     * @throws RuntimeException  if the password could not be updated
+     */
+    void updatePassword(Long id, String oldPassword, String newPassword);
+
+
+    /**
      * Retrieves a PaginationDto containing a Page of customers from the database.
      *
      * @param page The number of the page to retrieve

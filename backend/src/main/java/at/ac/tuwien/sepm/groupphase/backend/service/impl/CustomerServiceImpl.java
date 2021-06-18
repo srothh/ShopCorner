@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
@@ -94,6 +95,12 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.save(customer);
     }
 
+    @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'customers'"),
+        @CacheEvict(value = "customerPages", allEntries = true)
+    })
+    @Override
     public Customer update(Customer customer) {
         LOGGER.trace("update({})", customer);
         validator.validateUpdatedCustomer(customer, this);
@@ -112,6 +119,21 @@ public class CustomerServiceImpl implements CustomerService {
 
         return customerRepository.save(c);
     }
+
+    @Override
+    public void updatePassword(Long id, String oldPassword, String newPassword) {
+        LOGGER.trace("updatePassword({})", id);
+        Customer customer = customerRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", id)));
+
+        if (passwordEncoder.matches(oldPassword, customer.getPassword())) {
+            customer.setPassword(passwordEncoder.encode(newPassword));
+            customerRepository.save(customer);
+        } else {
+            throw new ValidationException("Password could not be updated");
+        }
+    }
+
 
     @Override
     @Cacheable(value = "customerPages")
