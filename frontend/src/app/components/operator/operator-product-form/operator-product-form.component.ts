@@ -33,6 +33,8 @@ export class OperatorProductFormComponent implements OnInit {
   productForm: FormGroup;
   // properties for the newly to be added product
 
+  today = new Date(Date.now());
+
   // util properties
   shouldFetch: boolean;
   errorOccurred: boolean;
@@ -68,7 +70,13 @@ export class OperatorProductFormComponent implements OnInit {
       price: ['', Validators.required],
       taxRate: [null, Validators.required],
       category: [null],
-      locked: [false]
+      locked: [false],
+      time: [{hour: 0, minute: 0}, Validators.required],
+      expirationDate: [{
+        day: this.today.getDate(),
+        month: this.today.getMonth() + 1,
+        year: this.today.getFullYear()
+      }, [Validators.required]],
     });
     // if the form is a 'edit-product-form' then set all properties in the form and make them readonly
     if (this.addProductEnabled === false) {
@@ -95,8 +103,10 @@ export class OperatorProductFormComponent implements OnInit {
       new TaxRate(null, null, null),
       false,
       null,
+      null,
       false);
   }
+
   setFormProperties(): void {
     if (this.newProduct === undefined) {
       const productId = +this.activatedRouter.snapshot.paramMap.get('id');
@@ -108,6 +118,16 @@ export class OperatorProductFormComponent implements OnInit {
       this.productForm.controls['locked'].setValue(this.newProduct.locked);
       this.productForm.controls['taxRate'].setValue(this.newProduct.taxRate.id, {onlySelf: true});
       this.productForm.controls['category'].setValue(this.newProduct.category?.id, {onlySelf: true});
+      const date = new Date(this.newProduct.expiresAt);
+      this.productForm.controls['expirationDate'].setValue({
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+      });
+      this.productForm.controls['time'].setValue({
+        hour: date.getHours(),
+        minute: date.getMinutes(),
+      });
       if (this.newProduct.category == null) {
         this.newProduct.category = new Category(null, null);
       }
@@ -133,7 +153,19 @@ export class OperatorProductFormComponent implements OnInit {
     }
     this.newProduct.locked = this.productForm.get('locked').value;
     this.newProduct.deleted = false;
-    console.log(this.newProduct);
+    if (this.newProduct.hasExpiration) {
+      const expirationDate = this.productForm.get('expirationDate').value;
+      const time = this.productForm.get('time').value;
+      this.newProduct.expiresAt = new Date(Date.UTC(
+        expirationDate.year,
+        expirationDate.month - 1,
+        expirationDate.day,
+        time.hour,
+        time.minute
+      ));
+    } else {
+      this.newProduct.expiresAt = null;
+    }
     if (this.router.url.includes('add')) {
       this.productService.addProduct(this.newProduct).subscribe(data => {
         this.newProduct.id = data.id;
@@ -150,6 +182,7 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   updateProduct() {
+    console.log(this.newProduct);
     this.productService.updateProduct(this.newProduct.id, this.newProduct).subscribe(() => {
         this.inEditMode = true;
         this.addProductEnabled = false;
@@ -157,7 +190,7 @@ export class OperatorProductFormComponent implements OnInit {
 
       }, error => {
         this.errorOccurred = true;
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       }
     );
   }
@@ -219,6 +252,22 @@ export class OperatorProductFormComponent implements OnInit {
     });
   }
 
+  toggleExpiration() {
+    if (this.newProduct.hasExpiration) {
+      this.newProduct.expiresAt = null;
+    } else {
+      const expirationDate = this.productForm.get('expirationDate').value;
+      const time = this.productForm.get('time').value;
+      this.newProduct.expiresAt = new Date(Date.UTC(
+        expirationDate.year,
+        expirationDate.month - 1,
+        expirationDate.day,
+        time.hour,
+        time.minute
+      ));
+    }
+  }
+
   get productFormControl() {
     return this.productForm.controls;
   }
@@ -228,5 +277,4 @@ export class OperatorProductFormComponent implements OnInit {
     const isValid = !isWhitespace;
     return isValid ? null : {whitespace: true};
   }
-
 }

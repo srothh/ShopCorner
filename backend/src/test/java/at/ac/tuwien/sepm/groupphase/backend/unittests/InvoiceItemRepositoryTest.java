@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
@@ -85,6 +86,7 @@ public class InvoiceItemRepositoryTest implements TestData {
         invoice.setInvoiceNumber(TEST_INVOICE_NUMBER_1);
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
+        invoice.setInvoiceType(InvoiceType.operator);
 
     }
 

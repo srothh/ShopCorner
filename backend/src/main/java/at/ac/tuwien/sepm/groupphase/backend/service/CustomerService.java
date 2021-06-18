@@ -111,6 +111,16 @@ public interface CustomerService extends UserDetailsService {
      */
     List<Customer> findAll();
 
+    /**
+     * Returns a specific customer from the database.
+     *
+     * @param id the id of the customer
+     * @return the specific customer
+     * @throws NotFoundException is thrown if the specified customer does not exists
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    Customer findCustomerById(Long id);
+
     Long getCountByCategory(Pageable page, Long category);
 
 }
