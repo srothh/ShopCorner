@@ -6,11 +6,12 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
+import java.io.IOException;
+
+
 /**
  * Service that handles Orders of Customers.
  */
-import java.io.IOException;
-
 public interface OrderService {
 
     /**
@@ -25,7 +26,7 @@ public interface OrderService {
     /**
      * Retrieves a PaginationDto containing a Page of orders from the database.
      *
-     * @param page The number of the page to retrieve
+     * @param page      The number of the page to retrieve
      * @param pageCount The size of the page to retrieve
      * @return A PaginationDto containing data about the retrieved items
      * @throws RuntimeException upon encountering errors with the database
