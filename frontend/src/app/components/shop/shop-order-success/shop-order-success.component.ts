@@ -34,6 +34,7 @@ export class ShopOrderSuccessComponent implements OnInit {
 
   constructor(private paypalService: PaypalService,
               private activatedRoute: ActivatedRoute,
+              private router: Router,
               private cartGlobals: CartGlobals,
               private orderService: OrderService,
               private meService: MeService,
@@ -44,32 +45,35 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.products = this.cartGlobals.getCart();
     this.fetchCustomer();
     this.activatedRoute.queryParams.subscribe(params => {
-      this.paymentId = params['paymentId'];
-      this.payerId = params['PayerID'];
-      this.paypalService.confirmPayment(this.payerId, this.paymentId).subscribe((finalisedPaymentData) => {
-        if (finalisedPaymentData.includes('Payment successful')) {
-          this.paymentSucceeded = true;
-          this.placeNewOrder();
-        }
-      }, error => {
-        this.paymentSucceeded = false;
-      } );
+        this.paymentId = params['paymentId'];
+        this.payerId = params['PayerID'];
+        this.paypalService.confirmPayment(this.payerId, this.paymentId).subscribe((finalisedPaymentData) => {
+          if (finalisedPaymentData.includes('Payment successful')) {
+            this.paymentSucceeded = true;
+            this.placeNewOrder();
+            //after payment -> discard paymentId and payerID
+          }
+        }, error => {
+          this.paymentSucceeded = false;
+        });
     });
   }
+
   getCartSize() {
     return this.cartGlobals.getCartSize();
   }
-  placeNewOrder(){
+
+  placeNewOrder() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer);
     this.orderService.placeNewOrder(order).subscribe((orderData) => {
-      console.log('order successful:', orderData);
     });
   }
 
   getTotalPrice() {
-    return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes() ;
+    return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes();
   }
+
   getTotalTaxes(): number {
     let tax = 0;
     this.products.forEach((item) => {
@@ -85,6 +89,7 @@ export class ShopOrderSuccessComponent implements OnInit {
     });
     return subtotal;
   }
+
   fetchCustomer() {
     this.meService.getMyProfileData().subscribe(
       (customer: Customer) => {
@@ -93,6 +98,7 @@ export class ShopOrderSuccessComponent implements OnInit {
       }
     );
   }
+
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
@@ -108,10 +114,14 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
   }
+
   getCartItems() {
     this.cartService.getCart().subscribe((cart: Cart
     ) => {
       this.cart = cart;
     });
+  }
+  goToHome(){
+    this.router.navigate(['/home']).then();
   }
 }
