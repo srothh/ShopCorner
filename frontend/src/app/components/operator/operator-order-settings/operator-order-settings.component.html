@@ -20,7 +20,7 @@
 
             <div class="form-group">
               <label for="days">Tage</label>
-              <input type="number" min="0" name="days" formControlName="days" class="form-control" id="days"
+              <input type="number" min="0" value="{{cancellationPeriod.days}}" name="days" formControlName="days" class="form-control" id="days"
                      aria-describedby="usernameHelp" placeholder="Geben Sie einen Stornierzeitraum ein">
               <div *ngIf="cancellationPeriodForm.controls.days.errors" class="error">
                 <small class="form-text text-warning" *ngIf="cancellationPeriodForm.controls.days.errors.required">Bitte

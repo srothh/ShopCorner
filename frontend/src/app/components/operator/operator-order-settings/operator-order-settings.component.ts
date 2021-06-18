@@ -13,11 +13,12 @@ export class OperatorOrderSettingsComponent implements OnInit {
   error = false;
   errorMessage = '';
   cancellationPeriodForm: FormGroup;
-
+  cancellationPeriod: CancellationPeriod = {days: 1};
   constructor(private orderService: OrderService, private formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
+    this.getCancellationPeriod();
     this.cancellationPeriodForm = this.formBuilder.group({
       days: [0, [Validators.required, Validators.min(0)]]
     });
@@ -35,6 +36,14 @@ export class OperatorOrderSettingsComponent implements OnInit {
       this.error = true;
       this.errorMessage = error.message;
     });
+  }
+
+  getCancellationPeriod() {
+    this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
+      this.cancellationPeriod = cancellationPeriod;
+    }, (error => {
+      console.log(error);
+    }));
   }
 
 }

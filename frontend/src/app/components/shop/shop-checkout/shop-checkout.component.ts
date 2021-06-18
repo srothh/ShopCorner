@@ -112,7 +112,6 @@ export class ShopCheckoutComponent implements OnInit {
   private getCancellationPeriod() {
     this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
       this.cancellationPeriod = cancellationPeriod;
-      console.log(cancellationPeriod);
     }, (error => {
       console.log(error);
     }));
