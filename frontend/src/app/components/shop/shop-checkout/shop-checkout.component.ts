@@ -46,27 +46,23 @@ export class ShopCheckoutComponent implements OnInit {
   }
 
   getTotalPrice() {
-    let price = 0;
-    for (const item of this.products) {
-      price += item.price;
-    }
-    return price;
+    return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes() ;
   }
 
-  getTotalPriceWithoutTaxes() {
-    let price = 0;
-    for (const item of this.products) {
-      price += item.price - ((item.price / (item.taxRate.percentage)));
-    }
-    return price;
+  getTotalPriceWithoutTaxes(): number {
+    let subtotal = 0;
+    this.products.forEach((item) => {
+      subtotal += (item.price * item.cartItemQuantity);
+    });
+    return subtotal;
   }
 
-  getTotalTaxes() {
-    let price = 0;
-    for (const item of this.products) {
-      price += (item.price / (item.taxRate.percentage));
-    }
-    return price;
+  getTotalTaxes(): number {
+    let tax = 0;
+    this.products.forEach((item) => {
+      tax += item.price * (item.taxRate.calculationFactor - 1) * item.cartItemQuantity;
+    });
+    return tax;
   }
 
   getCartItems() {
@@ -96,8 +92,6 @@ export class ShopCheckoutComponent implements OnInit {
   placeNewOrder() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer);
-    console.log(this.invoiceDto);
-    console.log(this.customer);
     this.orderService.placeNewOrder(order).subscribe(() => {
     });
   }
