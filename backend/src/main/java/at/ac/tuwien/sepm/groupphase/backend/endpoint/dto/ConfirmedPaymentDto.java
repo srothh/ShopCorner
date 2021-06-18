@@ -1,27 +1,23 @@
-package at.ac.tuwien.sepm.groupphase.backend.entity;
+package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-@Entity
-@Table(name = "Payment")
-public class Payment {
+public class ConfirmedPaymentDto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String paymentId;
     private String payerId;
 
-    public Payment(Long id, String paymentId, String payerId) {
+    public ConfirmedPaymentDto(){}
+
+    public ConfirmedPaymentDto(Long id, String paymentId, String payerId) {
         this.id = id;
         this.paymentId = paymentId;
         this.payerId = payerId;
     }
-
-    public Payment(){}
 
     public Long getId() {
         return id;

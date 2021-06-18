@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.PayPalProperties;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ConfirmedPayment;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
@@ -81,12 +82,12 @@ public class PayPalServiceImpl implements PayPalService {
         return redirectUrl;
     }
 
-    public Payment confirmPayment(HttpServletRequest request) throws  PayPalRESTException {
-        LOGGER.trace("confirmPayment({})", request);
+    public Payment confirmPayment(ConfirmedPayment confirmedPayment) throws  PayPalRESTException {
+        LOGGER.trace("confirmPayment({})", confirmedPayment);
         Payment payment = new Payment();
-        payment.setId(request.getParameter("paymentId"));
+        payment.setId(confirmedPayment.getPaymentId());
         PaymentExecution paymentExecution = new PaymentExecution();
-        paymentExecution.setPayerId(request.getParameter("PayerID"));
+        paymentExecution.setPayerId(confirmedPayment.getPayerId());
         APIContext apiContext = payPalProperties.apiContext();
         return payment.execute(apiContext, paymentExecution);
     }

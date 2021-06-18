@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Order} from '../dtos/order';
 import {Observable} from 'rxjs';
 import {CustomerAuthService} from './auth/customer-auth.service';
+import {ConfirmedPayment} from '../dtos/confirmedPayment';
 
 @Injectable({
   providedIn: 'root'
@@ -29,18 +30,17 @@ export class PaypalService {
   }
   /** Confirm the previously created new payment
    *
-   * @param payerId identifying the payer
-   * @param paymentId identifying the payment process
+   * @param confirmedPayment the confirmedPayment containing payerId and paymentId to finalise the payment
    *
    * @return the text with either 'successful payment' or 'not successful payment'
    */
-  confirmPayment(payerId: string, paymentId: string): Observable<string> {
+  confirmPayment(confirmedPayment: ConfirmedPayment): Observable<string> {
     const options  = {
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`),
-      responseType: 'text' as 'text',
+      responseType: 'text' as 'text'
     };
-    return this.httpClient.post(this.paypalBaseURI + '/confirm' + '?paymentId='+paymentId+'&PayerID='+ payerId,null, options);
+    return this.httpClient.post(this.paypalBaseURI + '/confirmation',confirmedPayment, options);
   }
 
 }

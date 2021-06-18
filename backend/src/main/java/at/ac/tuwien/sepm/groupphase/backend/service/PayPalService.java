@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.ConfirmedPayment;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import com.paypal.base.rest.PayPalRESTException;
 import com.paypal.api.payments.Payment;
@@ -23,9 +24,9 @@ public interface PayPalService {
     /**
      * Confirms a payment with the specified PayerID and PaymentID in the request.
      *
-     * @param request the request contains the necessary parameters to confirm the payment
+     * @param confirmedPayment the confirmed payment contains the necessary parameters to confirm the payment
      *
      * @return the created Payment object
      */
-    public Payment confirmPayment(HttpServletRequest request) throws PayPalRESTException;
+    public Payment confirmPayment(ConfirmedPayment confirmedPayment) throws PayPalRESTException;
 }

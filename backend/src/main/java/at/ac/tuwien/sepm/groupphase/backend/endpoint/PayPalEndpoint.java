@@ -1,11 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.config.properties.PayPalProperties;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ConfirmedPaymentDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaymentDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PaymentMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.PayPalService;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
@@ -20,11 +18,9 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
@@ -35,11 +31,13 @@ public class PayPalEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final PayPalService payPalService;
     private final OrderMapper orderMapper;
+    private final PaymentMapper paymentMapper;
 
     @Autowired
-    public PayPalEndpoint(PayPalService payPalService, OrderMapper orderMapper) {
+    public PayPalEndpoint(PayPalService payPalService, OrderMapper orderMapper, PaymentMapper paymentMapper) {
         this.payPalService = payPalService;
         this.orderMapper = orderMapper;
+        this.paymentMapper = paymentMapper;
     }
 
     @Secured({"ROLE_CUSTOMER"})
@@ -51,11 +49,12 @@ public class PayPalEndpoint {
     }
 
     @Secured({"ROLE_CUSTOMER"})
-    @PostMapping("/confirm")
+    @PostMapping("/confirmation")
     @Operation(summary = "Confirms a payment", security = @SecurityRequirement(name = "apiKey"))
-    public ResponseEntity<String> confirmPayment(HttpServletRequest request) throws PayPalRESTException {
+    public ResponseEntity<String> confirmPayment(@RequestBody ConfirmedPaymentDto confirmedPaymentDto) throws PayPalRESTException {
         LOGGER.info("Confirms a payment");
-        Payment confirmedPayment = this.payPalService.confirmPayment(request);
+        System.out.println("confirmedPaymentDto" + confirmedPaymentDto.toString());
+        Payment confirmedPayment = this.payPalService.confirmPayment(this.paymentMapper.confirmedPaymentDtoToConfirmedPayment(confirmedPaymentDto));
         if (confirmedPayment != null) {
             return new ResponseEntity<>("Payment successful", HttpStatus.OK);
         }

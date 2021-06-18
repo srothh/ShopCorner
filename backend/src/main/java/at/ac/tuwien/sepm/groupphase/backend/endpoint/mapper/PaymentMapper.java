@@ -1,15 +1,15 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaymentDto;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Payment;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ConfirmedPaymentDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ConfirmedPayment;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 @Mapper
 @Component
 public interface PaymentMapper {
-    Payment paymentDtoToPayment(PaymentDto paymentDto);
+    ConfirmedPayment confirmedPaymentDtoToConfirmedPayment(ConfirmedPaymentDto paymentDto);
 
-    PaymentDto paymentToPaymentDto(Payment payment);
+    ConfirmedPaymentDto confirmedPaymentToConfirmedPaymentDto(ConfirmedPayment payment);
 }

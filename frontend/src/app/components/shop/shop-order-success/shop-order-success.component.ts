@@ -15,6 +15,7 @@ import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {Cart} from '../../../dtos/cart';
 import {MeService} from '../../../services/me.service';
 import {CartService} from '../../../services/cart.service';
+import {ConfirmedPayment} from '../../../dtos/confirmedPayment';
 
 @Component({
   selector: 'app-shop-order-success',
@@ -31,6 +32,7 @@ export class ShopOrderSuccessComponent implements OnInit {
   customer: Customer;
   invoiceDto: Invoice;
   cart: Cart;
+  confirmedPayment: ConfirmedPayment;
 
   constructor(private paypalService: PaypalService,
               private activatedRoute: ActivatedRoute,
@@ -47,7 +49,9 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
         this.paymentId = params['paymentId'];
         this.payerId = params['PayerID'];
-        this.paypalService.confirmPayment(this.payerId, this.paymentId).subscribe((finalisedPaymentData) => {
+        this.confirmedPayment = new ConfirmedPayment(0,this.paymentId, this.payerId);
+        this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
+          console.log('finalisedPaymentData', finalisedPaymentData);
           if (finalisedPaymentData.includes('Payment successful')) {
             this.paymentSucceeded = true;
             this.placeNewOrder();
@@ -55,6 +59,7 @@ export class ShopOrderSuccessComponent implements OnInit {
           }
         }, error => {
           this.paymentSucceeded = false;
+          console.log(error);
         });
     });
   }
