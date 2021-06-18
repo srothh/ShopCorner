@@ -129,7 +129,7 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public Operator save(Operator operator) {
         LOGGER.trace("save({})", operator);
-        validator.validateNewOperator(operator, this);
+        validator.validateNewOperator(operator, operatorRepository);
         String password = passwordEncoder.encode(operator.getPassword());
         operator.setPassword(password);
         return operatorRepository.save(operator);
@@ -172,7 +172,7 @@ public class OperatorServiceImpl implements OperatorService {
     public Operator update(Operator operator) {
         LOGGER.trace("update({})", operator);
 
-        validator.validateUpdatedOperator(operator, this);
+        validator.validateUpdatedOperator(operator, operatorRepository);
 
         Operator op = operatorRepository.findById(operator.getId())
             .orElseThrow(() -> new NotFoundException(String.format("Could not find the operator with the id %d", operator.getId())));

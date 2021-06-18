@@ -156,18 +156,14 @@ public class OperatorEndpoint {
      * @param updatePasswordDto the old and new password
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @PostMapping("/updatePassword/{id}")
+    @PostMapping("/password")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update the password of an existing operator account", security = @SecurityRequirement(name = "apiKey"))
-    public void updatePassword(@PathVariable("id") Long id, @Valid @RequestBody UpdatePasswordDto updatePasswordDto, Principal principal) {
-        LOGGER.info("POST " + BASE_URL + "/updatePassword{}", id);
+    public void updatePassword(@Valid @RequestBody UpdatePasswordDto updatePasswordDto, Principal principal) {
+        LOGGER.info("POST " + BASE_URL + "/password");
         Operator operator = operatorService.findOperatorByLoginName(principal.getName());
-        if (operator.getId().equals(id)) {
-            operatorService.updatePassword(id, updatePasswordDto.getOldPassword(),
-                updatePasswordDto.getNewPassword());
-        } else {
-            throw new AccessDeniedException("Illegal access");
-        }
+        operatorService.updatePassword(operator.getId(), updatePasswordDto.getOldPassword(),
+            updatePasswordDto.getNewPassword());
     }
 
     /**
@@ -205,15 +201,5 @@ public class OperatorEndpoint {
         }
         operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }
-    /*
-        @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-        @PostMapping("/resetPassword")
-        public void resetPassword(@RequestParam("email") String email, HttpServletRequest request) {
 
-            Operator operator = operatorService.findOperatorByEmail(email);
-
-            String resetToken = UUID.randomUUID().toString();
-            operator.setResetToken(resetToken);
-
-        } */
 }

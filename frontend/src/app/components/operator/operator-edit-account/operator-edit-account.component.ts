@@ -59,7 +59,7 @@ export class OperatorEditAccountComponent implements OnInit {
 
     if (this.updateForm.valid) {
 
-      const operator: Operator = new Operator(this.operator.id, this.updateForm.controls.name.value,
+      this.operator = new Operator(this.operator.id, this.updateForm.controls.name.value,
         this.updateForm.controls.loginName.value,
         this.password, this.updateForm.controls.email.value,
         this.operator.permissions);
@@ -68,7 +68,7 @@ export class OperatorEditAccountComponent implements OnInit {
       this.updatedPassword = this.updateForm.controls.newPassword.value;
 
       if(this.password !== '' && this.updatedPassword !== ''){
-        this.operatorService.updatePassword(this.operator.id, this.password, this.updatedPassword).subscribe(
+        this.operatorService.updatePassword(this.password, this.updatedPassword).subscribe(
           () => {}, error => {
             console.log(error);
             this.error = true;
@@ -78,45 +78,45 @@ export class OperatorEditAccountComponent implements OnInit {
               this.errorMessage = error.error;
             }
           }, ()=> {
-            this.operatorService.updateOperator(operator).subscribe(() => {
-              this.submitted = true;
-            }, error => {
-              console.log(error);
-              this.error = true;
-              if (typeof error.error === 'object') {
-                this.errorMessage = error.error.error;
-              } else {
-                this.errorMessage = error.error;
-              }
-            }, () => {
-                this.authenticationService.logoutUser();
-                this.router.navigate(['/operator/login']);
-            });
+           this.editData();
           }
         );
       } else {
-      this.operatorService.updateOperator(operator).subscribe(() => {
-        this.submitted = true;
-        this.router.navigate(['/operator/home']);
-      }, error => {
-        console.log(error);
-        this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
-      }, () => {
-        if(this.operator.loginName !== operator.loginName) {
-          this.authenticationService.logoutUser();
-          this.router.navigate(['/operator/login']);
-        }
-      });
+      this.editData();
       }
     } else {
       console.log('Invalid input');
     }
 
   }
+
+
+  /**
+   * Updates user data not related to the password.
+   *
+   * @private
+   */
+  private editData(){
+
+    this.operatorService.updateOperator(this.operator).subscribe(() => {
+      this.submitted = true;
+    }, error => {
+      console.log(error);
+      this.error = true;
+      if (typeof error.error === 'object') {
+        this.errorMessage = error.error.error;
+      } else {
+        this.errorMessage = error.error;
+      }
+    }, () => {
+      if(this.operator.loginName !== this.user) {
+        this.authenticationService.logoutUser();
+        this.router.navigate(['/operator/login']);
+      } else {
+        this.router.navigate(['/operator/home']);
+      }
+    });
+  }
+
 
 }
