@@ -51,7 +51,6 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendMail(Order order) {
         LOGGER.trace("sendMail({})", order);
-        Context thymeleafContext = new Context();
         double tax = 0;
         double subtotal = 0;
         for (InvoiceItem i : order.getInvoice().getItems()) {
@@ -68,6 +67,7 @@ public class MailServiceImpl implements MailService {
             addressString += '/' + address.getDoorNumber();
         }
         addressString += ", " + address.getPostalCode();
+        Context thymeleafContext = new Context();
         thymeleafContext.setVariable("name", replaceSpecialChar(order.getCustomer().getName()));
         thymeleafContext.setVariable("address", replaceSpecialChar(addressString));
         thymeleafContext.setVariable("sum", (double) Math.round(subtotal * 100) / 100);
