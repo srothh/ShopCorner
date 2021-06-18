@@ -72,13 +72,11 @@ public class MeEndpoint {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Edit an existing customer account", security = @SecurityRequirement(name = "apiKey"))
-    public CustomerRegistrationDto editCustomer(@Valid @RequestBody CustomerRegistrationDto customerDto, Principal principal) {
+    public CustomerDto editCustomer(@Valid @RequestBody CustomerDto customerDto, Principal principal) {
         LOGGER.info("PUT " + BASE_URL);
-        Customer customer = customerMapper.customerDtoToCustomer(customerDto);
+        Customer customer = customerMapper.dtoToCustomer(customerDto);
         if (customerService.findCustomerByLoginName(principal.getName()).getId().equals(customer.getId())) {
-            CustomerRegistrationDto result = customerMapper.customerToCustomerRegistrationDto(customerService.update(customer));
-            result.setPassword(null);
-            return result;
+            return customerMapper.customerToCustomerDto(customerService.update(customer));
         }
 
         throw new AccessDeniedException("Illegal Access");
@@ -91,11 +89,11 @@ public class MeEndpoint {
      * @param updatePasswordDto the old and new password
      */
     @Secured({"ROLE_CUSTOMER"})
-    @PostMapping("/updatePassword")
+    @PostMapping("/password")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update the password of an existing customer account", security = @SecurityRequirement(name = "apiKey"))
     public void updatePassword(@Valid @RequestBody UpdatePasswordDto updatePasswordDto, Principal principal) {
-        LOGGER.info("POST " + BASE_URL + "/updatePassword");
+        LOGGER.info("POST " + BASE_URL + "/password");
         Customer customer = customerService.findCustomerByLoginName(principal.getName());
         customerService.updatePassword(customer.getId(), updatePasswordDto.getOldPassword(),
                 updatePasswordDto.getNewPassword());

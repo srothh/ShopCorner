@@ -42,7 +42,7 @@ export class MeService {
   updatePassword(oldPassword: string, newPassword: string): Observable<string>{
     console.log('Update password');
     return this.httpClient.post<string>(
-      this.meBaseUri + '/updatePassword', {oldPassword, newPassword}
+      this.meBaseUri + '/password', {oldPassword, newPassword}
       , {headers: this.getHeadersForCustomer()});
   }
 
