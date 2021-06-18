@@ -7,10 +7,11 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
-import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
+import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -38,13 +39,13 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender emailSender;
     private final TemplateEngine thymeleafTemplateEngine;
 
-    private final PdfGenerator pdfGenerator;
+    private final PdfGeneratorService pdfGeneratorService;
 
     @Autowired
-    public MailServiceImpl(JavaMailSender emailSender, TemplateEngine thymeleafTemplateEngine, PdfGenerator pdfGenerator) {
+    public MailServiceImpl(JavaMailSender emailSender, TemplateEngine thymeleafTemplateEngine, @Lazy PdfGeneratorService pdfGeneratorService) {
         this.emailSender = emailSender;
         this.thymeleafTemplateEngine = thymeleafTemplateEngine;
-        this.pdfGenerator = pdfGenerator;
+        this.pdfGeneratorService = pdfGeneratorService;
     }
 
     @Override
@@ -87,7 +88,7 @@ public class MailServiceImpl implements MailService {
             messageBodyPart.setDisposition(MimeBodyPart.INLINE);
             multipart.addBodyPart(messageBodyPart);
             messageBodyPart = new MimeBodyPart();
-            ByteArrayDataSource ds = new ByteArrayDataSource(pdfGenerator.generatePdfCustomer(order), "application/pdf");
+            ByteArrayDataSource ds = new ByteArrayDataSource(pdfGeneratorService.createPdfInvoiceCustomer(order), "application/pdf");
             messageBodyPart.setDataHandler(new DataHandler(ds));
             messageBodyPart.setFileName("Rechnung.pdf");
             multipart.addBodyPart(messageBodyPart);
