@@ -33,7 +33,7 @@ public class PdfGenerator {
         try {
             BufferedReader in = new BufferedReader(new FileReader(directory + "/operatorInvoiceTemplate_v1.html"));
             htmlOpterator = in.lines().collect(Collectors.joining());
-            in = new BufferedReader(new FileReader(directory + "/operatorInvoiceTemplate_v1.html"));
+            in = new BufferedReader(new FileReader(directory + "/customerInvoiceTemplate_v1.html"));
             htmlCustomer = in.lines().collect(Collectors.joining());
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);

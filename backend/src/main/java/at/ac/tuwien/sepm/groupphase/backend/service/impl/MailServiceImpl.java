@@ -7,9 +7,11 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
+import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,16 +39,18 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender emailSender;
     private final TemplateEngine thymeleafTemplateEngine;
 
+    private final PdfGeneratorService pdfGeneratorService;
+
     @Autowired
-    public MailServiceImpl(JavaMailSender emailSender, TemplateEngine thymeleafTemplateEngine) {
+    public MailServiceImpl(JavaMailSender emailSender, TemplateEngine thymeleafTemplateEngine, @Lazy PdfGeneratorService pdfGeneratorService) {
         this.emailSender = emailSender;
         this.thymeleafTemplateEngine = thymeleafTemplateEngine;
+        this.pdfGeneratorService = pdfGeneratorService;
     }
 
     @Override
     public void sendMail(Order order) {
         LOGGER.trace("sendMail({})", order);
-        Context thymeleafContext = new Context();
         double tax = 0;
         double subtotal = 0;
         for (InvoiceItem i : order.getInvoice().getItems()) {
@@ -57,7 +62,12 @@ public class MailServiceImpl implements MailService {
             tax = tax + taxPerProduct;
         }
         Address address = order.getCustomer().getAddress();
-        String addressString = address.getStreet() + ' ' + address.getHouseNumber() + '/' + address.getDoorNumber() + ", " + address.getPostalCode();
+        String addressString = address.getStreet() + ' ' + address.getHouseNumber();
+        if (!address.getDoorNumber().isBlank()) {
+            addressString += '/' + address.getDoorNumber();
+        }
+        addressString += ", " + address.getPostalCode();
+        Context thymeleafContext = new Context();
         thymeleafContext.setVariable("name", replaceSpecialChar(order.getCustomer().getName()));
         thymeleafContext.setVariable("address", replaceSpecialChar(addressString));
         thymeleafContext.setVariable("sum", (double) Math.round(subtotal * 100) / 100);
@@ -80,6 +90,11 @@ public class MailServiceImpl implements MailService {
             messageBodyPart.setDataHandler(new DataHandler(fds));
             messageBodyPart.setHeader("Content-ID", "<logo>");
             messageBodyPart.setDisposition(MimeBodyPart.INLINE);
+            multipart.addBodyPart(messageBodyPart);
+            messageBodyPart = new MimeBodyPart();
+            ByteArrayDataSource ds = new ByteArrayDataSource(pdfGeneratorService.createPdfInvoiceCustomer(order), "application/pdf");
+            messageBodyPart.setDataHandler(new DataHandler(ds));
+            messageBodyPart.setFileName("Rechnung.pdf");
             multipart.addBodyPart(messageBodyPart);
             email.setContent(multipart);
             emailSender.send(email);
