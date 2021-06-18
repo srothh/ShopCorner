@@ -2,7 +2,9 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.PayPalProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaymentDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PaymentMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.PayPalService;
 import com.paypal.api.payments.Payment;
@@ -33,8 +35,6 @@ public class PayPalEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final PayPalService payPalService;
     private final OrderMapper orderMapper;
-
-
 
     @Autowired
     public PayPalEndpoint(PayPalService payPalService, OrderMapper orderMapper) {
