@@ -63,7 +63,7 @@ const routes: Routes = [
       {path: 'categories/:id', component: OperatorCategoryDetailsComponent},
       {
         path: 'orders', component: OperatorOrderComponent, children: [
-          {path: '/settings', component: OperatorOrderSettingsComponent}
+          {path: 'settings', component: OperatorOrderSettingsComponent}
         ]
       },
       {path: 'products', component: OperatorProductComponent},
