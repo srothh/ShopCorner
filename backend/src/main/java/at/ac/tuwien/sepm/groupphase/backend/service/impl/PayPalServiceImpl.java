@@ -85,7 +85,7 @@ public class PayPalServiceImpl implements PayPalService {
         return redirectUrl;
     }
 
-    public Payment confirmPayment(ConfirmedPayment confirmedPayment) throws  PayPalRESTException {
+    public Payment confirmPayment(ConfirmedPayment confirmedPayment) throws PayPalRESTException {
         LOGGER.trace("confirmPayment({})", confirmedPayment);
         Payment payment = new Payment();
         payment.setId(confirmedPayment.getPaymentId());
@@ -98,9 +98,6 @@ public class PayPalServiceImpl implements PayPalService {
 
     public ConfirmedPayment getConfirmedPaymentByPaymentIdAndPayerId(String payerId, String paymentId) {
         LOGGER.trace("getConfirmedPaymentByPaymentIdAndPayerId({},{})", payerId, paymentId);
-        System.out.println("HELLO WORLD");
-        ConfirmedPayment cp = this.confirmedPaymentRepository.getConfirmedPaymentByPayerIdAndPaymentId(payerId, paymentId);
-        System.out.println("cp: " + cp);
-        return cp;
+        return this.confirmedPaymentRepository.getConfirmedPaymentByPayerIdAndPaymentId(payerId, paymentId);
     }
 }
