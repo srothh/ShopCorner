@@ -84,6 +84,7 @@ public class OrderEndpoint {
      *
      * @param dto the dto containing the info on the cancellation Period
      * @return dto containing info on the cancellation period
+     * @throws IOException upon encountering problems with the configuration file
      */
     @Secured("ROLE_ADMIN")
     @PutMapping(value = "/settings")
@@ -97,6 +98,7 @@ public class OrderEndpoint {
      * Returns a dto containing information on the cancellation period.
      *
      * @return The cancellation period Dto
+     * @throws IOException upon encountering problems with the configuration file
      */
     @PermitAll
     @GetMapping(value = "/settings")

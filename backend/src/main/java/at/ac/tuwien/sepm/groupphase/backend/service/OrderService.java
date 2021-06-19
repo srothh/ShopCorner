@@ -26,7 +26,7 @@ public interface OrderService {
     /**
      * Retrieves a PaginationDto containing a Page of orders from the database.
      *
-     * @param page      The number of the page to retrieve
+     * @param page The number of the page to retrieve
      * @param pageCount The size of the page to retrieve
      * @return A PaginationDto containing data about the retrieved items
      * @throws RuntimeException upon encountering errors with the database
@@ -56,6 +56,7 @@ public interface OrderService {
      *
      * @param cancellationPeriod the cancellationperiod to set
      * @return the cancellationperiod as persisted
+     * @throws IOException upon encountering problems with the configuration file
      */
     CancellationPeriod setCancellationPeriod(CancellationPeriod cancellationPeriod) throws IOException;
 
@@ -63,6 +64,7 @@ public interface OrderService {
      * Returns the cancellation period for orders.
      *
      * @return the cancellation period for orders
+     * @throws IOException upon encountering problems with the configuration file
      */
     CancellationPeriod getCancellationPeriod() throws IOException;
 }
