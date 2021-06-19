@@ -102,16 +102,32 @@ export class ShopAccountProfileComponent implements OnInit {
       this.editForm.value.stairNumber,
       this.editForm.value.doorNumber
     );
+
     this.myProfile = new Customer(
       this.myProfile.id,
       this.editForm.value.loginName,
-      this.editForm.value.password,
+      'standard',
       this.editForm.value.name,
       this.editForm.value.email,
       address,
       this.editForm.value.phoneNumber
     );
-    // TODO: save myProfile to the database, updates can be done on PUT /me
+
+    if(this.editForm.value.password !== '' && this.editForm.value.newPassword !== ''){
+      this.meService.updatePassword(this.editForm.value.password, this.editForm.value.newPassword).subscribe(() => {}, error => {
+        console.log(error);
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
+      }, ()=> {
+        this.editData();
+      });
+    } else {
+      this.editData();
+    }
   }
 
   /**
@@ -142,6 +158,31 @@ export class ShopAccountProfileComponent implements OnInit {
   }
 
   /**
+   * Updates user data not related to the password.
+   *
+   * @private
+   */
+  private editData(){
+    const user = this.customerAuthService.getUser();
+
+    this.meService.updateProfileData(this.myProfile).subscribe(() => {
+    }, error => {
+      console.log(error);
+      this.error = true;
+      if (typeof error.error === 'object') {
+        this.errorMessage = error.error.error;
+      } else {
+        this.errorMessage = error.error;
+      }
+    }, () => {
+      if (this.myProfile.loginName !== user) {
+        this.customerAuthService.logoutUser();
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  /**
    * Initializes the form data with the customer data
    *
    * @private
@@ -154,6 +195,7 @@ export class ShopAccountProfileComponent implements OnInit {
       name: [this.myProfile.name],
       phoneNumber: [this.myProfile.phoneNumber],
       password: [''],
+      newPassword: [''],
       street: [this.myProfile.address.street],
       postalCode: [this.myProfile.address.postalCode],
       houseNumber: [this.myProfile.address.houseNumber],
