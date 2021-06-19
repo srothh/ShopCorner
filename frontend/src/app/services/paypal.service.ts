@@ -5,6 +5,8 @@ import {Order} from '../dtos/order';
 import {Observable} from 'rxjs';
 import {CustomerAuthService} from './auth/customer-auth.service';
 import {ConfirmedPayment} from '../dtos/confirmedPayment';
+import {map} from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,9 @@ export class PaypalService {
   private paypalBaseURI: string = this.globals.backendUri + '/paypal';
 
   constructor(private httpClient: HttpClient, private globals: Globals, private customerAuthService: CustomerAuthService) {
+  }
+  static confirmedPaypalMapper(cp: ConfirmedPayment){
+    return new ConfirmedPayment(cp.id, cp.paymentId, cp.payerId);
   }
 
   /** Initiates a new payment
@@ -42,5 +47,19 @@ export class PaypalService {
     };
     return this.httpClient.post(this.paypalBaseURI + '/confirmation',confirmedPayment, options);
   }
-
+  /** Gets a specific ConfirmedPayment specified by paymentId and payerId
+   *
+   * @param paymentId the paymentId to look for in a ConfirmedPayment
+   * @param payerId the payerId to look for in a ConfirmedPayment
+   *
+   * @return the ConfirmedPayment with the given parameters
+   */
+  getConfirmedPayment(paymentId: string, payerId: string): Observable<ConfirmedPayment>{
+    const header = new HttpHeaders()
+      .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`);
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.paypal.payerId, payerId)
+      .set(this.globals.requestParamKeys.paypal.paymentId,paymentId);
+    return this.httpClient.get<ConfirmedPayment>(this.paypalBaseURI, {params});
+  }
 }

@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.ConfirmedPayment;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ConfirmedPaymentRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.PayPalService;
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Transaction;
@@ -33,10 +34,12 @@ public class PayPalServiceImpl implements PayPalService {
 
     private final PayPalProperties payPalProperties;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private final ConfirmedPaymentRepository confirmedPaymentRepository;
 
     @Autowired
-    public PayPalServiceImpl(PayPalProperties payPalProperties) {
+    public PayPalServiceImpl(PayPalProperties payPalProperties, ConfirmedPaymentRepository confirmedPaymentRepository) {
         this.payPalProperties = payPalProperties;
+        this.confirmedPaymentRepository = confirmedPaymentRepository;
     }
 
 
@@ -88,7 +91,16 @@ public class PayPalServiceImpl implements PayPalService {
         payment.setId(confirmedPayment.getPaymentId());
         PaymentExecution paymentExecution = new PaymentExecution();
         paymentExecution.setPayerId(confirmedPayment.getPayerId());
+        confirmedPaymentRepository.save(confirmedPayment);
         APIContext apiContext = payPalProperties.apiContext();
         return payment.execute(apiContext, paymentExecution);
+    }
+
+    public ConfirmedPayment getConfirmedPaymentByPaymentIdAndPayerId(String payerId, String paymentId) {
+        LOGGER.trace("getConfirmedPaymentByPaymentIdAndPayerId({},{})", payerId, paymentId);
+        System.out.println("HELLO WORLD");
+        ConfirmedPayment cp = this.confirmedPaymentRepository.getConfirmedPaymentByPayerIdAndPaymentId(payerId, paymentId);
+        System.out.println("cp: " + cp);
+        return cp;
     }
 }

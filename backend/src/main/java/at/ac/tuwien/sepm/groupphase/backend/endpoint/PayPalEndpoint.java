@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ConfirmedPaymentDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ConfirmedPaymentSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PaymentMapper;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +62,17 @@ public class PayPalEndpoint {
             return new ResponseEntity<>("Payment successful", HttpStatus.OK);
         }
         return new ResponseEntity<>("Payment not successful", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Secured({"ROLE_CUSTOMER"})
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Gets a ConfirmedPayment specified by payerId and paymentId", security = @SecurityRequirement(name = "apiKey"))
+    public ConfirmedPaymentDto getConfirmedPaymentByPaymentIdAndPayerId(@RequestBody ConfirmedPaymentSearchDto confirmedPaymentSearchDto) {
+        LOGGER.info("GET getConfirmedPaymentByPaymentIdAndPayerId({})", confirmedPaymentSearchDto);
+        String payerId = confirmedPaymentSearchDto.getPayerId();
+        String paymentId = confirmedPaymentSearchDto.getPaymentId();
+        return this.paymentMapper.confirmedPaymentToConfirmedPaymentDto(this.payPalService.getConfirmedPaymentByPaymentIdAndPayerId(payerId, paymentId));
     }
 
 }

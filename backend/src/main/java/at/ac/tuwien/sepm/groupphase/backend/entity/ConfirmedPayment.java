@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.GenerationType;
 
 @Entity
-@Table(name = "Payment")
+@Table(name = "ConfirmedPayment")
 public class ConfirmedPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,5 +45,18 @@ public class ConfirmedPayment {
 
     public void setPayerId(String payerId) {
         this.payerId = payerId;
+    }
+
+    @Override
+    public String toString() {
+        return "ConfirmedPayment{"
+            +
+            "id=" + id
+            +
+            ", paymentId='" + paymentId + '\''
+            +
+            ", payerId='" + payerId + '\''
+            +
+            '}';
     }
 }

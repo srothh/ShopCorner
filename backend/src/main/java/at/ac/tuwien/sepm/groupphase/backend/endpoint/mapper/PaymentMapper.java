@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface PaymentMapper {
-    ConfirmedPayment confirmedPaymentDtoToConfirmedPayment(ConfirmedPaymentDto paymentDto);
+    ConfirmedPayment confirmedPaymentDtoToConfirmedPayment(ConfirmedPaymentDto confirmedPaymentDto);
 
-    ConfirmedPaymentDto confirmedPaymentToConfirmedPaymentDto(ConfirmedPayment payment);
+    ConfirmedPaymentDto confirmedPaymentToConfirmedPaymentDto(ConfirmedPayment confirmedPayment);
 }

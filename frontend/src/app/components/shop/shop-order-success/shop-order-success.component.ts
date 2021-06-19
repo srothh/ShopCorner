@@ -62,7 +62,6 @@ export class ShopOrderSuccessComponent implements OnInit {
         });
     });
   }
-
   getCartSize() {
     return this.cartGlobals.getCartSize();
   }

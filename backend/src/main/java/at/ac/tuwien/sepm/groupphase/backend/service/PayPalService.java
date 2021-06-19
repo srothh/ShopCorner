@@ -29,4 +29,14 @@ public interface PayPalService {
      * @return the created Payment object
      */
     public Payment confirmPayment(ConfirmedPayment confirmedPayment) throws PayPalRESTException;
+
+    /**
+     * Gets a specific ConfirmedPayment specified by paymentId and payerId.
+     *
+     * @param paymentId the paymentId to look for in a ConfirmedPayment
+     * @param payerId the payerId to look for in a ConfirmedPayment
+     *
+     * @return the created Payment object
+     */
+    public ConfirmedPayment getConfirmedPaymentByPaymentIdAndPayerId(String paymentId, String payerId);
 }
