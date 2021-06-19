@@ -48,3 +48,8 @@ security:
     audience: secure-app
     # 12 hours in milliseconds
     expiration-time: 43200000
+
+paypal:
+  mode: "sandbox"
+  client-id: AYgQlI8InUA2UdmK_Q8K6DSfDejf3AWy7_kIwZUC8yvTtGIAiIThgVntKHZzX5QVGyVnRNC5uwm5qlAR
+  client-secret: ED06Gl9pCWn9RAvqzVF353D_q3tWaYYoG1uS28fdNaPvz5k8luY2fntbuUlHMia3NFtPc7OkbtN7PNV-
