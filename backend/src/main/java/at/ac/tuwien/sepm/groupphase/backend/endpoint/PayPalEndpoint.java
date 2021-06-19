@@ -69,7 +69,7 @@ public class PayPalEndpoint {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Gets a ConfirmedPayment specified by payerId and paymentId", security = @SecurityRequirement(name = "apiKey"))
-    public ConfirmedPaymentDto getConfirmedPaymentByPaymentIdAndPayerId(@RequestBody ConfirmedPaymentSearchDto confirmedPaymentSearchDto) {
+    public ConfirmedPaymentDto getConfirmedPaymentByPaymentIdAndPayerId(ConfirmedPaymentSearchDto confirmedPaymentSearchDto) {
         LOGGER.info("GET" + BASE_URL + "({})", confirmedPaymentSearchDto);
         String payerId = confirmedPaymentSearchDto.getPayerId();
         String paymentId = confirmedPaymentSearchDto.getPaymentId();

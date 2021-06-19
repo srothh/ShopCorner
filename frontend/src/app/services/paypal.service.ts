@@ -55,11 +55,14 @@ export class PaypalService {
    * @return the ConfirmedPayment with the given parameters
    */
   getConfirmedPayment(paymentId: string, payerId: string): Observable<ConfirmedPayment>{
-    const header = new HttpHeaders()
-      .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`);
     const params = new HttpParams()
       .set(this.globals.requestParamKeys.paypal.payerId, payerId)
       .set(this.globals.requestParamKeys.paypal.paymentId,paymentId);
-    return this.httpClient.get<ConfirmedPayment>(this.paypalBaseURI, {params});
+    const options = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`),
+      params
+    };
+    return this.httpClient.get<ConfirmedPayment>(this.paypalBaseURI, options);
   }
 }

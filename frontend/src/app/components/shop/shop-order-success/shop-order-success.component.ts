@@ -33,6 +33,7 @@ export class ShopOrderSuccessComponent implements OnInit {
   invoiceDto: Invoice;
   cart: Cart;
   confirmedPayment: ConfirmedPayment;
+  alreadyOrdered: boolean;
 
   constructor(private paypalService: PaypalService,
               private activatedRoute: ActivatedRoute,
@@ -47,19 +48,20 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.products = this.cartGlobals.getCart();
     this.fetchCustomer();
     this.activatedRoute.queryParams.subscribe(params => {
-        this.paymentId = params['paymentId'];
-        this.payerId = params['PayerID'];
-        this.confirmedPayment = new ConfirmedPayment(0,this.paymentId, this.payerId);
-        this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
-          if (finalisedPaymentData.includes('Payment successful')) {
-            this.paymentSucceeded = true;
-            this.placeNewOrder();
-            this.cartGlobals.resetCart();
-            //after payment -> discard paymentId and payerID
-          }
-        }, error => {
-          this.paymentSucceeded = false;
-        });
+      this.paymentId = params['paymentId'];
+      this.payerId = params['PayerID'];
+      this.confirmedPayment = new ConfirmedPayment(0, this.paymentId, this.payerId);
+      this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
+        if (finalisedPaymentData.includes('Payment successful')) {
+          this.paymentSucceeded = true;
+          this.placeNewOrder();
+          this.cartGlobals.resetCart();
+          //after payment -> discard paymentId and payerID
+
+        }
+      }, error => {
+        this.paymentSucceeded = false;
+      });
     });
   }
   getCartSize() {
@@ -124,7 +126,8 @@ export class ShopOrderSuccessComponent implements OnInit {
       this.cart = cart;
     });
   }
-  goToHome(){
+
+  goToHome() {
     this.router.navigate(['/home']).then();
   }
 }
