@@ -12,6 +12,8 @@ import {Cart} from '../../../dtos/cart';
 import {OrderService} from '../../../services/order.service';
 import {Order} from '../../../dtos/order';
 import {Address} from '../../../dtos/address';
+import {PaypalService} from '../../../services/paypal.service';
+import {Router} from '@angular/router';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
 
@@ -28,9 +30,10 @@ export class ShopCheckoutComponent implements OnInit {
   invoiceDto: Invoice;
   cart: Cart;
   cancellationPeriod: CancellationPeriod;
+  loading: boolean;
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
-              private orderService: OrderService) {
+              private orderService: OrderService, private paypalService: PaypalService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -74,7 +77,14 @@ export class ShopCheckoutComponent implements OnInit {
       this.cart = cart;
     });
   }
-
+  proceedToPay() {
+    this.creatInvoiceDto();
+    const order: Order = new Order(0, this.invoiceDto, this.customer);
+    this.paypalService.createPayment(order).subscribe((redirectUrl) => {
+      window.location.href = redirectUrl;
+      this.loading = true;
+    });
+  }
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
@@ -84,21 +94,12 @@ export class ShopCheckoutComponent implements OnInit {
         const invItem = new InvoiceItem(new InvoiceItemKey(item.id), item, item.cartItemQuantity);
         this.invoiceDto.items.push(invItem);
       }
-
     }
     this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
   }
-
-  placeNewOrder() {
-    this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer);
-    this.orderService.placeNewOrder(order).subscribe(() => {
-    });
-  }
-
 
   private fetchCustomer() {
     this.meService.getMyProfileData().subscribe(
