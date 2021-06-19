@@ -13,6 +13,7 @@ import {OrderService} from '../../../services/order.service';
 import {Order} from '../../../dtos/order';
 import {Address} from '../../../dtos/address';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
+import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -21,11 +22,12 @@ import {InvoiceType} from '../../../dtos/invoiceType.enum';
 })
 export class ShopCheckoutComponent implements OnInit {
 
-  customer: Customer = new Customer(0,'','','','',new Address(0,'',0, '', 0, '')
-    ,'');
+  customer: Customer = new Customer(0, '', '', '', '', new Address(0, '', 0, '', 0, '')
+    , '');
   products: Product[];
   invoiceDto: Invoice;
   cart: Cart;
+  cancellationPeriod: CancellationPeriod;
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
               private orderService: OrderService) {
@@ -34,6 +36,7 @@ export class ShopCheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.fetchCustomer();
     this.products = this.cartGlobals.getCart();
+    this.getCancellationPeriod();
   }
 
   getStreetAddress(): string {
@@ -46,7 +49,7 @@ export class ShopCheckoutComponent implements OnInit {
   }
 
   getTotalPrice() {
-    return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes() ;
+    return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes();
   }
 
   getTotalPriceWithoutTaxes(): number {
@@ -96,6 +99,7 @@ export class ShopCheckoutComponent implements OnInit {
     });
   }
 
+
   private fetchCustomer() {
     this.meService.getMyProfileData().subscribe(
       (customer: Customer) => {
@@ -104,5 +108,14 @@ export class ShopCheckoutComponent implements OnInit {
       }
     );
   }
+
+  private getCancellationPeriod() {
+    this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
+      this.cancellationPeriod = cancellationPeriod;
+    }, (error => {
+      console.log(error);
+    }));
+  }
+
 
 }
