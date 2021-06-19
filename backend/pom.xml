@@ -173,6 +173,12 @@
             <artifactId>html2pdf</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <!-- paypal -->
+        <dependency>
+            <groupId>com.paypal.sdk</groupId>
+            <artifactId>rest-api-sdk</artifactId>
+            <version>1.14.0</version>
+        </dependency>
 
         <!-- mail -->
         <dependency>

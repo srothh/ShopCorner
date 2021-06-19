@@ -40,6 +40,9 @@ public interface TestData {
     Long TEST_CATEGORY_ID = 0L;
     String CATEGORY_BASE_URI = "/api/v1/categories";
 
+    //TEST PROPERTIES FOR PAYPAL
+    String PAYPAL_BASE_URI = "/api/v1/paypal";
+
 
 
     String OPERATOR_BASE_URI = BASE_URI + "/operators";
