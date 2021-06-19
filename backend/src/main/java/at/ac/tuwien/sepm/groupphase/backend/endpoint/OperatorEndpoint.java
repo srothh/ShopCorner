@@ -5,12 +5,14 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorPermissionChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdatePasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OperatorMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +41,7 @@ import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(OperatorEndpoint.BASE_URL)
@@ -146,7 +150,21 @@ public class OperatorEndpoint {
         throw new AccessDeniedException("Illegal access");
     }
 
-
+    /**
+     * Update the password of an existing operator.
+     *
+     * @param updatePasswordDto the old and new password
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @PostMapping("/password")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update the password of an existing operator account", security = @SecurityRequirement(name = "apiKey"))
+    public void updatePassword(@Valid @RequestBody UpdatePasswordDto updatePasswordDto, Principal principal) {
+        LOGGER.info("POST " + BASE_URL + "/password body: {}", updatePasswordDto);
+        Operator operator = operatorService.findOperatorByLoginName(principal.getName());
+        operatorService.updatePassword(operator.getId(), updatePasswordDto.getOldPassword(),
+            updatePasswordDto.getNewPassword());
+    }
 
     /**
      * Deletes the operator with the given id.
@@ -183,4 +201,5 @@ public class OperatorEndpoint {
         }
         operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }
+
 }

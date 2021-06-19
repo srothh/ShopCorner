@@ -22,6 +22,14 @@ public interface OperatorRepository extends JpaRepository<Operator, Long>, JpaSp
     Operator findByLoginName(String loginName);
 
     /**
+     * Finds an operator based on the email address.
+     *
+     * @return an operator with the given email
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Operator findByEmail(String email);
+
+    /**
      * Changes Permissions of an operator with given id.
      *
      * @param permissions that should overwrite the old one
