@@ -50,6 +50,7 @@ import { OperatorCategoryFormComponent } from './components/operator/operator-ca
 import { ShopOrderSuccessComponent } from './components/shop/shop-order-success/shop-order-success.component';
 import { OperatorPromotionFormComponent } from './components/operator/operator-promotion-form/operator-promotion-form.component';
 import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-checkout.component';
+import { OperatorOrderSettingsComponent } from './components/operator/operator-order-settings/operator-order-settings.component';
 
 @NgModule({
   declarations: [
@@ -100,6 +101,7 @@ import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-chec
     ShopOrderSuccessComponent,
     OperatorCategoryFormComponent,
     ShopCheckoutComponent,
+    OperatorOrderSettingsComponent,
   ],
   imports: [
     BrowserModule,

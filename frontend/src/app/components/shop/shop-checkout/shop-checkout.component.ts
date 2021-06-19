@@ -15,6 +15,7 @@ import {Address} from '../../../dtos/address';
 import {PaypalService} from '../../../services/paypal.service';
 import {Router} from '@angular/router';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
+import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -28,6 +29,7 @@ export class ShopCheckoutComponent implements OnInit {
   products: Product[];
   invoiceDto: Invoice;
   cart: Cart;
+  cancellationPeriod: CancellationPeriod;
   loading: boolean;
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
@@ -37,6 +39,7 @@ export class ShopCheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.fetchCustomer();
     this.products = this.cartGlobals.getCart();
+    this.getCancellationPeriod();
   }
 
   getStreetAddress(): string {
@@ -49,7 +52,7 @@ export class ShopCheckoutComponent implements OnInit {
   }
 
   getTotalPrice() {
-    return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes() ;
+    return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes();
   }
 
   getTotalPriceWithoutTaxes(): number {
@@ -97,6 +100,14 @@ export class ShopCheckoutComponent implements OnInit {
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
   }
+
+  placeNewOrder() {
+    this.creatInvoiceDto();
+    const order: Order = new Order(0, this.invoiceDto, this.customer);
+    this.orderService.placeNewOrder(order).subscribe(() => {
+    });
+  }
+
   private fetchCustomer() {
     this.meService.getMyProfileData().subscribe(
       (customer: Customer) => {
@@ -105,5 +116,14 @@ export class ShopCheckoutComponent implements OnInit {
       }
     );
   }
+
+  private getCancellationPeriod() {
+    this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
+      this.cancellationPeriod = cancellationPeriod;
+    }, (error => {
+      console.log(error);
+    }));
+  }
+
 
 }
