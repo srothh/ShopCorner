@@ -2,10 +2,12 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ProductDto {
@@ -13,7 +15,8 @@ public class ProductDto {
     @NotBlank
     @Size(min = 3, max = 50, message = "name should contain at least 3 characters and 50 at most")
     private String name;
-    @Size(max = 200)
+    @Length(max = 200)
+    @NotBlank
     private String description;
     @DecimalMin("0.0")
     private Double price;
@@ -22,6 +25,8 @@ public class ProductDto {
     private boolean locked;
     private String picture;
     private Long saleCount;
+    private LocalDateTime expiresAt;
+    private boolean deleted;
 
     public String getPicture() {
         return picture;
@@ -98,6 +103,22 @@ public class ProductDto {
         this.locked = locked;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -112,12 +133,13 @@ public class ProductDto {
             && Objects.equals(description, productDto.description)
             && Objects.equals(price, productDto.price)
             && Objects.equals(category, productDto.category)
-            && Objects.equals(taxRate, productDto.taxRate);
+            && Objects.equals(taxRate, productDto.taxRate)
+            && Objects.equals(expiresAt, productDto.expiresAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, category, taxRate);
+        return Objects.hash(id, name, description, price, category, taxRate, expiresAt);
     }
 
     @Override
@@ -137,6 +159,8 @@ public class ProductDto {
             ", isLocked=" + locked
             +
             ", taxRate=" + taxRate
+            +
+            ", expiresAt=" + expiresAt
             +
             '}';
     }

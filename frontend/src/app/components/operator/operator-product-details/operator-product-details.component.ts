@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
@@ -7,6 +7,7 @@ import {TaxRate} from '../../../dtos/tax-rate';
 import {forkJoin} from 'rxjs';
 import {Product} from '../../../dtos/product';
 import {ProductService} from '../../../services/product/product.service';
+import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 
 
 @Component({
@@ -30,7 +31,8 @@ export class OperatorProductDetailsComponent implements OnInit {
     private categoryService: CategoryService,
     private taxRateService: TaxRateService,
     private productService: ProductService,
-    private router: Router) {
+    private router: Router,
+    private authService: OperatorAuthService) {
     if (router.getCurrentNavigation().extras.state !== undefined) {
       this.categories = this.router.getCurrentNavigation().extras.state[0] as Category[];
       this.taxRates = this.router.getCurrentNavigation().extras.state[1] as TaxRate[];
@@ -46,6 +48,16 @@ export class OperatorProductDetailsComponent implements OnInit {
       this.fetchData();
     }
   }
+
+  /**
+   * calls on authentication service to return permission of logged in operator
+   *
+   * @return string role of logged in operator
+   */
+  getPermission(): string {
+    return this.authService.getUserRole();
+  }
+
   fetchData(): void {
     forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
       .subscribe(([categoriesData,taxRatesData]) => {
@@ -53,6 +65,7 @@ export class OperatorProductDetailsComponent implements OnInit {
         this.taxRates = taxRatesData;
       });
   }
+
   deleteProduct(){
     this.productService.deleteProduct(this.product.id).subscribe(()=>{
       this.router.navigate(['/operator/products']).then();
@@ -61,10 +74,12 @@ export class OperatorProductDetailsComponent implements OnInit {
       this.errorMessage = error.error.message;
     });
   }
+
   resetState(){
     this.errorMessage = null;
     this.errorOccurred = undefined;
   }
+
   goBackToProductsOverview(){
     this.router.navigate(['/operator/products']).then();
   }

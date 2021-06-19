@@ -3,126 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice</title>
-    <!--link rel="stylesheet" type="text/css" href="invoiceTemplate_v1.css"-->
-
-    <style>
-
-        html {
-            height: 100%;
-            font-family: Arial,serif;
-        }
-
-        body {
-            padding: 0px;
-            padding-left: 5rem;
-            padding-right: 5rem;
-            margin: 0px auto;
-            height: 100%;
-        }
-
-        .center {
-            text-align: center;
-            justify-content: center;
-        }
-
-        .right {
-            text-align: right;
-            justify-content: right;
-
-        }
-
-        .left {
-            text-align: left;
-            justify-content: left;
-        }
-
-        .underline {
-            text-decoration: underline black;
-        }
-
-        .footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            justify-content: center;
-            margin-bottom: 1rem;
-            font-size: 10px;
-        }
-
-        .product {
-            width: 40%;
-
-        }
-
-        .price, .quantity {
-            width: 15%;
-        }
-
-        .tax {
-            width: 10%;
-        }
-
-        .amount {
-            width: 20%;
-        }
-
-        .span {
-            width: 50%;
-        }
-
-        .total-text {
-            width: 30%;
-        }
-
-        .table-grid, .none-table-grid {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        tr,td{
-            margin-top: 5px;
-        }
-
-        .table-grid .table-grid td {
-            border-top: 1px solid black;
-            border-right: 0;
-            border-left: 0;
-            border-bottom: 1px solid black;
-        }
-
-        .table-grid .none-table-grid td {
-            border-top: 0;
-            border-right: 0;
-            border-left: 0;
-            border-bottom: 0;
-        }
-
-        .table-grid .none-table-grid td {
-            border-top: 1px solid black;
-            border-right: 0;
-            border-left: 0;
-            border-bottom: 0;
-        }
-
-        .table-grid .none-table-grid .none-border {
-            border-top: 0;
-            border-right: 0;
-            border-left: 0;
-            border-bottom: 0;
-        }
-
-        .table-grid .none-table-grid td:first-child {
-            border-top: 0;
-            border-right: 0;
-            border-left: 0;
-            border-bottom: 0;
-        }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="htmlToPdfTemplate/operatorInvoiceTemplate_v1.css">
 
 </head>
-<body style="font-family: 'Arial Black'">
-<table width="100%" border="0" class="table-grid">
+<body>
+<table class="table-grid main-table">
     <tr>
         <td class="center" colspan="3">
             <img src="https://i.imgur.com/zMBx1FY.png" alt="Logo">
@@ -138,7 +23,7 @@
         <td class="right" style="width: 100%"></td>
         <td class="right" style="width: 100%"></td>
         <td class="right">
-            <table class="right" border="0" style="margin-top: 1rem">
+            <table class="right none-border" style="margin-top: 1rem">
                 <tr>
                     <td class="left">
                         <a>Date: </a>

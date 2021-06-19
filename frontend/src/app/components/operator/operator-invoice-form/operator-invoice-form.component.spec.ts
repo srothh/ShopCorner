@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OperatorInvoiceComponent } from './operator-invoice-form.component';
+import { OperatorInvoiceFormComponent } from './operator-invoice-form.component';
 
-describe('OperatorInvoiceComponent', () => {
-  let component: OperatorInvoiceComponent;
-  let fixture: ComponentFixture<OperatorInvoiceComponent>;
+describe('OperatorInvoiceFormComponent', () => {
+  let component: OperatorInvoiceFormComponent;
+  let fixture: ComponentFixture<OperatorInvoiceFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OperatorInvoiceComponent ]
+      declarations: [ OperatorInvoiceFormComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OperatorInvoiceComponent);
+    fixture = TestBed.createComponent(OperatorInvoiceFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

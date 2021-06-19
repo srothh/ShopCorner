@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,13 +33,13 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    @Autowired
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final AddressService addressService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final Validator validator;
 
+    @Autowired
     public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService, Validator validator) {
         this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository;
@@ -67,19 +69,74 @@ public class CustomerServiceImpl implements CustomerService {
         throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'customers'"),
+        @CacheEvict(value = "customerPages", allEntries = true)
+    })
+    @Override
+    public void deleteCustomerByLoginName(String loginName) {
+        LOGGER.trace("deleteCustomerByLoginName({})", loginName);
+        Customer customer = customerRepository.findByLoginName(loginName);
+        customerRepository.delete(customer);
+    }
+
     @Transactional
-    @CacheEvict(value = "counts", key = "'customers'")
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'customers'"),
+        @CacheEvict(value = "customerPages", allEntries = true)
+    })
     @Override
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
-        validator.validateNewCustomer(customer, this);
+        validator.validateNewCustomer(customer, customerRepository);
         Address address = addressService.addNewAddress(customer.getAddress());
         assignAddressToCustomer(customer, address.getId());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         return customerRepository.save(customer);
     }
 
+    @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'customers'"),
+        @CacheEvict(value = "customerPages", allEntries = true)
+    })
     @Override
+    public Customer update(Customer customer) {
+        LOGGER.trace("update({})", customer);
+        validator.validateUpdatedCustomer(customer, customerRepository);
+        Customer c = customerRepository.findById(customer.getId())
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", customer.getId())));
+
+        if (!customer.getAddress().equals(c.getAddress())) {
+            Address address = addressService.addNewAddress(customer.getAddress());
+            assignAddressToCustomer(c, address.getId());
+        }
+
+        c.setEmail(customer.getEmail());
+        c.setLoginName(customer.getLoginName());
+        c.setName(customer.getName());
+        c.setPhoneNumber(customer.getPhoneNumber());
+
+        return customerRepository.save(c);
+    }
+
+    @Override
+    public void updatePassword(Long id, String oldPassword, String newPassword) {
+        LOGGER.trace("updatePassword({})", id);
+        Customer customer = customerRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", id)));
+
+        if (passwordEncoder.matches(oldPassword, customer.getPassword())) {
+            customer.setPassword(passwordEncoder.encode(newPassword));
+            customerRepository.save(customer);
+        } else {
+            throw new ValidationException("Password could not be updated");
+        }
+    }
+
+
+    @Override
+    @Cacheable(value = "customerPages")
     public Page<Customer> getAllCustomers(int page, int pageCount) {
         LOGGER.trace("getAllCustomers()");
         if (pageCount == 0) {
@@ -91,6 +148,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll(returnPage);
     }
 
+    @CacheEvict(value = "customerPages", allEntries = true)
     @Transactional
     public void assignAddressToCustomer(Customer customer, Long addressId) {
         LOGGER.trace("assignAddressToCustomer({},{})", customer, addressId);
@@ -109,6 +167,17 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> findAll() {
         LOGGER.trace("findAll()");
         return customerRepository.findAll();
+    }
+
+    @Override
+    public Customer findCustomerById(Long id) {
+        LOGGER.trace("findAll()");
+        return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find Customer"));
+    }
+
+    @Override
+    public Long getCountByCategory(Pageable page, Long category) {
+        return null;
     }
 
 }

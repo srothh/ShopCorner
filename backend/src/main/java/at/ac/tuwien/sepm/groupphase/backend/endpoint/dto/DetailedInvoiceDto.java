@@ -10,7 +10,6 @@ import java.util.Set;
 public class DetailedInvoiceDto extends SimpleInvoiceDto {
 
     @NotNull(message = "Set<InvoiceItemDto> can not be null")
-    //private Set<InvoiceItemDto> items = new HashSet<>();
     private Set<InvoiceItemDto> items = new HashSet<>();
 
 
@@ -43,15 +42,4 @@ public class DetailedInvoiceDto extends SimpleInvoiceDto {
         return Objects.hash(super.hashCode(), items);
     }
 
-    @Override
-    public String toString() {
-        String s = "";
-        if (items == null) {
-            items = new HashSet<>();
-        }
-        for (InvoiceItemDto i : items) {
-            s = s + ", " + i.toString();
-        }
-        return "DetailedInvoiceDto{" + "items=" + s + '}';
-    }
 }

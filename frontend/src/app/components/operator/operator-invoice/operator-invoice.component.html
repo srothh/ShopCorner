@@ -3,24 +3,24 @@
   <h2 [hidden]="toggleForm">Rechnung</h2>
   <div class="d-flex justify-content-between">
 
-  <div [hidden]="toggleForm || toggleDetialview" class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
+  <div [hidden]="toggleForm || toggleDetailView" class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
     <label class="btn btn-light btn-sm active">
-      <input type="radio" name="buttons" id="option1" checked [disabled]="toggleForm||toggleDetialview">
+      <input type="radio" name="buttons" id="option1" checked [disabled]="toggleForm||toggleDetailView" (click)="showAll()">
       Alle
     </label>
     <label class="btn btn-light btn-sm">
-      <input type="radio" name="buttons" id="option2" [disabled]="toggleForm||toggleDetialview">
+      <input type="radio" name="buttons" id="option2" [disabled]="toggleForm||toggleDetailView" (click)="showCustomer()">
       Gesendet
     </label>
     <label class="btn btn-light btn-sm">
-      <input type="radio" name="buttons" id="option3" [disabled]="toggleForm||toggleDetialview">
+      <input type="radio" name="buttons" id="option3" [disabled]="toggleForm||toggleDetailView" (click)="showCanceled()">
       Storniert
     </label>
   </div>
   <div class="">
     <div>
       <button type="button" class="btn btn-primary"
-              (click)="toggleSide()">{{(toggleForm||toggleDetialview)? 'Zurück' : '+ Rechnung'}}</button>
+              (click)="toggleSide()">{{(toggleForm||toggleDetailView)? 'Zurück' : '+ Rechnung'}}</button>
     </div>
 
   </div>
@@ -28,7 +28,7 @@
 
   <hr>
   <div>
-    <div *ngIf="!toggleForm&&!toggleDetialview">
+    <div *ngIf="!toggleForm&&!toggleDetailView">
       <div>
         <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
           Keine Kund_innen gespeichert.
@@ -49,13 +49,15 @@
           <thead>
           <tr class="table-secondary">
             <th scope="col" class="font-weight-bold">Rechnungsnummer</th>
+            <th scope="col" class="font-weight-bold">Bestellungsnummer</th>
             <th scope="col" class="font-weight-bold">Datum</th>
             <th scope="col" class="font-weight-bold">Betrag</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let invoice of invoices" (click)="getDetailedView(invoice)">
-            <td><span>{{invoice.id}}</span></td>
+            <td><span>{{invoice.invoiceNumber}}</span></td>
+            <td><span>{{invoice.orderNumber!=null?invoice.orderNumber:''}}</span></td>
             <td><span>{{invoice.date.split("T", 1)}}</span></td>
             <td><span>{{invoice.amount.toFixed(2)}} €</span></td>
           </tr>
@@ -73,8 +75,8 @@
     <div *ngIf="toggleForm">
       <app-operator-invoice-form></app-operator-invoice-form>
     </div>
-    <div *ngIf="toggleDetialview">
-      <app-operator-invoice-detailview [value]="detailviewInvoice"></app-operator-invoice-detailview>
+    <div *ngIf="toggleDetailView">
+      <app-operator-invoice-detail-view [value]="detailViewInvoice"></app-operator-invoice-detail-view>
     </div>
   </div>
 </div>

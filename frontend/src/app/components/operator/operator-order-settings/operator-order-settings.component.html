@@ -1,0 +1,44 @@
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Errors!</strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="pt-5 container mx-auto">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <span class="anchor" id="formLogin"></span>
+
+      <div class="card rounded-0">
+        <div class="card-header">
+          <h3 class="mb-0">Stornierungszeitraum festlegen</h3>
+        </div>
+
+        <div class="card-body">
+          <form class="form" [formGroup]="cancellationPeriodForm">
+
+            <div class="form-group">
+              <label for="days">Tage</label>
+              <input type="number" min="0" value="{{cancellationPeriod.days}}" name="days" formControlName="days" class="form-control" id="days"
+                     aria-describedby="usernameHelp" placeholder="Geben Sie einen Stornierzeitraum ein">
+              <div *ngIf="cancellationPeriodForm.controls.days.errors" class="error">
+                <small class="form-text text-warning" *ngIf="cancellationPeriodForm.controls.days.errors.required">Bitte
+                  geben
+                  Sie einen Stornierungszeitraum an
+                </small>
+                <small class="form-text text-warning" *ngIf="cancellationPeriodForm.controls.days.errors.min">Minimum 0
+                  Tage
+                </small>
+              </div>
+            </div>
+            <button type="button" (click)="setCancellationPeriod()" class="btn btn-primary">Zeitraum speichern</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

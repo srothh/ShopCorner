@@ -87,6 +87,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .addFilter(new CustomerJwtAuthenticationFilter(authenticationManager(), securityProperties, jwtTokenizer))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
+            http.headers().frameOptions().disable();
         }
 
         @Override
@@ -107,8 +108,9 @@ public class SecurityConfig {
             HttpMethod.TRACE.name());
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(permitAll);
-        configuration.setAllowedOrigins(permitAll);
         configuration.setAllowedMethods(permitMethods);
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOriginPatterns(permitAll);
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

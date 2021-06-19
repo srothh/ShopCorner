@@ -2,12 +2,10 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Product} from '../../../dtos/product';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CategoryService} from '../../../services/category.service';
-import {TaxRateService} from '../../../services/tax-rate.service';
 import {ProductService} from '../../../services/product/product.service';
 import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
-import {forkJoin} from 'rxjs';
+import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 
 @Component({
   selector: 'app-operator-product-form',
@@ -21,21 +19,23 @@ export class OperatorProductFormComponent implements OnInit {
   newCategoryId: number;
   @Input()
   newTaxRateId: number;
-  //properties for drop-down
+  // properties for drop-down
   @Input()
   categories: Category[];
   @Input()
   taxRates: TaxRate[];
-  //properties for the image
+  // properties for the image
   @ViewChild('fileInput')
   fileInput: ElementRef;
   fileToUpload: File;
   fileSource: string | ArrayBuffer;
-  //Form for creating a new product
+  // Form for creating a new product
   productForm: FormGroup;
-  //properties for the newly to be added product
+  // properties for the newly to be added product
 
-  //util properties
+  today = new Date(Date.now());
+
+  // util properties
   shouldFetch: boolean;
   errorOccurred: boolean;
   errorMessage: string;
@@ -46,36 +46,52 @@ export class OperatorProductFormComponent implements OnInit {
     private router: Router,
     private productService: ProductService,
     private formBuilder: FormBuilder,
-    private activatedRouter: ActivatedRoute
+    private activatedRouter: ActivatedRoute,
+    private authService: OperatorAuthService
   ) {
   }
 
   ngOnInit(): void {
     if (this.newProduct === undefined && this.router.url.includes('add')) {
       this.newProduct = this.createNewProduct();
-      //keeping track of which type of form we are currently in
+      // keeping track of which type of form we are currently in
       // in this case we are currently trying to save a brand new product entity
       this.addProductEnabled = true;
       this.inEditMode = false;
     } else {
-      //in this case we are trying to edit a existing product entity
+      // in this case we are trying to edit a existing product entity
       this.addProductEnabled = false;
       this.inEditMode = true;
     }
-    //build form
+    // build form
     this.productForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.whiteSpaceValidator]],
       description: [null, Validators.maxLength(70)],
       price: ['', Validators.required],
       taxRate: [null, Validators.required],
       category: [null],
-      locked: [false]
+      locked: [false],
+      time: [{hour: 0, minute: 0}, Validators.required],
+      expirationDate: [{
+        day: this.today.getDate(),
+        month: this.today.getMonth() + 1,
+        year: this.today.getFullYear()
+      }, [Validators.required]],
     });
     // if the form is a 'edit-product-form' then set all properties in the form and make them readonly
     if (this.addProductEnabled === false) {
       this.setFormProperties();
       this.productForm.disable();
     }
+  }
+
+  /**
+   * calls on authentication service to return permission of logged in operator
+   *
+   * @return string role of logged in operator
+   */
+  getPermission(): string {
+    return this.authService.getUserRole();
   }
 
   createNewProduct(): Product {
@@ -86,8 +102,11 @@ export class OperatorProductFormComponent implements OnInit {
       new Category(null, null),
       new TaxRate(null, null, null),
       false,
-      null);
+      null,
+      null,
+      false);
   }
+
   setFormProperties(): void {
     if (this.newProduct === undefined) {
       const productId = +this.activatedRouter.snapshot.paramMap.get('id');
@@ -99,7 +118,17 @@ export class OperatorProductFormComponent implements OnInit {
       this.productForm.controls['locked'].setValue(this.newProduct.locked);
       this.productForm.controls['taxRate'].setValue(this.newProduct.taxRate.id, {onlySelf: true});
       this.productForm.controls['category'].setValue(this.newProduct.category?.id, {onlySelf: true});
-      if (this.newProduct.category == null){
+      const date = new Date(this.newProduct.expiresAt);
+      this.productForm.controls['expirationDate'].setValue({
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+      });
+      this.productForm.controls['time'].setValue({
+        hour: date.getHours(),
+        minute: date.getMinutes(),
+      });
+      if (this.newProduct.category == null) {
         this.newProduct.category = new Category(null, null);
       }
       if (this.newProduct.picture != null) {
@@ -123,15 +152,28 @@ export class OperatorProductFormComponent implements OnInit {
       this.newProduct.category.id = this.productForm.get('category')?.value;
     }
     this.newProduct.locked = this.productForm.get('locked').value;
+    this.newProduct.deleted = false;
+    if (this.newProduct.hasExpiration) {
+      const expirationDate = this.productForm.get('expirationDate').value;
+      const time = this.productForm.get('time').value;
+      this.newProduct.expiresAt = new Date(Date.UTC(
+        expirationDate.year,
+        expirationDate.month - 1,
+        expirationDate.day,
+        time.hour,
+        time.minute
+      ));
+    } else {
+      this.newProduct.expiresAt = null;
+    }
     if (this.router.url.includes('add')) {
-      const baseURL = this.router.url.substring(0, this.router.url.lastIndexOf('/'));
       this.productService.addProduct(this.newProduct).subscribe(data => {
         this.newProduct.id = data.id;
         this.errorOccurred = false;
         this.router.navigate(['operator/products']).then();
       }, error => {
         this.errorOccurred = true;
-        //NOTE: not all error types supported yet because of the way how the interceptor is handling errors
+        // NOTE: not all error types supported yet because of the way how the interceptor is handling errors
         this.errorMessage = error.error.message;
       });
     } else {
@@ -140,14 +182,15 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   updateProduct() {
-    this.productService.updateProduct(this.newProduct.id,this.newProduct).subscribe(response => {
+    console.log(this.newProduct);
+    this.productService.updateProduct(this.newProduct.id, this.newProduct).subscribe(() => {
         this.inEditMode = true;
         this.addProductEnabled = false;
         this.productForm.disable();
 
       }, error => {
         this.errorOccurred = true;
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       }
     );
   }
@@ -161,7 +204,7 @@ export class OperatorProductFormComponent implements OnInit {
 
   enableEditing(): void {
     this.productForm.enable();
-    //it is possible to edit the product and eventually make it 'save-able'
+    // it is possible to edit the product and eventually make it 'save-able'
     this.addProductEnabled = true;
   }
 
@@ -182,7 +225,7 @@ export class OperatorProductFormComponent implements OnInit {
     const reader = new FileReader();
     reader.readAsDataURL(this.fileToUpload);
     reader.onload = ((loadEvent) => {
-      //fileSource should be string in a base64-encoded format
+      // fileSource should be string in a base64-encoded format
       this.fileSource = loadEvent.target.result;
       if (typeof this.fileSource === 'string') {
         this.newProduct.picture = this.fileSource.split(',')[1];
@@ -209,6 +252,22 @@ export class OperatorProductFormComponent implements OnInit {
     });
   }
 
+  toggleExpiration() {
+    if (this.newProduct.hasExpiration) {
+      this.newProduct.expiresAt = null;
+    } else {
+      const expirationDate = this.productForm.get('expirationDate').value;
+      const time = this.productForm.get('time').value;
+      this.newProduct.expiresAt = new Date(Date.UTC(
+        expirationDate.year,
+        expirationDate.month - 1,
+        expirationDate.day,
+        time.hour,
+        time.minute
+      ));
+    }
+  }
+
   get productFormControl() {
     return this.productForm.controls;
   }
@@ -218,5 +277,4 @@ export class OperatorProductFormComponent implements OnInit {
     const isValid = !isWhitespace;
     return isValid ? null : {whitespace: true};
   }
-
 }

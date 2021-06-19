@@ -1,36 +1,25 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
+/**
+ * A service class handling Invoices.
+ */
 public interface InvoiceService {
 
     /**
-     * Find a single message entry by id.
+     * Find a single invoice entry by id.
      *
-     * @param id the id of the message entry
-     * @return the message entry
+     * @param id the id of the invoice entry
+     * @return the invoice entry
      * @throws NotFoundException when no invoice with the id is found
      */
     Invoice findOneById(Long id);
 
-
-    /**
-     * Retrieves a PaginationDto containing a Page of invoices from the database.
-     *
-     * @param page      The number of the page to retrieve
-     * @param pageCount The size of the page to retrieve
-     * @return A PaginationDto containing data about the retrieved items
-     * @throws RuntimeException upon encountering errors with the database
-     */
-    Page<Invoice> getAllInvoices(int page, int pageCount);
 
     /**
      * Returns amount of invoices in the database.
@@ -38,8 +27,15 @@ public interface InvoiceService {
      * @return The amount of invoices in the database
      * @throws RuntimeException  upon encountering errors with the database
      */
-    long getInvoiceCount();
+    Long getInvoiceCount();
 
+    /**
+     * Returns amount of customerInvoices in the database.
+     *
+     * @return The amount of invoices in the database
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Long getCustomerInvoiceCount();
 
     /**
      * Create new invoice.
@@ -51,5 +47,14 @@ public interface InvoiceService {
     Invoice createInvoice(Invoice invoice);
 
 
+    /**
+     * Returns page with all needed Operators.
+     *
+     * @param page        which should be returned
+     * @param invoiceType of Operators which should be returned
+     * @param pageCount   amount of operators per page
+     * @return Page with all Operators with right permission
+     */
+    Page<Invoice> findAll(int page, int pageCount, InvoiceType invoiceType);
 
 }

@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
 import org.junit.jupiter.api.Test;
@@ -14,9 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -86,5 +86,15 @@ public class OperatorRepositoryTest implements TestData {
         operatorRepository.setOperatorPermissionsById(Permissions.admin, employee.getId());
 
         assertEquals(1, operatorRepository.findAll(OperatorSpecifications.hasPermission(Permissions.admin), returnPage).getContent().size());
+    }
+
+    @Test
+    public void givenOneOperator_whenSetPermissionById_thenFindAllEmployeesReturnsListWithSizeOne() {
+        operatorRepository.save(admin);
+        Pageable returnPage = PageRequest.of(0, 15);
+
+        operatorRepository.setOperatorPermissionsById(Permissions.employee, admin.getId());
+
+        assertEquals(1, operatorRepository.findAll(OperatorSpecifications.hasPermission(Permissions.employee), returnPage).getContent().size());
     }
 }

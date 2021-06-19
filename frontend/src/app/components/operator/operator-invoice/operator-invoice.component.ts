@@ -1,8 +1,8 @@
-import {Component,  OnInit} from '@angular/core';
-import {forkJoin} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
 import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice.service';
 import {Pagination} from '../../../dtos/pagination';
+import {InvoiceType} from '../../../dtos/invoiceType.enum';
 
 @Component({
   selector: 'app-operator-invoice',
@@ -11,7 +11,7 @@ import {Pagination} from '../../../dtos/pagination';
 })
 export class OperatorInvoiceComponent implements OnInit {
   toggleForm = false;
-  toggleDetialview = false;
+  toggleDetailView = false;
 
   invoices: Invoice[];
   page = 0;
@@ -19,7 +19,8 @@ export class OperatorInvoiceComponent implements OnInit {
   collectionSize = 0;
   error = false;
   errorMessage = '';
-  detailviewInvoice: Invoice;
+  detailViewInvoice: Invoice;
+  invoiceType = InvoiceType.operator;
 
   constructor(private invoiceService: InvoiceService) {
   }
@@ -29,12 +30,12 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
   toggleSide() {
-    if (!this.toggleDetialview) {
+    if (!this.toggleDetailView) {
       this.toggleForm = !this.toggleForm;
     } else {
       this.toggleForm = false;
     }
-    this.toggleDetialview = false;
+    this.toggleDetailView = false;
   }
 
   /**
@@ -58,22 +59,38 @@ export class OperatorInvoiceComponent implements OnInit {
   }
 
   /**
-   * toggles to the detailview.
+   * toggles to the detailView.
    *
-   * @param id of the invoice
+   * @param invoice destination invoice
    */
   getDetailedView(invoice: Invoice) {
-    this.toggleDetialview = true;
+    this.toggleDetailView = true;
     this.toggleForm = false;
-    this.detailviewInvoice = invoice;
+    this.detailViewInvoice = invoice;
   }
 
+
+  showAll() {
+    this.invoiceType = InvoiceType.operator;
+    this.invoices = [];
+    this.loadInvoicesForPage();
+  }
+
+  showCustomer() {
+    this.invoiceType = InvoiceType.customer;
+    this.invoices = [];
+    this.loadInvoicesForPage();
+  }
+
+  showCanceled() {
+    console.log('TODO');
+  }
 
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
   private loadInvoicesForPage() {
-    this.invoiceService.getAllInvoicesForPage(this.page, this.pageSize).subscribe(
+    this.invoiceService.getAllInvoicesForPage(this.page, this.pageSize, this.invoiceType).subscribe(
       (paginationDto: Pagination<Invoice>) => {
         this.invoices = paginationDto.items;
         this.collectionSize = paginationDto.totalItemCount;
@@ -84,4 +101,6 @@ export class OperatorInvoiceComponent implements OnInit {
       }
     );
   }
+
+
 }

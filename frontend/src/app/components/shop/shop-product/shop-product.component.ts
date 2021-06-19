@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {Product} from '../../../dtos/product';
-import {FormBuilder, FormGroup} from '@angular/forms';
 import {CategoryService} from '../../../services/category.service';
 import {Category} from '../../../dtos/category';
 import {ProductService} from '../../../services/product/product.service';
 import {faFilter, faSearch} from '@fortawesome/free-solid-svg-icons';
+import {Router} from '@angular/router';
+import {PageableProducts} from '../../../services/pagination/pageable-products';
 
 @Component({
   selector: 'app-shop-product',
@@ -12,14 +12,7 @@ import {faFilter, faSearch} from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./shop-product.component.scss']
 })
 export class ShopProductComponent implements OnInit {
-  searchForm: FormGroup;
-
-  products: Product[];
   categories: Category[];
-  page = 0;
-  pageSize = 18;
-  totalPages = 1;
-  collectionSize = 0;
 
   faFilter = faFilter;
   faSearch = faSearch;
@@ -27,76 +20,49 @@ export class ShopProductComponent implements OnInit {
   error = false;
   errorMessage = '';
 
-  constructor(private productService: ProductService, private categoryService: CategoryService, private formBuilder: FormBuilder) {
-    this.searchForm = this.formBuilder.group({
-      searchText: [''],
-      categoryId: [-1]
-    });
+  constructor(private productService: ProductService,
+              private categoryService: CategoryService,
+              private router: Router,
+              public pageableProducts: PageableProducts) {
+    this.pageableProducts.pageSize = 18;
   }
 
   ngOnInit(): void {
     this.fetchProducts();
-    this.fetchCategories();
   }
 
   fetchProducts(): void {
-    const name = this.searchForm.controls.searchText.value;
-    const categoryId = this.searchForm.controls.categoryId.value;
-    this.productService.getProducts(this.page, this.pageSize, name, undefined, categoryId).subscribe((productData) => {
-      this.products = productData.items;
-      this.totalPages = productData.totalPages;
-      this.collectionSize = productData.totalItemCount;
-    }, error => {
-      console.log(error);
-      this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
-    });
+    this.pageableProducts.fetchProducts();
   }
 
-  fetchCategories() {
-    this.categoryService.getCategories().subscribe((categories) => {
-      this.categories = categories;
-    }, error => {
-      console.log(error);
-      this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
-    });
+  resetAndFetchProducts(searchForm) {
+    this.pageableProducts.searchQuery = {
+      name: searchForm.controls.searchText.value,
+      categoryId: searchForm.controls.categoryId.value,
+      sortBy: 'id',
+    };
+    this.pageableProducts.resetAndFetchProducts();
   }
 
-  /**
-   * goes to next page if not on the last page
-   */
-  nextPage() {
-    if ((this.page + 1) * this.pageSize < this.collectionSize) {
-      this.page += 1;
-      this.fetchProducts();
+  getPaginatedProducts() {
+    return this.pageableProducts.items;
+  }
+
+  goToProductDetails(id: number, selectedIndex: number) {
+    const currentUri = this.router.url;
+    const product = this.getPaginatedProducts()[selectedIndex];
+    this.router.navigate([currentUri + '/' + id], {state: {product}}).then();
+  }
+
+  errorOccurred() {
+    return this.error || this.pageableProducts.error;
+  }
+
+  getErrorMessage() {
+    if (this.error) {
+      return this.errorMessage;
     }
-  }
-
-  /**
-   * goes to previous page if not on the first page
-   */
-  previousPage() {
-    if (this.page > 0) {
-      this.page -= 1;
-      this.fetchProducts();
-    }
-  }
-
-  /**
-   * Resets the page and fetches products
-   */
-  resetAndFetchProducts() {
-    this.page = 0;
-    this.fetchProducts();
+    return this.pageableProducts.errorMessage;
   }
 
   /**
@@ -104,5 +70,7 @@ export class ShopProductComponent implements OnInit {
    */
   vanishError() {
     this.error = false;
+    this.errorMessage = '';
+    this.pageableProducts.vanishError();
   }
 }

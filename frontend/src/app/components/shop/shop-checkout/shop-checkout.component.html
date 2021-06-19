@@ -1,0 +1,102 @@
+<div class="text-center">
+  <div *ngIf="loading" class="spinner-border text-primary" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<body class>
+<div class="container ">
+  <div class="row">
+    <div class="col-md-4 order-md-2 mb-4">
+      <ul class="list-group mb-3 overflow-auto">
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Gesamtpreis ohne Steuern </span>
+          <strong>{{getTotalPriceWithoutTaxes().toFixed(2)}} €</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Steuern </span>
+          <strong>{{getTotalTaxes().toFixed(2)}} €</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Gesamt </span>
+          <strong>{{getTotalPrice().toFixed(2)}} €</strong>
+        </li>
+      </ul>
+      <small *ngIf="cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
+      <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} nach dem Bestellungseingang stornierbar.</small>
+
+      <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="proceedToPay()">Bezahlen mit Paypal
+      </button>
+
+    </div>
+    <div class="col-md-8 order-md-1">
+      <h4 class="mb-3">Rechnungsdaten</h4>
+      <form>
+        <div class="mb-3">
+          <label for="firstName">Name</label>
+          <input type="text" class="form-control" id="firstName" value="{{customer.name}}" disabled>
+        </div>
+        <div class="mb-3">
+          <label for="username">Nutzername</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="username" value="{{customer.loginName}}" disabled>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" value="{{customer.email}}" disabled>
+
+        </div>
+
+        <div class="mb-3">
+          <label for="address">Addresse</label>
+          <input type="text" class="form-control" id="address" value="{{getStreetAddress()}}" disabled>
+
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="country">Land</label>
+            <select class="custom-select d-block w-100" id="country" disabled>
+              <option value="">Österreich</option>
+              <option>Österreich</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a valid country.
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="zip">Postleitzahl</label>
+            <input type="text" class="form-control" id="zip" value="{{customer.address.postalCode}}" disabled>
+          </div>
+        </div>
+        <h4 class="d-flex justify-content-between align-items-center mb-3 mt-4">
+          <span class="text-muted">Warenkorb</span>
+          <span class="badge badge-secondary badge-pill">{{getCartSize() != 0 ? +getCartSize() : ''}}</span>
+        </h4>
+        <hr class="mb-4">
+        <ul class="list-group mb-3 overflow-auto">
+          <li class="list-group-item d-flex justify-content-between lh-condensed" *ngFor="let product of products">
+            <div>
+              <h6 class="my-0">{{product.name}}</h6>
+              <small class="text-muted">{{product.description}}</small>
+            </div>
+            <span class="text-muted">{{product.price}} €</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Gesamtpreis </span>
+            <strong>{{getTotalPrice().toFixed(2)}} €</strong>
+          </li>
+        </ul>
+        <div>
+          <small *ngIf="cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
+          <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} Tag(en) nach dem Bestellungseingang stornierbar.</small>
+
+          <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="proceedToPay()">Bezahlen mit Paypal
+        </button></div>
+      </form>
+
+    </div>
+  </div>
+</div>

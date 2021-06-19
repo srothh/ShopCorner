@@ -1,45 +1,31 @@
 <main role="main" class="mx-5">
+  <div *ngIf="errorOccurred()" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Problems!</strong> {{ getErrorMessage() }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
   <div class="album py-5">
     <div class="mb-3">
       <h3>
         Produkte
       </h3>
       <hr>
-      <div *ngIf="collectionSize > 0">
+      <div *ngIf="pageableProducts.collectionSize > 0">
         <div>
-          <h6 class="text-muted" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content">
-            Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
-            von {{collectionSize}}</h6>
+          <h6 class="text-muted">
+            Zeigt {{pageableProducts.itemsIndexStart()}}-{{pageableProducts.itemsIndexEnd()}}
+            von {{pageableProducts.collectionSize}}</h6>
         </div>
-        <ng-template #other_content>
-          <h6 class="text-muted">Zeigt {{1 + (pageSize * (page))}}-{{collectionSize}}
-            von {{collectionSize}}</h6>
-        </ng-template>
       </div>
-      <form class="form-inline d-flex justify-content-between" style="gap: 15px" [formGroup]="searchForm"
-            (ngSubmit)="resetAndFetchProducts()">
-        <div class="d-flex flex-row">
-          <input class="form-control search-input" type="search" formControlName="searchText" placeholder="Suche"
-                 aria-label="Suche">
-          <button class="btn btn-primary" type="submit">Suche</button>
-        </div>
-        <div class="d-flex flex-row" style="gap: 15px">
-          <label for="categoryFilter">
-            <fa-icon class="mr-2" [icon]="faFilter"></fa-icon>
-            Filtern nach Kategorien</label>
-          <select class="custom-select" name="category-names" id="categoryFilter"
-                  (change)="resetAndFetchProducts()"
-                  formControlName="categoryId"
-          >
-            <option selected value="-1">Alle</option>
-            <option *ngFor="let category of this.categories" [value]="category.id">{{category.name}}</option>
-          </select>
-        </div>
-      </form>
+      <app-base-product-search-bar (errorOccurred)="error = $event.error; errorMessage = $event.errorMessage"
+                                   (resetAndFetchProducts)="resetAndFetchProducts($event)"></app-base-product-search-bar>
     </div>
-    <div class="row" *ngIf="collectionSize > 0 else no_products">
-      <div class="col-md-4 col-sm-12 col-lg-4 col-xl-2" *ngFor="let product of products">
-        <app-base-shop-product-item [product]="product"></app-base-shop-product-item>
+    <div class="row" *ngIf="pageableProducts.collectionSize > 0 else no_products">
+      <div class="col-md-4 col-sm-12 col-lg-4 col-xl-2"
+           *ngFor="let product of getPaginatedProducts(); let index = index;">
+        <app-base-shop-product-item [product]="product"
+                                    (click)="goToProductDetails(product.id, index)"></app-base-shop-product-item>
       </div>
     </div>
     <ng-template #no_products>
@@ -52,9 +38,13 @@
       </div>
     </ng-template>
 
-    <div *ngIf="collectionSize > 0" class="d-flex justify-content-between">
-      <button class="btn btn-dark" [disabled]="page === 0" (click)=previousPage()>Vorherige Seite</button>
-      <button class="btn btn-dark" [disabled]="page + 1 === totalPages" (click)=nextPage()>Nächste Seite</button>
+    <div *ngIf="pageableProducts.collectionSize > 0" class="d-flex justify-content-between">
+      <button class="btn btn-dark" [disabled]="pageableProducts.page === 0" (click)=pageableProducts.previousPage()>
+        Vorherige Seite
+      </button>
+      <button class="btn btn-dark" [disabled]="pageableProducts.page + 1 === pageableProducts.totalPages"
+              (click)=pageableProducts.nextPage()>Nächste Seite
+      </button>
     </div>
 
   </div>

@@ -1,10 +1,39 @@
 import {Injectable} from '@angular/core';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class Globals {
   readonly backendUri: string = this.findBackendUrl();
+
+  readonly roles = {
+    admin: 'ADMIN',
+    employee: 'EMPLOYEE',
+    customer: 'CUSTOMER',
+  };
+
+  readonly requestParamKeys = {
+    pagination: {
+      page: 'page',
+      pageCount: 'pageCount',
+    },
+    products: {
+      name: 'name',
+      categoryId: 'categoryId',
+      sortBy: 'sortBy',
+    },
+    operators: {
+      permissions: 'permissions',
+    },
+    invoice: {
+      invoiceType: 'invoiceType',
+    },
+    paypal: {
+      payerId: 'payerId',
+      paymentId: 'paymentId'
+    }
+  };
 
   private findBackendUrl(): string {
     if (window.location.port === '4200') { // local `ng serve`, backend at localhost:8080
@@ -14,6 +43,9 @@ export class Globals {
       return window.location.protocol + '//' + window.location.host + window.location.pathname + 'api/v1';
     }
   }
+
+
+
 }
 
 

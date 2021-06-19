@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @ActiveProfiles("test")
 public class InvoiceMappingTest implements TestData {
-    private static Invoice invoice = new Invoice();
+    private static final Invoice invoice = new Invoice();
 
 
     @Autowired
@@ -79,6 +80,7 @@ public class InvoiceMappingTest implements TestData {
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
         invoice.setItems(items);
+        invoice.setInvoiceType(InvoiceType.operator);
 
     }
 
@@ -99,9 +101,9 @@ public class InvoiceMappingTest implements TestData {
         invoiceList.add(invoice);
         invoiceList.add(invoice);
 
-        List<SimpleInvoiceDto> simpleInvoiceDtos = invoiceMapping.invoiceToSimpleInvoiceDto(invoiceList);
-        assertEquals(2, simpleInvoiceDtos.size());
-        SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtos.get(0);
+        List<SimpleInvoiceDto> simpleInvoiceDtoList = invoiceMapping.invoiceToSimpleInvoiceDto(invoiceList);
+        assertEquals(2, simpleInvoiceDtoList.size());
+        SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtoList.get(0);
         assertAll(
             () -> assertEquals(TEST_INVOICE_ID, simpleInvoiceDto.getId()),
             () -> assertEquals(invoice.getDate(), simpleInvoiceDto.getDate()),
