@@ -36,6 +36,16 @@ public interface OperatorService extends UserDetailsService {
     Operator findOperatorByLoginName(String loginName);
 
     /**
+     * Find an operator based on the email address.
+     *
+     * @param email the email of the operator to be returned
+     * @return the operator with the given email
+     * @throws NotFoundException when no operator with the given email is found
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Operator findOperatorByEmail(String email);
+
+    /**
      * Returns page with all needed Operators.
      *
      * @param page        which should be returned
@@ -91,6 +101,22 @@ public interface OperatorService extends UserDetailsService {
      * @throws RuntimeException  if the updated operator account already exists
      */
     Operator update(Operator operator);
+
+
+
+    /**
+     * Updates the password of the specified operator.
+     *
+     * @param id of the operator whose password is to be updated
+     * @param oldPassword the password to be updated
+     * @param newPassword the new password
+     * @throws NotFoundException if no matching operator is found in the database
+     * @throws RuntimeException  if the password could not be updated
+     */
+    void updatePassword(Long id, String oldPassword, String newPassword);
+
+
+
 
     /**
      * returns amount of employees.

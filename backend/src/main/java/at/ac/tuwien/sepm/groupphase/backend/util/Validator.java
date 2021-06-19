@@ -8,8 +8,8 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
-import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
-import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
+import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.PromotionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,51 +27,62 @@ public class Validator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public void validateNewOperator(Operator operator, OperatorService operatorService) {
+    public void validateNewOperator(Operator operator, OperatorRepository operatorRepository) {
         LOGGER.trace("validateNewOperator({})", operator);
 
-        List<Operator> operators = operatorService.findAll();
-        for (Operator op : operators) {
-
-            if (op.getEmail().equals(operator.getEmail())) {
-                throw new ValidationException("Account already exists");
-            }
-
-            if (op.getLoginName().equals(operator.getLoginName())) {
-                throw new ValidationException("Account already exists");
-            }
+        Operator op = operatorRepository.findByLoginName(operator.getLoginName());
+        if (op != null) {
+            throw new ValidationException("Account already exists!");
         }
+
+        op = operatorRepository.findByEmail(operator.getEmail());
+        if (op != null) {
+            throw new ValidationException("Account already exists!");
+        }
+
     }
 
-    public void validateUpdatedOperator(Operator operator, OperatorService operatorService) {
+    public void validateUpdatedOperator(Operator operator, OperatorRepository operatorRepository) {
         LOGGER.trace("validateUpdatedOperator({})", operator);
 
-        List<Operator> operators = operatorService.findAll();
-        for (Operator op : operators) {
-
-            if (!op.getId().equals(operator.getId()) && op.getEmail().equals(operator.getEmail())) {
-                throw new ValidationException("Account already exists");
-            }
-
-            if (!op.getId().equals(operator.getId()) && op.getLoginName().equals(operator.getLoginName())) {
-                throw new ValidationException("Account already exists");
-            }
+        Operator op = operatorRepository.findByLoginName(operator.getLoginName());
+        if (op != null && !op.getId().equals(operator.getId())) {
+            throw new ValidationException("Account already exists!");
         }
+
+        op = operatorRepository.findByEmail(operator.getEmail());
+        if (op != null && !op.getId().equals(operator.getId())) {
+            throw new ValidationException("Account already exists!");
+        }
+
     }
 
-    public void validateNewCustomer(Customer customer, CustomerService customerService) {
+    public void validateNewCustomer(Customer customer, CustomerRepository customerRepository) {
         LOGGER.trace("validateNewCustomer({})", customer);
 
-        List<Customer> customers = customerService.findAll();
-        for (Customer customer1 : customers) {
+        Customer c = customerRepository.findByLoginName(customer.getLoginName());
+        if (c != null) {
+            throw new ValidationException("Account already exists!");
+        }
 
-            if (customer1.getEmail().equals(customer.getEmail())) {
-                throw new ValidationException("Email already exists");
-            }
+        c = customerRepository.findByEmail(customer.getEmail());
+        if (c != null) {
+            throw new ValidationException("Account already exists!");
+        }
 
-            if (customer1.getLoginName().equals(customer.getLoginName())) {
-                throw new ValidationException("Login name already exists");
-            }
+    }
+
+    public void validateUpdatedCustomer(Customer customer, CustomerRepository customerRepository) {
+        LOGGER.trace("validateUpdatedCustomer({})", customer);
+
+        Customer c = customerRepository.findByLoginName(customer.getLoginName());
+        if (c != null && !c.getId().equals(customer.getId())) {
+            throw new ValidationException("Account already exists!");
+        }
+
+        c = customerRepository.findByEmail(customer.getEmail());
+        if (c != null && !c.getId().equals(customer.getId())) {
+            throw new ValidationException("Account already exists!");
         }
 
     }

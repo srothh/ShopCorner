@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OperatorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import at.ac.tuwien.sepm.groupphase.backend.util.OperatorSpecifications;
@@ -80,6 +81,16 @@ public class OperatorServiceImpl implements OperatorService {
     }
 
     @Override
+    public Operator findOperatorByEmail(String email) {
+        LOGGER.trace("findOperatorByEmail({})", email);
+        Operator operator = operatorRepository.findByEmail(email);
+        if (operator != null) {
+            return operator;
+        }
+        throw new NotFoundException(String.format("Could not find the operator with the email %s", email));
+    }
+
+    @Override
     @Cacheable(value = "operatorPages")
     public Page<Operator> findAll(int page, int pageCount, Permissions permissions) {
         LOGGER.trace("findAll({})", page);
@@ -118,7 +129,7 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public Operator save(Operator operator) {
         LOGGER.trace("save({})", operator);
-        validator.validateNewOperator(operator, this);
+        validator.validateNewOperator(operator, operatorRepository);
         String password = passwordEncoder.encode(operator.getPassword());
         operator.setPassword(password);
         return operatorRepository.save(operator);
@@ -161,7 +172,7 @@ public class OperatorServiceImpl implements OperatorService {
     public Operator update(Operator operator) {
         LOGGER.trace("update({})", operator);
 
-        validator.validateUpdatedOperator(operator, this);
+        validator.validateUpdatedOperator(operator, operatorRepository);
 
         Operator op = operatorRepository.findById(operator.getId())
             .orElseThrow(() -> new NotFoundException(String.format("Could not find the operator with the id %d", operator.getId())));
@@ -169,11 +180,22 @@ public class OperatorServiceImpl implements OperatorService {
         op.setName(operator.getName());
         op.setLoginName(operator.getLoginName());
         op.setEmail(operator.getEmail());
-        //can password be updated (this easily)?
-        if (!operator.getPassword().equals("unchanged")) {
-            op.setPassword(passwordEncoder.encode(operator.getPassword()));
-        }
+
         return operatorRepository.save(op);
+    }
+
+    @Override
+    public void updatePassword(Long id, String oldPassword, String newPassword) {
+        LOGGER.trace("updatePassword({})", id);
+        Operator op = operatorRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the operator with the id %d", id)));
+
+        if (passwordEncoder.matches(oldPassword, op.getPassword())) {
+            op.setPassword(passwordEncoder.encode(newPassword));
+            operatorRepository.save(op);
+        } else {
+            throw new ValidationException("Password could not be updated");
+        }
     }
 
     @Caching(evict = {

@@ -111,8 +111,8 @@ public class CustomerEndpointTest implements TestData {
             () -> assertEquals(customer.getEmail(), customerMapper.customerDtoToCustomer(customerResponse).getEmail()),
             () -> assertEquals(customer.getName(), customerMapper.customerDtoToCustomer(customerResponse).getName()),
             () -> assertEquals(customer.getLoginName(), customerMapper.customerDtoToCustomer(customerResponse).getLoginName()),
-            () -> assertEquals(customer.getAddress(), customerMapper.customerDtoToCustomer(customerResponse).getAddress())
-            //() -> assertEquals(customer.getPhoneNumber(), customerMapper.customerDtoToCustomer(customerResponse).getPhoneNumber())
+            () -> assertEquals(customer.getAddress(), customerMapper.customerDtoToCustomer(customerResponse).getAddress()),
+            () -> assertEquals(customer.getPhoneNumber(), customerMapper.customerDtoToCustomer(customerResponse).getPhoneNumber())
         );
     }
 

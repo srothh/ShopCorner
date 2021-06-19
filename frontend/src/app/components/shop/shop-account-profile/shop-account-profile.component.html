@@ -43,11 +43,16 @@
         <span *ngIf="!isEditMode">{{ editForm.value.name }}</span>
       </div>
       <div>
-        <label for="password">Passwort</label>
+        <label for="password">Altes Passwort</label>
         <input *ngIf="isEditMode" type="text" name="password" formControlName="password" class="form-control"
                id="password">
         <!-- We don't actually show the password here since the backend should never send it this is just a placeholder -->
         <span *ngIf="!isEditMode">••••••••</span>
+      </div>
+      <div *ngIf="isEditMode">
+        <label for="newPassword">Neues Passwort</label>
+        <input *ngIf="isEditMode" type="text" name="newPassword" formControlName="newPassword" class="form-control"
+               id="newPassword">
       </div>
       <div>
         <label for="phoneNumber">Telefon</label>

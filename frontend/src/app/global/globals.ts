@@ -29,6 +29,10 @@ export class Globals {
     invoice: {
       invoiceType: 'invoiceType',
     },
+    paypal: {
+      payerId: 'payerId',
+      paymentId: 'paymentId'
+    }
   };
 
   private findBackendUrl(): string {

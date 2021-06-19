@@ -87,6 +87,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .addFilter(new CustomerJwtAuthenticationFilter(authenticationManager(), securityProperties, jwtTokenizer))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
+            http.headers().frameOptions().disable();
         }
 
         @Override

@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
@@ -87,12 +88,52 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer registerNewCustomer(Customer customer) {
         LOGGER.trace("registerNewCustomer({})", customer);
-        validator.validateNewCustomer(customer, this);
+        validator.validateNewCustomer(customer, customerRepository);
         Address address = addressService.addNewAddress(customer.getAddress());
         assignAddressToCustomer(customer, address.getId());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         return customerRepository.save(customer);
     }
+
+    @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'customers'"),
+        @CacheEvict(value = "customerPages", allEntries = true)
+    })
+    @Override
+    public Customer update(Customer customer) {
+        LOGGER.trace("update({})", customer);
+        validator.validateUpdatedCustomer(customer, customerRepository);
+        Customer c = customerRepository.findById(customer.getId())
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", customer.getId())));
+
+        if (!customer.getAddress().equals(c.getAddress())) {
+            Address address = addressService.addNewAddress(customer.getAddress());
+            assignAddressToCustomer(c, address.getId());
+        }
+
+        c.setEmail(customer.getEmail());
+        c.setLoginName(customer.getLoginName());
+        c.setName(customer.getName());
+        c.setPhoneNumber(customer.getPhoneNumber());
+
+        return customerRepository.save(c);
+    }
+
+    @Override
+    public void updatePassword(Long id, String oldPassword, String newPassword) {
+        LOGGER.trace("updatePassword({})", id);
+        Customer customer = customerRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", id)));
+
+        if (passwordEncoder.matches(oldPassword, customer.getPassword())) {
+            customer.setPassword(passwordEncoder.encode(newPassword));
+            customerRepository.save(customer);
+        } else {
+            throw new ValidationException("Password could not be updated");
+        }
+    }
+
 
     @Override
     @Cacheable(value = "customerPages")

@@ -27,6 +27,7 @@ public interface TestData {
     String INVOICE_BASE_URI = BASE_URI + "/invoices";
     String PROMOTION_BASE_URI = BASE_URI + "/promotions";
     String CART_BASE_URI = BASE_URI + "/carts";
+    String ME_BASE_URI = BASE_URI + "/me";
 
     //TEST PROPERTIES FOR PRODUCTS, TAX-RATES AND CATEGORIES
     String PRODUCTS_BASE_URI = "/api/v1/products";
@@ -39,10 +40,14 @@ public interface TestData {
     Long TEST_CATEGORY_ID = 0L;
     String CATEGORY_BASE_URI = "/api/v1/categories";
 
+    //TEST PROPERTIES FOR PAYPAL
+    String PAYPAL_BASE_URI = "/api/v1/paypal";
+
 
 
     String OPERATOR_BASE_URI = BASE_URI + "/operators";
 
+    String ORDER_BASE_URI = BASE_URI + "/orders";
     String TEST_OPERATOR_NAME = "operator";
     String TEST_OPERATOR_LOGINNAME = "operatorLoginName";
     String TEST_OPERATOR_PASSWORD = "operatorPassword";
