@@ -160,7 +160,7 @@ public class OperatorEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update the password of an existing operator account", security = @SecurityRequirement(name = "apiKey"))
     public void updatePassword(@Valid @RequestBody UpdatePasswordDto updatePasswordDto, Principal principal) {
-        LOGGER.info("POST " + BASE_URL + "/password");
+        LOGGER.info("POST " + BASE_URL + "/password body: {}", updatePasswordDto);
         Operator operator = operatorService.findOperatorByLoginName(principal.getName());
         operatorService.updatePassword(operator.getId(), updatePasswordDto.getOldPassword(),
             updatePasswordDto.getNewPassword());
