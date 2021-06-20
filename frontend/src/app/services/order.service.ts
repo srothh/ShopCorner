@@ -1,10 +1,13 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
 import {Order} from '../dtos/order';
 import {CancellationPeriod} from '../dtos/cancellationPeriod';
 import {OperatorAuthService} from './auth/operator-auth.service';
+import {Permissions} from "../dtos/permissions.enum";
+import {Pagination} from "../dtos/pagination";
+import {Operator} from "../dtos/operator";
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +45,21 @@ export class OrderService {
    */
   getCancellationPeriod(): Observable<CancellationPeriod> {
     return this.httpClient.get<CancellationPeriod>(this.orderBaseURI + '/settings');
+  }
+
+  /**
+   * fetches all orders from the backend
+   *
+   * @param page that is needed
+   * @param pageCount amount of orders per page
+   */
+  getOrdersPage(page: number, pageCount: number): Observable<Pagination<Order>> {
+    console.log('Get orders for page: ', page);
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount));
+
+    return this.httpClient.get<Pagination<Order>>(this.orderBaseURI, {params, headers: this.getHeadersForOperator()});
   }
 
   private getHeadersForOperator(): HttpHeaders {
