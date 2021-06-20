@@ -5,9 +5,8 @@ import {Observable} from 'rxjs';
 import {Order} from '../dtos/order';
 import {CancellationPeriod} from '../dtos/cancellationPeriod';
 import {OperatorAuthService} from './auth/operator-auth.service';
-import {Permissions} from "../dtos/permissions.enum";
-import {Pagination} from "../dtos/pagination";
-import {Operator} from "../dtos/operator";
+import {Pagination} from '../dtos/pagination';
+
 
 @Injectable({
   providedIn: 'root'
