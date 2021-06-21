@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.CancellationPeriod;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -82,6 +83,18 @@ public class OrderServiceImpl implements OrderService {
         }
         Pageable returnPage = PageRequest.of(page, pageCount);
         return orderRepository.findAll(returnPage);
+    }
+
+    @Override
+    public Page<Order> getAllOrdersByCustomer(int page, int pageCount, Long customerId) {
+        LOGGER.trace("getAllOrdersByCustomerId({})", customerId);
+        if (pageCount == 0) {
+            pageCount = 15;
+        } else if (pageCount > 50) {
+            pageCount = 50;
+        }
+        Pageable returnPage = PageRequest.of(page, pageCount);
+        return orderRepository.findAllByCustomerId(returnPage, customerId);
     }
 
 

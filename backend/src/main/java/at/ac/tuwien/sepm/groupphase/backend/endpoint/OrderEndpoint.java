@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CancellationPeriodMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -67,15 +68,21 @@ public class OrderEndpoint {
      *
      * @return A list of all the retrieved orders
      */
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_CUSTOMER"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all orders", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<OrderDto> getAllOrders(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount
+                                                @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount,
+                                                @RequestParam(name = "customerId", defaultValue = "0") Long customerId
     ) {
-        LOGGER.info("GET api/v1/orders?page={}&page_count={}", page, pageCount);
-        Page<Order> orderPage = orderService.getAllOrders(page, pageCount);
+        LOGGER.info("GET api/v1/orders?page={}&page_count={}&customerId={}", page, pageCount, customerId);
+        Page<Order> orderPage;
+        if (customerId == 0) {
+            orderPage = orderService.getAllOrders(page, pageCount);
+        } else {
+            orderPage = orderService.getAllOrdersByCustomer(page, pageCount, customerId);
+        }
         return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderService.getOrderCount());
     }
 
