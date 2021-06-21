@@ -2,6 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
+import { ChartsModule } from 'ng2-charts';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -51,6 +52,7 @@ import { ShopOrderSuccessComponent } from './components/shop/shop-order-success/
 import { OperatorPromotionFormComponent } from './components/operator/operator-promotion-form/operator-promotion-form.component';
 import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-checkout.component';
 import { OperatorOrderSettingsComponent } from './components/operator/operator-order-settings/operator-order-settings.component';
+import { LineChartComponent } from './components/operator/operator-statistics/line-chart/line-chart.component';
 
 @NgModule({
   declarations: [
@@ -102,6 +104,7 @@ import { OperatorOrderSettingsComponent } from './components/operator/operator-o
     OperatorCategoryFormComponent,
     ShopCheckoutComponent,
     OperatorOrderSettingsComponent,
+    LineChartComponent,
   ],
   imports: [
     BrowserModule,
@@ -110,7 +113,8 @@ import { OperatorOrderSettingsComponent } from './components/operator/operator-o
     HttpClientModule,
     NgbModule,
     FormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    ChartsModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
