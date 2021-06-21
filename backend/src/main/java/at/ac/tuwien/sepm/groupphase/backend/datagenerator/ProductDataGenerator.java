@@ -15,6 +15,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import com.github.javafaker.Faker;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -27,11 +28,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
-import java.util.Locale;
-import java.util.Map;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Profile("generateData")
@@ -154,29 +151,45 @@ public class ProductDataGenerator {
 
     public void generateInvoices() {
         if (invoiceRepository.findAll().size() > 0) {
-            LOGGER.debug("operators already generated");
+            LOGGER.debug("invoices already generated");
         } else {
-            for (int i = 1; i <= 25; i++) {
-                InvoiceItem item = new InvoiceItem();
+            List<Product> products = productRepository.findAll();
+            for (int i = 1; i <= 50; i++) {
+                int rand = (int) (Math.random() * 10) + 1;
+                List<InvoiceItem> items = new ArrayList<>();
+                int[] used = new int[rand];
                 Invoice invoice = new Invoice();
-
-                Product p = productRepository.findAll().get(0);
-                item.setProduct(p);
-                item.setNumberOfItems(i);
-                invoice.setDate(LocalDateTime.now().minus(i, ChronoUnit.DAYS));
-                invoice.setAmount((item.getNumberOfItems() * (p.getPrice() * p.getTaxRate().getCalculationFactor())));
+                double amount = 0;
+                for (int j = 0; j < rand; j++) {
+                    InvoiceItem item =  new InvoiceItem();
+                    int prodId = (int) (Math.random() * products.size());
+                    while (ArrayUtils.contains(used, prodId)) {
+                        prodId = (int) (Math.random() * products.size());
+                    }
+                    used[j] = prodId;
+                    Product p = products.get(prodId);
+                    item.setProduct(p);
+                    int quantity = (int) (Math.random() * 4) + 1;
+                    item.setNumberOfItems(quantity);
+                    items.add(item);
+                    amount += (item.getNumberOfItems() * (p.getPrice() * p.getTaxRate().getCalculationFactor()));
+                }
+                int daysPast = (int) (Math.random() * 200) + 1;
+                invoice.setDate(LocalDateTime.now().minus(daysPast, ChronoUnit.DAYS));
+                invoice.setAmount(amount);
                 invoice.setInvoiceNumber(i + "" + invoice.getDate().getYear());
                 invoice.setInvoiceType(InvoiceType.operator);
                 Invoice newInvoice = invoiceRepository.save(invoice);
-                item.setInvoice(newInvoice);
-
-                InvoiceItemKey itemId = new InvoiceItemKey();
-                itemId.setInvoiceId(newInvoice.getId());
-                item.setId(itemId);
-                Set<InvoiceItem> itemSet = new HashSet<>();
-                itemSet.add(item);
-                invoice.setItems(itemSet);
-                invoiceItemRepository.save(item);
+                for (InvoiceItem item : items) {
+                    item.setInvoice(newInvoice);
+                    InvoiceItemKey itemId = new InvoiceItemKey();
+                    itemId.setInvoiceId(newInvoice.getId());
+                    item.setId(itemId);
+                    Set<InvoiceItem> itemSet = new HashSet<>();
+                    itemSet.add(item);
+                    invoice.setItems(itemSet);
+                    invoiceItemRepository.save(item);
+                }
             }
         }
     }
