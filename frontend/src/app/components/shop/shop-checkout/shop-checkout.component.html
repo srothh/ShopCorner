@@ -18,12 +18,20 @@
           <strong>{{getTotalTaxes().toFixed(2)}} €</strong>
         </li>
         <li class="list-group-item d-flex justify-content-between">
-          <span>Gesamt </span>
+          <span>Zwischensumme </span>
           <strong>{{getTotalPrice().toFixed(2)}} €</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Gutscheincode (Kein Code) </span>
+          <strong>- {{getTotalPrice().toFixed(2)}} €</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Gesamtpreis </span>
+          <strong>- {{getTotalPrice().toFixed(2)}} €</strong>
         </li>
       </ul>
       <small *ngIf="cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
-      <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} nach dem Bestellungseingang stornierbar.</small>
+      <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} Tag(en) nach dem Bestellungseingang stornierbar.</small>
 
       <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="proceedToPay()">Bezahlen mit Paypal
       </button>
@@ -31,7 +39,7 @@
     </div>
     <div class="col-md-8 order-md-1">
       <h4 class="mb-3">Rechnungsdaten</h4>
-      <form>
+      <form [formGroup]="orderForm">
         <div class="mb-3">
           <label for="firstName">Name</label>
           <input type="text" class="form-control" id="firstName" value="{{customer.name}}" disabled>
@@ -84,6 +92,16 @@
             </div>
             <span class="text-muted">{{product.price}} €</span>
           </li>
+          <li class="list-group-item d-flex justify-content-between flex-row bg-light">
+            <div class="text-success">
+              <h6 class="my-0 pb-1">Gutscheincode</h6>
+              <div class = "d-flex flex-row">
+                <input type="text" name="promoCode" formControlName="promoCode" class="form-control" id="promoCode">
+                <button type="button" class="btn btn-primary submit ">Anwenden</button>
+              </div>
+            </div>
+            <span class="text-success">-$5</span>
+          </li>
           <li class="list-group-item d-flex justify-content-between">
             <span>Gesamtpreis </span>
             <strong>{{getTotalPrice().toFixed(2)}} €</strong>
@@ -94,7 +112,7 @@
           <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} Tag(en) nach dem Bestellungseingang stornierbar.</small>
 
           <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="proceedToPay()">Bezahlen mit Paypal
-        </button></div>
+          </button></div>
       </form>
 
     </div>

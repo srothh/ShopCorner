@@ -65,5 +65,10 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionRepository.findAll();
     }
 
+    @Override
+    public Promotion findPromotionByCode(String code) {
+        return this.promotionRepository.getPromotionByCode(code);
+    }
+
 
 }

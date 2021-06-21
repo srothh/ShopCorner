@@ -56,7 +56,7 @@ export class ShopOrderSuccessComponent implements OnInit {
           this.paymentSucceeded = true;
           this.placeNewOrder();
           this.cartGlobals.resetCart();
-          //after payment -> discard paymentId and payerID
+          // after payment -> discard paymentId and payerID
 
         }
       }, error => {
@@ -64,14 +64,15 @@ export class ShopOrderSuccessComponent implements OnInit {
       });
     });
   }
+
   getCartSize() {
     return this.cartGlobals.getCartSize();
   }
 
   placeNewOrder() {
     this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer);
-    this.orderService.placeNewOrder(order).subscribe((orderData) => {
+    const order: Order = new Order(0, this.invoiceDto, this.customer, null);
+    this.orderService.placeNewOrder(order).subscribe(() => {
     });
   }
 

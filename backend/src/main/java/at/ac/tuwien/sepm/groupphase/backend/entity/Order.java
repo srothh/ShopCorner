@@ -25,6 +25,10 @@ public class Order {
     @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "id", updatable = false)
     private Customer customer;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "promotion_id", referencedColumnName = "id", updatable = false)
+    private Promotion promotion;
+
     public Order(Long id, Invoice invoice, Customer customer) {
         this.id = id;
         this.invoice = invoice;
@@ -37,6 +41,12 @@ public class Order {
     public Order(Invoice invoice, Customer customer) {
         this.invoice = invoice;
         this.customer = customer;
+    }
+
+    public Order(Invoice invoice, Customer customer, Promotion promotion) {
+        this.invoice = invoice;
+        this.customer = customer;
+        this.promotion = promotion;
     }
 
     public Long getId() {

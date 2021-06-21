@@ -16,6 +16,7 @@ import {PaypalService} from '../../../services/paypal.service';
 import {Router} from '@angular/router';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -31,12 +32,17 @@ export class ShopCheckoutComponent implements OnInit {
   cart: Cart;
   cancellationPeriod: CancellationPeriod;
   loading: boolean;
+  orderForm: FormGroup;
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
-              private orderService: OrderService, private paypalService: PaypalService, private router: Router) {
+              private orderService: OrderService, private paypalService: PaypalService, private router: Router,
+              private formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
+    this.orderForm = this.formBuilder.group( {
+      promoCode : ['']
+    });
     this.fetchCustomer();
     this.products = this.cartGlobals.getCart();
     this.getCancellationPeriod();
@@ -77,14 +83,16 @@ export class ShopCheckoutComponent implements OnInit {
       this.cart = cart;
     });
   }
+
   proceedToPay() {
     this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer);
+    const order: Order = new Order(0, this.invoiceDto, this.customer, null);
     this.paypalService.createPayment(order).subscribe((redirectUrl) => {
       window.location.href = redirectUrl;
       this.loading = true;
     });
   }
+
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
