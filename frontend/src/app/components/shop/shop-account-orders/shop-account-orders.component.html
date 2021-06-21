@@ -1,20 +1,20 @@
 <div class="container mt-5">
   <h2>Meine Bestellungen</h2>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12" *ngFor="let order of this.orders" >
       <div class="card mb-4 rounded-lg shadow-sm">
         <div class="card-header">
           <div class="order-header-information d-flex justify-content-between ">
             <div class="order-number">
               <p class="font-weight-bolder">Bestellungs. Nr.</p>
-              <p>123456</p>
+              <p>{{order.invoice.orderNumber}}</p>
             </div>
             <div class="order-date">
               <p class="font-weight-bolder">Bestellungsdatum:</p>
-              <p>21.6.2021</div>
+              <p>{{order.invoice.date | date: 'dd.MM.YYYY'}}</div>
             <div class="order-total-price">
               <p class="font-weight-bolder">Gesamtpreis (inkl. MwSt.): </p>
-              <p>122.45 EUR</p>
+              <p>{{order.invoice.amount + ' EUR'}}</p>
             </div>
             <div class="order-invoice">
               <p class="font-weight-bolder">Rechnung: </p>
@@ -23,29 +23,13 @@
           </div>
         </div>
         <div class="card-body">
-          <ul class="list-group list-group-flush">
+          <ul class="list-group list-group-flush" *ngFor="let orderItem of order.invoice.items">
             <li class="list-group-item d-flex flex-row">
               <img src="assets/no_image_available.svg" width="100" height="100">
               <div class="product-info d-flex flex-column ml-4">
-                <div class="order-product-name font-weight-bold">Banane</div>
-                <div class="order-product-description">Leckere Bananen aus Ecuador</div>
-                <div class="order-product-price">55.55 EUR</div>
-              </div>
-            </li>
-            <li class="list-group-item d-flex flex-row">
-              <img src="assets/no_image_available.svg" width="100" height="100">
-              <div class="product-info d-flex flex-column ml-4">
-                <div class="order-product-name font-weight-bold">Tomaten</div>
-                <div class="order-product-description">Leckere Tomaten aus Österreich</div>
-                <div class="order-product-price">2.55 EUR</div>
-              </div>
-            </li>
-            <li class="list-group-item d-flex flex-row">
-              <img src="assets/no_image_available.svg" width="100" height="100">
-              <div class="product-info d-flex flex-column ml-4">
-                <div class="order-product-name font-weight-bold">kartoffeln</div>
-                <div class="order-product-description">Leckere kartoffeln aus Deutschland</div>
-                <div class="order-product-price">1.55 EUR</div>
+                <div class="order-product-name font-weight-bold">{{ orderItem.numberOfItems +' x '+orderItem.product.name}}</div>
+                <div class="order-product-description">{{orderItem.product.description}}</div>
+                <div class="order-product-price">{{(orderItem.product.price * orderItem.product.taxRate.calculationFactor).toFixed(2) + ' EUR'}}</div>
               </div>
             </li>
           </ul>

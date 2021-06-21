@@ -24,7 +24,12 @@ export class ShopAccountOrdersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCustomer();
-    this.loadOrdersForPage();
+  }
+  loadCustomer(){
+    this.meService.getMyProfileData().subscribe((customerData)=>{
+      this.customer = customerData;
+      this.loadOrdersForPage();
+    });
   }
   loadOrdersForPage() {
     this.orderService.getOrdersForPage(this.customer.id).subscribe(
@@ -39,11 +44,6 @@ export class ShopAccountOrdersComponent implements OnInit {
         this.errorMessage = error.error;
       }
     );
-  }
-  loadCustomer(){
-    this.meService.getMyProfileData().subscribe((customerData)=>{
-      this.customer = customerData;
-    });
   }
 
 }
