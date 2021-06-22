@@ -11,6 +11,8 @@ import {Invoice} from '../../../../dtos/invoice';
 export class LineChartComponent implements OnInit {
 
   @Input() invoices: Invoice[];
+  @Input() start: Date;
+  @Input() end: Date;
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   public chartOptions = {
@@ -32,11 +34,17 @@ export class LineChartComponent implements OnInit {
 
   update() {
     const temp = [];
-    for (const invoice of this.invoices) {
-      temp.push(invoice.amount);
-      this.chartLabels.push(invoice.invoiceNumber);
+    const days = [];
+    for (let d = this.start; d<= this.end; d.setDate(d.getDate() + 1)) {
+      days.push(d.toISOString().split('T')[0]);
+      temp.push(0);
+      this.chartLabels.push(d.toISOString().split('T')[0]);
     }
-    this.chartData = [{data: temp, label: this.invoices[1].invoiceType}];
+    for (const invoice of this.invoices) {
+      const day = invoice.date.substring(0,10);
+      temp[days.indexOf(day)] += invoice.amount;
+    }
+    this.chartData = [{data: temp, label: 'Umsatz'}];
     setTimeout(() => {
       if (this.chart && this.chart.chart && this.chart.chart.config) {
         this.chart.chart.config.data.labels = this.chartLabels;
