@@ -1,3 +1,21 @@
+<div class="row">
+  <div class="col-1">
+  <label for="start">Von</label>
+  </div>
+  <div class="col">
+  <input type="date" id="start" [(ngModel)]="start" maxlength="10" placeholder="{{start}}"
+         name="start">
+  </div>
+  <div class="col-1">
+  <label for="end">Bis</label>
+  </div>
+  <div class="col">
+  <input type="date" id="end" [(ngModel)]="end" maxlength="10" placeholder="{{end}}" name="end">
+  </div>
+    <div class="col">
+  <button class="btn btn-primary" (click)="update()">Get</button>
+    </div>
+</div>
 <div>
   <app-line-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end"></app-line-chart>
 </div>

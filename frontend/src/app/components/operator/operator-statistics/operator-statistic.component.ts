@@ -14,19 +14,23 @@ export class OperatorStatisticComponent implements OnInit {
   errorMessage = '';
   invoices: Invoice[];
   invoiceType = InvoiceType.operator;
-  start: Date;
-  end: Date;
+  end = new Date();
+  start = new Date();
   loaded = false;
 
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
-    this.end = new Date();
-    this.start = new Date();
-    this.start.setDate(this.start.getDate() - 90);
+    this.start.setDate(this.start.getDate()-90);
     this.loadInvoicesForTime();
   }
 
+  update() {
+    this.loaded = false;
+    this.start = new Date(this.start);
+    this.end = new Date(this.end);
+    this.loadInvoicesForTime();
+  }
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
