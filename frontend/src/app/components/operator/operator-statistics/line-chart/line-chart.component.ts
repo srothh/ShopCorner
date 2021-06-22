@@ -35,7 +35,7 @@ export class LineChartComponent implements OnInit {
   update() {
     const temp = [];
     const days = [];
-    for (let d = this.start; d<= this.end; d.setDate(d.getDate() + 1)) {
+    for (let d = new Date(this.start); d<= this.end; d.setDate(d.getDate() + 1)) {
       days.push(d.toISOString().split('T')[0]);
       temp.push(0);
       this.chartLabels.push(d.toISOString().split('T')[0]);

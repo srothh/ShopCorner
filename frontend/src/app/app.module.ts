@@ -53,6 +53,7 @@ import { OperatorPromotionFormComponent } from './components/operator/operator-p
 import { ShopCheckoutComponent } from './components/shop/shop-checkout/shop-checkout.component';
 import { OperatorOrderSettingsComponent } from './components/operator/operator-order-settings/operator-order-settings.component';
 import { LineChartComponent } from './components/operator/operator-statistics/line-chart/line-chart.component';
+import { BarChartComponent } from './components/operator/operator-statistics/bar-chart/bar-chart.component';
 
 @NgModule({
   declarations: [
@@ -105,6 +106,7 @@ import { LineChartComponent } from './components/operator/operator-statistics/li
     ShopCheckoutComponent,
     OperatorOrderSettingsComponent,
     LineChartComponent,
+    BarChartComponent,
   ],
   imports: [
     BrowserModule,
