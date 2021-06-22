@@ -4,6 +4,7 @@ import {Order} from '../../../dtos/order';
 import {Pagination} from '../../../dtos/pagination';
 import {MeService} from '../../../services/me.service';
 import {Customer} from '../../../dtos/customer';
+import {Product} from '../../../dtos/product';
 
 @Component({
   selector: 'app-account-orders',
@@ -15,7 +16,7 @@ export class ShopAccountOrdersComponent implements OnInit {
   errorMessage = '';
   orders: Order[];
   page = 0;
-  pageSize = 15;
+  pageSize = 5;
   collectionSize = 0;
   customer: Customer;
 
@@ -32,18 +33,38 @@ export class ShopAccountOrdersComponent implements OnInit {
     });
   }
   loadOrdersForPage() {
-    this.orderService.getOrdersForPage(this.customer.id).subscribe(
+    this.orderService.getOrdersForPage(this.page, this.pageSize, this.customer.id).subscribe(
       (paginationDto: Pagination<Order>) => {
         console.log(paginationDto);
         this.orders = paginationDto.items;
         this.collectionSize = paginationDto.totalItemCount;
+        window.scrollTo(0,0);
         console.log('myOrders are: ', this.orders);
+        console.log('collectionSize:', this.collectionSize);
       },
       error => {
         this.error = true;
         this.errorMessage = error.error;
       }
     );
+  }
+  getImageSource(product: Product): string {
+    if (product.picture != null) {
+      return 'data:image/png;base64,' + product.picture;
+    }
+    return 'Error: no picture available';
+  }
+  previousPage(){
+    if (this.page > 0) {
+      this.page -= 1;
+      this.loadOrdersForPage();
+    }
+  }
+  nextPage(){
+    if ((this.page + 1) * this.pageSize < this.collectionSize) {
+      this.page += 1;
+      this.loadOrdersForPage();
+    }
   }
 
 }

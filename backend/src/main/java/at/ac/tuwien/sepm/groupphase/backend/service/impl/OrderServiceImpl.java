@@ -86,6 +86,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Cacheable(value = "orderPages")
     public Page<Order> getAllOrdersByCustomer(int page, int pageCount, Long customerId) {
         LOGGER.trace("getAllOrdersByCustomerId({})", customerId);
         if (pageCount == 0) {

@@ -83,7 +83,8 @@ public class OrderEndpoint {
         } else {
             orderPage = orderService.getAllOrdersByCustomer(page, pageCount, customerId);
         }
-        return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderService.getOrderCount());
+        long orderCount = orderPage.getTotalElements();
+        return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderCount);
     }
 
     /**

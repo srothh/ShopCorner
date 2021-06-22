@@ -48,10 +48,12 @@ export class OrderService {
   }
 
   /*TO-DELETE - because this method has already been written */
-  getOrdersForPage(customerId: number): Observable<Pagination<Order>> {
+  getOrdersForPage(page: number, pageSize: number, customerId: number): Observable<Pagination<Order>> {
     const options = {
      params: new HttpParams()
-        .set('customerId', `${customerId}`),
+        .set('customerId', `${customerId}`)
+        .set('page', `${page}`)
+        .set('page_count', `${pageSize}`),
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`)
     };
