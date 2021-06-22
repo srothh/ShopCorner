@@ -66,7 +66,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 
     @Override
-    @Cacheable(value = "counts", key = "'customerInvoices'")
     public Long getCustomerInvoiceCount() {
         LOGGER.trace("getCustomerInvoiceCount()");
         return invoiceRepository.count(InvoiceSpecifications.hasInvoiceType(InvoiceType.customer));
@@ -80,13 +79,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    @Caching(evict = {
-        @CacheEvict(value = "counts", key = "'invoices'"),
-        @CacheEvict(value = "counts", key = "'customerInvoices'"),
-        @CacheEvict(value = "counts", key = "'canceledInvoices'"),
-        @CacheEvict(value = "counts", key = "'invoicesByYear'"),
-        @CacheEvict(value = "invoicePages", allEntries = true)
-    })
     public Invoice setInvoiceCanceled(Invoice invoice) {
         LOGGER.trace("setInvoiceCanceled({})", invoice);
         invoice.setInvoiceType(InvoiceType.canceled);
