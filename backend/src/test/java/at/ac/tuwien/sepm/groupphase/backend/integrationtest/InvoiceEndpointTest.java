@@ -255,6 +255,7 @@ public class InvoiceEndpointTest implements TestData {
     public void givenTwoInvoices_whenFindAllWithPageAndPermission_thenListWithSizeTwoAndOverviewOfAllInvoices()
         throws Exception {
         Invoice newInvoice1 = this.invoiceService.createInvoice(invoice1);
+        Invoice newInvoice2 = this.invoiceService.createInvoice(invoice2);
 
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&invoiceType=operator")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
