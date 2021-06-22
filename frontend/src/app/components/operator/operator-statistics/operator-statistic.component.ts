@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Pagination} from '../../../dtos/pagination';
 import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice.service';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
@@ -15,23 +14,26 @@ export class OperatorStatisticComponent implements OnInit {
   errorMessage = '';
   invoices: Invoice[];
   invoiceType = InvoiceType.operator;
-  page = 0;
-  pageSize = 40;
+  start: Date;
+  end: Date;
   loaded = false;
 
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
-    this.loadInvoicesForPage();
+    this.end = new Date();
+    this.start = new Date();
+    this.start.setDate(this.start.getDate() - 90);
+    this.loadInvoicesForTime();
   }
 
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
-  private loadInvoicesForPage() {
-    this.invoiceService.getAllInvoicesForPage(this.page, this.pageSize, this.invoiceType).subscribe(
-      (paginationDto: Pagination<Invoice>) => {
-        this.invoices = paginationDto.items;
+  private loadInvoicesForTime() {
+    this.invoiceService.getAllInvoicesByDate(this.start, this.end).subscribe(
+      (invoices: Invoice[]) => {
+        this.invoices = invoices;
         this.loaded = true;
       },
       error => {

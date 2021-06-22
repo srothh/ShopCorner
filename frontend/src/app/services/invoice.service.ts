@@ -25,6 +25,7 @@ export class InvoiceService {
    *
    * @param page the number of the page to fetch
    * @param pageCount the size of the page to be fetched
+   * @param type of wanted invoice
    * @return The invoice retrieved from the backend
    */
   getAllInvoicesForPage(page: number, pageCount: number, type: InvoiceType): Observable<Pagination<Invoice>> {
@@ -34,6 +35,21 @@ export class InvoiceService {
       .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount))
       .set(this.globals.requestParamKeys.invoice.invoiceType, String(type));
     return this.httpClient.get<Pagination<Invoice>>(this.invoiceBaseUri, {params, headers: this.getHeadersForOperator()});
+  }
+
+  /**
+   * Retrieves all invoices for given time frame.
+   *
+   * @param start of time period
+   * @param end of time period
+   * @return invoiceList with all invoices in time period
+   */
+  getAllInvoicesByDate(start: Date, end: Date): Observable<Invoice[]> {
+    console.log('Get invoices from {} to {}', start.toISOString().split('T')[0], end.toISOString().split('T')[0]);
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.date.start, String(start.toISOString().split('T')[0]))
+      .set(this.globals.requestParamKeys.date.end, String(end.toISOString().split('T')[0]));
+    return this.httpClient.get<Invoice[]>(this.invoiceBaseUri + '/stats', {params, headers: this.getHeadersForOperator()});
   }
 
   /**
@@ -51,7 +67,7 @@ export class InvoiceService {
    * Loads customer by invoiceId from the backend
    *
    * @param id of the invoice
-   * @return customer
+   * @return customer from invoice
    */
   getCustomerById(id: number): Observable<Customer> {
     return this.httpClient.get<Customer>(this.customerBaseUri + '/' + id, {
@@ -64,7 +80,7 @@ export class InvoiceService {
    * Loads invoice by id from the backend
    *
    * @param id of the invoice
-   * @return invoice
+   * @return invoice with id
    */
   getInvoiceById(id: number): Observable<Invoice> {
     return this.httpClient.get<Invoice>(this.invoiceBaseUri + '/' + id, {
