@@ -68,23 +68,16 @@ public class OrderEndpoint {
      *
      * @return A list of all the retrieved orders
      */
-    @Secured({"ROLE_ADMIN", "ROLE_CUSTOMER"})
+    @Secured("ROLE_ADMIN")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all orders", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<OrderDto> getAllOrders(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount,
-                                                @RequestParam(name = "customerId", defaultValue = "0") Long customerId
+                                                @RequestParam(name = "page_count", defaultValue = "15") Integer pageCount
     ) {
-        LOGGER.info("GET api/v1/orders?page={}&page_count={}&customerId={}", page, pageCount, customerId);
-        Page<Order> orderPage;
-        if (customerId == 0) {
-            orderPage = orderService.getAllOrders(page, pageCount);
-        } else {
-            orderPage = orderService.getAllOrdersByCustomer(page, pageCount, customerId);
-        }
-        long orderCount = orderPage.getTotalElements();
-        return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderCount);
+        LOGGER.info("GET api/v1/orders?page={}&page_count={}", page, pageCount);
+        Page<Order> orderPage = orderService.getAllOrders(page, pageCount);
+        return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderPage.getTotalElements());
     }
 
     /**

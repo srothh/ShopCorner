@@ -1,18 +1,23 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdatePasswordDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
+import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
@@ -41,11 +46,15 @@ public class MeEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final CustomerMapper customerMapper;
     private final CustomerService customerService;
+    private final OrderService orderService;
+    private final OrderMapper orderMapper;
 
     @Autowired
-    public MeEndpoint(CustomerMapper customerMapper, CustomerService customerService) {
+    public MeEndpoint(CustomerMapper customerMapper, CustomerService customerService, OrderService orderService, OrderMapper orderMapper) {
         this.customerMapper = customerMapper;
         this.customerService = customerService;
+        this.orderService = orderService;
+        this.orderMapper = orderMapper;
     }
 
     @Secured({"ROLE_CUSTOMER"})
@@ -56,6 +65,20 @@ public class MeEndpoint {
         LOGGER.info("GET " + BASE_URL);
         Customer entity = customerService.findCustomerByLoginName(principal.getName());
         return customerMapper.customerToCustomerDto(entity);
+    }
+
+    @Secured({"ROLE_CUSTOMER"})
+    @GetMapping("/orders")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Retrieve all orders from the customer", security = @SecurityRequirement(name = "apiKey"))
+    public PaginationDto<OrderDto> findAllOrders(Principal principal, PaginationRequestDto paginationRequestDto) {
+        LOGGER.info("GET " + BASE_URL + "/orders");
+        String username = principal.getName();
+        int page = paginationRequestDto.getPage();
+        int pageSize = paginationRequestDto.getPageCount();
+        Customer customer = customerService.findCustomerByLoginName(username);
+        Page<Order> orderPage = this.orderService.getAllOrdersByCustomer(page, pageSize, customer.getId());
+        return new PaginationDto<OrderDto>(this.orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageSize, orderPage.getTotalPages(), orderPage.getTotalElements());
     }
 
     @Secured({"ROLE_CUSTOMER"})

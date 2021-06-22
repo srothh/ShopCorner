@@ -46,20 +46,6 @@ export class OrderService {
   getCancellationPeriod(): Observable<CancellationPeriod> {
     return this.httpClient.get<CancellationPeriod>(this.orderBaseURI + '/settings');
   }
-
-  /*TO-DELETE - because this method has already been written */
-  getOrdersForPage(page: number, pageSize: number, customerId: number): Observable<Pagination<Order>> {
-    const options = {
-     params: new HttpParams()
-        .set('customerId', `${customerId}`)
-        .set('page', `${page}`)
-        .set('page_count', `${pageSize}`),
-      headers: new HttpHeaders()
-        .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`)
-    };
-    return this.httpClient.get<Pagination<Order>>(this.orderBaseURI, options);
-  }
-
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);

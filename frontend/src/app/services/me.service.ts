@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {CustomerAuthService} from './auth/customer-auth.service';
 import {Observable} from 'rxjs';
 import {Customer} from '../dtos/customer';
+import {Pagination} from '../dtos/pagination';
+import {Order} from '../dtos/order';
 
 
 @Injectable({
@@ -20,6 +22,16 @@ export class MeService {
    */
   getMyProfileData(): Observable<Customer> {
     return this.httpClient.get<Customer>(this.meBaseUri, {headers: this.getHeadersForCustomer()});
+  }
+  getOrdersForPage(page: number, pageSize: number): Observable<Pagination<Order>> {
+    const options = {
+      params: new HttpParams()
+        .set('page', `${page}`)
+        .set('pageCount', `${pageSize}`),
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`)
+    };
+    return this.httpClient.get<Pagination<Order>>(this.meBaseUri + '/orders', options);
   }
 
   /**

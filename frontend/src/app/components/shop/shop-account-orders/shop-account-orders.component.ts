@@ -33,7 +33,7 @@ export class ShopAccountOrdersComponent implements OnInit {
     });
   }
   loadOrdersForPage() {
-    this.orderService.getOrdersForPage(this.page, this.pageSize, this.customer.id).subscribe(
+    this.meService.getOrdersForPage(this.page, this.pageSize).subscribe(
       (paginationDto: Pagination<Order>) => {
         console.log(paginationDto);
         this.orders = paginationDto.items;
