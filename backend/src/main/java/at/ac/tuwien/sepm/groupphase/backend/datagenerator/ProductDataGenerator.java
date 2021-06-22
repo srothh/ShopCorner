@@ -1,9 +1,21 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.*;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
+import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.repository.*;
+import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import com.github.javafaker.Faker;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -18,7 +30,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Profile("generateData")

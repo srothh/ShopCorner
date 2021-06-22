@@ -1,29 +1,24 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
-import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Set;
 
-import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -37,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -91,11 +87,10 @@ public class InvoiceEndpoint {
      *
      * @return List with all SimpleInvoices
      */
-
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
+    @Operation(summary = "Retrieve all invoices of type for page", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<SimpleInvoiceDto> getAllInvoices(@Valid PaginationRequestDto paginationRequestDto, @RequestParam("invoiceType") InvoiceType invoiceType) {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
@@ -110,9 +105,26 @@ public class InvoiceEndpoint {
                 new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
         }
         return dto;
-
     }
 
+    /**
+     * Get all invoices in a given time period.
+     *
+     * @param start of time period
+     * @param end of time period
+     * @return List with all Invoices in given time period
+     */
+    @PermitAll
+    @GetMapping(value = "/stats")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Retrieve all invoices in time period", security = @SecurityRequirement(name = "apiKey"))
+    public List<SimpleInvoiceDto> getAllByDate(@RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Calendar start,
+                                               @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Calendar end) {
+        LOGGER.info("GET api/v1/invoices/stats?start={}&end={}", start, end);
+        LocalDateTime starting = LocalDateTime.of(start.get(Calendar.YEAR), start.get(Calendar.MONTH) + 1, start.get(Calendar.DATE), 0, 0);
+        LocalDateTime ending = LocalDateTime.of(end.get(Calendar.YEAR), end.get(Calendar.MONTH) + 1, end.get(Calendar.DATE), 23, 59);
+        return invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.findByDate(starting, ending));
+    }
 
     /**
      * Creates a database entry and generates a pdf.
