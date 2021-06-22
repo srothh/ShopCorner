@@ -30,6 +30,7 @@ public class PdfGenerator {
     private final String htmlCustomer;
     private final String htmlCanceledOperator;
     private final String htmlCanceledCustomer;
+
     public PdfGenerator() {
         String directory = "htmlToPdfTemplate";
         try {

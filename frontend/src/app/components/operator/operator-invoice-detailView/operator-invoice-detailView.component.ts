@@ -24,7 +24,8 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
     this.detailedInvoice = new Invoice();
     this.detailedInvoice.date = '';
     this.detailedInvoice.amount = 0;
-    this.customerExists = this.value.invoiceType === InvoiceType.customer || (this.value.customerId !== undefined && this.value.customerId !== null);
+    this.customerExists = this.value.invoiceType === InvoiceType.customer ||
+      (this.value.customerId !== undefined && this.value.customerId !== null);
     if (this.customerExists) {
       this.fetchCustomerData(this.value);
     } else {

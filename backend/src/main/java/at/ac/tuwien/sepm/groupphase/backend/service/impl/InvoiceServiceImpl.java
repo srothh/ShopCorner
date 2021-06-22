@@ -88,7 +88,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         @CacheEvict(value = "invoicePages", allEntries = true)
     })
     public Invoice setInvoiceCanceled(Invoice invoice) {
-        LOGGER.trace("setInvoiceCanceled({})",invoice);
+        LOGGER.trace("setInvoiceCanceled({})", invoice);
         invoice.setInvoiceType(InvoiceType.canceled);
         return this.invoiceRepository.save(invoice);
     }
