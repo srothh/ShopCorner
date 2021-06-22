@@ -84,6 +84,12 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAll(returnPage);
     }
 
+    @Override
+    public Order findOrderById(Long id) {
+        LOGGER.trace("findOrderById({})", id);
+        return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find order"));
+    }
+
 
     @Override
     @Cacheable(value = "counts", key = "'orders'")
