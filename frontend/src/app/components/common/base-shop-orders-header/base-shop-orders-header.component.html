@@ -13,7 +13,10 @@
     </div>
     <div class="order-invoice">
       <p class="font-weight-bolder">Rechnung: </p>
-      <p>Download</p>
+      <a href="#" class="link-primary" (click)="downloadInvoice($event, order.invoice.id, order.invoice.date)">PDF download</a>
+    </div>
+    <div class="order-cancel">
+      <button class="btn btn-dark">Stornieren</button>
     </div>
   </div>
 </div>

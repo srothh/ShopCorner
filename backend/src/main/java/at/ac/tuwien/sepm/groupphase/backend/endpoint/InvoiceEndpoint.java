@@ -141,7 +141,7 @@ public class InvoiceEndpoint {
      * @param id id of the invoice
      * @return ResponseEntity with the generated pdf
      */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE", "ROLE_CUSTOMER"})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}/pdf", produces = "application/pdf")
     @Operation(summary = "Retrieve new invoice as pdf", security = @SecurityRequirement(name = "apiKey"))

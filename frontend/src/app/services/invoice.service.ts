@@ -8,6 +8,7 @@ import {OperatorAuthService} from './auth/operator-auth.service';
 import {Pagination} from '../dtos/pagination';
 import {InvoiceType} from '../dtos/invoiceType.enum';
 import {Customer} from '../dtos/customer';
+import {CustomerAuthService} from './auth/customer-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,10 @@ export class InvoiceService {
   private invoiceBaseUri: string = this.globals.backendUri + '/invoices';
   private productBaseUri: string = this.globals.backendUri + '/products';
   private customerBaseUri: string = this.globals.backendUri + '/customers';
-  constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
+  constructor(private httpClient: HttpClient,
+              private globals: Globals,
+              private operatorAuthService: OperatorAuthService,
+              private customerAuthService: CustomerAuthService) {
   }
 
   /**
@@ -81,6 +85,15 @@ export class InvoiceService {
   getInvoiceAsPdfById(id: number): Observable<any> {
     return this.httpClient.get(this.invoiceBaseUri + '/' + id + '/pdf', this.getPdfHeadersForOperator());
   }
+  /**
+   * Loads invoice pdf by id from the backend for the customer
+   *
+   * @param id of the invoice
+   * @return pdf generated from the invoice entry
+   */
+  getInvoiceAsPdfByIdForCustomer(id: number): Observable<any> {
+    return this.httpClient.get(this.invoiceBaseUri + '/' + id + '/pdf', this.getPdfHeadersForCustomer());
+  }
 
   /**
    * Creates a new invoice entry and a pdf in the backend.
@@ -105,6 +118,12 @@ export class InvoiceService {
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
+  }
+  private getPdfHeadersForCustomer(): any {
+    return {
+      responseType: 'blob' as 'json',
+      headers: new HttpHeaders().set('Authorization', `Bearer ${this.customerAuthService.getToken()}`).set('Accept', 'application/pdf')
+    };
   }
 
   private getPdfHeadersForOperator(): any {
