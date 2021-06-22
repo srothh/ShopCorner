@@ -39,20 +39,12 @@ export class ShopAccountOrdersComponent implements OnInit {
         this.orders = paginationDto.items;
         this.collectionSize = paginationDto.totalItemCount;
         window.scrollTo(0,0);
-        console.log('myOrders are: ', this.orders);
-        console.log('collectionSize:', this.collectionSize);
       },
       error => {
         this.error = true;
         this.errorMessage = error.error;
       }
     );
-  }
-  getImageSource(product: Product): string {
-    if (product.picture != null) {
-      return 'data:image/png;base64,' + product.picture;
-    }
-    return 'Error: no picture available';
   }
   previousPage(){
     if (this.page > 0) {

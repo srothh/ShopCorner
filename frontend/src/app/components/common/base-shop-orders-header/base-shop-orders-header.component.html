@@ -1,0 +1,20 @@
+<div class="card-header">
+  <div class="order-header-information d-flex justify-content-between ">
+    <div class="order-number">
+      <p class="font-weight-bolder">Bestellungs. Nr.</p>
+      <p>{{order.invoice.orderNumber}}</p>
+    </div>
+    <div class="order-date">
+      <p class="font-weight-bolder">Bestellungsdatum:</p>
+      <p>{{order.invoice.date | date: 'dd.MM.YYYY'}}</div>
+    <div class="order-total-price">
+      <p class="font-weight-bolder">Gesamtpreis (inkl. MwSt.): </p>
+      <p>{{order.invoice.amount + ' EUR'}}</p>
+    </div>
+    <div class="order-invoice">
+      <p class="font-weight-bolder">Rechnung: </p>
+      <p>Download</p>
+    </div>
+  </div>
+</div>
+

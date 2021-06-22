@@ -10,53 +10,14 @@
         <h6 class="text-muted">Zeigt {{(this.pageSize * this.page) + 1 }}-{{collectionSize}}
           von {{collectionSize}}</h6>
       </ng-template>
-
-
     </div>
     <div class="col-md-12" *ngFor="let order of this.orders">
       <div class="card mb-4 rounded-lg shadow-sm">
-        <div class="card-header">
-          <div class="order-header-information d-flex justify-content-between ">
-            <div class="order-number">
-              <p class="font-weight-bolder">Bestellungs. Nr.</p>
-              <p>{{order.invoice.orderNumber}}</p>
-            </div>
-            <div class="order-date">
-              <p class="font-weight-bolder">Bestellungsdatum:</p>
-              <p>{{order.invoice.date | date: 'dd.MM.YYYY'}}</div>
-            <div class="order-total-price">
-              <p class="font-weight-bolder">Gesamtpreis (inkl. MwSt.): </p>
-              <p>{{order.invoice.amount + ' EUR'}}</p>
-            </div>
-            <div class="order-invoice">
-              <p class="font-weight-bolder">Rechnung: </p>
-              <p>Download</p>
-            </div>
-          </div>
-        </div>
-        <div class="card-body">
-          <ul class="list-group list-group-flush" *ngFor="let orderItem of order.invoice.items">
-            <li class="list-group-item d-flex flex-row">
-              <img *ngIf="orderItem.product.picture !== null" src="{{getImageSource(orderItem.product)}}" width="100"
-                   height="100">
-              <object *ngIf="orderItem.product.picture == null" data="assets/no_image_available.svg" width="100"
-                      height="100"></object>
-              <div class="product-info d-flex flex-column ml-4">
-                <div
-                  class="order-product-name font-weight-bold">{{ orderItem.numberOfItems + ' x ' + orderItem.product.name}}</div>
-                <div class="order-product-description">{{orderItem.product.description}}</div>
-                <div
-                  class="order-product-price">{{(orderItem.product.price * orderItem.product.taxRate.calculationFactor).toFixed(2) + ' EUR'}}</div>
-              </div>
-            </li>
-          </ul>
-        </div>
+        <app-base-shop-orders-header [order]="order"></app-base-shop-orders-header>
+        <app-base-shop-order-item [orderItems]="order.invoice.items"></app-base-shop-order-item>
       </div>
     </div>
   </div>
-  <ng-template #no_orders>
-    <h4 class="text-center mt-4">Keine Bestellungen vorhanden</h4>
-  </ng-template>
   <div *ngIf="this.collectionSize > 0" class="d-flex justify-content-between">
     <button class="btn btn-dark" [disabled]="page === 0"
             (click)=previousPage()>
@@ -67,3 +28,8 @@
     </button>
   </div>
 </div>
+<ng-template #no_orders>
+  <h4 class="text-center mt-4">Keine Bestellungen vorhanden</h4>
+</ng-template>
+
+
