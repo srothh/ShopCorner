@@ -17,6 +17,8 @@ import {Router} from '@angular/router';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {PromotionService} from '../../../services/promotion.service';
+import {Promotion} from '../../../dtos/promotion';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -33,15 +35,18 @@ export class ShopCheckoutComponent implements OnInit {
   cancellationPeriod: CancellationPeriod;
   loading: boolean;
   orderForm: FormGroup;
+  promotion: Promotion = null;
+  promotionError = false;
+  promotionErrorMessage = '';
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
               private orderService: OrderService, private paypalService: PaypalService, private router: Router,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder, private promotionService: PromotionService) {
   }
 
   ngOnInit(): void {
-    this.orderForm = this.formBuilder.group( {
-      promoCode : ['']
+    this.orderForm = this.formBuilder.group({
+      promoCode: ['']
     });
     this.fetchCustomer();
     this.products = this.cartGlobals.getCart();
@@ -51,6 +56,14 @@ export class ShopCheckoutComponent implements OnInit {
   getStreetAddress(): string {
     return this.customer.address.street + ' ' + this.customer.address.houseNumber + (this.customer.address.doorNumber
       ? '/' + this.customer.address.doorNumber : '');
+  }
+
+  getTotalPriceWithPromotion() {
+    if (this.promotion) {
+      return this.getTotalPrice() - this.promotion.discount;
+    } else {
+      return this.getTotalPrice();
+    }
   }
 
   getCartSize() {
@@ -86,9 +99,13 @@ export class ShopCheckoutComponent implements OnInit {
 
   proceedToPay() {
     this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer, null);
+    const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
     this.paypalService.createPayment(order).subscribe((redirectUrl) => {
-      window.location.href = redirectUrl;
+      if(this.promotion){
+        window.location.href = (redirectUrl + '&promotion=' + order.promotion.code);
+      }else{
+        window.location.href = redirectUrl;
+      }
       this.loading = true;
     });
   }
@@ -103,10 +120,34 @@ export class ShopCheckoutComponent implements OnInit {
         this.invoiceDto.items.push(invItem);
       }
     }
-    this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
+    this.invoiceDto.amount = +this.getTotalPriceWithPromotion().toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
+  }
+
+  getPromotion() {
+    this.promotionService.getPromotionByCode(this.orderForm.controls.promoCode.value).subscribe((promotion: Promotion) => {
+      if(this.isValidCode(promotion)){
+        this.promotionError = false;
+        this.promotionErrorMessage = '';
+        this.promotion = promotion;
+      }
+    });
+  }
+
+  private isValidCode(promotion: Promotion) {
+    if (this.getTotalPrice() >= promotion.minimumOrderValue && new Date(Date.now()) <= new Date(promotion.expirationDate)) {
+      return true;
+    }else if (this.getTotalPrice() >= promotion.minimumOrderValue){
+      this.promotionError = true;
+      this.promotionErrorMessage = 'Gutscheincode abgelaufen!';
+      return false;
+    }else {
+      this.promotionError = true;
+      this.promotionErrorMessage = 'Mindestbestellwert nicht erreicht!!';
+      return false;
+    }
   }
 
   private fetchCustomer() {

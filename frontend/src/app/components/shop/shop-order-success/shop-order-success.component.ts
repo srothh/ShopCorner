@@ -16,6 +16,8 @@ import {Cart} from '../../../dtos/cart';
 import {MeService} from '../../../services/me.service';
 import {CartService} from '../../../services/cart.service';
 import {ConfirmedPayment} from '../../../dtos/confirmedPayment';
+import {PromotionService} from '../../../services/promotion.service';
+import {Promotion} from '../../../dtos/promotion';
 
 @Component({
   selector: 'app-shop-order-success',
@@ -34,6 +36,8 @@ export class ShopOrderSuccessComponent implements OnInit {
   cart: Cart;
   confirmedPayment: ConfirmedPayment;
   alreadyOrdered: boolean;
+  promotionId;
+  promotion: Promotion;
 
   constructor(private paypalService: PaypalService,
               private activatedRoute: ActivatedRoute,
@@ -41,7 +45,8 @@ export class ShopOrderSuccessComponent implements OnInit {
               private cartGlobals: CartGlobals,
               private orderService: OrderService,
               private meService: MeService,
-              private cartService: CartService) {
+              private cartService: CartService,
+              private promotionService: PromotionService) {
   }
 
   ngOnInit(): void {
@@ -50,6 +55,7 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.paymentId = params['paymentId'];
       this.payerId = params['PayerID'];
+      this.promotionId = params['promotion'];
       this.confirmedPayment = new ConfirmedPayment(0, this.paymentId, this.payerId);
       this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
         if (finalisedPaymentData.includes('Payment successful')) {
@@ -62,6 +68,12 @@ export class ShopOrderSuccessComponent implements OnInit {
       }, error => {
         this.paymentSucceeded = false;
       });
+    });
+  }
+
+  getPromotion() {
+    this.promotionService.getPromotionByCode(this.promotionId).subscribe((promotion: Promotion) => {
+      this.promotion = promotion;
     });
   }
 

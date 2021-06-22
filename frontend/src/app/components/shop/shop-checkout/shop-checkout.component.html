@@ -22,12 +22,13 @@
           <strong>{{getTotalPrice().toFixed(2)}} €</strong>
         </li>
         <li class="list-group-item d-flex justify-content-between">
-          <span>Gutscheincode (Kein Code) </span>
-          <strong>- {{getTotalPrice().toFixed(2)}} €</strong>
+          <span *ngIf="!promotion">Gutscheincode (Kein Code) </span>
+          <span *ngIf="promotion">Gutscheincode ({{promotion.code}}) </span>
+          <strong *ngIf="promotion">-{{promotion.discount}} €</strong>
         </li>
         <li class="list-group-item d-flex justify-content-between">
           <span>Gesamtpreis </span>
-          <strong>- {{getTotalPrice().toFixed(2)}} €</strong>
+          <strong>{{getTotalPriceWithPromotion().toFixed(2)}} €</strong>
         </li>
       </ul>
       <small *ngIf="cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
@@ -97,14 +98,18 @@
               <h6 class="my-0 pb-1">Gutscheincode</h6>
               <div class = "d-flex flex-row">
                 <input type="text" name="promoCode" formControlName="promoCode" class="form-control" id="promoCode">
-                <button type="button" class="btn btn-primary submit ">Anwenden</button>
+                <button type="button" (click)="getPromotion()" class="btn btn-primary submit ">Anwenden</button>
               </div>
+              <small class="text-danger"
+                     *ngIf="promotionError">
+                {{promotionErrorMessage}}
+              </small>
             </div>
-            <span class="text-success">-$5</span>
+            <span class="text-success" *ngIf="promotion">-{{promotion.discount}} €</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
-            <span>Gesamtpreis </span>
-            <strong>{{getTotalPrice().toFixed(2)}} €</strong>
+            <span>Gesamtpreis (inkl. Steuern)</span>
+            <strong>{{getTotalPriceWithPromotion().toFixed(2)}} €</strong>
           </li>
         </ul>
         <div>
