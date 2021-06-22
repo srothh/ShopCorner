@@ -51,6 +51,9 @@ public class InvoiceServiceImpl implements InvoiceService {
             pageCount = 50;
         }
         Pageable returnPage = PageRequest.of(page, pageCount);
+        if (invoiceType == InvoiceType.operator) {
+            return this.invoiceRepository.findAll(returnPage);
+        }
         return this.invoiceRepository.findAll(InvoiceSpecifications.hasInvoiceType(invoiceType), returnPage);
     }
 
@@ -61,6 +64,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.count();
     }
 
+
     @Override
     @Cacheable(value = "counts", key = "'customerInvoices'")
     public Long getCustomerInvoiceCount() {
@@ -68,6 +72,26 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.count(InvoiceSpecifications.hasInvoiceType(InvoiceType.customer));
     }
 
+    @Override
+    @Cacheable(value = "counts", key = "'canceledInvoices'")
+    public Long getCanceledInvoiceCount() {
+        LOGGER.trace("getCanceledInvoiceCount()");
+        return invoiceRepository.count(InvoiceSpecifications.hasInvoiceType(InvoiceType.canceled));
+    }
+
+    @Override
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'invoices'"),
+        @CacheEvict(value = "counts", key = "'customerInvoices'"),
+        @CacheEvict(value = "counts", key = "'canceledInvoices'"),
+        @CacheEvict(value = "counts", key = "'invoicesByYear'"),
+        @CacheEvict(value = "invoicePages", allEntries = true)
+    })
+    public Invoice setInvoiceCanceled(Invoice invoice) {
+        LOGGER.trace("setInvoiceCanceled({})",invoice);
+        invoice.setInvoiceType(InvoiceType.canceled);
+        return this.invoiceRepository.save(invoice);
+    }
 
     @Cacheable(value = "counts", key = "'invoicesByYear'")
     public long getInvoiceCountByYear(LocalDateTime firstDateOfYear) {
@@ -85,6 +109,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         @CacheEvict(value = "counts", key = "'invoices'"),
         @CacheEvict(value = "counts", key = "'customerInvoices'"),
         @CacheEvict(value = "counts", key = "'invoicesByYear'"),
+        @CacheEvict(value = "counts", key = "'canceledInvoices'"),
         @CacheEvict(value = "invoicePages", allEntries = true)
     })
     @Transactional

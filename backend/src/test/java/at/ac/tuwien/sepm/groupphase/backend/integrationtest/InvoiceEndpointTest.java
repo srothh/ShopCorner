@@ -44,9 +44,11 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ExtendWith(SpringExtension.class)
@@ -161,9 +163,39 @@ public class InvoiceEndpointTest implements TestData {
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
-
     }
 
+    @Test
+    public void givenAllProperties_whenPut_thenCanceledInvoice() throws Exception {
+        Set<InvoiceItem> set1 = invoice1.getItems();
+        invoice1.setItems(null);
+
+        Invoice newInvoice = invoiceRepository.save(invoice1);
+        for(InvoiceItem item: set1){
+            item.setInvoice(newInvoice);
+            invoiceItemRepository.save(item);
+        }
+
+        MvcResult mvcResult = this.mockMvc.perform(put(INVOICE_BASE_URI + "?invoice="+newInvoice.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        DetailedInvoiceDto detailedInvoiceDto = objectMapper.readValue(response.getContentAsString(),
+            DetailedInvoiceDto.class);
+
+        assertAll(
+            () -> assertNotNull(detailedInvoiceDto.getId()),
+            () -> assertNotNull(detailedInvoiceDto.getDate()),
+            () -> assertEquals(newInvoice.getAmount(), detailedInvoiceDto.getAmount()),
+            () -> assertNotEquals(newInvoice.getInvoiceType(), detailedInvoiceDto.getInvoiceType()),
+            () -> assertNotEquals(newInvoice.getInvoiceType(), InvoiceType.canceled)
+        );
+    }
 
     @Test
     public void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
@@ -224,11 +256,6 @@ public class InvoiceEndpointTest implements TestData {
         throws Exception {
         Invoice newInvoice1 = this.invoiceService.createInvoice(invoice1);
 
-        Invoice newInvoice2 = this.invoiceService.createInvoice(invoice2);
-
-
-
-
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&invoiceType=operator")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
@@ -253,6 +280,24 @@ public class InvoiceEndpointTest implements TestData {
         );
     }
 
+
+    @Test
+    public void givenNothing_whenSetCanceled_then404() throws Exception {
+        invoiceRepository.deleteAll();
+        MvcResult mvcResult = this.mockMvc.perform(put(INVOICE_BASE_URI + "?invoice="+0L)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(
+            () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
+            () -> {
+                String content = response.getContentAsString();
+                assertEquals(("Could not find invoice with id 0"), content);
+            }
+        );
+    }
 
 
     @Test

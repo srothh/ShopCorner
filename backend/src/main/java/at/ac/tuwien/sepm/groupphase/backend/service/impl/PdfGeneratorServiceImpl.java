@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.CanceledInvoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
@@ -29,25 +31,42 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     @Override
     public byte[] createPdfInvoiceOperator(Invoice invoice) {
         LOGGER.trace("createPdfInvoiceOperator({})", invoice);
-        return pdfGenerator.generatePdfOperator(invoice);
+        return pdfGenerator.generatePdf(invoice, null);
     }
 
 
     @Override
     public byte[] createPdfInvoiceCustomerFromInvoice(Invoice invoice) {
         LOGGER.trace("createPdfInvoiceCustomerFromInvoice({})", invoice);
-        return pdfGenerator.generatePdfCustomer(this.orderService.getOrderByInvoice(invoice));
+        Order order = this.orderService.getOrderByInvoice(invoice);
+        return pdfGenerator.generatePdf(order.getInvoice(), order);
     }
 
     @Override
     public byte[] createPdfInvoiceCustomer(Order order) {
         LOGGER.trace("createPdfInvoiceCustomer({})", order);
-        return pdfGenerator.generatePdfCustomer(order);
+        return pdfGenerator.generatePdf(order.getInvoice(), order);
+    }
+
+
+    @Override
+    public byte[] createPdfCanceledInvoiceOperator(Invoice invoice) {
+        LOGGER.trace("createPdfCanceledInvoiceOperator({})", invoice);
+        if (invoice.getInvoiceType() != InvoiceType.canceled) {
+            throw new ServiceException("It is not possible to cancel this invoice");
+        }
+        if (invoice.getCustomerId() == null) {
+            return pdfGenerator.generatePdf(invoice, null);
+        }
+        return pdfGenerator.generatePdf(invoice, this.orderService.getOrderByInvoice(invoice));
     }
 
     @Override
-    public byte[] createPdfCanceledInvoiceOperator(CanceledInvoice canceledInvoiceService) {
-        LOGGER.trace("createPdfInvoiceCustomer({})", canceledInvoiceService);
-        return pdfGenerator.generatePdfOperatorCanceled(canceledInvoiceService);
+    public byte[] createPdfCanceledInvoiceCustomer(Order order) {
+        LOGGER.trace("createPdfCanceledInvoiceCustomer({})", order);
+        if (order.getInvoice().getInvoiceType() != InvoiceType.canceled) {
+            throw new ServiceException("It is not possible to cancel this invoice");
+        }
+        return pdfGenerator.generatePdf(order.getInvoice(), order);
     }
 }

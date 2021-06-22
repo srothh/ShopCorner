@@ -21,6 +21,7 @@ export class OperatorInvoiceComponent implements OnInit {
   errorMessage = '';
   detailViewInvoice: Invoice;
   invoiceType = InvoiceType.operator;
+  onCanceledWindow = false;
 
   constructor(private invoiceService: InvoiceService) {
   }
@@ -69,21 +70,78 @@ export class OperatorInvoiceComponent implements OnInit {
     this.detailViewInvoice = invoice;
   }
 
+  isCanceled(invoice: Invoice) {
+    if (this.onCanceledWindow) {
+      return false;
+    }
+    if (invoice !== undefined) {
+      return invoice.invoiceType === InvoiceType.canceled;
+    }
+    return false;
+  }
+  isDetailedInvoiceCanceled() {
+    if (this.detailViewInvoice !== undefined) {
+      return this.detailViewInvoice.invoiceType === InvoiceType.canceled;
+    }
+    return false;
+  }
+  canceledInvoice() {
+    this.invoiceService.setInvoiceCanceled(this.detailViewInvoice).subscribe((item) => {
+      console.log(item);
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error.error;
+    });
+    this.loadInvoicesForPage();
+    this.toggleSide();
+    this.showAll();
+  }
 
   showAll() {
     this.invoiceType = InvoiceType.operator;
     this.invoices = [];
+    this.resetPage();
     this.loadInvoicesForPage();
+    this.onCanceledWindow = false;
   }
 
   showCustomer() {
     this.invoiceType = InvoiceType.customer;
     this.invoices = [];
+    this.resetPage();
     this.loadInvoicesForPage();
+    this.onCanceledWindow = false;
+
   }
 
   showCanceled() {
-    console.log('TODO');
+    this.invoiceType = InvoiceType.canceled;
+    this.invoices = [];
+    this.resetPage();
+    this.loadInvoicesForPage();
+    this.onCanceledWindow = true;
+  }
+
+  resetPage() {
+    this.page = 0;
+    this.pageSize = 15;
+    this.collectionSize = 0;
+  }
+
+  showToolTip(invoice: Invoice) {
+    let toolTipText = '';
+    switch (invoice.invoiceType) {
+      case InvoiceType.canceled:
+        toolTipText = 'Stronierte Rechnung';
+        break;
+      case InvoiceType.customer:
+        toolTipText = 'Kunden Rechnung';
+        break;
+      case InvoiceType.operator:
+        toolTipText = 'Im Geschäft erstellte Rechnung';
+        break;
+    }
+    return toolTipText;
   }
 
   /**
@@ -93,6 +151,7 @@ export class OperatorInvoiceComponent implements OnInit {
     this.invoiceService.getAllInvoicesForPage(this.page, this.pageSize, this.invoiceType).subscribe(
       (paginationDto: Pagination<Invoice>) => {
         this.invoices = paginationDto.items;
+        this.pageSize = paginationDto.pageSize;
         this.collectionSize = paginationDto.totalItemCount;
       },
       error => {

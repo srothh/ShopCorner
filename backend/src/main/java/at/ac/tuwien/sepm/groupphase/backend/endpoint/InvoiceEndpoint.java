@@ -45,6 +45,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -105,9 +106,12 @@ public class InvoiceEndpoint {
         if (invoiceType == InvoiceType.operator) {
             dto =
                 new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getInvoiceCount());
-        } else {
+        } else if (invoiceType == InvoiceType.customer) {
             dto =
                 new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
+        } else {
+            dto =
+                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCanceledInvoiceCount());
         }
         return dto;
     }
@@ -135,6 +139,22 @@ public class InvoiceEndpoint {
     }
 
     /**
+     * Set an invoice to canceled in the database.
+     *
+     * @param invoiceId id of the invoice which should be updated in the database
+     * @return DetailedInvoiceDto with the updated invoice
+     */
+    @PermitAll
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping
+    @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
+    public DetailedInvoiceDto resetInvoiceCanceled(@RequestParam("invoice") Long invoiceId) {
+        LOGGER.info("PUT /api/v1/invoices?invoice={}", invoiceId);
+        Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(this.invoiceService.findOneById(invoiceId));
+        return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice);
+    }
+
+    /**
      * Finds an invoice and generates a PDF from it.
      *
      * @param id id of the invoice
@@ -153,7 +173,7 @@ public class InvoiceEndpoint {
         } else if (invoice.getInvoiceType() == InvoiceType.customer) {
             contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
         } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
-            // TODO: createPdfInvoiceCanceled
+            contents = this.pdfGeneratorService.createPdfCanceledInvoiceOperator(invoice);
         } else {
             return ResponseEntity.status(402).build();
         }

@@ -3,27 +3,39 @@
   <h2 [hidden]="toggleForm">Rechnung</h2>
   <div class="d-flex justify-content-between">
 
-  <div [hidden]="toggleForm || toggleDetailView" class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
-    <label class="btn btn-light btn-sm active">
-      <input type="radio" name="buttons" id="option1" checked [disabled]="toggleForm||toggleDetailView" (click)="showAll()">
-      Alle
-    </label>
-    <label class="btn btn-light btn-sm">
-      <input type="radio" name="buttons" id="option2" [disabled]="toggleForm||toggleDetailView" (click)="showCustomer()">
-      Gesendet
-    </label>
-    <label class="btn btn-light btn-sm">
-      <input type="radio" name="buttons" id="option3" [disabled]="toggleForm||toggleDetailView" (click)="showCanceled()">
-      Storniert
-    </label>
-  </div>
-  <div class="">
+    <div [hidden]="toggleForm || toggleDetailView" class="btn-group btn-group-toggle blocks" role="group"
+         data-toggle="buttons" aria-label="operator selection">
+      <label class="btn btn-light btn-sm active">
+        <input type="radio" name="buttons" id="option1" checked [disabled]="toggleForm||toggleDetailView"
+               (click)="showAll()">
+        Alle
+      </label>
+      <label class="btn btn-light btn-sm">
+        <input type="radio" name="buttons" id="option2" [disabled]="toggleForm||toggleDetailView"
+               (click)="showCustomer()">
+        Gesendet
+      </label>
+      <label class="btn btn-light btn-sm">
+        <input type="radio" name="buttons" id="option3" [disabled]="toggleForm||toggleDetailView"
+               (click)="showCanceled()">
+        Storniert
+      </label>
+    </div>
     <div>
-      <button type="button" class="btn btn-primary"
-              (click)="toggleSide()">{{(toggleForm||toggleDetailView)? 'Zurück' : '+ Rechnung'}}</button>
+      <div>
+        <button type="button" class="btn btn-primary"
+                (click)="toggleSide()">{{(toggleForm || toggleDetailView) ? 'Zurück' : '+ Rechnung'}}</button>
+      </div>
+    </div>
+    <div *ngIf="toggleDetailView&&!isDetailedInvoiceCanceled()">
+      <div class="col-sm float-right">
+        <button type="button" class="btn btn-outline-warning"
+                data-toggle="modal" data-target="#canceledCommit">Stornieren
+        </button>
+      </div>
     </div>
 
-  </div>
+
   </div>
 
   <hr>
@@ -34,7 +46,7 @@
           Keine Kund_innen gespeichert.
         </p>
         <ng-template #not_empty>
-          <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content" >
+          <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content">
             Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
             von {{collectionSize}}</p>
         </ng-template>
@@ -55,9 +67,11 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let invoice of invoices" (click)="getDetailedView(invoice)">
+          <tr *ngFor="let invoice of invoices" (click)="getDetailedView(invoice)"
+              [ngClass]="!isCanceled(invoice)?'':'canceled-invoice'" data-toggle="tooltip" data-placement="left"
+              title="{{showToolTip(invoice)}}">
             <td><span>{{invoice.invoiceNumber}}</span></td>
-            <td><span>{{invoice.orderNumber!=null?invoice.orderNumber:''}}</span></td>
+            <td><span>{{invoice.orderNumber != null ? invoice.orderNumber : ''}}</span></td>
             <td><span>{{invoice.date.split("T", 1)}}</span></td>
             <td><span>{{invoice.amount.toFixed(2)}} €</span></td>
           </tr>
@@ -77,6 +91,30 @@
     </div>
     <div *ngIf="toggleDetailView">
       <app-operator-invoice-detail-view [value]="detailViewInvoice"></app-operator-invoice-detail-view>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="canceledCommit" tabindex="-1" role="dialog" aria-labelledby="canceledCommitLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="canceledModalLabel">Stornieren</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Wollen sie die Rechnung wirklich stornieren?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-outline-danger" (click)="canceledInvoice()" data-dismiss="modal">
+          Stornieren
+        </button>
+      </div>
     </div>
   </div>
 </div>
