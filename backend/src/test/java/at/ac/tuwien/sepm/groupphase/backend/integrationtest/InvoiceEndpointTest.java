@@ -173,7 +173,7 @@ public class InvoiceEndpointTest implements TestData {
 
         Invoice newInvoice = invoiceRepository.save(invoice1);
 
-        for(InvoiceItem item: set1){
+        for (InvoiceItem item : set1) {
             item.setInvoice(newInvoice);
             invoiceItemRepository.save(item);
         }
@@ -209,12 +209,12 @@ public class InvoiceEndpointTest implements TestData {
         invoice1.setItems(null);
 
         Invoice newInvoice = invoiceRepository.save(invoice1);
-        for(InvoiceItem item: set1){
+        for (InvoiceItem item : set1) {
             item.setInvoice(newInvoice);
             invoiceItemRepository.save(item);
         }
 
-        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/"+newInvoice.getId()+"/pdf")
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/" + newInvoice.getId() + "/pdf")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
@@ -230,13 +230,13 @@ public class InvoiceEndpointTest implements TestData {
         invoice1.setItems(null);
         invoice1.setDate(LocalDateTime.now());
         Invoice newInvoice = invoiceRepository.save(invoice1);
-        for(InvoiceItem item: set){
+        for (InvoiceItem item : set) {
             item.setInvoice(newInvoice);
             invoiceItemRepository.save(item);
         }
         newInvoice.setItems(set);
 
-        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/"+newInvoice.getId())
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/" + newInvoice.getId())
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
@@ -297,13 +297,8 @@ public class InvoiceEndpointTest implements TestData {
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
-        assertAll(
-            () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-            () -> {
-                String content = response.getContentAsString();
-                assertEquals(("Could not find invoice with id 0"), content);
-            }
-        );
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
     }
 
 
@@ -328,7 +323,7 @@ public class InvoiceEndpointTest implements TestData {
 
     @Test
     public void givenNothing_whenFindById_then404() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get( INVOICE_BASE_URI + "/" + 0L)
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/" + 0L)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
@@ -370,8 +365,6 @@ public class InvoiceEndpointTest implements TestData {
             }
         );
     }
-
-
 
 
 }
