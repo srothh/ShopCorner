@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {Order} from '../dtos/order';
 import {CancellationPeriod} from '../dtos/cancellationPeriod';
 import {OperatorAuthService} from './auth/operator-auth.service';
+import {CustomerAuthService} from './auth/customer-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,19 @@ export class OrderService {
   private orderBaseURI: string = this.globals.backendUri + '/orders';
 
   constructor(private httpClient: HttpClient, private globals: Globals,
-              private operatorAuthService: OperatorAuthService) {
+              private operatorAuthService: OperatorAuthService, private customerAuthService: CustomerAuthService) {
+  }
+
+  /**
+   * Gets the order specified by the id
+   *
+   * @param id the id of the order to be retrieved from the database
+   * @return An observable with the requested order
+   */
+  getOrderById(id: number) {
+    return this.httpClient.get<Order>(this.orderBaseURI + '/' + id, {
+      headers: this.getHeadersForCustomer()
+    });
   }
 
   /** Places a new order
@@ -47,6 +60,11 @@ export class OrderService {
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
+  }
+
+  private getHeadersForCustomer(): HttpHeaders {
+    return new HttpHeaders()
+      .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`);
   }
 
 }

@@ -37,6 +37,7 @@ import {OperatorCategoryDetailsComponent} from './components/operator/operator-c
 import {ShopOrderSuccessComponent} from './components/shop/shop-order-success/shop-order-success.component';
 import {OrderSuccessGuard} from './guards/order-success.guard';
 import {OperatorOrderSettingsComponent} from './components/operator/operator-order-settings/operator-order-settings.component';
+import {ShopAccountOrderDetailsComponent} from './components/shop/shop-account-order-details/shop-account-order-details.component';
 
 const routes: Routes = [
   {
@@ -49,6 +50,7 @@ const routes: Routes = [
       {path: 'account', canActivate: [CustomerAuthGuard], component: ShopAccountComponent},
       {path: 'account/profile', canActivate: [CustomerAuthGuard], component: ShopAccountProfileComponent},
       {path: 'account/orders', canActivate: [CustomerAuthGuard], component: ShopAccountOrdersComponent},
+      {path: 'account/orders/:id', canActivate: [CustomerAuthGuard], component: ShopAccountOrderDetailsComponent},
       {path: 'cart', component: ShopCartComponent},
       {path: 'register', component: ShopRegistrationComponent},
       {path: 'order-success', canActivate: [OrderSuccessGuard], component: ShopOrderSuccessComponent},
