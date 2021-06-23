@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Order} from '../../../dtos/order';
 import {InvoiceService} from '../../../services/invoice.service';
+import {MeService} from '../../../services/me.service';
 
 @Component({
   selector: 'app-base-shop-orders-header',
@@ -12,13 +13,13 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
   order: Order;
   error: boolean;
   errorMessage: boolean;
-  constructor(private invoiceService: InvoiceService) { }
+  constructor(private meService: MeService) { }
 
   ngOnInit(): void {
   }
   downloadInvoice(event: Event, invoiceId: number, invoiceDate: string) {
     event.preventDefault();
-    this.invoiceService.getInvoiceAsPdfByIdForCustomer(invoiceId).subscribe((data) => {
+    this.meService.getInvoiceAsPdfByIdForCustomer(invoiceId).subscribe((data) => {
       const downloadURL = window.URL.createObjectURL(data);
       const link = document.createElement('a');
       link.href = downloadURL;

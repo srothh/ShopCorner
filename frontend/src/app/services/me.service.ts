@@ -26,8 +26,8 @@ export class MeService {
   getOrdersForPage(page: number, pageSize: number): Observable<Pagination<Order>> {
     const options = {
       params: new HttpParams()
-        .set('page', `${page}`)
-        .set('pageCount', `${pageSize}`),
+        .set(this.globals.requestParamKeys.pagination.page, `${page}`)
+        .set(this.globals.requestParamKeys.pagination.pageCount, `${pageSize}`),
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`)
     };
@@ -57,6 +57,15 @@ export class MeService {
       this.meBaseUri + '/password', {oldPassword, newPassword}
       , {headers: this.getHeadersForCustomer()});
   }
+  /**
+   * Loads invoice pdf by id from the backend for the customer
+   *
+   * @param id of the invoice
+   * @return pdf generated from the invoice entry
+   */
+  getInvoiceAsPdfByIdForCustomer(id: number): Observable<any> {
+    return this.httpClient.get(this.meBaseUri + '/invoices/' + id + '/pdf', this.getPdfHeadersForCustomer());
+  }
 
 
   /**
@@ -69,5 +78,11 @@ export class MeService {
   private getHeadersForCustomer(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`);
+  }
+  private getPdfHeadersForCustomer(): any {
+    return {
+      responseType: 'blob' as 'json',
+      headers: new HttpHeaders().set('Authorization', `Bearer ${this.customerAuthService.getToken()}`).set('Accept', 'application/pdf')
+    };
   }
 }
