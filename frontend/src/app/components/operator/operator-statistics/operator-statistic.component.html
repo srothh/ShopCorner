@@ -22,3 +22,6 @@
 <div>
   <app-bar-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end" (clickEvent)="getMonth($event)"></app-bar-chart>
 </div>
+<div>
+  <app-pie-chart *ngIf="loaded" [invoices]="invoices"></app-pie-chart>
+</div>
