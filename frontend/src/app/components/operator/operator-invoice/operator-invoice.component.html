@@ -29,8 +29,7 @@
     </div>
     <div *ngIf="toggleDetailView&&!isDetailedInvoiceCanceled()">
       <div class="col-sm float-right">
-        <button type="button" class="btn btn-outline-warning"
-                data-toggle="modal" data-target="#canceledCommit">Stornieren
+        <button type="button" class="btn btn-outline-warning" (click)="attemptToCancelInvoiceModal()">Stornieren
         </button>
       </div>
     </div>
@@ -91,30 +90,6 @@
     </div>
     <div *ngIf="toggleDetailView">
       <app-operator-invoice-detail-view [value]="detailViewInvoice"></app-operator-invoice-detail-view>
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade" id="canceledCommit" tabindex="-1" role="dialog" aria-labelledby="canceledCommitLabel"
-     aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="canceledModalLabel">Stornieren</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Wollen sie die Rechnung wirklich stornieren?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Abbrechen</button>
-        <button type="button" class="btn btn-outline-danger" (click)="canceledInvoice()" data-dismiss="modal">
-          Stornieren
-        </button>
-      </div>
     </div>
   </div>
 </div>

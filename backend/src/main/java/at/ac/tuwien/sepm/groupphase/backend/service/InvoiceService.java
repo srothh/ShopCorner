@@ -31,6 +31,7 @@ public interface InvoiceService {
     /**
      * Updates the given invoice in the database to canceled.
      *
+     * @param invoice is the invoice to be canceled
      * @return The canceled invoice from the database
      * @throws RuntimeException  upon encountering errors with the database
      */
@@ -62,11 +63,11 @@ public interface InvoiceService {
     Invoice createInvoice(Invoice invoice);
 
     /**
-     * Returns page with all needed Operators.
+     * Returns page with all needed Invoices.
      *
      * @param page        which should be returned
      * @param invoiceType of invoices which should be returned
-     * @param pageCount   amount of operators per page
+     * @param pageCount   amount of invoices per page
      * @return Page with all Invoices with right permission
      */
     Page<Invoice> findAll(int page, int pageCount, InvoiceType invoiceType);

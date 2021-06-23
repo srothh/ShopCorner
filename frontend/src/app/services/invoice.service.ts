@@ -25,6 +25,7 @@ export class InvoiceService {
    *
    * @param page the number of the page to fetch
    * @param pageCount the size of the page to be fetched
+   * @param type the invoiceType of the invoices
    * @return The invoice retrieved from the backend
    */
   getAllInvoicesForPage(page: number, pageCount: number, type: InvoiceType): Observable<Pagination<Invoice>> {
@@ -88,8 +89,7 @@ export class InvoiceService {
    * @return invoice updated from the given invoice and invoice entry
    */
   setInvoiceCanceled(invoice: Invoice): Observable<Invoice> {
-    const param = new HttpParams().set('invoiceId', String(invoice.id));
-    return this.httpClient.put<Invoice>(this.invoiceBaseUri, null, {params: param});
+    return this.httpClient.patch<Invoice>(this.invoiceBaseUri + '/' + invoice.id, null);
   }
 
   /**

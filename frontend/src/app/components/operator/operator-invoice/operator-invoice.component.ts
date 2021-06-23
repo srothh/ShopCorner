@@ -3,6 +3,8 @@ import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice.service';
 import {Pagination} from '../../../dtos/pagination';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
+import {NgdbModalActionComponent} from '../../common/ngbd-modal-action/ngdb-modal-action.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-operator-invoice',
@@ -23,7 +25,8 @@ export class OperatorInvoiceComponent implements OnInit {
   invoiceType = InvoiceType.operator;
   onCanceledWindow = false;
 
-  constructor(private invoiceService: InvoiceService) {
+  constructor(private invoiceService: InvoiceService,
+              private modalService: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -142,6 +145,17 @@ export class OperatorInvoiceComponent implements OnInit {
         break;
     }
     return toolTipText;
+  }
+
+  attemptToCancelInvoiceModal() {
+    const modalRef = this.modalService.open(NgdbModalActionComponent);
+    modalRef.componentInstance.title = 'Stornieren';
+    modalRef.componentInstance.body = 'Wollen Sie die Rechnung unwiderruflich storinieren?';
+    modalRef.componentInstance.actionButtonTitle = 'Stornieren';
+    modalRef.componentInstance.actionButtonStyle = 'danger';
+    modalRef.componentInstance.action = () => {
+      this.canceledInvoice();
+    };
   }
 
   /**

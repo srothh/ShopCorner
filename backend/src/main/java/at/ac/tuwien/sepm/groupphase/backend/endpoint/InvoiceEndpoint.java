@@ -43,6 +43,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -104,16 +105,11 @@ public class InvoiceEndpoint {
         PaginationDto<SimpleInvoiceDto> dto;
         Page<Invoice> invoicePage = invoiceService.findAll(page, pageCount, invoiceType);
         if (invoiceType == InvoiceType.operator) {
-            dto =
-                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getInvoiceCount());
+            return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getInvoiceCount());
         } else if (invoiceType == InvoiceType.customer) {
-            dto =
-                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
-        } else {
-            dto =
-                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCanceledInvoiceCount());
+            return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
         }
-        return dto;
+        return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCanceledInvoiceCount());
     }
 
 
@@ -144,14 +140,16 @@ public class InvoiceEndpoint {
      * @param invoiceId id of the invoice which should be updated in the database
      * @return DetailedInvoiceDto with the updated invoice
      */
+    //@Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @PermitAll
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping
+    @PatchMapping(value = "/{id}")
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
-    public DetailedInvoiceDto resetInvoiceCanceled(@RequestParam("invoice") Long invoiceId) {
-        LOGGER.info("PUT /api/v1/invoices?invoice={}", invoiceId);
+    public InvoiceType resetInvoiceCanceled(@PathVariable("id") Long invoiceId) {
+        LOGGER.info("PATCH /api/v1/invoices?invoice={}", invoiceId);
+        System.out.println(invoiceId);
         Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(this.invoiceService.findOneById(invoiceId));
-        return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice);
+        return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice).getInvoiceType();
     }
 
     /**
