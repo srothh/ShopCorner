@@ -16,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
@@ -46,7 +47,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -144,9 +144,11 @@ public class InvoiceEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(value = "/{id}")
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
-    public DetailedInvoiceDto resetInvoiceCanceled(@PathVariable("id") Long invoiceId) {
-        LOGGER.info("PATCH /api/v1/invoices/{}", invoiceId);
-        System.out.println(invoiceId);
+    public DetailedInvoiceDto resetInvoiceCanceled(@Valid @RequestBody DetailedInvoiceDto invoiceDto, @PathVariable("id") Long invoiceId) {
+        LOGGER.info("PATCH /api/v1/invoices/{}: {}", invoiceId, invoiceDto);
+        if (!invoiceDto.getId().equals(invoiceId)) {
+            throw new ServiceException("Bad Request, invoiceId is not valid");
+        }
         Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(this.invoiceService.findOneById(invoiceId));
         return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice);
     }
