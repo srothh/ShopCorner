@@ -166,7 +166,7 @@ public class ProductDataGenerator {
             LOGGER.debug("invoices already generated");
         } else {
             List<Product> products = productRepository.findAll();
-            for (int i = 1; i <= 300; i++) {
+            for (int i = 1; i <= 400; i++) {
                 int rand = (int) (Math.random() * 10) + 1;
                 List<InvoiceItem> items = new ArrayList<>();
                 int[] used = new int[rand];
@@ -204,7 +204,7 @@ public class ProductDataGenerator {
                 }
             }
             List<Customer> customers = customerRepository.findAll();
-            for (int i = 1; i <= 500; i++) {
+            for (int i = 1; i <= 600; i++) {
                 int rand = (int) (Math.random() * 10) + 1;
                 List<InvoiceItem> items = new ArrayList<>();
                 int[] used = new int[rand];
