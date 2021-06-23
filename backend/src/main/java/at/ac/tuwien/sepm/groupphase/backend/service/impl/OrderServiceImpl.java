@@ -102,7 +102,6 @@ public class OrderServiceImpl implements OrderService {
     public CancellationPeriod setCancellationPeriod(CancellationPeriod cancellationPeriod) throws IOException {
         LOGGER.trace("setCancellationPeriod({})", cancellationPeriod);
         properties.setProperty(cancellationKey, String.valueOf(cancellationPeriod.getDays()));
-
         File f = new File(configPath);
         OutputStream out = new FileOutputStream(f);
         properties.store(out, "OrderSettings");
