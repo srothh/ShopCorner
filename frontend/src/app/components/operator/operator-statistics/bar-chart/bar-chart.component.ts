@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, Output, EventEmitter, ViewChild} from '@angular/core';
 import {Invoice} from '../../../../dtos/invoice';
 import {BaseChartDirective} from 'ng2-charts';
-import {ChartDataSets} from 'chart.js';
+import {ChartDataSets, ChartType} from 'chart.js';
 import {InvoiceType} from '../../../../dtos/invoiceType.enum';
 
 @Component({
@@ -22,7 +22,7 @@ export class BarChartComponent implements OnInit {
     responsive: true
   };
   public chartLabels = [];
-  public chartType = 'bar';
+  public chartType: ChartType = 'bar';
   public chartLegend = true;
   chartData: ChartDataSets[];
   error = false;

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ChartDataSets} from 'chart.js';
+import {ChartDataSets, ChartType} from 'chart.js';
 import {BaseChartDirective} from 'ng2-charts';
 import {Invoice} from '../../../../dtos/invoice';
 
@@ -20,7 +20,7 @@ export class LineChartComponent implements OnInit {
     responsive: true
   };
   public chartLabels = [];
-  public chartType = 'line';
+  public chartType: ChartType = 'line';
   public chartLegend = true;
   chartData: ChartDataSets[];
   error = false;
