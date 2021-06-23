@@ -31,10 +31,14 @@ export class BarChartComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.update();
+    this.update(this.start, this.end, this.invoices);
   }
 
-  update() {
+  update(start: Date, end: Date, invoices: Invoice[]) {
+    this.start = start;
+    this.end = end;
+    this.invoices = invoices;
+    this.chartLabels = [];
     const tempOp = [];
     const tempCu = [];
     const months = [];

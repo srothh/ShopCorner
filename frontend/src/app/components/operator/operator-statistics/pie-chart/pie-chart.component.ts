@@ -36,10 +36,12 @@ export class PieChartComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.update();
+    this.update(this.invoices);
   }
 
-  update() {
+  update(invoices: Invoice[]) {
+    this.invoices = invoices;
+    this.percentageLabels = [];
     let operatorAmount = 0;
     let customerAmount = 0;
     for (const invoice of this.invoices) {

@@ -1,7 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice.service';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
+import {LineChartComponent} from './line-chart/line-chart.component';
+import {PieChartComponent} from './pie-chart/pie-chart.component';
+import {BarChartComponent} from './bar-chart/bar-chart.component';
 
 @Component({
   selector: 'app-operator-statistics',
@@ -9,6 +12,10 @@ import {InvoiceType} from '../../../dtos/invoiceType.enum';
   styleUrls: ['./operator-statistic.component.scss']
 })
 export class OperatorStatisticComponent implements OnInit {
+
+  @ViewChild(LineChartComponent) lineChild: LineChartComponent;
+  @ViewChild(PieChartComponent) pieChild: PieChartComponent;
+  @ViewChild(BarChartComponent) barChild: BarChartComponent;
 
   error = false;
   errorMessage = '';
@@ -26,19 +33,23 @@ export class OperatorStatisticComponent implements OnInit {
   }
 
   update() {
-    this.loaded = false;
     this.start = new Date(this.start);
     this.end = new Date(this.end);
     this.loadInvoicesForTime();
   }
 
   getMonth(month: string) {
-    this.loaded = false;
     this.start =  new Date(month);
     this.end = new Date(this.start);
     this.end.setMonth(this.end.getMonth()+1);
     this.end.setDate(this.end.getDate()-1);
     this.loadInvoicesForTime();
+  }
+
+  updateChildren() {
+    this.lineChild.update(this.start, this.end, this.invoices);
+    this.barChild.update(this.start, this.end, this.invoices);
+    this.pieChild.update(this.invoices);
   }
 
   /**
@@ -48,7 +59,11 @@ export class OperatorStatisticComponent implements OnInit {
     this.invoiceService.getAllInvoicesByDate(this.start, this.end).subscribe(
       (invoices: Invoice[]) => {
         this.invoices = invoices;
-        this.loaded = true;
+        if (this.loaded === true) {
+          this.updateChildren();
+        } else {
+          this.loaded = true;
+        }
       },
       error => {
         this.error = true;

@@ -29,10 +29,14 @@ export class LineChartComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.update();
+    this.update(this.start, this.end, this.invoices);
   }
 
-  update() {
+  update(start: Date, end: Date, invoices: Invoice[]) {
+    this.start = start;
+    this.end = end;
+    this.invoices = invoices;
+    this.chartLabels = [];
     const temp = [];
     const days = [];
     for (let d = new Date(this.start); d<= this.end; d.setDate(d.getDate() + 1)) {
