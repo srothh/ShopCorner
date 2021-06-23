@@ -20,5 +20,5 @@
   <app-line-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end"></app-line-chart>
 </div>
 <div>
-  <app-bar-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end"></app-bar-chart>
+  <app-bar-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end" (clickEvent)="getMonth($event)"></app-bar-chart>
 </div>

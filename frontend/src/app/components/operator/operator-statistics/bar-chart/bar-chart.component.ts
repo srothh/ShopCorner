@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, Output, EventEmitter, ViewChild} from '@angular/core';
 import {Invoice} from '../../../../dtos/invoice';
 import {BaseChartDirective} from 'ng2-charts';
 import {ChartDataSets} from 'chart.js';
@@ -14,6 +14,7 @@ export class BarChartComponent implements OnInit {
   @Input() invoices: Invoice[];
   @Input() start: Date;
   @Input() end: Date;
+  @Output() clickEvent = new EventEmitter<string>();
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   public chartOptions = {
@@ -38,7 +39,6 @@ export class BarChartComponent implements OnInit {
     const tempCu = [];
     const months = [];
     for (let d = new Date(this.start); d<= this.end; d.setMonth(d.getMonth() + 1)) {
-      console.log('Hello');
       const month = d.toISOString().split('T')[0];
       months.push(month.substring(0,7));
       tempOp.push(0);
@@ -62,5 +62,17 @@ export class BarChartComponent implements OnInit {
         this.chart.chart.update();
       }
     });
+  }
+
+  public chartClicked(e: any): void {
+    if (e.active.length > 0) {
+      const chart = e.active[0]._chart;
+      const activePoints = chart.getElementAtEvent(e.event);
+      if ( activePoints.length > 0) {
+        const clickedElementIndex = activePoints[0]._index;
+        const label = chart.data.labels[clickedElementIndex];
+        this.clickEvent.emit(label);
+      }
+    }
   }
 }

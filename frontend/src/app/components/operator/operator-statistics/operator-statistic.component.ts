@@ -31,6 +31,16 @@ export class OperatorStatisticComponent implements OnInit {
     this.end = new Date(this.end);
     this.loadInvoicesForTime();
   }
+
+  getMonth(month: string) {
+    this.loaded = false;
+    this.start =  new Date(month);
+    this.end = new Date(this.start);
+    this.end.setMonth(this.end.getMonth()+1);
+    this.end.setDate(this.end.getDate()-1);
+    this.loadInvoicesForTime();
+  }
+
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
