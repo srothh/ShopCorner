@@ -20,6 +20,16 @@ public interface InvoiceService {
      */
     Invoice findOneById(Long id);
 
+    /**
+     * Find a single invoice entry with the given id and customerId.
+     *
+     * @param id the id of the invoice entry
+     * @param customerId the id of the customer
+     * @return the invoice entry
+     * @throws NotFoundException when no invoice with the id is found
+     */
+    Invoice getByIdAndCustomerId(Long id, Long customerId);
+
 
     /**
      * Returns amount of invoices in the database.

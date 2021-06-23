@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.security.Principal;
@@ -71,6 +72,12 @@ public class MeEndpoint {
         this.pdfGeneratorService = pdfGeneratorService;
     }
 
+    /**
+     * Finds a customer by login name.
+     *
+     * @param principal the currently logged in user
+     * @return the customer with the given login name
+     */
     @Secured({"ROLE_CUSTOMER"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -81,6 +88,13 @@ public class MeEndpoint {
         return customerMapper.customerToCustomerDto(entity);
     }
 
+    /**
+     * Finds an invoice of the customer and generates a PDF from it.
+     *
+     * @param paginationRequestDto the dto containing pagination parameters
+     * @param principal            the currently logged in user
+     * @return paginated Orders with the given pagination parameters
+     */
     @Secured({"ROLE_CUSTOMER"})
     @GetMapping("/orders")
     @ResponseStatus(HttpStatus.OK)
@@ -92,24 +106,32 @@ public class MeEndpoint {
         int pageSize = paginationRequestDto.getPageCount();
         Customer customer = customerService.findCustomerByLoginName(username);
         Page<Order> orderPage = this.orderService.getAllOrdersByCustomer(page, pageSize, customer.getId());
-        return new PaginationDto<OrderDto>(this.orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageSize, orderPage.getTotalPages(), orderPage.getTotalElements());
+        return new PaginationDto<>(this.orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageSize, orderPage.getTotalPages(), orderPage.getTotalElements());
     }
 
     /**
      * Finds an invoice of the customer and generates a PDF from it.
      *
-     * @param id id of the invoice
+     * @param id        id of the invoice
+     * @param principal the currently logged in user
      * @return ResponseEntity with the generated pdf for the customer
      */
     @Secured({"ROLE_CUSTOMER"})
     @GetMapping(value = "invoices/{id}/pdf", produces = "application/pdf")
     @Operation(summary = "Retrieve new invoice as pdf", security = @SecurityRequirement(name = "apiKey"))
-    public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
+    public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id, Principal principal) {
         LOGGER.info("GET /api/v1/me/invoices/{}/pdf", id);
-        Invoice invoice = invoiceService.findOneById(id);
+        String username = principal.getName();
+        Customer customer = customerService.findCustomerByLoginName(username);
+        Invoice invoice = invoiceService.getByIdAndCustomerId(id, customer.getId());
         return new ResponseEntity<>(pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice), this.generateHeader(), HttpStatus.OK);
     }
 
+    /**
+     * Deletes a customer from the database.
+     *
+     * @param principal the currently logged in user
+     */
     @Secured({"ROLE_CUSTOMER"})
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
@@ -119,7 +141,13 @@ public class MeEndpoint {
         customerService.deleteCustomerByLoginName(principal.getName());
     }
 
-
+    /**
+     * Edits an already existing Customer.
+     *
+     * @param customerDto the dto containing the updated fields
+     * @param principal   the currently logged in user
+     * @return the updated customer entry
+     */
     @Secured({"ROLE_CUSTOMER"})
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
@@ -148,7 +176,7 @@ public class MeEndpoint {
         LOGGER.info("POST " + BASE_URL + "/password body: {}", updatePasswordDto);
         Customer customer = customerService.findCustomerByLoginName(principal.getName());
         customerService.updatePassword(customer.getId(), updatePasswordDto.getOldPassword(),
-                updatePasswordDto.getNewPassword());
+            updatePasswordDto.getNewPassword());
     }
 
     /**
@@ -164,7 +192,6 @@ public class MeEndpoint {
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         return headers;
     }
-
 
 
 }
