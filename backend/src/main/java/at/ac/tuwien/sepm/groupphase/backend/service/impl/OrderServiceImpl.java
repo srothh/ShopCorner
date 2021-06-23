@@ -2,7 +2,9 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.CancellationPeriod;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OrderRepository;
@@ -10,6 +12,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.CartService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
+import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,16 +46,19 @@ public class OrderServiceImpl implements OrderService {
     private final String cancellationKey = "cancellationPeriod";
     private final String configPath = "src/main/resources/orderSettings.config";
     private final MailService mailService;
+    private final ProductService productService;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             InvoiceService invoiceService,
                             CartService cartService,
-                            MailService mailService) {
+                            MailService mailService,
+                            ProductService productService) {
         this.orderRepository = orderRepository;
         this.invoiceService = invoiceService;
         this.cartService = cartService;
         this.mailService = mailService;
+        this.productService = productService;
     }
 
     @Override
@@ -68,7 +74,17 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setInvoice(this.invoiceService.createInvoice(order.getInvoice()));
         mailService.sendMail(order);
+        updateProductsInOrder(order);
         return orderRepository.save(order);
+    }
+
+    @Transactional
+    public void updateProductsInOrder(Order order) {
+        for (InvoiceItem p : order.getInvoice().getItems()) {
+            Product product = productService.findById(p.getProduct().getId());
+            product.setSaleCount(product.getSaleCount() + p.getNumberOfItems());
+
+        }
     }
 
     @Override
