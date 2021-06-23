@@ -2,7 +2,7 @@
   <h2>Meine Bestellungen</h2>
   <div class="row" *ngIf="this.collectionSize > 0 else no_orders">
     <div class="pl-3 mb-3">
-      <div *ngIf="(this.pageSize * this.page) + 1 < collectionSize else last_page">
+      <div *ngIf="(this.pageSize * (this.page+ 1)) < collectionSize else last_page">
         <h6 class="text-muted">Zeigt {{(this.pageSize * this.page) + 1 }}-{{this.pageSize * (this.page + 1)}}
           von {{collectionSize}}</h6>
       </div>
