@@ -34,6 +34,14 @@ public class OrderDto {
         this.customer = customer;
     }
 
+    public PromotionDto getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(PromotionDto promotion) {
+        this.promotion = promotion;
+    }
+
     public Long getId() {
         return id;
     }

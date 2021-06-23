@@ -100,6 +100,7 @@ export class ShopCheckoutComponent implements OnInit {
   proceedToPay() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
+    console.log(this.promotion);
     this.paypalService.createPayment(order).subscribe((redirectUrl) => {
       if(this.promotion){
         window.location.href = (redirectUrl + '&promotion=' + order.promotion.code);

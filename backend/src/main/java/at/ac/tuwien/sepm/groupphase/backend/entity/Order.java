@@ -49,6 +49,14 @@ public class Order {
         this.promotion = promotion;
     }
 
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(Promotion promotion) {
+        this.promotion = promotion;
+    }
+
     public Long getId() {
         return id;
     }

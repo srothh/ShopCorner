@@ -21,10 +21,9 @@
           <span>Zwischensumme </span>
           <strong>{{getTotalPrice().toFixed(2)}} €</strong>
         </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span *ngIf="!promotion">Gutscheincode (Kein Code) </span>
-          <span *ngIf="promotion">Gutscheincode ({{promotion.code}}) </span>
-          <strong *ngIf="promotion">-{{promotion.discount}} €</strong>
+        <li class="list-group-item d-flex justify-content-between" *ngIf="promotion">
+          <span >Gutscheincode ({{promotion.code}}) </span>
+          <strong>-{{promotion.discount}} €</strong>
         </li>
         <li class="list-group-item d-flex justify-content-between">
           <span>Gesamtpreis </span>

@@ -56,6 +56,9 @@ export class ShopOrderSuccessComponent implements OnInit {
       this.paymentId = params['paymentId'];
       this.payerId = params['PayerID'];
       this.promotionId = params['promotion'];
+      if (this.promotionId) {
+        this.getPromotion();
+      }
       this.confirmedPayment = new ConfirmedPayment(0, this.paymentId, this.payerId);
       this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
         if (finalisedPaymentData.includes('Payment successful')) {
@@ -83,7 +86,8 @@ export class ShopOrderSuccessComponent implements OnInit {
 
   placeNewOrder() {
     this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer, null);
+    const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
+    console.log(order);
     this.orderService.placeNewOrder(order).subscribe(() => {
     });
   }
@@ -108,6 +112,14 @@ export class ShopOrderSuccessComponent implements OnInit {
     return subtotal;
   }
 
+  getTotalPriceWithPromotion() {
+    if (this.promotion) {
+      return this.getTotalPrice() - this.promotion.discount;
+    } else {
+      return this.getTotalPrice();
+    }
+  }
+
   fetchCustomer() {
     this.meService.getMyProfileData().subscribe(
       (customer: Customer) => {
@@ -127,7 +139,7 @@ export class ShopOrderSuccessComponent implements OnInit {
         this.invoiceDto.items.push(invItem);
       }
     }
-    this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
+    this.invoiceDto.amount = +this.getTotalPriceWithPromotion().toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;

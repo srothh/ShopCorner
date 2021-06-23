@@ -11,19 +11,18 @@
       <ul class="list-group list-group-flush">
         <li class="list-group-item" *ngFor="let product of products">
           <div class="d-flex justify-content-between">
-            <span>{{ product.cartItemQuantity +' x ' +product.name + ' mit MwSt.'}}</span>
+            <span>{{ product.cartItemQuantity + ' x ' + product.name + ' mit MwSt.'}}</span>
             <span>{{(product.price * product.taxRate.calculationFactor).toFixed(2)}}</span>
           </div>
         </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span *ngIf="!promotion">Gutscheincode (Kein Code) </span>
-          <span *ngIf="promotion">Gutscheincode ({{promotion.code}}) </span>
-          <strong *ngIf="promotion">-{{promotion.discount}} €</strong>
+        <li class="list-group-item d-flex justify-content-between" *ngIf="promotion">
+          <span >Gutscheincode ({{promotion.code}}) </span>
+          <span>-{{promotion.discount}} €</span>
         </li>
         <li class="list-group-item">
           <div class="d-flex justify-content-between">
             <span><strong>Gesamtpreis mit Mwst.</strong></span>
-            <span><strong>{{this.getTotalPrice().toFixed(2)}}</strong></span>
+            <span><strong>{{this.getTotalPriceWithPromotion().toFixed(2)}}</strong></span>
           </div>
         </li>
       </ul>

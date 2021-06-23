@@ -67,7 +67,7 @@ public class OrderEndpoint {
      *
      * @return A list of all the retrieved orders
      */
-    @Secured("ROLE_ADMIN")
+    @PermitAll
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all orders", security = @SecurityRequirement(name = "apiKey"))

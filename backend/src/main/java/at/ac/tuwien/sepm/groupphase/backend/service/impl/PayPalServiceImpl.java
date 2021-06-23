@@ -68,7 +68,11 @@ public class PayPalServiceImpl implements PayPalService {
 
         RedirectUrls redirectUrls = new RedirectUrls();
         redirectUrls.setCancelUrl("http://localhost:4200/#/checkout");
-        redirectUrls.setReturnUrl("http://localhost:4200/#/order-success");
+        if (order.getPromotion() != null) {
+            redirectUrls.setReturnUrl("http://localhost:4200/#/order-success?promotion=" + order.getPromotion().getCode());
+        } else {
+            redirectUrls.setReturnUrl("http://localhost:4200/#/order-success");
+        }
 
         payment.setRedirectUrls(redirectUrls);
 
