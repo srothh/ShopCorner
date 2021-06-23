@@ -140,16 +140,15 @@ public class InvoiceEndpoint {
      * @param invoiceId id of the invoice which should be updated in the database
      * @return DetailedInvoiceDto with the updated invoice
      */
-    //@Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @PermitAll
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(value = "/{id}")
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
-    public InvoiceType resetInvoiceCanceled(@PathVariable("id") Long invoiceId) {
-        LOGGER.info("PATCH /api/v1/invoices?invoice={}", invoiceId);
+    public DetailedInvoiceDto resetInvoiceCanceled(@PathVariable("id") Long invoiceId) {
+        LOGGER.info("PATCH /api/v1/invoices/{}", invoiceId);
         System.out.println(invoiceId);
         Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(this.invoiceService.findOneById(invoiceId));
-        return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice).getInvoiceType();
+        return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice);
     }
 
     /**

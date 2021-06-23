@@ -47,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -176,7 +177,7 @@ public class InvoiceEndpointTest implements TestData {
             invoiceItemRepository.save(item);
         }
 
-        MvcResult mvcResult = this.mockMvc.perform(put(INVOICE_BASE_URI + "?invoice="+newInvoice.getId())
+        MvcResult mvcResult = this.mockMvc.perform(patch(INVOICE_BASE_URI + "/" + newInvoice.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
@@ -285,7 +286,7 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenNothing_whenSetCanceled_then404() throws Exception {
         invoiceRepository.deleteAll();
-        MvcResult mvcResult = this.mockMvc.perform(put(INVOICE_BASE_URI + "?invoice="+0L)
+        MvcResult mvcResult = this.mockMvc.perform(patch(INVOICE_BASE_URI + "/" + 0L)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
