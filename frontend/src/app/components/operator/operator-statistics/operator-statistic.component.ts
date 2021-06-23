@@ -23,18 +23,22 @@ export class OperatorStatisticComponent implements OnInit {
   invoiceType = InvoiceType.operator;
   end = new Date();
   start = new Date();
+  startPicker: string;
+  endPicker: string;
   loaded = false;
 
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
     this.start.setDate(this.start.getDate()-90);
+    this.startPicker = this.start.toISOString().split('T')[0];
+    this.endPicker = this.end.toISOString().split('T')[0];
     this.loadInvoicesForTime();
   }
 
   update() {
-    this.start = new Date(this.start);
-    this.end = new Date(this.end);
+    this.start = new Date(this.startPicker);
+    this.end = new Date(this.endPicker);
     this.loadInvoicesForTime();
   }
 
@@ -43,6 +47,8 @@ export class OperatorStatisticComponent implements OnInit {
     this.end = new Date(this.start);
     this.end.setMonth(this.end.getMonth()+1);
     this.end.setDate(this.end.getDate()-1);
+    this.startPicker = this.start.toISOString().split('T')[0];
+    this.endPicker = this.end.toISOString().split('T')[0];
     this.loadInvoicesForTime();
   }
 

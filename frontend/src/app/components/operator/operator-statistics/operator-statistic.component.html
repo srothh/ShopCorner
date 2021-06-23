@@ -3,14 +3,14 @@
   <label for="start">Von</label>
   </div>
   <div class="col">
-  <input type="date" id="start" [(ngModel)]="start" maxlength="10" placeholder="{{start}}"
+  <input type="date" id="start" [(ngModel)]="startPicker" maxlength="10" placeholder="{{start}}"
          name="start">
   </div>
   <div class="col-1">
   <label for="end">Bis</label>
   </div>
   <div class="col">
-  <input type="date" id="end" [(ngModel)]="end" maxlength="10" placeholder="{{end}}" name="end">
+  <input type="date" id="end" [(ngModel)]="endPicker" maxlength="10" placeholder="{{end}}" name="end">
   </div>
     <div class="col">
   <button class="btn btn-primary" (click)="update()">Get</button>
