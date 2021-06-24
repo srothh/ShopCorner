@@ -117,7 +117,7 @@ public class MeEndpoint {
      * @return ResponseEntity with the generated pdf for the customer
      */
     @Secured({"ROLE_CUSTOMER"})
-    @GetMapping(value = "invoices/{id}/pdf", produces = "application/pdf")
+    @GetMapping(value = "/invoices/{id}/pdf", produces = "application/pdf")
     @Operation(summary = "Retrieve new invoice as pdf", security = @SecurityRequirement(name = "apiKey"))
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id, Principal principal) {
         LOGGER.info("GET /api/v1/me/invoices/{}/pdf", id);
