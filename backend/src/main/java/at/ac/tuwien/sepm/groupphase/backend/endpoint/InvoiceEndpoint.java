@@ -102,7 +102,6 @@ public class InvoiceEndpoint {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
         LOGGER.info("GET api/v1/invoices?page={}&page_count={}&invoiceType={}", page, pageCount, invoiceType);
-        PaginationDto<SimpleInvoiceDto> dto;
         Page<Invoice> invoicePage = invoiceService.findAll(page, pageCount, invoiceType);
         if (invoiceType == InvoiceType.operator) {
             return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getInvoiceCount());
