@@ -25,10 +25,10 @@ export class InvoiceService {
    *
    * @param page the number of the page to fetch
    * @param pageCount the size of the page to be fetched
+   * @param type the invoiceType of the invoices
    * @return The invoice retrieved from the backend
    */
   getAllInvoicesForPage(page: number, pageCount: number, type: InvoiceType): Observable<Pagination<Invoice>> {
-    console.log('Get invoice for page', page);
     const params = new HttpParams()
       .set(this.globals.requestParamKeys.pagination.page, String(page))
       .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount))
@@ -80,6 +80,16 @@ export class InvoiceService {
    */
   getInvoiceAsPdfById(id: number): Observable<any> {
     return this.httpClient.get(this.invoiceBaseUri + '/' + id + '/pdf', this.getPdfHeadersForOperator());
+  }
+
+  /**
+   * Set invoice entry to canceled.
+   *
+   * @param invoice to be updated
+   * @return invoice updated from the given invoice and invoice entry
+   */
+  setInvoiceCanceled(invoice: Invoice): Observable<Invoice> {
+    return this.httpClient.patch<Invoice>(this.invoiceBaseUri + '/' + invoice.id, invoice);
   }
 
   /**

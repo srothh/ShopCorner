@@ -21,3 +21,10 @@
   float: right;
   margin-left: 10px;
 }
+
+.canceled-invoice{
+  text-decoration: underline;
+}
+.canceled-invoice:hover{
+  color: lightgray;
+}

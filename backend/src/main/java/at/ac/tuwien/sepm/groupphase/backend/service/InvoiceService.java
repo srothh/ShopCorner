@@ -20,7 +20,6 @@ public interface InvoiceService {
      */
     Invoice findOneById(Long id);
 
-
     /**
      * Returns amount of invoices in the database.
      *
@@ -30,12 +29,29 @@ public interface InvoiceService {
     Long getInvoiceCount();
 
     /**
+     * Updates the given invoice in the database to canceled.
+     *
+     * @param invoice is the invoice to be canceled
+     * @return The canceled invoice from the database
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Invoice setInvoiceCanceled(Invoice invoice);
+
+    /**
      * Returns amount of customerInvoices in the database.
      *
-     * @return The amount of invoices in the database
+     * @return The amount of customer invoices in the database
      * @throws RuntimeException  upon encountering errors with the database
      */
     Long getCustomerInvoiceCount();
+
+    /**
+     * Returns amount of canceledInvoices in the database.
+     *
+     * @return The amount of canceled invoices in the database
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Long getCanceledInvoiceCount();
 
     /**
      * Create new invoice.
@@ -46,14 +62,13 @@ public interface InvoiceService {
      */
     Invoice createInvoice(Invoice invoice);
 
-
     /**
-     * Returns page with all needed Operators.
+     * Returns page with all needed Invoices.
      *
      * @param page        which should be returned
-     * @param invoiceType of Operators which should be returned
-     * @param pageCount   amount of operators per page
-     * @return Page with all Operators with right permission
+     * @param invoiceType of invoices which should be returned
+     * @param pageCount   amount of invoices per page
+     * @return Page with all Invoices with right permission
      */
     Page<Invoice> findAll(int page, int pageCount, InvoiceType invoiceType);
 
