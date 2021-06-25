@@ -21,8 +21,13 @@ export class ProductService {
   }
 
   /**
-   * Get page of products from the backend
+   * Get page with products from backend.
    *
+   * @param page that should be gotten
+   * @param pageCount amount of products per page
+   * @param name searched for
+   * @param sortBy what should be sorted after
+   * @param categoryId id of category that should be filtered by
    * @return observable of type Pagination<Product>
    */
   getProducts(page = 0, pageCount = 15, name = '', sortBy = 'id', categoryId = -1): Observable<Pagination<Product>> {
@@ -39,6 +44,19 @@ export class ProductService {
         return pagination;
       })
     );
+  }
+
+  /**
+   * Get list of all products of category
+   *
+   * @param categoryId id of category that should be searched for
+   * @return List of all searched for products
+   */
+  getProductsByCategory(categoryId = -1): Observable<Product[]> {
+    console.log('getProductsByCategory({})', categoryId);
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.products.categoryId, String(categoryId));
+    return this.httpClient.get<Product[]>(this.productBaseUri + '/stats', {params, headers: this.getHeadersForOperator()});
   }
 
   /**

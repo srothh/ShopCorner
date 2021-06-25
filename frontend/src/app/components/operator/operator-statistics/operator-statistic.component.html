@@ -1,27 +1,52 @@
-<div class="row">
-  <div class="col-1">
-  <label for="start">Von</label>
-  </div>
-  <div class="col">
-  <input type="date" id="start" [(ngModel)]="startPicker" maxlength="10" placeholder="{{start}}"
-         name="start">
-  </div>
-  <div class="col-1">
-  <label for="end">Bis</label>
-  </div>
-  <div class="col">
-  <input type="date" id="end" [(ngModel)]="endPicker" maxlength="10" placeholder="{{end}}" name="end">
-  </div>
-    <div class="col">
-  <button class="btn btn-primary" (click)="update()">Get</button>
+<div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
+  <label class="btn btn-light active ">
+    <input type="radio" name="buttons" id="option1" (click)="showProducts = false" checked>
+    Umsatz
+  </label>
+  <label class="btn btn-light">
+    <input type="radio" name="buttons" id="option2" (click)=viewProducts()>
+    Produkte
+  </label>
+</div>
+<hr/>
+<div *ngIf="!showProducts; else product_stats">
+  <div class="row">
+    <div class="col-1">
+      <label for="start">Von</label>
     </div>
+    <div class="col">
+      <input type="date" id="start" [(ngModel)]="startPicker" maxlength="10" placeholder="{{start}}"
+             name="start">
+    </div>
+    <div class="col-1">
+      <label for="end">Bis</label>
+    </div>
+    <div class="col">
+      <input type="date" id="end" [(ngModel)]="endPicker" maxlength="10" placeholder="{{end}}" name="end">
+    </div>
+    <div class="col">
+      <button class="btn btn-primary" (click)="update()">Get</button>
+    </div>
+  </div>
+  <div>
+    <app-line-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end"></app-line-chart>
+  </div>
+  <div>
+    <app-bar-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end"
+                   (clickEvent)="getMonth($event)"></app-bar-chart>
+  </div>
+  <div>
+    <app-pie-chart *ngIf="loaded" [invoices]="invoices"></app-pie-chart>
+  </div>
 </div>
-<div>
-  <app-line-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end"></app-line-chart>
-</div>
-<div>
-  <app-bar-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end" (clickEvent)="getMonth($event)"></app-bar-chart>
-</div>
-<div>
-  <app-pie-chart *ngIf="loaded" [invoices]="invoices"></app-pie-chart>
-</div>
+
+<ng-template #product_stats>
+  <label for="categoryFilter">
+    Filtern nach Kategorien</label>
+  <select class="custom-select" name="category-names" id="categoryFilter"
+          [(ngModel)]="selected"
+          (change)="changeCategory()">
+    <option selected value="-1">Alle</option>
+    <option *ngFor="let category of this.categories" [value]="category.id">{{category.name}}</option>
+  </select>
+</ng-template>

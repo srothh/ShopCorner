@@ -5,6 +5,10 @@ import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {LineChartComponent} from './line-chart/line-chart.component';
 import {PieChartComponent} from './pie-chart/pie-chart.component';
 import {BarChartComponent} from './bar-chart/bar-chart.component';
+import {Product} from '../../../dtos/product';
+import {Category} from '../../../dtos/category';
+import {ProductService} from '../../../services/product/product.service';
+import {CategoryService} from '../../../services/category.service';
 
 @Component({
   selector: 'app-operator-statistics',
@@ -20,14 +24,18 @@ export class OperatorStatisticComponent implements OnInit {
   error = false;
   errorMessage = '';
   invoices: Invoice[];
+  products: Product[];
+  categories: Category[];
+  selected: number;
   invoiceType = InvoiceType.operator;
   end = new Date();
   start = new Date();
   startPicker: string;
   endPicker: string;
   loaded = false;
+  showProducts = false;
 
-  constructor(private invoiceService: InvoiceService) { }
+  constructor(private invoiceService: InvoiceService, private productService: ProductService, private categoryService: CategoryService) { }
 
   ngOnInit(): void {
     this.start.setDate(this.start.getDate()-90);
@@ -58,6 +66,18 @@ export class OperatorStatisticComponent implements OnInit {
     this.pieChild.update(this.invoices);
   }
 
+  viewProducts() {
+    if (this.products === undefined) {
+      this.fetchCategories();
+    }
+    this.showProducts = true;
+  }
+
+  changeCategory() {
+    console.log(this.selected);
+    this.fetchProducts();
+  }
+
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
@@ -76,5 +96,36 @@ export class OperatorStatisticComponent implements OnInit {
         this.errorMessage = error.error;
       }
     );
+  }
+
+  private fetchCategories() {
+    this.categoryService.getCategories().subscribe(
+      (categories: Category[]) => {
+        this.categories = categories;
+        this.selected = this.categories[0].id;
+        this.fetchProducts();
+      }, error => {
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
+      }
+    );
+  }
+
+  private fetchProducts() {
+    this.productService.getProductsByCategory(this.selected).subscribe(
+      (products: Product[]) => {
+        this.products = products;
+      }, error => {
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
+      });
   }
 }
