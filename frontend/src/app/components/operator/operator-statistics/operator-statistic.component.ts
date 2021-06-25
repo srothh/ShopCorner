@@ -10,6 +10,7 @@ import {Category} from '../../../dtos/category';
 import {ProductService} from '../../../services/product/product.service';
 import {CategoryService} from '../../../services/category.service';
 import {ProductsTopsellerChartComponent} from './products-topseller-chart/products-topseller-chart.component';
+import {ProductsTopMoneyChartComponent} from './products-top-money-chart/products-top-money-chart.component';
 
 @Component({
   selector: 'app-operator-statistics',
@@ -22,6 +23,7 @@ export class OperatorStatisticComponent implements OnInit {
   @ViewChild(PieChartComponent) pieChild: PieChartComponent;
   @ViewChild(BarChartComponent) barChild: BarChartComponent;
   @ViewChild(ProductsTopsellerChartComponent) productTopseller: ProductsTopsellerChartComponent;
+  @ViewChild(ProductsTopMoneyChartComponent) productTopMoney: ProductsTopsellerChartComponent;
 
   error = false;
   errorMessage = '';
@@ -70,6 +72,7 @@ export class OperatorStatisticComponent implements OnInit {
 
   updateProductChildren() {
     this.productTopseller.update(this.products);
+    this.productTopMoney.update(this.products);
   }
 
   viewProducts() {

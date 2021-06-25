@@ -59,7 +59,8 @@ import { BarChartComponent } from './components/operator/operator-statistics/bar
 import { PieChartComponent } from './components/operator/operator-statistics/pie-chart/pie-chart.component';
 import { ProductsTopsellerChartComponent } from
     './components/operator/operator-statistics/products-topseller-chart/products-topseller-chart.component';
-import { ProductsTopMoneyChartComponent } from './products-top-money-chart/products-top-money-chart.component';
+import { ProductsTopMoneyChartComponent } from
+    './components/operator/operator-statistics/products-top-money-chart/products-top-money-chart.component';
 
 @NgModule({
   declarations: [

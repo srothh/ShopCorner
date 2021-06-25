@@ -50,4 +50,5 @@
     <option *ngFor="let category of this.categories" [value]="category.id">{{category.name}}</option>
   </select>
   <app-products-topseller-chart *ngIf="loaded" [products]="products"></app-products-topseller-chart>
+  <app-products-top-money-chart *ngIf="loaded" [products]="products"></app-products-top-money-chart>
 </ng-template>
