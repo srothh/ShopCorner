@@ -6,7 +6,7 @@ import {Order} from '../dtos/order';
 import {CancellationPeriod} from '../dtos/cancellationPeriod';
 import {OperatorAuthService} from './auth/operator-auth.service';
 import {Pagination} from '../dtos/pagination';
-
+import {CustomerAuthService} from './auth/customer-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,8 @@ export class OrderService {
   private orderBaseURI: string = this.globals.backendUri + '/orders';
 
   constructor(private httpClient: HttpClient, private globals: Globals,
-              private operatorAuthService: OperatorAuthService) {
+              private operatorAuthService: OperatorAuthService,
+              private customerAuthService: CustomerAuthService) {
   }
 
   /** Places a new order
@@ -66,4 +67,8 @@ export class OrderService {
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
 
+  private getHeadersForCustomer(): HttpHeaders {
+    return new HttpHeaders()
+      .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`);
+  }
 }
