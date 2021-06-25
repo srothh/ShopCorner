@@ -69,9 +69,9 @@ public interface InvoiceService {
     /**
      * Returns page with all needed Invoices.
      *
-     * @param page        which should be returned
+     * @param page which should be returned
      * @param invoiceType of invoices which should be returned
-     * @param pageCount   amount of invoices per page
+     * @param pageCount amount of invoices per page
      * @return Page with all Invoices with right permission
      */
     Page<Invoice> findAll(int page, int pageCount, InvoiceType invoiceType);
