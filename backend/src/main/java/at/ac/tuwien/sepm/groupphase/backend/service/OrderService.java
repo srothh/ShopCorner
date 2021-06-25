@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.CancellationPeriod;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -44,6 +45,17 @@ public interface OrderService {
     Order findOrderById(Long id);
 
     /**
+     * Retrieves a PaginationDto containing a Page of orders from a specific customer from the database.
+     *
+     * @param page The number of the page to retrieve
+     * @param pageCount The size of the page to retrieve
+     * @param customerId the customer Id associated to an order
+     * @return A PaginationDto containing data about the retrieved items
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    Page<Order> getAllOrdersByCustomer(int page, int pageCount, Long customerId);
+
+    /**
      * Returns amount of orders in the database.
      *
      * @return The amount of orders in the database
@@ -77,4 +89,12 @@ public interface OrderService {
      * @throws IOException upon encountering problems with the configuration file
      */
     CancellationPeriod getCancellationPeriod() throws IOException;
+
+    /**
+     * Increments the salescounts of sold products.
+     *
+     * @param order The order containing the information on the sold products
+     * @throws RuntimeException upon encountering problems with the database
+     */
+    void updateProductsInOrder(Order order);
 }

@@ -137,6 +137,23 @@ public class InvoiceServiceTest implements TestData {
     }
 
     @Test
+    public void setInvoiceToCanceledAndGetCanceledInvoice() {
+        invoice.setInvoiceType(InvoiceType.customer);
+        Invoice created = this.invoiceService.createInvoice(invoice);
+        Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(created);
+        Invoice foundInvoice = this.invoiceService.findOneById(created.getId());
+
+        assertNotNull(foundInvoice);
+        assertNotNull(canceledInvoice);
+        assertEquals(canceledInvoice.getId(), foundInvoice.getId());
+        assertEquals(canceledInvoice.getAmount(), foundInvoice.getAmount());
+        assertEquals(canceledInvoice.getItems().size(), foundInvoice.getItems().size());
+        assertEquals(canceledInvoice.getInvoiceNumber(), foundInvoice.getInvoiceNumber());
+        assertEquals(canceledInvoice.getInvoiceType(), foundInvoice.getInvoiceType());
+        assertEquals(canceledInvoice.getInvoiceType(),InvoiceType.canceled);
+    }
+
+    @Test
     public void createInvoiceAndGetInvoicePage() {
         invoice.setInvoiceType(InvoiceType.customer);
         Invoice created = invoiceService.createInvoice(invoice);

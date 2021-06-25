@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {CustomerAuthService} from './auth/customer-auth.service';
 import {Observable} from 'rxjs';
 import {Customer} from '../dtos/customer';
+import {Pagination} from '../dtos/pagination';
+import {Order} from '../dtos/order';
 
 
 @Injectable({
@@ -20,6 +22,16 @@ export class MeService {
    */
   getMyProfileData(): Observable<Customer> {
     return this.httpClient.get<Customer>(this.meBaseUri, {headers: this.getHeadersForCustomer()});
+  }
+  getOrdersForPage(page: number, pageSize: number): Observable<Pagination<Order>> {
+    const options = {
+      params: new HttpParams()
+        .set(this.globals.requestParamKeys.pagination.page, `${page}`)
+        .set(this.globals.requestParamKeys.pagination.pageCount, `${pageSize}`),
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`)
+    };
+    return this.httpClient.get<Pagination<Order>>(this.meBaseUri + '/orders', options);
   }
 
   /**
@@ -45,6 +57,15 @@ export class MeService {
       this.meBaseUri + '/password', {oldPassword, newPassword}
       , {headers: this.getHeadersForCustomer()});
   }
+  /**
+   * Loads invoice pdf by id from the backend for the customer
+   *
+   * @param id of the invoice
+   * @return pdf generated from the invoice entry
+   */
+  getInvoiceAsPdfByIdForCustomer(id: number): Observable<any> {
+    return this.httpClient.get(this.meBaseUri + '/invoices/' + id + '/pdf', this.getPdfHeadersForCustomer());
+  }
 
 
   /**
@@ -57,5 +78,11 @@ export class MeService {
   private getHeadersForCustomer(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`);
+  }
+  private getPdfHeadersForCustomer(): any {
+    return {
+      responseType: 'blob' as 'json',
+      headers: new HttpHeaders().set('Authorization', `Bearer ${this.customerAuthService.getToken()}`).set('Accept', 'application/pdf')
+    };
   }
 }

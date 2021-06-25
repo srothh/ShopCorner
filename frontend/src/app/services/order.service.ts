@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
 import {Order} from '../dtos/order';
 import {CancellationPeriod} from '../dtos/cancellationPeriod';
 import {OperatorAuthService} from './auth/operator-auth.service';
 import {CustomerAuthService} from './auth/customer-auth.service';
+import {Pagination} from '../dtos/pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class OrderService {
   private orderBaseURI: string = this.globals.backendUri + '/orders';
 
   constructor(private httpClient: HttpClient, private globals: Globals,
-              private operatorAuthService: OperatorAuthService, private customerAuthService: CustomerAuthService) {
+              private operatorAuthService: OperatorAuthService,
+              private customerAuthService: CustomerAuthService) {
   }
 
   /**
@@ -56,7 +58,6 @@ export class OrderService {
   getCancellationPeriod(): Observable<CancellationPeriod> {
     return this.httpClient.get<CancellationPeriod>(this.orderBaseURI + '/settings');
   }
-
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
@@ -66,5 +67,4 @@ export class OrderService {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`);
   }
-
 }
