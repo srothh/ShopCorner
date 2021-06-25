@@ -110,6 +110,13 @@ public class InvoiceServiceImpl implements InvoiceService {
         return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
     }
 
+    @Override
+    public Invoice getByIdAndCustomerId(Long id, Long customerId) {
+        LOGGER.trace("getByIdAndCustomerId({}, {})", id, customerId);
+        return this.invoiceRepository.findByIdAndCustomerId(id, customerId)
+            .orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
+    }
+
     @Caching(evict = {
         @CacheEvict(value = "counts", key = "'invoices'"),
         @CacheEvict(value = "counts", key = "'customerInvoices'"),

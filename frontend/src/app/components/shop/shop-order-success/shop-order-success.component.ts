@@ -30,7 +30,7 @@ export class ShopOrderSuccessComponent implements OnInit {
   paymentSucceeded: boolean;
   products: Product[];
   customer: Customer;
-  invoiceDto: Invoice;
+  invoice: Invoice;
   cart: Cart;
   confirmedPayment: ConfirmedPayment;
   alreadyOrdered: boolean;
@@ -50,27 +50,31 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.paymentId = params['paymentId'];
       this.payerId = params['PayerID'];
-      this.confirmedPayment = new ConfirmedPayment(0, this.paymentId, this.payerId);
-      this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
-        if (finalisedPaymentData.includes('Payment successful')) {
-          this.paymentSucceeded = true;
-          this.placeNewOrder();
-          this.cartGlobals.resetCart();
-          //after payment -> discard paymentId and payerID
-
+      this.paypalService.getConfirmedPayment(this.paymentId, this.payerId).subscribe((cp) => {
+        this.alreadyOrdered = cp !== null;
+        if(this.alreadyOrdered === false) {
+          this.confirmPayment();
+        } else {
+          this.goToHome();
         }
-      }, error => {
-        this.paymentSucceeded = false;
       });
     });
   }
-  getCartSize() {
-    return this.cartGlobals.getCartSize();
+  confirmPayment(){
+    this.confirmedPayment = new ConfirmedPayment(null, this.paymentId, this.payerId);
+    this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
+      if (finalisedPaymentData.includes('Payment successful')) {
+        this.paymentSucceeded = true;
+        this.placeNewOrder();
+      }
+    }, error => {
+      this.paymentSucceeded = false;
+    });
   }
 
   placeNewOrder() {
-    this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer);
+    this.createInvoice();
+    const order: Order = new Order(0, this.invoice, this.customer);
     this.orderService.placeNewOrder(order).subscribe((orderData) => {
     });
   }
@@ -104,20 +108,20 @@ export class ShopOrderSuccessComponent implements OnInit {
     );
   }
 
-  creatInvoiceDto() {
-    this.invoiceDto = new Invoice();
-    this.invoiceDto.invoiceNumber = '';
+  createInvoice() {
+    this.invoice = new Invoice();
+    this.invoice.invoiceNumber = '';
 
     for (const item of this.products) {
       if (item !== undefined) {
         const invItem = new InvoiceItem(new InvoiceItemKey(item.id), item, item.cartItemQuantity);
-        this.invoiceDto.items.push(invItem);
+        this.invoice.items.push(invItem);
       }
     }
-    this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
-    this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
-    this.invoiceDto.customerId = this.customer.id;
-    this.invoiceDto.invoiceType = InvoiceType.customer;
+    this.invoice.amount = +this.getTotalPrice().toFixed(2);
+    this.invoice.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
+    this.invoice.customerId = this.customer.id;
+    this.invoice.invoiceType = InvoiceType.customer;
   }
 
   getCartItems() {
@@ -128,6 +132,7 @@ export class ShopOrderSuccessComponent implements OnInit {
   }
 
   goToHome() {
+    this.cartGlobals.resetCart();
     this.router.navigate(['/home']).then();
   }
 }

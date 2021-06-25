@@ -8,6 +8,7 @@ import {OperatorAuthService} from './auth/operator-auth.service';
 import {Pagination} from '../dtos/pagination';
 import {InvoiceType} from '../dtos/invoiceType.enum';
 import {Customer} from '../dtos/customer';
+import {CustomerAuthService} from './auth/customer-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,10 @@ export class InvoiceService {
   private invoiceBaseUri: string = this.globals.backendUri + '/invoices';
   private productBaseUri: string = this.globals.backendUri + '/products';
   private customerBaseUri: string = this.globals.backendUri + '/customers';
-  constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
+  constructor(private httpClient: HttpClient,
+              private globals: Globals,
+              private operatorAuthService: OperatorAuthService,
+              private customerAuthService: CustomerAuthService) {
   }
 
   /**
