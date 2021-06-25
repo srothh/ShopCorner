@@ -67,4 +67,12 @@ public interface OrderService {
      * @throws IOException upon encountering problems with the configuration file
      */
     CancellationPeriod getCancellationPeriod() throws IOException;
+
+    /**
+     * Increments the salescounts of sold products.
+     *
+     * @param order The order containing the information on the sold products
+     * @throws RuntimeException upon encountering problems with the database
+     */
+    void updateProductsInOrder(Order order);
 }
