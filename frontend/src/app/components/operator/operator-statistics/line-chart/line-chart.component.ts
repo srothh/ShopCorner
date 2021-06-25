@@ -2,6 +2,7 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ChartDataSets, ChartType} from 'chart.js';
 import {BaseChartDirective} from 'ng2-charts';
 import {Invoice} from '../../../../dtos/invoice';
+import {InvoiceType} from '../../../../dtos/invoiceType.enum';
 
 @Component({
   selector: 'app-line-chart',
@@ -45,8 +46,10 @@ export class LineChartComponent implements OnInit {
       this.chartLabels.push(d.toISOString().split('T')[0]);
     }
     for (const invoice of this.invoices) {
-      const day = invoice.date.substring(0,10);
-      temp[days.indexOf(day)] += invoice.amount;
+      if (invoice.invoiceType !== InvoiceType.canceled) {
+        const day = invoice.date.substring(0, 10);
+        temp[days.indexOf(day)] += invoice.amount;
+      }
     }
     this.chartData = [{data: temp, label: 'Umsatz'}];
     setTimeout(() => {

@@ -50,24 +50,27 @@ export class BarChartComponent implements OnInit {
     this.chartLabels = [];
     const tempOp = [];
     const tempCu = [];
+    const tempCa = [];
     const months = [];
     for (let d = new Date(this.start); d<= this.end; d.setMonth(d.getMonth() + 1)) {
       const month = d.toISOString().split('T')[0];
       months.push(month.substring(0,7));
       tempOp.push(0);
       tempCu.push(0);
+      tempCa.push(0);
       this.chartLabels.push(month.substring(0,7));
     }
     for (const invoice of this.invoices) {
       const month = invoice.date.substring(0,7);
       if (invoice.invoiceType === InvoiceType.operator) {
         tempOp[months.indexOf(month)] += invoice.amount;
-      }
-      if (invoice.invoiceType === InvoiceType.customer) {
+      } else if (invoice.invoiceType === InvoiceType.customer) {
         tempCu[months.indexOf(month)] += invoice.amount;
+      } else {
+        tempCa[months.indexOf(month)] += invoice.amount;
       }
     }
-    this.chartData = [{data: tempOp, label: 'Betreiber'}, {data: tempCu, label: 'Kunden'}];
+    this.chartData = [{data: tempOp, label: 'Betreiber'}, {data: tempCu, label: 'Kunden'}, {data: tempCa, label: 'Storniert'}];
     setTimeout(() => {
       if (this.chart && this.chart.chart && this.chart.chart.config) {
         this.chart.chart.config.data.labels = this.chartLabels;
