@@ -9,6 +9,7 @@ import {Product} from '../../../dtos/product';
 import {Category} from '../../../dtos/category';
 import {ProductService} from '../../../services/product/product.service';
 import {CategoryService} from '../../../services/category.service';
+import {ProductsTopsellerChartComponent} from './products-topseller-chart/products-topseller-chart.component';
 
 @Component({
   selector: 'app-operator-statistics',
@@ -20,6 +21,7 @@ export class OperatorStatisticComponent implements OnInit {
   @ViewChild(LineChartComponent) lineChild: LineChartComponent;
   @ViewChild(PieChartComponent) pieChild: PieChartComponent;
   @ViewChild(BarChartComponent) barChild: BarChartComponent;
+  @ViewChild(ProductsTopsellerChartComponent) productTopseller: ProductsTopsellerChartComponent;
 
   error = false;
   errorMessage = '';
@@ -60,14 +62,19 @@ export class OperatorStatisticComponent implements OnInit {
     this.loadInvoicesForTime();
   }
 
-  updateChildren() {
+  updateInvoiceChildren() {
     this.lineChild.update(this.start, this.end, this.invoices);
     this.barChild.update(this.start, this.end, this.invoices);
     this.pieChild.update(this.invoices);
   }
 
+  updateProductChildren() {
+    this.productTopseller.update(this.products);
+  }
+
   viewProducts() {
     if (this.products === undefined) {
+      this.loaded = false;
       this.fetchCategories();
     }
     this.showProducts = true;
@@ -86,7 +93,7 @@ export class OperatorStatisticComponent implements OnInit {
       (invoices: Invoice[]) => {
         this.invoices = invoices;
         if (this.loaded === true) {
-          this.updateChildren();
+          this.updateInvoiceChildren();
         } else {
           this.loaded = true;
         }
@@ -119,6 +126,11 @@ export class OperatorStatisticComponent implements OnInit {
     this.productService.getProductsByCategory(this.selected).subscribe(
       (products: Product[]) => {
         this.products = products;
+        if (this.loaded === true) {
+          this.updateProductChildren();
+        } else {
+          this.loaded = true;
+        }
       }, error => {
         this.error = true;
         if (typeof error.error === 'object') {

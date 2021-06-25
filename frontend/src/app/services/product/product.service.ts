@@ -17,7 +17,8 @@ export class ProductService {
   }
 
   static productMapper(p: Product) {
-    return new Product(p.id, p.name, p.description, p.price, p.category, p.taxRate, p.locked, p.picture, p.expiresAt, p.deleted);
+    return new Product(p.id, p.name, p.description, p.price, p.category, p.taxRate, p.locked, p.picture,
+      p.expiresAt, p.deleted, p.saleCount);
   }
 
   /**
