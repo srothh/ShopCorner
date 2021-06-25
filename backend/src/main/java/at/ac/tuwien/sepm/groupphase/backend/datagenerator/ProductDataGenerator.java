@@ -166,7 +166,7 @@ public class ProductDataGenerator {
             LOGGER.debug("invoices already generated");
         } else {
             List<Product> products = productRepository.findAll();
-            for (int i = 1; i <= 400; i++) {
+            for (int i = 1; i <= 500; i++) {
                 int rand = (int) (Math.random() * 10) + 1;
                 List<InvoiceItem> items = new ArrayList<>();
                 int[] used = new int[rand];
@@ -190,7 +190,11 @@ public class ProductDataGenerator {
                 invoice.setDate(LocalDateTime.now().minus(daysPast, ChronoUnit.DAYS));
                 invoice.setAmount(amount);
                 invoice.setInvoiceNumber(i + "Operator" + invoice.getDate().getYear());
-                invoice.setInvoiceType(InvoiceType.operator);
+                if (i % 100 == 0) {
+                    invoice.setInvoiceType(InvoiceType.canceled);
+                } else {
+                    invoice.setInvoiceType(InvoiceType.operator);
+                }
                 Invoice newInvoice = invoiceRepository.save(invoice);
                 for (InvoiceItem item : items) {
                     item.setInvoice(newInvoice);
@@ -204,7 +208,7 @@ public class ProductDataGenerator {
                 }
             }
             List<Customer> customers = customerRepository.findAll();
-            for (int i = 1; i <= 600; i++) {
+            for (int i = 1; i <= 800; i++) {
                 int rand = (int) (Math.random() * 10) + 1;
                 List<InvoiceItem> items = new ArrayList<>();
                 int[] used = new int[rand];
@@ -231,7 +235,11 @@ public class ProductDataGenerator {
                 int custId = (int) (Math.random() * customers.size());
                 invoice.setCustomerId((long) custId);
                 invoice.setOrderNumber("Test" + i);
-                invoice.setInvoiceType(InvoiceType.customer);
+                if (i % 100 == 0) {
+                    invoice.setInvoiceType(InvoiceType.canceled);
+                } else {
+                    invoice.setInvoiceType(InvoiceType.customer);
+                }
                 Invoice newInvoice = invoiceRepository.save(invoice);
                 for (InvoiceItem item : items) {
                     item.setInvoice(newInvoice);
