@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
@@ -45,6 +44,12 @@ public class PayPalEndpoint {
         this.paymentMapper = paymentMapper;
     }
 
+    /**
+     * Initiates a Payment transaction with PayPal's API.
+     *
+     * @param orderDto the order containing all information for the payment process
+     * @return a redirect URL to confirm the payment
+     */
     @Secured({"ROLE_CUSTOMER"})
     @PostMapping()
     @Operation(summary = "Posts a new request to PayPal's API to initiate a payment", security = @SecurityRequirement(name = "apiKey"))
@@ -53,6 +58,12 @@ public class PayPalEndpoint {
         return new ResponseEntity<>(this.payPalService.createPayment(this.orderMapper.orderDtoToOrder(orderDto)), HttpStatus.CREATED);
     }
 
+    /**
+     * Confirms a payment with the specified PayerID and PaymentID in the request.
+     *
+     * @param confirmedPaymentDto the confirmedPaymentDto contains the necessary parameters to confirm the payment
+     * @return string indicating the success or failure of a payment
+     */
     @Secured({"ROLE_CUSTOMER"})
     @PostMapping("/confirmation")
     @Operation(summary = "Confirms a payment", security = @SecurityRequirement(name = "apiKey"))
@@ -65,6 +76,12 @@ public class PayPalEndpoint {
         return new ResponseEntity<>("Payment not successful", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Gets a ConfirmedPayment entry with the given payerId and paymentId.
+     *
+     * @param confirmedPaymentSearchDto the confirmedPaymentSearchDto contains the necessary parameters retrieval
+     * @return the ConfirmedPayment with the given PayerId and paymentId
+     */
     @Secured({"ROLE_CUSTOMER"})
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)

@@ -17,20 +17,20 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
   errorMessage = '';
   download = false;
   customerExists = false;
-
+  address: string;
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
     this.detailedInvoice = new Invoice();
     this.detailedInvoice.date = '';
     this.detailedInvoice.amount = 0;
-    this.customerExists = this.value.invoiceType === InvoiceType.customer;
+    this.customerExists = this.value.invoiceType === InvoiceType.customer ||
+      (this.value.customerId !== undefined && this.value.customerId !== null);
     if (this.customerExists) {
       this.fetchCustomerData(this.value);
     } else {
       this.fetchInvoiceData(this.value.id);
     }
-
   }
 
   onSubmit(event) {
@@ -86,6 +86,8 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
     });
       this.invoiceService.getCustomerById(invoice.customerId).subscribe((item) => {
         this.customer = item;
+        this.address = item.address.postalCode + ' ' + item.address.street + ' ' + item.address.houseNumber;
+
       }, (error) => {
         this.error = true;
         this.errorMessage = error;
