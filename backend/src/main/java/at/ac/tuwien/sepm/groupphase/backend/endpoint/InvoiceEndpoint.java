@@ -10,10 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
