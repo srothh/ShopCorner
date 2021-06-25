@@ -96,7 +96,7 @@ public class ProductDataGenerator {
                 .withDescription("leckere Bananen aus Ecuador")
                 .withPrice(1.49)
                 .withTaxRate(taxRate2)
-                .withCategory(category3)
+                .withCategory(category3).withSaleCount(0L)
                 .build();
             productRepository.save(product1);
             TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
@@ -124,7 +124,7 @@ public class ProductDataGenerator {
                 .withPrice(faker.number().randomDouble(2, 1, 200))
                 .withTaxRate(taxRate)
                 .withCategory(category1)
-                .withExpiresAt(futureLocalDateTime)
+                .withExpiresAt(futureLocalDateTime).withSaleCount(0L)
                 .build();
             Long prodId = productRepository.save(prod).getId();
 
@@ -134,7 +134,7 @@ public class ProductDataGenerator {
                 .withPrice(faker.number().randomDouble(2, 1, 200))
                 .withTaxRate(taxRate)
                 .withCategory(category2)
-                .withExpiresAt(pastLocalDateTime)
+                .withExpiresAt(pastLocalDateTime).withSaleCount(0L)
                 .build();
             Long prodId1 = productRepository.save(prod1).getId();
 
@@ -143,7 +143,7 @@ public class ProductDataGenerator {
                 .withDescription(faker.lorem().sentence(2))
                 .withPrice(faker.number().randomDouble(2, 1, 200))
                 .withTaxRate(taxRate)
-                .withCategory(category3)
+                .withCategory(category3).withSaleCount(0L)
                 .build();
             Long prodId2 = productRepository.save(prod2).getId();
 
@@ -152,7 +152,7 @@ public class ProductDataGenerator {
                 .withDescription(faker.lorem().sentence(2))
                 .withPrice(faker.number().randomDouble(2, 1, 200))
                 .withTaxRate(taxRate)
-                .withCategory(category4)
+                .withCategory(category4).withSaleCount(0L)
                 .build();
             Long prodId3 = productRepository.save(prod3).getId();
 

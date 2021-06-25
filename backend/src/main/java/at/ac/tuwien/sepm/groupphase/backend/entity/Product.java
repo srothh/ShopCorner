@@ -199,8 +199,9 @@ public class Product {
         private byte[] picture;
         private LocalDateTime expiresAt;
         private boolean deleted;
+        private Long saleCount;
 
-        public ProductBuilder(){
+        public ProductBuilder() {
         }
 
         public static ProductBuilder getProductBuilder() {
@@ -208,9 +209,13 @@ public class Product {
         }
 
 
-
         public ProductBuilder withName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public ProductBuilder withSaleCount(Long saleCount) {
+            this.saleCount = saleCount;
             return this;
         }
 
@@ -271,6 +276,7 @@ public class Product {
             product.setPicture(picture);
             product.setDeleted(deleted);
             product.setExpiresAt(expiresAt);
+            product.setSaleCount(saleCount);
             return product;
         }
     }
