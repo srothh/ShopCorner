@@ -1,0 +1,17 @@
+<div class="card-body">
+  <ul class="list-group list-group-flush" *ngFor="let orderItem of orderItems">
+    <li class="list-group-item d-flex flex-row">
+      <img *ngIf="orderItem.product.picture !== null" src="{{getImageSource(orderItem.product)}}" width="100"
+           height="100">
+      <object *ngIf="orderItem.product.picture == null" data="assets/no_image_available.svg" width="100"
+              height="100"></object>
+      <div class="product-info d-flex flex-column ml-4">
+        <div
+          class="order-product-name font-weight-bold">{{ orderItem.numberOfItems + ' x ' + orderItem.product.name}}</div>
+        <div class="order-product-description">{{orderItem.product.description}}</div>
+        <div
+          class="order-product-price">{{(orderItem.product.price * orderItem.product.taxRate.calculationFactor).toFixed(2) + ' EUR'}}</div>
+      </div>
+    </li>
+  </ul>
+</div>

@@ -34,4 +34,13 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, JpaSpec
      */
     Long countInvoiceByDateAfter(LocalDateTime date);
 
+    /**
+     * Finds a single invoice entry with the given id and customer id.
+     *
+     * @return single invoice entry with the given parameters
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    Optional<Invoice> findByIdAndCustomerId(Long id, Long categoryId);
+
+
 }
