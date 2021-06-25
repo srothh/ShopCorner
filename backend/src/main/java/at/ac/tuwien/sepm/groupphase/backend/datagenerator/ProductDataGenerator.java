@@ -113,6 +113,8 @@ public class ProductDataGenerator {
             generateProductsWithTaxRate(taxRate1, category1, category2, category3, category4, faker);
             generateProductsWithTaxRate(taxRate2, category1, category2, category3, category4, faker);
             generateProductsWithTaxRate(taxRate3, category1, category2, category3, category4, faker);
+
+            generateInvoices();
         }
 
     }
@@ -165,8 +167,6 @@ public class ProductDataGenerator {
             Long prodId3 = productRepository.save(prod3).getId();
 
         }
-        generateInvoices();
-
     }
 
     public void generateInvoices() {
@@ -196,7 +196,7 @@ public class ProductDataGenerator {
                 }
                 int daysPast = (int) (Math.random() * 400) + 1;
                 invoice.setDate(LocalDateTime.now().minus(daysPast, ChronoUnit.DAYS));
-                invoice.setAmount(amount);
+                invoice.setAmount((double) Math.round(amount * 100) / 100);
                 invoice.setInvoiceNumber(i + "Operator" + invoice.getDate().getYear());
                 if (i % 100 == 0) {
                     invoice.setInvoiceType(InvoiceType.canceled);
@@ -238,7 +238,7 @@ public class ProductDataGenerator {
                 }
                 int daysPast = (int) (Math.random() * 400) + 1;
                 invoice.setDate(LocalDateTime.now().minus(daysPast, ChronoUnit.DAYS));
-                invoice.setAmount(amount);
+                invoice.setAmount((double) Math.round(amount * 100) / 100);
                 invoice.setInvoiceNumber(i + "Customer" + invoice.getDate().getYear());
                 int custId = (int) (Math.random() * customers.size());
                 invoice.setCustomerId((long) custId);
