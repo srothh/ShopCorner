@@ -9,6 +9,7 @@ import {TaxRateService} from '../../../services/tax-rate.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {faFilter} from '@fortawesome/free-solid-svg-icons';
 import {PageableProducts} from '../../../services/pagination/pageable-products';
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-operator-products',
@@ -35,6 +36,7 @@ export class OperatorProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchProducts();
+    this.fetchCategoriesAndTaxRates();
   }
 
   /**
@@ -49,6 +51,15 @@ export class OperatorProductComponent implements OnInit {
   fetchProducts(): void {
     this.pageableProducts.fetchProducts();
   }
+
+  fetchCategoriesAndTaxRates() {
+    forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
+      .subscribe(([categoriesData, taxRatesData]) => {
+        this.categories = categoriesData;
+        this.taxRates = taxRatesData;
+      });
+  }
+
 
   resetAndFetchProducts(searchForm) {
     this.pageableProducts.searchQuery = {
