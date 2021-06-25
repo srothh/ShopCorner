@@ -27,7 +27,7 @@
     <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
       <thead>
       <tr class="table-secondary">
-        <th scope="col" class="font-weight-bold">Datum</th>
+        <th scope="col" class="font-weight-bold">Bestellung aufgegeben am</th>
         <th scope="col" class="font-weight-bold">Gesamtbetrag</th>
         <th scope="col" class="font-weight-bold">Kunde</th>
         <th scope="col" class="font-weight-bold">Rechnung</th>
@@ -35,7 +35,7 @@
       </thead>
       <tbody>
       <tr *ngFor="let order of orders">
-        <td><span>{{order.invoice.date}}</span></td>
+        <td><span>{{order.invoice.date.replace('T', ', ')}} Uhr</span></td>
         <td><span>{{order.invoice.amount}}€</span></td>
         <td><span>{{order.customer.name}}</span></td>
         <td><span>

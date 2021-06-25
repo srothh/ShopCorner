@@ -31,6 +31,9 @@ export class OperatorOrderComponent implements OnInit {
     this.error = false;
   }
 
+  /**
+   * Downloads the given invoice as a pdf.
+   */
   downloadInvoice(id: number, date: string) {
     this.invoiceService.getInvoiceAsPdfById(id).subscribe((data) => {
       const downloadURL = window.URL.createObjectURL(data);
