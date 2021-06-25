@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -14,8 +15,10 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.OrderRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import com.github.javafaker.Faker;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -50,16 +53,21 @@ public class ProductDataGenerator {
     private final InvoiceRepository invoiceRepository;
     private final InvoiceItemRepository invoiceItemRepository;
     private final CustomerRepository customerRepository;
+    private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
     public ProductDataGenerator(ProductRepository productRepository, CategoryRepository categoryRepository,
                                 TaxRateRepository taxRateRepository, InvoiceRepository invoiceRepository,
-                                InvoiceItemRepository invoiceItemRepository, CustomerRepository customerRepository) {
+                                InvoiceItemRepository invoiceItemRepository, CustomerRepository customerRepository,
+                                OrderService orderService, OrderRepository orderRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.taxRateRepository = taxRateRepository;
         this.invoiceRepository = invoiceRepository;
         this.invoiceItemRepository = invoiceItemRepository;
         this.customerRepository = customerRepository;
+        this.orderService = orderService;
+        this.orderRepository = orderRepository;
     }
 
     @PostConstruct
@@ -250,6 +258,9 @@ public class ProductDataGenerator {
                     itemSet.add(item);
                     invoice.setItems(itemSet);
                     invoiceItemRepository.save(item);
+                    Order order = new Order(invoice, customers.get(custId));
+                    orderService.updateProductsInOrder(order);
+                    orderRepository.save(order);
                 }
             }
         }
