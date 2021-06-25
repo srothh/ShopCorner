@@ -18,12 +18,23 @@ export class LineChartComponent implements OnInit {
 
   public chartOptions = {
     scaleShowVerticalLines: false,
-    responsive: true
+    responsive: true,
+    scales: {
+      yAxes: [
+        {
+          stacked: true,
+        }
+      ]
+    }
   };
   public chartLabels = [];
   public chartType: ChartType = 'line';
   public chartLegend = true;
   chartData: ChartDataSets[];
+  showDetail = false;
+  temp = [];
+  tempCu = [];
+  tempOp = [];
   error = false;
   errorMessage = '';
 
@@ -38,20 +49,37 @@ export class LineChartComponent implements OnInit {
     this.end = end;
     this.invoices = invoices;
     this.chartLabels = [];
-    const temp = [];
+    this.temp = [];
+    this.tempCu = [];
+    this.tempOp = [];
     const days = [];
     for (let d = new Date(this.start); d<= this.end; d.setDate(d.getDate() + 1)) {
       days.push(d.toISOString().split('T')[0]);
-      temp.push(0);
+      this.temp.push(0);
+      this.tempOp.push(0);
+      this.tempCu.push(0);
       this.chartLabels.push(d.toISOString().split('T')[0]);
     }
     for (const invoice of this.invoices) {
       if (invoice.invoiceType !== InvoiceType.canceled) {
         const day = invoice.date.substring(0, 10);
-        temp[days.indexOf(day)] += invoice.amount;
+        this.temp[days.indexOf(day)] += invoice.amount;
+        if (invoice.invoiceType === InvoiceType.customer) {
+          this.tempCu[days.indexOf(day)] += invoice.amount;
+        } else {
+          this.tempOp[days.indexOf(day)] += invoice.amount;
+        }
       }
     }
-    this.chartData = [{data: temp, label: 'Umsatz'}];
+    this.fillData();
+  }
+
+  fillData() {
+    if (this.showDetail) {
+      this.chartData = [{data: this.tempCu, label: 'Kunden'}, {data: this.tempOp, label: 'Betreiber'}];
+    } else {
+      this.chartData = [{data: this.temp, label: 'Umsatz'}];
+    }
     setTimeout(() => {
       if (this.chart && this.chart.chart && this.chart.chart.config) {
         this.chart.chart.config.data.labels = this.chartLabels;
@@ -61,4 +89,8 @@ export class LineChartComponent implements OnInit {
     });
   }
 
+  changeView() {
+    this.showDetail = !this.showDetail;
+    this.fillData();
+  }
 }
