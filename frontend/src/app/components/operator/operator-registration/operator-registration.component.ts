@@ -34,44 +34,39 @@ export class OperatorRegistrationComponent implements OnInit {
   }
 
 
+  ngOnInit(): void {
 
-    ngOnInit(): void {
+  }
 
-    }
-
-    vanishError() {
-      this.error = false;
-    }
+  vanishError() {
+    this.error = false;
+  }
 
 
-    register() {
+  register() {
 
-      if (this.registrationForm.valid) {
+    if (this.registrationForm.valid) {
 
-        if(this.registrationForm.controls.permissions.value === 'Administrator') {
-            this.permission = Permissions.admin;
-        }
-
-       const operator: Operator = new Operator(0, this.registrationForm.controls.name.value,
-          this.registrationForm.controls.loginName.value,
-          this.registrationForm.controls.password.value, this.registrationForm.controls.email.value,
-          this.permission);
-
-        this.operatorService.createOperator(operator).subscribe(() => {
-          this.submitted = true;
-          this.router.navigate(['/operator/accounts']);
-        }, error => {
-          console.log(error);
-          this.error = true;
-          if (typeof error.error === 'object') {
-            this.errorMessage = error.error.error;
-          } else {
-            this.errorMessage = error.error;
-          }
-        });
-      } else {
-        console.log('Invalid input');
+      if (this.registrationForm.controls.permissions.value === 'Administrator') {
+        this.permission = Permissions.admin;
       }
+
+      const operator: Operator = new Operator(0, this.registrationForm.controls.name.value,
+        this.registrationForm.controls.loginName.value,
+        this.registrationForm.controls.password.value, this.registrationForm.controls.email.value,
+        this.permission);
+
+      this.operatorService.createOperator(operator).subscribe(() => {
+        this.submitted = true;
+        this.router.navigate(['/operator/accounts']);
+      }, error => {
+        console.log(error);
+        this.error = true;
+        this.errorMessage = error;
+      });
+    } else {
+      console.log('Invalid input');
     }
+  }
 
 }
