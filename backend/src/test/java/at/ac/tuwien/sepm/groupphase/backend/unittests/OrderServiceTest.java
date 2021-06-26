@@ -5,15 +5,17 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.CancellationPeriod;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.OrderServiceImpl;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.MockitoRule;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -29,6 +31,9 @@ import static org.mockito.Mockito.doThrow;
 @RunWith(MockitoJUnitRunner.class)
 public class OrderServiceTest implements TestData {
 
+    @Rule
+    private final MockitoRule rule = MockitoJUnit.rule();
+
     @Mock
     Order order;
     @Spy
@@ -36,7 +41,7 @@ public class OrderServiceTest implements TestData {
     private OrderServiceImpl orderService;
     @Mock
     private CancellationPeriod cancellationPeriod;
-    private UUID sessionID = UUID.randomUUID();
+    private final UUID sessionID = UUID.randomUUID();
 
     @Test
     public void placeNewOrderWithInvoice_thenReturnOrder() {
