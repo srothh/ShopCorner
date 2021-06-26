@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {ShopService} from '../../../services/shop.service';
+import {ShopSettings} from '../../../dtos/shop-settings';
 
 @Component({
   selector: 'app-operator-shop',
@@ -6,10 +9,60 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./operator-shop.component.scss']
 })
 export class OperatorShopComponent implements OnInit {
+  settingsFormGroup: FormGroup;
 
-  constructor() { }
+  constructor(private formBuilder: FormBuilder, private shopService: ShopService) { }
 
   ngOnInit(): void {
+    this.initializeForm();
+    this.loadSettings();
+  }
+
+  selectFile(event) {
+    const fileToUpload = event.target.files.item(0);
+    const reader = new FileReader();
+    reader.readAsDataURL(fileToUpload);
+    reader.onload = ((loadEvent) => {
+      // fileSource should be string in a base64-encoded format
+      this.settingsFormGroup.controls['imageSource'].setValue(loadEvent.target.result);
+    });
+  }
+
+  loadSettings() {
+    this.shopService.loadSettings().subscribe((shopSettings) => {
+      this.loadShopSettingsIntoForm(shopSettings);
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  updateSettings() {
+    const title = this.settingsFormGroup.controls['title'].value;
+    const logo = this.settingsFormGroup.controls['imageSource'].value;
+    const bannerTitle = this.settingsFormGroup.controls['bannerTitle'].value;
+    const bannerBody = this.settingsFormGroup.controls['bannerText'].value;
+    const shopSettings = new ShopSettings(title, logo, bannerTitle, bannerBody);
+    this.shopService.updateSettings(shopSettings).subscribe(() => {
+      console.log('finito');
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  private loadShopSettingsIntoForm(shopSettings: ShopSettings) {
+    this.settingsFormGroup.controls['title'].setValue(shopSettings.title);
+    this.settingsFormGroup.controls['imageSource'].setValue(shopSettings.logo);
+    this.settingsFormGroup.controls['bannerTitle'].setValue(shopSettings.bannerTitle);
+    this.settingsFormGroup.controls['bannerText'].setValue(shopSettings.bannerText);
+  }
+
+  private initializeForm() {
+    this.settingsFormGroup = this.formBuilder.group({
+      title: [''],
+      imageSource: [''],
+      bannerTitle: [''],
+      bannerText: [''],
+    });
   }
 
 }

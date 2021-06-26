@@ -35,6 +35,13 @@ export class Globals {
     }
   };
 
+  readonly defaultSettings = {
+    title: 'ShopCorner',
+    logo: 'https://i.imgur.com/zMBx1FY.png',
+    bannerTitle: 'ShopCorner',
+    bannerText: 'Willkommen bei ShopCorner!'
+  };
+
   private findBackendUrl(): string {
     if (window.location.port === '4200') { // local `ng serve`, backend at localhost:8080
       return 'http://localhost:8080/api/v1';

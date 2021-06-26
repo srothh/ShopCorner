@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final Properties properties = new Properties();
 
     private final String cancellationKey = "cancellationPeriod";
-    private final String configPath = "src/main/resources/orderSettings.config";
+    private final String configPath = "src/main/resources/order.settings";
     private final MailService mailService;
 
     @Autowired

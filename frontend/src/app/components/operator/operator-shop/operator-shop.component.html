@@ -1,3 +1,36 @@
-<div>
-  Implement shop/layout management here
+<div class="container">
+  <div class="d-flex justify-content-between mt-3">
+    <h2>Shop Settings</h2>
+    <button class="btn btn-primary" (click)="updateSettings()">Save</button>
+  </div>
+  <hr>
+  <form>
+    <div class="form-group w-75" [formGroup]="settingsFormGroup">
+      <label for="title" class="form-label">Shop Titel</label>
+      <input type="text" class="form-control" id="title" formControlName="title">
+    </div>
+  </form>
+
+  <form>
+    <div class="form-group w-75">
+      <label for="logo" class="form-label">Shop Logo</label>
+      <input type="file" class="form-control-file" accept="image/png, image/jpeg" id="logo" alt=""
+      (change)="selectFile($event)">
+    </div>
+    <img [src]="settingsFormGroup.value.imageSource" width="150" height="150" alt="">
+  </form>
+
+  <form class="mt-5">
+    <div class="form-group w-75" [formGroup]="settingsFormGroup">
+      <label for="banner-title" class="form-label">Banner Titel</label>
+      <input type="text" class="form-control" id="banner-title" formControlName="bannerTitle">
+    </div>
+  </form>
+
+  <form>
+    <div class="form-group w-75" [formGroup]="settingsFormGroup">
+      <label for="banner-body" class="form-label">Banner Text</label>
+      <textarea type="text" class="form-control" id="banner-body" formControlName="bannerText"></textarea>
+    </div>
+  </form>
 </div>
