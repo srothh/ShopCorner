@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
 import {Router} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {OperatorService} from '../../../services/operator.service';
+import {Permissions} from '../../../dtos/permissions.enum';
 
 @Component({
   selector: 'app-operator-home',

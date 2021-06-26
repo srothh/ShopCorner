@@ -97,7 +97,7 @@ export class OperatorInvoiceComponent implements OnInit {
       console.log(item);
     }, (error) => {
       this.error = true;
-      this.errorMessage = error.error;
+      this.errorMessage = error;
     });
     this.loadInvoicesForPage();
     this.toggleSide();
@@ -174,7 +174,7 @@ export class OperatorInvoiceComponent implements OnInit {
       },
       error => {
         this.error = true;
-        this.errorMessage = error.error;
+        this.errorMessage = error;
       }
     );
   }

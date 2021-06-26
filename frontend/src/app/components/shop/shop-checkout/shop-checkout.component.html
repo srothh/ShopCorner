@@ -29,8 +29,8 @@
           <strong>{{getTotalPrice().toFixed(2)}} €</strong>
         </li>
       </ul>
-      <small *ngIf="cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
-      <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} nach dem Bestellungseingang stornierbar.</small>
+      <small *ngIf="cancellationPeriod && cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
+      <small *ngIf="cancellationPeriod && cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} nach dem Bestellungseingang stornierbar.</small>
 
       <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="proceedToPay()">Bezahlen mit Paypal
       </button>
@@ -97,8 +97,8 @@
           </li>
         </ul>
         <div>
-          <small *ngIf="cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
-          <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} Tag(en) nach dem Bestellungseingang stornierbar.</small>
+          <small *ngIf="cancellationPeriod && cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
+          <small *ngIf="cancellationPeriod && cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} Tag(en) nach dem Bestellungseingang stornierbar.</small>
 
           <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="proceedToPay()">Bezahlen mit Paypal
         </button></div>
