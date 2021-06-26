@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Product} from '../../../../dtos/product';
-import {BaseChartDirective} from 'ng2-charts';
+import {BaseChartDirective, Color} from 'ng2-charts';
 import {ChartDataSets, ChartType} from 'chart.js';
 
 @Component({
@@ -29,6 +29,14 @@ export class ProductsTopMoneyChartComponent implements OnInit {
   public chartLabels = [];
   public chartType: ChartType = 'bar';
   public chartLegend = true;
+  public chartColors: Color[] = [
+    {
+      backgroundColor: 'rgba(200,20,30,0.5)'
+    },
+    {
+      backgroundColor: 'rgba(37,23,160,0.7)'
+    }
+  ];
   chartData: ChartDataSets[];
   topTen = true;
   error = false;
