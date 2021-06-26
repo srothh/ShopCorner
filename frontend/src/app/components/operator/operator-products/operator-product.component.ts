@@ -140,9 +140,6 @@ export class OperatorProductComponent implements OnInit {
   }
 
   getErrorMessage() {
-    if (this.error) {
-      return this.errorMessage;
-    }
     return this.pageableProducts.errorMessage;
   }
 

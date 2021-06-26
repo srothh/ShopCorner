@@ -19,6 +19,8 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             message = message.slice(0, -2);
             return throwError(message
             );
+          } else if (error.status === 500) {
+            return throwError('Problems with the server');
           } else {
             return throwError(error.error
             );

@@ -74,6 +74,10 @@ export class ShopCheckoutComponent implements OnInit {
     return tax;
   }
 
+  vanishError() {
+    this.error = false;
+  }
+
   getCartItems() {
     this.cartService.getCart().subscribe((cart: Cart
     ) => {
@@ -83,6 +87,7 @@ export class ShopCheckoutComponent implements OnInit {
       this.errorMessage = error;
     });
   }
+
   proceedToPay() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer);
@@ -94,6 +99,7 @@ export class ShopCheckoutComponent implements OnInit {
       this.errorMessage = error;
     });
   }
+
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
@@ -126,8 +132,8 @@ export class ShopCheckoutComponent implements OnInit {
     this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
       this.cancellationPeriod = cancellationPeriod;
     }, (error => {
-        this.error = true;
-        this.errorMessage = error;
+      this.error = true;
+      this.errorMessage = error;
     }));
   }
 
