@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -28,7 +29,6 @@ import static org.mockito.Mockito.doThrow;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest
-@RunWith(MockitoJUnitRunner.class)
 public class OrderServiceTest implements TestData {
 
     @Rule
@@ -41,6 +41,8 @@ public class OrderServiceTest implements TestData {
     private OrderServiceImpl orderService;
     @Mock
     private CancellationPeriod cancellationPeriod;
+    @Mock
+    private Page<Order> orders;
     private final UUID sessionID = UUID.randomUUID();
 
     @Test
@@ -59,8 +61,8 @@ public class OrderServiceTest implements TestData {
     }
 
     @Test
-    public void whenGetAllOrdersWithNoOrdersPersisted_thenThrowNullPointerException() {
-        doThrow(NullPointerException.class).when(orderService).getAllOrders(0,10);
+    public void whenGetAllOrdersWithNoOrdersPersisted_thenReturnEmptyPage() {
+        doReturn(orders).when(orderService).getAllOrders(0,10);
     }
 
 }
