@@ -6,6 +6,9 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * Service class handling business logic all around the shop
+ */
 public interface ShopService {
     /**
      * Updates the shop settings.

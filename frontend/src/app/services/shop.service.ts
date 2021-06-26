@@ -16,6 +16,11 @@ export class ShopService {
 
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) { }
 
+  /**
+   * Updates the shops settings in the backend
+   *
+   * @param shopSettings the settings that will override the old
+   */
   updateSettings(shopSettings: ShopSettings): Observable<ShopSettings> {
     console.log('Update settings');
     return this.httpClient.put<ShopSettings>(this.shopBaseUri + '/settings', shopSettings, {headers: this.getHeadersForOperator()})

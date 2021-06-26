@@ -34,6 +34,7 @@ public class ShopServiceImpl implements ShopService {
         return shopSettings;
     }
 
+    @Override
     public ShopSettings getSettings() throws IOException {
         LOGGER.trace("getSettings()");
         File f = new File(settingsPath);
