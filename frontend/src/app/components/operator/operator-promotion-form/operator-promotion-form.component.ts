@@ -46,7 +46,7 @@ export class OperatorPromotionFormComponent implements OnInit {
     this.promotionService.addPromotion(this.newPromotion).subscribe(() => {
     }, error => {
       this.error = true;
-      this.errorMessage = error.message;
+      this.errorMessage = error;
     });
   }
 

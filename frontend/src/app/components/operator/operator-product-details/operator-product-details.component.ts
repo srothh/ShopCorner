@@ -19,7 +19,7 @@ export class OperatorProductDetailsComponent implements OnInit {
   product: Product;
   categoryId: number;
   taxRateId: number;
-  //properties for drop-down
+  // properties for drop-down
   categories: Category[];
   taxRates: TaxRate[];
   // util properties
@@ -60,27 +60,30 @@ export class OperatorProductDetailsComponent implements OnInit {
 
   fetchData(): void {
     forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
-      .subscribe(([categoriesData,taxRatesData]) => {
+      .subscribe(([categoriesData, taxRatesData]) => {
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
+      }, (error) => {
+        this.errorOccurred = true;
+        this.errorMessage = error;
       });
   }
 
-  deleteProduct(){
-    this.productService.deleteProduct(this.product.id).subscribe(()=>{
+  deleteProduct() {
+    this.productService.deleteProduct(this.product.id).subscribe(() => {
       this.router.navigate(['/operator/products']).then();
     }, error => {
       this.errorOccurred = true;
-      this.errorMessage = error.error.message;
+      this.errorMessage = error;
     });
   }
 
-  resetState(){
+  resetState() {
     this.errorMessage = null;
     this.errorOccurred = undefined;
   }
 
-  goBackToProductsOverview(){
+  goBackToProductsOverview() {
     this.router.navigate(['/operator/products']).then();
   }
 }

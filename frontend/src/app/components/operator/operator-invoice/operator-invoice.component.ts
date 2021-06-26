@@ -42,6 +42,10 @@ export class OperatorInvoiceComponent implements OnInit {
     this.toggleDetailView = false;
   }
 
+  vanishError() {
+    this.error = false;
+  }
+
   /**
    * goes to next page if not on the last page
    */

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {Operator} from '../../../dtos/operator';
-import {Permissions} from '../../../dtos/permissions.enum';
 import {Router} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {OperatorService} from '../../../services/operator.service';
@@ -15,8 +14,6 @@ export class OperatorHomeComponent implements OnInit {
 
   operator: Operator;
   user: string;
-
-  submitted = false;
   error = false;
   errorMessage = '';
 
@@ -28,20 +25,16 @@ export class OperatorHomeComponent implements OnInit {
     this.user = this.authenticationService.getUser();
 
     this.operatorService.getOperatorByLoginName(this.user)
-      .subscribe(operator => this.operator = operator, error => {
+      .subscribe(operator => this.operator = operator, (error) => {
         console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       });
   }
 
   goToEdit() {
     this.router.navigate(['/operator/account/edit']);
-  };
+  }
 
   vanishError() {
     this.error = false;
