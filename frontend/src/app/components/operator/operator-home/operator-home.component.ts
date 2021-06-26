@@ -27,7 +27,6 @@ export class OperatorHomeComponent implements OnInit {
 
     this.operatorService.getOperatorByLoginName(this.user)
       .subscribe(operator => this.operator = operator, (error) => {
-        console.log(error);
         this.error = true;
         this.errorMessage = error;
       });

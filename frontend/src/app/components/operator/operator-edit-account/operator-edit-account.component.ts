@@ -67,7 +67,6 @@ export class OperatorEditAccountComponent implements OnInit {
         this.operatorService.updatePassword(this.password, this.updatedPassword).subscribe(
           () => {
           }, error => {
-            console.log(error);
             this.error = true;
             this.errorMessage = error;
           }, () => {

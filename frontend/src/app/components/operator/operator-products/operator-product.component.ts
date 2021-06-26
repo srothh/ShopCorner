@@ -59,7 +59,7 @@ export class OperatorProductComponent implements OnInit {
         this.taxRates = taxRatesData;
       }, (error) => {
         this.error = true;
-        this.error = error;
+        this.errorMessage = error;
       });
   }
 

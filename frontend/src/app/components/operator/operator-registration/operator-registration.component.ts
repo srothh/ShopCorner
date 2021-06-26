@@ -60,7 +60,6 @@ export class OperatorRegistrationComponent implements OnInit {
         this.submitted = true;
         this.router.navigate(['/operator/accounts']);
       }, error => {
-        console.log(error);
         this.error = true;
         this.errorMessage = error;
       });
