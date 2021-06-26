@@ -89,8 +89,17 @@ export class LineChartComponent implements OnInit {
     });
   }
 
-  changeView() {
-    this.showDetail = !this.showDetail;
-    this.fillData();
+  viewDetail() {
+    if (!this.showDetail) {
+      this.showDetail = true;
+      this.update(this.start, this.end, this.invoices);
+    }
+  }
+
+  viewOverall() {
+    if (this.showDetail) {
+      this.showDetail = false;
+      this.update(this.start, this.end, this.invoices);
+    }
   }
 }

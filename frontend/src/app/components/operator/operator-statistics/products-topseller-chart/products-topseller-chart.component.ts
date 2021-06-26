@@ -40,9 +40,18 @@ export class ProductsTopsellerChartComponent implements OnInit {
     this.update(this.products);
   }
 
-  changeView() {
-    this.topTen = !this.topTen;
-    this.update(this.products);
+  viewTop() {
+    if (!this.topTen) {
+      this.topTen = true;
+      this.update(this.products);
+    }
+  }
+
+  viewAll() {
+    if (this.topTen) {
+      this.topTen = false;
+      this.update(this.products);
+    }
   }
 
   update(products: Product[]) {
