@@ -30,13 +30,8 @@ export class ShopHomeComponent implements OnInit {
         this.products = productData.items;
         this.collectionSize = productData.totalItemCount;
       }, error => {
-        console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       });
   }
 

@@ -89,7 +89,11 @@ export class ShopProductDetailsComponent implements OnInit {
   private fetchProduct(id: number) {
     this.productService.getProductById(id).subscribe((product) => {
       this.product = product;
-    });
+    }, error => {
+        this.error = true;
+        this.errorMessage = error;
+      }
+    );
   }
 
 
