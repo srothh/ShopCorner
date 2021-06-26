@@ -27,11 +27,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
 import java.util.Properties;
 import java.util.UUID;
@@ -143,7 +144,13 @@ public class OrderServiceImpl implements OrderService {
     public CancellationPeriod getCancellationPeriod() throws IOException {
         LOGGER.trace("getCancellationPeriod()");
         File f = new File(configPath);
-        InputStream in = new FileInputStream(f);
+        InputStream in;
+        try {
+            in = new FileInputStream(f);
+        } catch (FileNotFoundException e) {
+            setCancellationPeriod(new CancellationPeriod(0));
+            in = new FileInputStream(f);
+        }
         properties.load(in);
         int days = Integer.parseInt(properties.getProperty(cancellationKey, "0"));
         in.close();
