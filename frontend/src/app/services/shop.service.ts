@@ -26,6 +26,9 @@ export class ShopService {
       );
   }
 
+  /**
+   * Fetches settings from the backend and caches them
+   */
   loadSettings(): Observable<ShopSettings> {
     console.log('Load settings from backend into cache');
     return this.httpClient.get<ShopSettings>(this.shopBaseUri + '/settings', {headers: this.getHeadersForOperator()})
@@ -36,6 +39,9 @@ export class ShopService {
     );
   }
 
+  /**
+   * Gets settings from the cache
+   */
   getSettings(): ShopSettings {
     return JSON.parse(localStorage.getItem(this.shopSettingsKey));
   }
