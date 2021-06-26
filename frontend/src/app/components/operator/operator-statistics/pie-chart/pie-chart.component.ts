@@ -56,6 +56,8 @@ export class PieChartComponent implements OnInit {
         customerAmount += invoice.amount;
       }
     }
+    operatorAmount = Math.round(operatorAmount * 100) / 100;
+    customerAmount = Math.round(customerAmount * 100) / 100;
     const overallAmount = customerAmount + operatorAmount;
     const opPercentage = operatorAmount / overallAmount * 100;
     const custPercentage = customerAmount / overallAmount * 100;

@@ -82,6 +82,11 @@ export class BarChartComponent implements OnInit {
         tempCa[months.indexOf(month)] += invoice.amount;
       }
     }
+    for (let i = 0; i < tempOp.length; i++) {
+      tempOp[i] = Math.round(tempOp[i] * 100) / 100;
+      tempCu[i] = Math.round(tempCu[i] * 100) / 100;
+      tempOp[i] = Math.round(tempOp[i] * 100) / 100;
+    }
     this.chartData = [{data: tempOp, label: 'Betreiber'}, {data: tempCu, label: 'Kunden'}, {data: tempCa, label: 'Storniert'}];
     setTimeout(() => {
       if (this.chart && this.chart.chart && this.chart.chart.config) {

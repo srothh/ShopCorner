@@ -117,6 +117,9 @@ export class ProductsTopsellerChartComponent implements OnInit {
       tempAmount.push(product.saleCount * product.price);
       this.chartLabels.push(product.name);
     }
+    for (let i = 0; i < tempAmount.length; i++) {
+      tempAmount[i] = Math.round(tempAmount[i] * 100) / 100;
+    }
     this.chartData = [{data: tempAmount, label: 'Umsatz (in €)'}, {data: tempSales, label: 'Verkäufe', yAxisID: 'y-axis-1'}];
     setTimeout(() => {
       if (this.chart && this.chart.chart && this.chart.chart.config) {

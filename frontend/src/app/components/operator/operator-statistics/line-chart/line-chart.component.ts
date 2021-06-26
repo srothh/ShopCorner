@@ -101,6 +101,11 @@ export class LineChartComponent implements OnInit {
         }
       }
     }
+    for (let i = 0; i < this.temp.length; i++) {
+      this.temp[i] = Math.round(this.temp[i] * 100) / 100;
+      this.tempCu[i] = Math.round(this.tempCu[i] * 100) / 100;
+      this.tempOp[i] = Math.round(this.tempOp[i] * 100) / 100;
+    }
     this.fillData();
   }
 
