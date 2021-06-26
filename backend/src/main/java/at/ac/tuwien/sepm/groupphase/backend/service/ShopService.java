@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public interface ShopService {
     /**
-     * Gets the shop settings.
+     * Updates the shop settings.
      *
      * @param shopSettings the new shop settings that are going to overwrite the old
      * @return the updated shop settings
