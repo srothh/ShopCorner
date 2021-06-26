@@ -136,7 +136,7 @@ export class OperatorProductComponent implements OnInit {
   }
 
   errorOccurred() {
-    return this.error || this.pageableProducts.error;
+    return this.pageableProducts.error;
   }
 
   getErrorMessage() {
