@@ -27,7 +27,7 @@ export class ShopService {
   }
 
   loadSettings(): Observable<ShopSettings> {
-    console.log('Get settings');
+    console.log('Load settings from backend into cache');
     return this.httpClient.get<ShopSettings>(this.shopBaseUri + '/settings', {headers: this.getHeadersForOperator()})
       .pipe(
         tap((shopSettings) => {
