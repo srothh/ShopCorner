@@ -10,11 +10,17 @@ import {Globals} from '../../../global/globals';
 export class FooterComponent implements OnInit {
 
   logo = this.globals.defaultSettings.logo;
+  title = this.globals.defaultSettings.title;
 
   constructor(private shopService: ShopService, private globals: Globals) { }
 
   ngOnInit() {
-    this.logo = this.shopService.getSettings().logo;
+    this.configureFooter();
   }
 
+  private configureFooter() {
+    const settings = this.shopService.getSettings();
+    this.logo = settings.logo;
+    this.title = settings.title;
+  }
 }
