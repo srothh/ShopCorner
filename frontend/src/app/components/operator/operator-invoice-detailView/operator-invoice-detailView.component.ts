@@ -42,6 +42,9 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
 
   }
 
+  vanishError() {
+    this.error = false;
+  }
 
   downloadInvoiceById() {
     this.invoiceService.getInvoiceAsPdfById(this.value.id ).subscribe((data) => {

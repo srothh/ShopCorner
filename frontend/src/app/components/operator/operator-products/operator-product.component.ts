@@ -57,6 +57,9 @@ export class OperatorProductComponent implements OnInit {
       .subscribe(([categoriesData, taxRatesData]) => {
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
+      }, (error) => {
+        this.error = true;
+        this.error = error;
       });
   }
 
@@ -127,7 +130,7 @@ export class OperatorProductComponent implements OnInit {
         }
       }, error => {
         this.error = true;
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       });
     }
   }

@@ -34,16 +34,17 @@ export class OperatorOrderSettingsComponent implements OnInit {
 
     }, (error) => {
       this.error = true;
-      this.errorMessage = error.message;
+      this.errorMessage = error;
     });
   }
 
   getCancellationPeriod() {
     this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
       this.cancellationPeriod = cancellationPeriod;
-    }, (error => {
-      console.log(error);
-    }));
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
+    });
   }
 
 }

@@ -1,7 +1,6 @@
-
-<div *ngIf="error" class="alert alert-danger" role="alert">
-  {{ errorMessage }}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="vanishError()">
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
