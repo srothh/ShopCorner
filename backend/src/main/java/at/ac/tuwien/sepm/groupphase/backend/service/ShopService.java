@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * Service class handling business logic all around the shop
+ * Service class handling business logic all around the shop.
  */
 public interface ShopService {
     /**
