@@ -23,7 +23,7 @@ export class OperatorStatisticComponent implements OnInit {
   @ViewChild(PieChartComponent) pieChild: PieChartComponent;
   @ViewChild(BarChartComponent) barChild: BarChartComponent;
   @ViewChild(ProductsTopsellerChartComponent) productTopseller: ProductsTopsellerChartComponent;
-  @ViewChild(ProductsTopMoneyChartComponent) productTopMoney: ProductsTopsellerChartComponent;
+  //@ViewChild(ProductsTopMoneyChartComponent) productTopMoney: ProductsTopsellerChartComponent;
 
   error = false;
   errorMessage = '';
@@ -72,7 +72,7 @@ export class OperatorStatisticComponent implements OnInit {
 
   updateProductChildren() {
     this.productTopseller.update(this.products);
-    this.productTopMoney.update(this.products);
+    //this.productTopMoney.update(this.products);
   }
 
   viewProducts() {
