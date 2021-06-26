@@ -23,7 +23,10 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
 
   order: Order;
   items: InvoiceItem[];
-  date: string;
+  day: string;
+  month: string;
+  year: string;
+  time: string;
 
   constructor(private route: ActivatedRoute, private orderService: OrderService,
               private router: Router,
@@ -47,7 +50,11 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
         }
       }, ()=>{
           this.items = this.order.invoice.items;
-          this.date = this.order.invoice.date;
+          this.time = this.order.invoice.date.substring(11);
+          this.day = this.order.invoice.date.substring(8,10);
+          this.month = this.order.invoice.date.substring(5,7);
+          this.year = this.order.invoice.date.substring(0,4);
+
     });
   }
 
