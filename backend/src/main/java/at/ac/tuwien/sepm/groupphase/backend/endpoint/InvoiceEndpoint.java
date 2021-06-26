@@ -18,6 +18,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
+import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceArchiveService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
@@ -63,14 +64,17 @@ public class InvoiceEndpoint {
     private final InvoiceService invoiceService;
     private final InvoiceItemMapper invoiceItemMapper;
     private final PdfGeneratorService pdfGeneratorService;
+    private final InvoiceArchiveService invoiceArchiveService;
 
     @Autowired
     public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService,
-                           PdfGeneratorService pdfGeneratorService) {
+                           PdfGeneratorService pdfGeneratorService,
+                            InvoiceArchiveService invoiceArchiveService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
         this.pdfGeneratorService = pdfGeneratorService;
+        this.invoiceArchiveService = invoiceArchiveService;
     }
 
     /**
@@ -129,7 +133,6 @@ public class InvoiceEndpoint {
         invoice.setItems(items);
         Invoice createdInvoice = invoiceService.createInvoice(invoice);
         final byte[] contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoiceService.findOneById(createdInvoice.getId()));
-
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
 
@@ -166,6 +169,7 @@ public class InvoiceEndpoint {
         LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
         byte[] contents = null;
+
         if (invoice.getInvoiceType() == InvoiceType.operator) {
             contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
         } else if (invoice.getInvoiceType() == InvoiceType.customer) {
