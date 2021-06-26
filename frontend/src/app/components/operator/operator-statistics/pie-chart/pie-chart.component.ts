@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Invoice} from '../../../../dtos/invoice';
-import {BaseChartDirective} from 'ng2-charts';
+import {BaseChartDirective, Color} from 'ng2-charts';
 import {ChartDataSets, ChartType} from 'chart.js';
 import {InvoiceType} from '../../../../dtos/invoiceType.enum';
 import * as pluginDataLabels from 'chartjs-plugin-datalabels';
@@ -28,6 +28,11 @@ export class PieChartComponent implements OnInit {
   public percentageLabels = [];
   public chartType: ChartType = 'pie';
   public chartLegend = true;
+  public chartColors: Color[] = [
+    {
+      backgroundColor: ['rgba(20,160,226,0.7)', 'rgba(237,93,16,0.7)']
+    }
+    ];
   public pieChartPlugins = [pluginDataLabels];
   chartData: ChartDataSets[];
   error = false;

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, Output, EventEmitter, ViewChild} from '@angular/core';
 import {Invoice} from '../../../../dtos/invoice';
-import {BaseChartDirective} from 'ng2-charts';
+import {BaseChartDirective, Color} from 'ng2-charts';
 import {ChartDataSets, ChartType} from 'chart.js';
 import {InvoiceType} from '../../../../dtos/invoiceType.enum';
 
@@ -33,6 +33,17 @@ export class BarChartComponent implements OnInit {
   public chartLabels = [];
   public chartType: ChartType = 'bar';
   public chartLegend = true;
+  public chartColors: Color[] = [
+    {
+      backgroundColor: 'rgba(20,160,226,0.7)'
+    },
+    {
+      backgroundColor: 'rgba(237,93,16,0.7)'
+    },
+    {
+      backgroundColor: 'rgba(10,130,16,0.7)'
+    }
+  ];
   chartData: ChartDataSets[];
   error = false;
   errorMessage = '';

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ChartDataSets, ChartType} from 'chart.js';
-import {BaseChartDirective} from 'ng2-charts';
+import {BaseChartDirective, Color} from 'ng2-charts';
 import {Invoice} from '../../../../dtos/invoice';
 import {InvoiceType} from '../../../../dtos/invoiceType.enum';
 
@@ -30,6 +30,35 @@ export class LineChartComponent implements OnInit {
   public chartLabels = [];
   public chartType: ChartType = 'line';
   public chartLegend = true;
+  public detailChartColors: Color[] = [
+    {
+      backgroundColor: 'rgba(20,180,246,0.3)',
+      borderColor: 'rgba(20,160,226,1)',
+      pointBackgroundColor: 'rgba(20,50,100,1)',
+      pointBorderColor: '#000',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(77,83,206,1)'
+    },
+    {
+      backgroundColor: 'rgba(197,93,16,0.4)',
+      borderColor: 'rgba(217,93,16,1)',
+      pointBackgroundColor: 'rgba(187,53,6,1)',
+      pointBorderColor: '#000',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(77,83,96,1)'
+    }
+  ];
+  public overallChartColors: Color[] = [
+    {
+      backgroundColor: 'rgba(200,20,30,0.5)',
+      borderColor: 'rgba(200,20,30,1)',
+      pointBackgroundColor: 'rgba(90,30,30,1)',
+      pointBorderColor: '#000',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(90,30,30,0.8)'
+    }
+  ];
+  public chartColors: Color[];
   chartData: ChartDataSets[];
   showDetail = false;
   temp = [];
@@ -41,6 +70,7 @@ export class LineChartComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.chartColors = this.overallChartColors;
     this.update(this.start, this.end, this.invoices);
   }
 
@@ -91,6 +121,7 @@ export class LineChartComponent implements OnInit {
 
   viewDetail() {
     if (!this.showDetail) {
+      this.chartColors = this.detailChartColors;
       this.showDetail = true;
       this.update(this.start, this.end, this.invoices);
     }
@@ -98,6 +129,7 @@ export class LineChartComponent implements OnInit {
 
   viewOverall() {
     if (this.showDetail) {
+      this.chartColors = this.overallChartColors;
       this.showDetail = false;
       this.update(this.start, this.end, this.invoices);
     }
