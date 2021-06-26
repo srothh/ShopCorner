@@ -7,6 +7,7 @@ import {CartGlobals} from '../../../global/cartGlobals';
 import {CartItem} from '../../../dtos/cartItem';
 import {CartService} from '../../../services/cart.service';
 import {filter} from 'rxjs/operators';
+import {Observable, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-shop-product-details',
@@ -17,7 +18,7 @@ export class ShopProductDetailsComponent implements OnInit, OnDestroy {
   product: Product;
   error = false;
   errorMessage = '';
-  private urlSubscription;
+  private urlSubscription: Subscription;
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -36,15 +37,14 @@ export class ShopProductDetailsComponent implements OnInit, OnDestroy {
       const id = this.activatedRoute.snapshot.paramMap.get('id');
       this.fetchProduct(Number(id));
     }
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-      console.log(this.router.getCurrentNavigation());
+    this.urlSubscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       const id = this.activatedRoute.snapshot.paramMap.get('id');
-      console.log('fetch ' + id);
+      this.fetchProduct(Number(id));
     });
   }
 
   ngOnDestroy() {
-    console.log('destro');
+    this.urlSubscription.unsubscribe();
   }
 
   getImageSource(product: Product): string {
