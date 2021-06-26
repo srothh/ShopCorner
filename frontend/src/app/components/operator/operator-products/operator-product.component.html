@@ -1,4 +1,4 @@
-<div *ngIf="errorOccurred" class="alert alert-warning alert-dismissible fade show" role="alert">
+<div *ngIf="errorOccurred()" class="alert alert-warning alert-dismissible fade show" role="alert">
   <strong>Error!</strong> {{ getErrorMessage() }}
   <button type="button" (click)="resetState()" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
