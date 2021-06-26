@@ -43,7 +43,7 @@
       </div>
     </ng-template>
 
-    <div *ngIf="pageableProducts.collectionSize > 0" class="d-flex justify-content-between mt-5">
+    <div *ngIf="pageableProducts.collectionSize > 0" class="d-flex justify-content-between">
       <button class="btn btn-dark" [disabled]="pageableProducts.page === 0" (click)=pageableProducts.previousPage()>
         Vorherige Seite
       </button>
