@@ -1,3 +1,65 @@
 <div>
-  Implement promotion management here
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error! </strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <br>
+  <div [hidden]="form" class="d-flex justify-content-between">
+    <h2>Aktionen</h2>
+    <button type="button" *ngIf="!form && isAdmin()" class="btn btn-primary" (click)="toggleForm()">Aktion erstellen</button>
+    <button type="button" *ngIf="form" class="btn btn-primary" (click)="toggleForm()">Zurück</button>
+  </div>
+
+  <hr>
+  <div *ngIf="!form">
+    <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
+      Keine Aktionen gespeichert.
+    </p>
+    <ng-template #not_empty>
+      <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content">
+        Zeigt {{1 + (pageSize * (page))}}-{{pageSize * (page + 1)}}
+        von {{collectionSize}}</p>
+    </ng-template>
+    <ng-template #other_content>
+      <p style="font-size: 10px; color: gray">Zeigt {{1 + (pageSize * (page))}}-{{collectionSize}}
+        von {{collectionSize}}</p>
+    </ng-template>
+  </div>
+  <div *ngIf="!form" class="border rounded" style="height: 560px">
+    <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
+      <thead>
+      <tr class="table-secondary">
+        <th scope="col" class="font-weight-bold">Name</th>
+        <th scope="col" class="font-weight-bold">Rabatt</th>
+        <th scope="col" class="font-weight-bold">Erstelldatum</th>
+        <th scope="col" class="font-weight-bold">Ablaufdatum</th>
+        <th scope="col" class="font-weight-bold">Gutscheincode</th>
+        <th scope="col" class="font-weight-bold">Mindestbestellwert</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let promotion of promotions">
+        <td><span>{{promotion.name}}</span></td>
+        <td><span>{{promotion.discount}} €</span></td>
+        <td><span>{{parseDates(promotion.creationDate)}}</span></td>
+        <td><span>{{parseDates(promotion.expirationDate)}}</span></td>
+        <td><span>{{promotion.code}}</span></td>
+        <td><span>{{promotion.minimumOrderValue}} €</span></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!form" class="d-flex justify-content-between pt-3">
+    <button class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
+    <button class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
+  </div>
 </div>
+<div>
+  <div *ngIf="form">
+  <app-operator-promotion-form></app-operator-promotion-form>
+  </div>
+</div>
+

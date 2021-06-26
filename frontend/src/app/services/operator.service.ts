@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Operator} from '../dtos/operator';
 import {Observable} from 'rxjs';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Permissions} from '../dtos/permissions.enum';
 import {Globals} from '../global/globals';
 import {OperatorAuthService} from './auth/operator-auth.service';
@@ -53,6 +53,19 @@ export class OperatorService {
   }
 
   /**
+   * Updates the logged in customer's password in the backend.
+   *
+   * @param oldPassword the password to be updated
+   * @param newPassword the new password
+   */
+  updatePassword(oldPassword: string, newPassword: string): Observable<string>{
+    console.log('Update password');
+    return this.httpClient.post<string>(
+      this.operatorBaseUri + '/password', {oldPassword, newPassword}
+      , {headers: this.getHeadersForOperator()});
+  }
+
+  /**
    * fetches all operator accounts from backend
    *
    * @param page that is needed
@@ -61,8 +74,12 @@ export class OperatorService {
    */
   getOperatorsPage(page: number, pageCount: number, permissions: Permissions): Observable<Pagination<Operator>> {
     console.log('Get Operators with permission: ', permissions, ' for page: ', page);
-    return this.httpClient.get<Pagination<Operator>>(this.operatorBaseUri + '?page=' + page + '&page_count=' + pageCount +
-      '&permissions=' + permissions, {headers: this.getHeadersForOperator()});
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount))
+      .set(this.globals.requestParamKeys.operators.permissions, String(permissions));
+
+    return this.httpClient.get<Pagination<Operator>>(this.operatorBaseUri, {params, headers: this.getHeadersForOperator()});
   }
 
   /**
@@ -84,13 +101,19 @@ export class OperatorService {
   }
 
   /**
-   * sends a patch request with id and Permission.admin to backend
+   * sends a patch request with id and the new permissions to the backend
    *
-   * @param id of employee that should become an admin
+   * @param operator whose permissions should be changed
    */
-  changeOperatorToAdmin(id: number): Observable<void> {
-    console.log('Change Employee with id ' + id + ' to Admin');
-    return this.httpClient.patch<void>(this.operatorBaseUri + '/' + id, {permissions: 'admin'}, {headers: this.getHeadersForOperator()});
+  changePermissions(operator: Operator): Observable<void> {
+    console.log('Change permissions of operator with id ' + operator.id);
+    if(operator.permissions === Permissions.admin){
+      return this.httpClient.patch<void>(this.operatorBaseUri + '/' + operator.id, {permissions: 'employee'},
+        {headers: this.getHeadersForOperator()});
+    } else {
+      return this.httpClient.patch<void>(this.operatorBaseUri + '/' + operator.id, {permissions: 'admin'},
+        {headers: this.getHeadersForOperator()});
+    }
   }
 
   private getHeadersForOperator(): HttpHeaders {

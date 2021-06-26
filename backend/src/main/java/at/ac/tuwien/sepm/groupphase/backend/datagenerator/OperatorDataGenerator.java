@@ -12,8 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 @Profile("generateData")
 @Component
@@ -27,19 +30,34 @@ public class OperatorDataGenerator {
         this.passwordEncoder = encoderConfig.passwordEncoder();
     }
 
+    @Transactional
     @PostConstruct
     public void generateOperators() {
         if (operatorRepository.findAll().size() > 0) {
             LOGGER.debug("operators already generated");
         } else {
             Faker faker = new Faker(new Locale("de-AT"));
+            Set<String> loginNames = new HashSet<>();
+            Set<String> emails = new HashSet<>();
             for (int i = 0; i < 10; i++) {
-                operatorRepository.save(new Operator(faker.name().fullName(), faker.name().username(), passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
-                    faker.internet().emailAddress(), Permissions.admin));
+                //unique constraints get skipped
+                String email = faker.internet().emailAddress();
+                String loginName = faker.name().username();
+                if (loginNames.add(loginName) && emails.add(email)) {
+                    operatorRepository.save(new Operator(faker.name().fullName(), loginName, passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
+                        email, Permissions.admin));
+                }
+
             }
             for (int i = 0; i < 90; i++) {
-                operatorRepository.save(new Operator(faker.name().fullName(), faker.name().username(), passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
-                    faker.internet().emailAddress(), Permissions.employee));
+                String email = faker.internet().emailAddress();
+                String loginName = faker.name().username();
+                if (loginNames.add(loginName) && emails.add(email)) {
+
+                    operatorRepository.save(new Operator(faker.name().fullName(), loginName, passwordEncoder.encode(faker.internet().password(8, 20, true, true, true)),
+                        email, Permissions.employee));
+                }
+
             }
             Operator operator = new Operator("test", "logTest", "testpassw", "test@gmail.com", Permissions.admin);
             String password = passwordEncoder.encode(operator.getPassword());

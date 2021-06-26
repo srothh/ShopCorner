@@ -18,6 +18,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,6 +79,7 @@ public class ProductEndpointTest implements TestData {
     @BeforeEach
     public void beforeEach() {
         productRepository.deleteAll();
+        categoryRepository.deleteAll();
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -89,15 +91,14 @@ public class ProductEndpointTest implements TestData {
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
 
-
     }
 
     @Test
     public void givenACategoryAndATaxRate_whenPost_thenProductWithAllSetPropertiesPlusId() throws Exception {
-        categoryRepository.save(category);
-        taxRateRepository.save(taxRate);
-        product.setTaxRate(taxRate);
-        product.setCategory(category);
+        Category newCategory = categoryRepository.save(category);
+        TaxRate newTaxRate = taxRateRepository.save(taxRate);
+        product.setTaxRate(newTaxRate);
+        product.setCategory(newCategory);
         ProductDto productDto = productMapper.entityToDto(product);
         String body = objectMapper.writeValueAsString(productDto);
 
@@ -186,10 +187,10 @@ public class ProductEndpointTest implements TestData {
 
     @Test
     public void givenACategoryAndATaxRate_whenPut_thenVerifyProductChanged() throws Exception {
-        categoryRepository.save(category);
-        taxRateRepository.save(taxRate);
-        product.setCategory(category);
-        product.setTaxRate(taxRate);
+        Category newCategory = categoryRepository.save(category);
+        TaxRate newTaxRate = taxRateRepository.save(taxRate);
+        product.setCategory(newCategory);
+        product.setTaxRate(newTaxRate);
         Product newProduct = productRepository.save(product);
         newProduct.setName("ChangedName");
         ProductDto productDto = productMapper.entityToDto(newProduct);
@@ -234,10 +235,10 @@ public class ProductEndpointTest implements TestData {
 
     @Test
     public void givenACategoryAndATaxRate_whenPutIllegalArgument_then400() throws Exception {
-        categoryRepository.save(category);
-        taxRateRepository.save(taxRate);
-        product.setCategory(category);
-        product.setTaxRate(taxRate);
+        Category newCategory = categoryRepository.save(category);
+        TaxRate newTaxRate = taxRateRepository.save(taxRate);
+        product.setCategory(newCategory);
+        product.setTaxRate(newTaxRate);
         Product newProduct = productRepository.save(product);
         newProduct.setName("           ");
         ProductDto productDto = productMapper.entityToDto(newProduct);
@@ -256,8 +257,8 @@ public class ProductEndpointTest implements TestData {
 
     @Test
     public void givenATaxRate_whenDelete_thenVerifyProductDeleted() throws Exception {
-        taxRateRepository.save(taxRate);
-        product.setTaxRate(taxRate);
+        TaxRate newTaxRate = taxRateRepository.save(taxRate);
+        product.setTaxRate(newTaxRate);
         Product newProduct = productRepository.save(product);
 
         assertEquals(1, this.productRepository.findAll().size());
@@ -285,16 +286,16 @@ public class ProductEndpointTest implements TestData {
     }
     @Test
     public void givenSeveralProductsWithTaxRateAndACategory_whenDeleteMultiple_verifyProductsDeleted() throws Exception {
-        taxRateRepository.save(taxRate);
-        categoryRepository.save(category);
-        product.setTaxRate(taxRate);
-        product.setCategory(category);
+        TaxRate newTaxRate = taxRateRepository.save(taxRate);
+        Category newCategory = categoryRepository.save(category);
+        product.setTaxRate(newTaxRate);
+        product.setCategory(newCategory);
         product2.setName("product2");
         product2.setPrice(20.0);
-        product2.setTaxRate(taxRate);
+        product2.setTaxRate(newTaxRate);
         product3.setName("product3");
         product3.setPrice(20.0);
-        product3.setTaxRate(taxRate);
+        product3.setTaxRate(newTaxRate);
         Product newProduct = productRepository.save(product);
         Product newProduct2 = productRepository.save(product2);
         Product newProduct3 = productRepository.save(product3);

@@ -1,1 +1,51 @@
-<p>shop-product works!</p>
+<main role="main" class="mx-5">
+  <div *ngIf="errorOccurred()" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Problems!</strong> {{ getErrorMessage() }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="album py-5">
+    <div class="mb-3">
+      <h3>
+        Produkte
+      </h3>
+      <hr>
+      <div *ngIf="pageableProducts.collectionSize > 0">
+        <div>
+          <h6 class="text-muted">
+            Zeigt {{pageableProducts.itemsIndexStart()}}-{{pageableProducts.itemsIndexEnd()}}
+            von {{pageableProducts.collectionSize}}</h6>
+        </div>
+      </div>
+      <app-base-product-search-bar (errorOccurred)="error = $event.error; errorMessage = $event.errorMessage"
+                                   (resetAndFetchProducts)="resetAndFetchProducts($event)"></app-base-product-search-bar>
+    </div>
+    <div class="row" *ngIf="pageableProducts.collectionSize > 0 else no_products">
+      <div class="col-md-4 col-sm-12 col-lg-4 col-xl-2"
+           *ngFor="let product of getPaginatedProducts(); let index = index;">
+        <app-base-shop-product-item [product]="product"
+                                    (click)="goToProductDetails(product.id, index)"></app-base-shop-product-item>
+      </div>
+    </div>
+    <ng-template #no_products>
+      <div id="no-products">
+        <h3>
+          <fa-icon class="mr-2" [icon]="faSearch"></fa-icon>
+          Keine Produkte gefunden
+        </h3>
+        <p>Es wurden keine Produkte gefunden.</p>
+      </div>
+    </ng-template>
+
+    <div *ngIf="pageableProducts.collectionSize > 0" class="d-flex justify-content-between">
+      <button class="btn btn-dark" [disabled]="pageableProducts.page === 0" (click)=pageableProducts.previousPage()>
+        Vorherige Seite
+      </button>
+      <button class="btn btn-dark" [disabled]="pageableProducts.page + 1 === pageableProducts.totalPages"
+              (click)=pageableProducts.nextPage()>Nächste Seite
+      </button>
+    </div>
+
+  </div>
+</main>

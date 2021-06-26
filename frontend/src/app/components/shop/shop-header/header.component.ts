@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {CustomerAuthService} from '../../../services/auth/customer-auth.service';
+import {faShoppingCart} from '@fortawesome/free-solid-svg-icons';
+import {Globals} from '../../../global/globals';
+import {CartGlobals} from '../../../global/cartGlobals';
 
 @Component({
   selector: 'app-header',
@@ -8,9 +11,13 @@ import {CustomerAuthService} from '../../../services/auth/customer-auth.service'
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(public authService: CustomerAuthService) { }
+  faShoppingCart = faShoppingCart;
+
+  constructor(public authService: CustomerAuthService, private globals: Globals, private cartGlobals: CartGlobals) { }
 
   ngOnInit() {
   }
-
+  getCartSize() {
+    return this.cartGlobals.getCartSize();
+  }
 }

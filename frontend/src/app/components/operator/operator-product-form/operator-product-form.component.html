@@ -1,164 +1,184 @@
+<div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
+  {{ errorMessage }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div *ngIf="errorOccurred===false" class="alert alert-success" role="alert">
+  Ihr neues Produkt wurde erfolgreich in Ihrem Sortiment hinzugefügt!
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetForm()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 
-  <div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
-    {{ errorMessage }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
-      <span aria-hidden="true">&times;</span>
+<div class="operator-add-product-header mt-3" style="display:flex;justify-content: space-between">
+  <div *ngIf="addProductEnabled===false&& inEditMode === true">
+    <h3>Produkt - Detail</h3>
+  </div>
+  <div *ngIf="addProductEnabled===true && inEditMode===false">
+    <h3>Produkt hinzufügen</h3>
+  </div>
+  <div *ngIf="addProductEnabled===true && inEditMode===true">
+    <h3>Produkt bearbeiten</h3>
+  </div>
+  <div *ngIf="addProductEnabled===true">
+    <button class="btn btn-primary" type="submit" [disabled]="!productForm.valid" (click)="myForm.ngSubmit.emit()">
+      Speichern
     </button>
   </div>
-  <div *ngIf="errorOccurred===false" class="alert alert-success" role="alert">
-    Ihr neues Produkt wurde erfolgreich in ihrem Sortiment hinzugefügt!
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetForm()">
-      <span aria-hidden="true">&times;</span>
+  <div *ngIf="addProductEnabled === false && inEditMode === true && getPermission() === 'ADMIN'">
+    <button class="btn btn-primary" type="submit" (click)="enableEditing()">
+      Bearbeiten
     </button>
   </div>
 
-  <div class="operator-add-product-header mt-3" style="display:flex;justify-content: space-between">
-    <div *ngIf="addProductEnabled===false&& inEditMode === true">
-      <h3>Produkt - Detail</h3>
+</div>
+<hr/>
+<form class="row g-3" [formGroup]="productForm" #myForm="ngForm" (ngSubmit)="addProduct()">
+  <div class="col-md-6 mt-3">
+
+    <div class="form-group required">
+      <label for="inputTitle" class="form-label"><b>Name </b></label>
+      <input type="text" class="form-control" id="inputTitle" name="input1"
+             placeholder="Geben Sie einen Namen für ihr Produkt ein" required formControlName="name">
+      <div *ngIf="productFormControl.name.touched && productFormControl.name.invalid">
+        <div class="text-danger" *ngIf="productFormControl.name.errors.required">Geben Sie bitte einen Namen ein</div>
+        <div class="text-danger" *ngIf="productFormControl.name.errors.minlength">Der Name muss mindestens 3 Zeichen
+          besitzen
+        </div>
+        <div class="text-danger" *ngIf="productFormControl.name.errors.maxlength">Der Name ist zu lang. Bitte wählen
+          Sie einen kürzeren Namen.
+        </div>
+        <div class="text-danger" *ngIf="productFormControl.name.hasError('whitespace')">Der Name darf nur aus Zeichen
+          bestehen
+        </div>
+      </div>
+
+
     </div>
-    <div *ngIf="addProductEnabled===true && inEditMode===false">
-      <h3>Produkt hinzufügen</h3>
+  </div>
+
+  <div class="col-md-6 mt-3">
+
+    <div class="form-group required ">
+      <label for="inputPrice" class="form-label"><b>Preis in € </b></label>
+      <input type="number" class="form-control" min="0.00" max="10000.00" step="0.01" id="inputPrice"
+             name="input2"
+             placeholder="0.00"
+             formControlName="price"
+             required="required"/>
+      <div *ngIf="productFormControl.price.touched && productFormControl.price.invalid">
+        <div class="text-danger" *ngIf="productFormControl.price.errors.required">Geben Sie bitte einen Preis in EUR
+          ein, zB. 1.20
+        </div>
+      </div>
     </div>
-    <div *ngIf="addProductEnabled===true && inEditMode===true">
-      <h3>Produkt bearbeiten</h3>
-    </div>
-    <div *ngIf="addProductEnabled===true">
-      <button class="btn btn-primary" type="submit" [disabled]="!productForm.valid"  (click)="myForm.ngSubmit.emit()">
-        Speichern
-      </button>
-    </div>
-    <div *ngIf="addProductEnabled === false && inEditMode === true">
-      <button class="btn btn-primary" type="submit" (click)="enableEditing()">
-        Bearbeiten
-      </button>
+  </div>
+
+  <div class="col-md-6 mt-3">
+    <div class="form-group required">
+      <label for="inputTaxRates" class="form-label"><b>Steuersatz </b></label>
+      <select class="custom-select" name="tax-rates" id="inputTaxRates" formControlName="taxRate"
+              (change)="changeTaxRate($event)">
+        <option selected disabled value="null">Steuersatz auswählen</option>
+        <option *ngFor="let taxRate of this.taxRates" [value]="taxRate.id">{{taxRate.percentage + '%'}}</option>
+      </select>
+      <div *ngIf="productFormControl.taxRate.touched && productFormControl.taxRate.invalid">
+        <div class="text-danger" *ngIf="productFormControl.taxRate.errors.required">
+          Bitte einen Steuersatz für Ihr Produkt angeben
+        </div>
+      </div>
     </div>
 
   </div>
-  <hr/>
-  <form class="row g-3" [formGroup]="productForm" #myForm="ngForm" (ngSubmit)="addProduct()">
-    <div class="col-md-6 mt-3">
-
-      <div class="form-group required">
-        <label for="inputTitle" class="form-label"><b>Name </b></label>
-        <input type="text" class="form-control" id="inputTitle" name="input1"
-               placeholder="Geben Sie einen Namen für ihr Produkt ein" required formControlName="name">
-        <div *ngIf="productFormControl.name.touched && productFormControl.name.invalid">
-          <div class="text-danger" *ngIf="productFormControl.name.errors.required">Geben Sie bitte einen Namen ein</div>
-          <div class="text-danger" *ngIf="productFormControl.name.errors.minlength">Der Name muss mindestens 3 Zeichen
-            besitzen
-          </div>
-          <div class="text-danger" *ngIf="productFormControl.name.errors.maxlength">Der Name ist zu lang. Bitte wählen
-            Sie einen kürzeren Namen.
-          </div>
-          <div class="text-danger" *ngIf="productFormControl.name.hasError('whitespace')">Der Name darf nur aus Zeichen
-            bestehen
-          </div>
-        </div>
-
-
-
-      </div>
+  <div class="col-md-6 mt-3">
+    <div class="form-group">
+      <label for="inputCategories" class="form-label"><b>Kategorie</b></label>
+      <select class="custom-select" id="inputCategories" formControlName="category"
+              (change)="changeCategory($event)">
+        <option selected disabled value="null">Kategorie auswählen</option>
+        <option *ngFor="let category of this.categories" [value]="category.id">{{category.name}}</option>
+        <option value="null">--keine Kategorie--</option>
+      </select>
     </div>
 
-    <div class="col-md-6 mt-3">
-
-      <div class="form-group required ">
-        <label for="inputPrice" class="form-label"><b>Preis in € </b></label>
-        <input type="number" class="form-control" min="0.00" max="10000.00" step="0.01" id="inputPrice"
-               name="input2"
-               placeholder="0.00"
-               formControlName="price"
-               required="required"/>
-        <div *ngIf="productFormControl.price.touched && productFormControl.price.invalid">
-          <div class="text-danger" *ngIf="productFormControl.price.errors.required">Geben Sie bitte einen Preis in EUR
-            ein, zB. 1.20
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6 mt-3">
-      <div class="form-group required">
-        <label for="inputTaxRates" class="form-label"><b>Steuersatz </b></label>
-        <select class="custom-select" name="tax-rates" id="inputTaxRates" formControlName="taxRate"
-                (change)="changeTaxRate($event)">
-          <option selected disabled value="null">Steuersatz auswählen</option>
-          <option *ngFor="let taxRate of this.taxRates" [value]="taxRate.id">{{taxRate.percentage + '%'}}</option>
-        </select>
-        <div *ngIf="productFormControl.taxRate.touched && productFormControl.taxRate.invalid">
-          <div class="text-danger" *ngIf="productFormControl.taxRate.errors.required">Bitte einen Steuersatz für ihr
-            Produkt angeben
-          </div>
+  </div>
+  <div class="col-md-12 mt-3">
+    <div class="form-group">
+      <label for="inputDescription" class="form-label"><b>Beschreibung</b></label>
+      <textarea class="form-control" id="inputDescription" rows="2"
+                name="input4" placeholder="Beschreiben Sie ihr Produkt" formControlName="description"></textarea>
+      <div *ngIf="productFormControl.description.invalid">
+        <div class="text-danger" *ngIf="productFormControl.description.errors.maxlength">
+          Die Beschreibung ist zu lang.
+          Bitte wählen Sie eine kürzere Beschreibung.
         </div>
       </div>
 
-    </div>
-    <div class="col-md-6 mt-3">
-      <div class="form-group">
-        <label for="inputCategories" class="form-label"><b>Kategorie</b></label>
-        <select class="custom-select" id="inputCategories" formControlName="category"
-                (change)="changeCategory($event)">
-          <option selected disabled value="null">Kategorie auswählen</option>
-          <option *ngFor="let category of this.categories" [value]="category.id">{{category.name}}</option>
-          <option value="null">--keine Kategorie--</option>
-        </select>
-      </div>
 
     </div>
-    <div class="col-md-12 mt-3">
-      <div class="form-group">
-        <label for="inputDescription" class="form-label"><b>Beschreibung</b></label>
-        <textarea class="form-control" id="inputDescription" rows="2"
-                  name="input4" placeholder="Beschreiben Sie ihr Produkt" formControlName="description"></textarea>
-        <div *ngIf="productFormControl.description.invalid">
-          <div class="text-danger" *ngIf="productFormControl.description.errors.maxlength">Die Beschreibung ist zu lang. Bitte wählen
-            Sie eine kürzere Beschreibung Namen.
-          </div>
-        </div>
+  </div>
 
-
-      </div>
-    </div>
-
-    <div class="col-md-12 mt-3">
-      <div class="form-group">
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="customCheck" formControlName="locked">
-          <label class="custom-control-label" for="customCheck">Produkt sperren
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6 mt-3">
-      <div class="custom-file mt-3" *ngIf="addProductEnabled">
-
-        <input #fileInput type="file" class="custom-file-input" id="customFile" (change)="onSelectFile($event)"
-               accept="image/png, image/jpeg"
-        >
-
-        <label class="custom-file-label" for="customFile">
-          <div *ngIf="fileToUpload; else elseBlock">
-            {{fileToUpload?.name}}
-          </div>
-          <ng-template #elseBlock>Bild auswählen...</ng-template>
+  <div class="col-md-12 mt-3">
+    <div class="form-group d-flex flex-column" style="gap: 40px">
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="customCheck" formControlName="locked">
+        <label class="custom-control-label" for="customCheck">Produkt sperren
         </label>
-        <div *ngIf="fileSource" class="mt-2">
-          <button type="button" class="btn btn-light" (click)="clearImage()">Entfernen</button>
+      </div>
+      <div class="d-flex flex-column">
+        <div>
+          <div class="custom-control custom-checkbox">
+            <input [checked]="this.newProduct.hasExpiration" [disabled]="!addProductEnabled" type="checkbox" class="custom-control-input" id="expirationDateCheck" (click)="toggleExpiration()">
+            <label class="custom-control-label" for="expirationDateCheck">Produkt als auslaufend markieren
+            </label>
+          </div>
         </div>
-
+        <form *ngIf="this.newProduct.hasExpiration" class="w-50" [formGroup]="productForm">
+          <div class="form-group d-flex align-items-center">
+            <div class="input-group mr-2">
+              <input class="form-control" placeholder="yyyy-mm-dd"
+                     formControlName="expirationDate" ngbDatepicker #d="ngbDatepicker">
+              <div class="input-group-append">
+                <button [disabled]="!addProductEnabled" class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                </button>
+              </div>
+            </div>
+            <ngb-timepicker formControlName="time"></ngb-timepicker>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
 
+  <div class="col-md-6 mt-3">
+    <div class="custom-file mt-3" *ngIf="addProductEnabled">
 
-    <div class="col-md-6 mt-4" style="text-align:center">
+      <input #fileInput type="file" class="custom-file-input" id="customFile" (change)="onSelectFile($event)"
+             accept="image/png, image/jpeg">
 
-      <div *ngIf="fileSource">
-        <img src="{{fileSource}}" alt="" height="250" width="250">
+      <label class="custom-file-label" for="customFile">
+          <span *ngIf="fileToUpload; else elseBlock">
+            {{fileToUpload?.name}}
+          </span>
+        <ng-template #elseBlock>Bild auswählen...</ng-template>
+      </label>
+      <div *ngIf="fileSource" class="mt-2">
+        <button type="button" class="btn btn-outline-danger" (click)="clearImage()">Entfernen</button>
       </div>
 
     </div>
+  </div>
 
 
-  </form>
+  <div class="col-md-6 mt-4" style="text-align:center">
+
+    <div *ngIf="fileSource">
+      <img src="{{fileSource}}" alt="" height="250" width="250">
+    </div>
+
+  </div>
+
+
+</form>
 

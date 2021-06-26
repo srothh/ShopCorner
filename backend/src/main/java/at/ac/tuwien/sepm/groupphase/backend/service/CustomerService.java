@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,6 +36,15 @@ public interface CustomerService extends UserDetailsService {
     Customer findCustomerByLoginName(String loginName);
 
     /**
+     * Deletes a customer based on the login name.
+     *
+     * @param loginName the login name
+     * @throws NotFoundException when no customer with the id is found
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    void deleteCustomerByLoginName(String loginName);
+
+    /**
      * Registers a new customer and persists its entity in the database.
      *
      * @param customer The customer entity to save
@@ -42,6 +52,28 @@ public interface CustomerService extends UserDetailsService {
      * @throws RuntimeException upon encountering errors with the database
      */
     Customer registerNewCustomer(Customer customer);
+
+    /**
+     * Updates the specified customer.
+     *
+     * @param customer to be updated
+     * @return the customer that has just been updated.
+     * @throws NotFoundException if no matching customer is found in the database
+     * @throws RuntimeException  if the updated customer account already exists
+     */
+    Customer update(Customer customer);
+
+    /**
+     * Updates the password of the specified customer.
+     *
+     * @param id of the customer whose password is to be updated
+     * @param oldPassword the password to be updated
+     * @param newPassword the new password
+     * @throws NotFoundException if no matching customer is found in the database
+     * @throws RuntimeException  if the password could not be updated
+     */
+    void updatePassword(Long id, String oldPassword, String newPassword);
+
 
     /**
      * Retrieves a PaginationDto containing a Page of customers from the database.
@@ -78,5 +110,17 @@ public interface CustomerService extends UserDetailsService {
      * @throws RuntimeException upon encountering errors with the database
      */
     List<Customer> findAll();
+
+    /**
+     * Returns a specific customer from the database.
+     *
+     * @param id the id of the customer
+     * @return the specific customer
+     * @throws NotFoundException is thrown if the specified customer does not exists
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    Customer findCustomerById(Long id);
+
+    Long getCountByCategory(Pageable page, Long category);
 
 }

@@ -1,17 +1,22 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,9 +24,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
@@ -62,20 +67,30 @@ public class ProductEndpoint {
     /**
      * Gets all products form the database in a paginated manner.
      *
-     * @param page describes the number of the page
-     * @param pageCount the number of entries in each page
+     * @param paginationRequestDto describes the pagination request
+     * @param productSearchDto describes the product search request
      * @return all products with all given fields in a dto - format and paginated specified by page and pageCount
      */
     @PermitAll
-    @GetMapping(params = {"page"})
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all products that are currently stored in the database", security = @SecurityRequirement(name = "apiKey"))
-    public PaginationDto<ProductDto> getAllProductsPerPage(@RequestParam("page") int page, @RequestParam("page_count") int pageCount) {
+    public PaginationDto<ProductDto> getAllProductsPerPage(@Valid PaginationRequestDto paginationRequestDto, @Valid ProductSearchDto productSearchDto) {
         LOGGER.info("GET " + BASE_URL);
-        return new PaginationDto<ProductDto>(this.productService.getAllProductsPerPage(page, pageCount).getContent()
+
+        int page = paginationRequestDto.getPage();
+        int pageCount = paginationRequestDto.getPageCount();
+        long categoryId = productSearchDto.getCategoryId();
+        String name = productSearchDto.getName();
+        String sortBy = productSearchDto.getSortBy();
+
+        Page<Product> productPage = this.productService.getAllProductsPerPage(page, pageCount, categoryId, sortBy, name);
+        long productCount = productPage.getTotalElements();
+        return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
-            .collect(Collectors.toList()), page, pageCount, productService.getProductsCount());
+            .filter(productDto -> !productDto.isDeleted())
+            .collect(Collectors.toList()), page, pageCount, productPage.getTotalPages(), productCount);
     }
 
     /**
@@ -83,7 +98,6 @@ public class ProductEndpoint {
      *
      * @return all simple products ( product without picture,category) in a dto - format NOT PAGINATED
      */
-
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("/simple")
     @ResponseStatus(HttpStatus.OK)
@@ -96,9 +110,9 @@ public class ProductEndpoint {
         return this.productService.getAllProducts()
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
+            .filter(productDto -> !productDto.isDeleted())
             .collect(Collectors.toList());
     }
-
 
     /**
      * Updates an already existing product from the database.
@@ -106,7 +120,6 @@ public class ProductEndpoint {
      * @param productId  the Id of the product to execute the udpate
      * @param productDto the product dto with the updated fields
      */
-
     @Secured("ROLE_ADMIN")
     @PutMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
@@ -122,7 +135,7 @@ public class ProductEndpoint {
      * @param productId the id to search in the database and retrieve the associated product entity
      * @return the product entity with the associated Id
      */
-    @Secured("ROLE_ADMIN")
+    @PermitAll
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Gets a specific product with the give Id", security = @SecurityRequirement(name = "apiKey"))

@@ -1,0 +1,35 @@
+<div class="container mt-5">
+  <h2>Meine Bestellungen</h2>
+  <div class="row" *ngIf="this.collectionSize > 0 else no_orders">
+    <div class="pl-3 mb-3">
+      <div *ngIf="(this.pageSize * (this.page+ 1)) < collectionSize else last_page">
+        <h6 class="text-muted">Zeigt {{(this.pageSize * this.page) + 1 }}-{{this.pageSize * (this.page + 1)}}
+          von {{collectionSize}}</h6>
+      </div>
+      <ng-template #last_page>
+        <h6 class="text-muted">Zeigt {{(this.pageSize * this.page) + 1 }}-{{collectionSize}}
+          von {{collectionSize}}</h6>
+      </ng-template>
+    </div>
+    <div class="col-md-12" *ngFor="let order of this.orders">
+      <div class="card mb-4 rounded-lg shadow-sm">
+        <app-base-shop-orders-header [order]="order"></app-base-shop-orders-header>
+        <app-base-shop-order-item [orderItems]="order.invoice.items"></app-base-shop-order-item>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="this.collectionSize > 0" class="d-flex justify-content-between">
+    <button class="btn btn-dark" [disabled]="page === 0"
+            (click)=previousPage()>
+      Vorherige Seite
+    </button>
+    <button class="btn btn-dark" [disabled]="((this.page + 1) * this.pageSize >= collectionSize)"
+            (click)=nextPage()>Nächste Seite
+    </button>
+  </div>
+</div>
+<ng-template #no_orders>
+  <h4 class="text-center mt-4">Keine Bestellungen vorhanden</h4>
+</ng-template>
+
+

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" height="200" width="200" viewBox="-300 -300 600 600">
+<circle style="stroke:#AAA;stroke-width:10;fill:#FFF" r="290"/>
+<text style="text-anchor:middle;fill:#444;font-size:260px;font-family:sans-serif;font-weight:normal;" transform="scale(.3)"><tspan y="-50" x="0">KEIN BILD</tspan><tspan y="330" x="0">VERFÜGBAR</tspan>
+</text>
+</svg>

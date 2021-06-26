@@ -1,23 +1,9 @@
-.createInvoice{
-  margin-top: 1rem;
+.table th { border-top: none; }
+.table th { font-weight: lighter; }
+.table td { font-weight: lighter; }
+.table tr{
+  cursor: pointer;
 }
-.btn-primary{
-  background-color: blue;
-  border-color: darkblue;
-}
-
-.btn-primary:hover{
-  background-color: darkblue;
-}
-.row{
-  margin-bottom: 1em;
-}
-
-.hidden{
-  display:none;
-  visibility: hidden;
-}
-
 .blocks .btn-light
 {
   border-radius: 5px;
@@ -29,4 +15,16 @@
 .blocks .active {
   color: black;
   background: #f2f2f2;
+}
+.invoice_options {
+  margin-top: 10px;
+  float: right;
+  margin-left: 10px;
+}
+
+.canceled-invoice{
+  text-decoration: underline;
+}
+.canceled-invoice:hover{
+  color: lightgray;
 }

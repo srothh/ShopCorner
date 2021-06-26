@@ -168,7 +168,7 @@ public class SecurityTest implements TestData {
 
     @Test
     public void givenNoOneLoggedIn_whenPost_then201() throws Exception {
-        CustomerRegistrationDto customerRegistrationDto = customerMapper.customerToCustomerDto(customer);
+        CustomerRegistrationDto customerRegistrationDto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(customerRegistrationDto);
 
         MvcResult mvcResult = this.mockMvc.perform(post(CUSTOMER_BASE_URI)

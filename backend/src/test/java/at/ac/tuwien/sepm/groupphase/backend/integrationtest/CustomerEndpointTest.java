@@ -30,10 +30,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -85,7 +81,7 @@ public class CustomerEndpointTest implements TestData {
 
     @Test
     public void givenNothing_whenPost_thenCustomerWithAllSetPropertiesPlusId() throws Exception {
-        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(customerDto);
 
         MvcResult mvcResult = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
@@ -115,8 +111,8 @@ public class CustomerEndpointTest implements TestData {
             () -> assertEquals(customer.getEmail(), customerMapper.customerDtoToCustomer(customerResponse).getEmail()),
             () -> assertEquals(customer.getName(), customerMapper.customerDtoToCustomer(customerResponse).getName()),
             () -> assertEquals(customer.getLoginName(), customerMapper.customerDtoToCustomer(customerResponse).getLoginName()),
-            () -> assertEquals(customer.getAddress(), customerMapper.customerDtoToCustomer(customerResponse).getAddress())
-            //() -> assertEquals(customer.getPhoneNumber(), customerMapper.customerDtoToCustomer(customerResponse).getPhoneNumber())
+            () -> assertEquals(customer.getAddress(), customerMapper.customerDtoToCustomer(customerResponse).getAddress()),
+            () -> assertEquals(customer.getPhoneNumber(), customerMapper.customerDtoToCustomer(customerResponse).getPhoneNumber())
         );
     }
 
@@ -125,7 +121,7 @@ public class CustomerEndpointTest implements TestData {
         customer.setName(null);
         customer.setEmail(null);
         customer.setLoginName(null);
-        CustomerRegistrationDto dto = customerMapper.customerToCustomerDto(customer);
+        CustomerRegistrationDto dto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(dto);
 
         MvcResult mvcResult = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
@@ -150,7 +146,7 @@ public class CustomerEndpointTest implements TestData {
     @Test
     public void givenNothing_whenAddressInvalid_then404() throws Exception {
         customer.setAddress(null);
-        CustomerRegistrationDto dto = customerMapper.customerToCustomerDto(customer);
+        CustomerRegistrationDto dto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(dto);
 
         MvcResult mvcResult = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
@@ -168,7 +164,7 @@ public class CustomerEndpointTest implements TestData {
 
     @Test
     public void givenNothing_whenFindAllCustomers_thenEmptyList() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get(CUSTOMER_BASE_URI + "?page=0&page_count=1")
+        MvcResult mvcResult = this.mockMvc.perform(get(CUSTOMER_BASE_URI + "?page=0&pageCount=1")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
@@ -185,9 +181,9 @@ public class CustomerEndpointTest implements TestData {
     @Test
     public void givenTwoCustomers_whenFindAllWithPage_thenListWithSizeOneCustomersWithAllPropertiesExceptPassword()
         throws Exception {
-        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(customerDto);
-        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerDto(customer);
+        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerRegistrationDto(customer);
         String body2 = objectMapper.writeValueAsString(customerDto2);
 
         this.mockMvc.perform(post(CUSTOMER_BASE_URI)
@@ -235,9 +231,9 @@ public class CustomerEndpointTest implements TestData {
     public void givenTwoCustomers_whenGetCount_thenArrayWithTwo()
         throws Exception {
 
-        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(customerDto);
-        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerDto(customer2);
+        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerRegistrationDto(customer2);
         String body2 = objectMapper.writeValueAsString(customerDto2);
         MvcResult mvcResultGet1 = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)
@@ -275,9 +271,9 @@ public class CustomerEndpointTest implements TestData {
     public void givenTwoCustomers_whenGetCount_thenTwoInCache()
         throws Exception {
 
-        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerDto(customer);
+        CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(customerDto);
-        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerDto(customer2);
+        CustomerRegistrationDto customerDto2 = customerMapper.customerToCustomerRegistrationDto(customer2);
         String body2 = objectMapper.writeValueAsString(customerDto2);
         MvcResult mvcResultGet1 = this.mockMvc.perform(post(CUSTOMER_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON)

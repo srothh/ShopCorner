@@ -1,0 +1,84 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+img{
+  width: 50%;
+  height: auto;
+}
+.centerContent{
+  text-align: center;
+  justify-content: center;
+}
+
+
+.picture{
+  width: 25%;
+}
+.name{
+  text-align: center;
+  width: 15%;
+}
+.quantity{
+  text-align: center;
+  width: 10%;
+}
+.tax{
+  text-align: center;
+  width: 5%;
+}
+.price{
+  text-align: center;
+  width: 15%;
+}
+.total{
+  width: 10%;
+}
+.total-num{
+  text-align: center;
+  width: 10%;
+}
+.delete{
+  text-align: center;
+  width: 5%;
+}
+.delete > button{
+  width: 70%;
+  height: 70%;
+  text-align: center;
+}
+.delete > button > fa-icon{
+  text-align: center;
+}
+.quantity > input{
+  width: 50%;
+  text-align: center;
+}
+
+.empty-cart{
+  margin-top: 25%;
+  justify-content: center;
+  text-align: center;
+}
+
+
+.back-button{
+  display: flex;
+  justify-content: right;
+}
+
+.subtotal-amount, .tax-amount, .total-amount{
+  text-align: right;
+}
+
+.custom-border-top{
+  border-top: solid black 1px;
+}
+
+.none-border > tr,td {
+  border: none;
+}
+.amount{
+  text-align: center;
+}

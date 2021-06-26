@@ -1,0 +1,94 @@
+<div class="container mt-5">
+  <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Problems!</strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="header">
+    <h2>Meine Daten</h2>
+    <div class="btn-toolbar">
+      <button *ngIf="!isEditMode" class="btn btn-outline-danger mr-2" (click)="attemptToDeleteAccount()">
+        <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
+        Konto löschen
+      </button>
+      <button *ngIf="!isEditMode" class="btn btn-primary" (click)="toggleEditMode()">
+        <fa-icon class="mr-2" [icon]="faEdit"></fa-icon>
+        Bearbeiten
+      </button>
+    </div>
+    <div *ngIf="isEditMode" class="btn-toolbar">
+      <button class="btn btn-outline-secondary mr-2" (click)="cancelEdit()">Abbrechen</button>
+      <button class="btn btn-primary" (click)="saveUser()">Speichern</button>
+    </div>
+  </div>
+  <hr>
+  <div class="my-5">
+    <form class="form" [formGroup]="editForm">
+      <h4>Profil</h4>
+      <div>
+        <label for="username">Benutzername</label>
+        <input *ngIf="isEditMode" type="text" name="username" formControlName="loginName" class="form-control"
+               id="username">
+        <span *ngIf="!isEditMode">{{ editForm.value.loginName }}</span>
+      </div>
+      <div>
+        <label for="email">E-Mail</label>
+        <input *ngIf="isEditMode" type="text" name="email" formControlName="email" class="form-control" id="email">
+        <span *ngIf="!isEditMode">{{ editForm.value.email }}</span>
+      </div>
+      <div>
+        <label for="name">Name</label>
+        <input *ngIf="isEditMode" type="text" name="name" formControlName="name" class="form-control" id="name">
+        <span *ngIf="!isEditMode">{{ editForm.value.name }}</span>
+      </div>
+      <div>
+        <label for="password">Altes Passwort</label>
+        <input *ngIf="isEditMode" type="text" name="password" formControlName="password" class="form-control"
+               id="password">
+        <!-- We don't actually show the password here since the backend should never send it this is just a placeholder -->
+        <span *ngIf="!isEditMode">••••••••</span>
+      </div>
+      <div *ngIf="isEditMode">
+        <label for="newPassword">Neues Passwort</label>
+        <input *ngIf="isEditMode" type="text" name="newPassword" formControlName="newPassword" class="form-control"
+               id="newPassword">
+      </div>
+      <div>
+        <label for="phoneNumber">Telefon</label>
+        <input *ngIf="isEditMode" type="text" name="phoneNumber" formControlName="phoneNumber" class="form-control" id="phoneNumber">
+        <span *ngIf="!isEditMode">{{ editForm.value.phoneNumber }}</span>
+      </div>
+
+      <h4 class="mt-5">Addresse</h4>
+      <div>
+        <label for="street">Straße</label>
+        <input *ngIf="isEditMode" type="text" name="street" formControlName="street" class="form-control"
+               id="street">
+        <span *ngIf="!isEditMode">{{ editForm.value.street }}</span>
+      </div>
+      <div>
+        <label for="postalCode">Postleitzahl</label>
+        <input *ngIf="isEditMode" type="text" name="postalCode" formControlName="postalCode" class="form-control" id="postalCode">
+        <span *ngIf="!isEditMode">{{ editForm.value.postalCode }}</span>
+      </div>
+      <div>
+        <label for="houseNumber">Hausnummer</label>
+        <input *ngIf="isEditMode" type="text" name="name" formControlName="houseNumber" class="form-control" id="houseNumber">
+        <span *ngIf="!isEditMode">{{ editForm.value.houseNumber }}</span>
+      </div>
+      <div>
+        <label for="stairNumber">Stiege</label>
+        <input *ngIf="isEditMode" type="text" name="stairNumber" formControlName="stairNumber" class="form-control"
+               id="stairNumber">
+        <span *ngIf="!isEditMode">{{ editForm.value.stairNumber }}</span>
+      </div>
+      <div>
+        <label for="doorNumber">Tür</label>
+        <input *ngIf="isEditMode" type="text" name="doorNumber" formControlName="doorNumber" class="form-control" id="doorNumber">
+        <span *ngIf="!isEditMode">{{ editForm.value.doorNumber }}</span>
+      </div>
+
+    </form>
+  </div>
+</div>

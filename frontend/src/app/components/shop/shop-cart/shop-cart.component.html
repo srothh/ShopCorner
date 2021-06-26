@@ -1,1 +1,85 @@
-<p>shop-cart works!</p>
+<div class="container mt-5 cart">
+  <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Problems!</strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="header">
+    <h2>Warenkorb</h2>
+    <button class="btn btn-primary" *ngIf="!cartIsEmpty()" (click)="routeToCheckout()">
+      <fa-icon class="mr-2" [icon]="faCheckout"></fa-icon>
+      WEITER ZU KASSE
+    </button>
+  </div>
+
+  <div class="rounded mt-4" *ngIf="!cartIsEmpty()">
+    <table class="table table-hover table-sm ">
+      <thead class="table-secondary border">
+      <tr>
+        <th scope="col" class="picture"></th>
+        <th scope="col" class="name">Produktbezeichnung</th>
+        <th scope="col" class="quantity">Menge</th>
+        <th scope="col" class="tax">MwSt</th>
+        <th scope="col" class="price">Einzelpreis inkl. MwSt</th>
+        <th scope="col" class="total" colspan="2">Gesamtbetrag</th>
+
+      </tr>
+      </thead>
+      <tbody class="border">
+      <tr *ngFor="let product of products; let i = index" style="cursor: pointer">
+        <td class="centerContent picture" (click)="routeToDetailView(product)"><img *ngIf="product.picture != null"
+                                                                                    class="card-img-top"
+                                                                                    src="{{getImageSource(product)}}"
+                                                                                    alt="produkt"></td>
+        <td class="name" (click)="routeToDetailView(product)">{{product.name}}</td>
+        <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.cartItemQuantity"
+                                    (mouseleave)="updateQuantity($event, i)"
+                                    (change)="changedTotal(i, $event);updateLocalQuantity($event, i)"></td>
+        <td class="tax" (click)="routeToDetailView(product)">{{(product.taxRate.percentage)}} %</td>
+        <td class="price"
+            (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price).toFixed(2)}} €
+        </td>
+        <td class="total-num"
+            (click)="routeToDetailView(product)">{{(product.taxRate?.calculationFactor * product.price * product.cartItemQuantity).toFixed(2)}}
+          €
+        </td>
+        <td class="delete" (click)="routeToDetailView(product)">
+          <button class="btn btn-outline-danger" (click)="removeFromCart(i)">
+            <fa-icon class="mr-2" [icon]="faDelete"></fa-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+      <thead class="none-border">
+      <tr>
+        <td colspan="3"></td>
+        <td class="subtotal-amount " colspan="2">Summe Artikel (netto):</td>
+        <td class="amount" id="subtotal" colspan="2">{{calcSubtotal()}}</td>
+      </tr>
+      <tr>
+        <td colspan="3"></td>
+        <td class="tax-amount" colspan="2">zzgl. MwSt Betrag:</td>
+        <td class="amount" id="tax" colspan="2">{{calcTax()}}</td>
+      </tr>
+      <tr>
+        <td colspan="3"></td>
+        <td class="total-amount custom-border-top" colspan="2">Gesamtbetrag:</td>
+        <td class="custom-border-top amount" id="total" colspan="2">{{calcTotal()}}</td>
+      </tr>
+      </thead>
+    </table>
+    <div class="back-button">
+      <button class="btn btn-primary pull-right" *ngIf="!cartIsEmpty()" (click)="routeBackToShop()">
+        <fa-icon class="mr-2" [icon]="faBack"></fa-icon>
+        WEITER EINKAUFEN
+      </button>
+    </div>
+
+  </div>
+  <div class="rounded mt-4" *ngIf="cartIsEmpty()">
+    <div class="empty-cart">
+      <h4>Warenkorb ist leer</h4>
+    </div>
+  </div>
+</div>

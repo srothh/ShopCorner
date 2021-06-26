@@ -1,9 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.basetest;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
+import com.github.javafaker.LeagueOfLegends;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public interface TestData {
@@ -23,6 +25,9 @@ public interface TestData {
     String ADDRESS_BASE_URI = BASE_URI + "/address";
     String CUSTOMER_BASE_URI = BASE_URI + "/customers";
     String INVOICE_BASE_URI = BASE_URI + "/invoices";
+    String PROMOTION_BASE_URI = BASE_URI + "/promotions";
+    String CART_BASE_URI = BASE_URI + "/carts";
+    String ME_BASE_URI = BASE_URI + "/me";
 
     //TEST PROPERTIES FOR PRODUCTS, TAX-RATES AND CATEGORIES
     String PRODUCTS_BASE_URI = "/api/v1/products";
@@ -35,10 +40,14 @@ public interface TestData {
     Long TEST_CATEGORY_ID = 0L;
     String CATEGORY_BASE_URI = "/api/v1/categories";
 
+    //TEST PROPERTIES FOR PAYPAL
+    String PAYPAL_BASE_URI = "/api/v1/paypal";
+
 
 
     String OPERATOR_BASE_URI = BASE_URI + "/operators";
 
+    String ORDER_BASE_URI = BASE_URI + "/orders";
     String TEST_OPERATOR_NAME = "operator";
     String TEST_OPERATOR_LOGINNAME = "operatorLoginName";
     String TEST_OPERATOR_PASSWORD = "operatorPassword";
@@ -61,6 +70,13 @@ public interface TestData {
     String TEST_EMPLOYEE_EMAIL = "employee@gmail.com";
     Permissions TEST_EMPLOYEE_PERMISSIONS = Permissions.employee;
 
+    String TEST_PROMOTION_NAME = "Promotion";
+    double TEST_PROMOTION_DISCOUNT = 2;
+    LocalDateTime TEST_PROMOTION_CREATIONDATE = LocalDateTime.now();
+    LocalDateTime TEST_PROMOTION_EXPIRATIONDATE = LocalDateTime.of(Calendar.getInstance().get(Calendar.YEAR) + 1,10,9,13,20);
+    String TEST_PROMOTION_CODE = "Testcode";
+    double TEST_PROMOTION_MINIMUMORDERVALUE = 10;
+
     String ADMIN_USER = "adminLogin";
     List<String> ADMIN_ROLES = new ArrayList<>() {
         {
@@ -80,17 +96,22 @@ public interface TestData {
         }
     };
 
-    //TEST PROPERTIES FOR INVOICE_ITEM
-
-    Long TEST_INVOICE_INVOICE_ID = 0L;
-    Long TEST_INVOICE_PRODUCT_ID = 0L;
-
 
     //TEST PROPERTIES FOR INVOICE
     Long TEST_INVOICE_ID = 0L;
+    String TEST_INVOICE_NUMBER_1 = "42016";
+    String TEST_INVOICE_NUMBER_2 = "42017";
     LocalDateTime TEST_INVOICE_DATE = null;
     Double TEST_INVOICE_AMOUNT = 20.0;
 
+    //TEST PROPERTIES FOR CART
+    Long CART_ID = 0L;
+    Long CART_ITEM_ID = 0L;
+    Long CART_ITEM_PRODUCT_ID = 0L;
+    int CART_ITEM_QUANTITY = 5 ;
 
-
+    Long CART_ID_2 = 1L;
+    Long CART_ITEM_ID_2 = 1L;
+    Long CART_ITEM_PRODUCT_ID_2 = 1L;
+    int CART_ITEM_QUANTITY_2 = 10 ;
 }

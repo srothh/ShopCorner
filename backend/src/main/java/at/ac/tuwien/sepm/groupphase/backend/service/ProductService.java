@@ -1,14 +1,15 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
-import org.springframework.data.domain.Page;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+
 /**
  * Service class handling business logic for products.
- * */
+ */
 
 public interface ProductService {
     /**
@@ -25,10 +26,11 @@ public interface ProductService {
      *
      * @param page describes the number of the page
      * @param pageCount the number of entries each page holds
-     *
+     * @param categoryId the category id, which a product contains
+     * @param name the name of the product
      * @return all products that are currently saved in the database
      */
-    Page<Product> getAllProductsPerPage(int page, int pageCount);
+    Page<Product> getAllProductsPerPage(int page, int pageCount, Long categoryId, String sortBy, String name);
 
     /**
      * Gets all products  that were previously added in the database.
@@ -70,13 +72,26 @@ public interface ProductService {
      *
      * @param productId the is to search in the database
      * @throws NotFoundException if the entity is not available in the database
-     *
-     * */
+     */
     void deleteProductById(Long productId);
 
+    /**
+     * Deletes a specific product with the given productId.
+     *
+     * @param page the page to fetch the count of
+     * @param category the category the page is assigned to
+     * @throws RuntimeException occurs during database operations
+     */
+    Long getCountByCategory(Page page, Long category);
 
-
-
+    /**
+     * Gets all products that are associated to a specific category.
+     *
+     * @param categoryId the id to search in the database
+     * @throws NotFoundException if the entity is not available in the database
+     * @throws RuntimeException occurs during database operations
+     */
+    List<Product> getAllProductsByCategory(Long categoryId);
 
 
 }

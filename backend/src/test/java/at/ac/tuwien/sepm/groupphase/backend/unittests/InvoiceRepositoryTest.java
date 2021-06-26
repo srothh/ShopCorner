@@ -1,33 +1,25 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
-import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
-import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import at.ac.tuwien.sepm.groupphase.backend.entity.*;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.*;
 
+import at.ac.tuwien.sepm.groupphase.backend.util.InvoiceSpecifications;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(SpringExtension.class)
@@ -55,6 +47,13 @@ public class InvoiceRepositoryTest implements TestData {
 
     @Autowired
     private InvoiceItemRepository invoiceItemRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
+
 
     @BeforeEach
     public void beforeEach() {
@@ -86,24 +85,54 @@ public class InvoiceRepositoryTest implements TestData {
         invoiceItem.setNumberOfItems(10);
 
         // invoiceItem to invoice
-        Set<InvoiceItem> items = new HashSet<>();
-        items.add(invoiceItem);
-        invoice.setId(TEST_INVOICE_ID);
+        invoice.setInvoiceNumber(TEST_INVOICE_NUMBER_1);
         invoice.setDate(LocalDateTime.now());
         invoice.setAmount(TEST_INVOICE_AMOUNT);
+        invoice.setInvoiceType(InvoiceType.operator);
 
     }
 
 
     @Test
     public void givenAllProperties_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
-
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
+        invoiceItemRepository.save(invoiceItem);
+        Pageable returnPage = PageRequest.of(0, 15);
+        assertAll(
+            () -> assertEquals(1, invoiceRepository.findAll().size()),
+            () -> assertNotNull(invoiceRepository.findById(invoice.getId())),
+            () -> assertNotNull(invoiceRepository.findAll(InvoiceSpecifications.hasInvoiceType(InvoiceType.operator), returnPage).getContent()),
+            () -> assertEquals(1, invoiceRepository.findAll(InvoiceSpecifications.hasInvoiceType(InvoiceType.operator), returnPage).getContent().size())
+        );
+    }
+
+    @Test
+    public void givenAllProperties_whenGetInvoice_thenFindListWithOneInvoiceAndFindElementById() {
+        invoiceItem.setInvoice(invoiceRepository.save(invoice));
+        invoiceItemRepository.save(invoiceItem);
+        Pageable returnPage = PageRequest.of(0, 15);
+        assertAll(
+            () -> assertEquals(1, invoiceRepository.findAll(returnPage).getContent().size())
+        );
+    }
+
+    @Test
+    public void givenAllProperties_whenGetInvoice_thenFindListWIthOneInvoiceWithTheCustomer(){
+        //First Address for customer
+        Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
+        addressRepository.save(address);
+
+        //Then Customer
+        Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
+        Customer newCustomer = customerRepository.save(customer);
+        //Then Invoice
+        Invoice newInvoice = invoiceRepository.save(invoice);
+        invoiceItem.setInvoice(newInvoice);
         invoiceItemRepository.save(invoiceItem);
 
         assertAll(
-            () -> assertEquals(1, invoiceRepository.findAll().size()),
-            () -> assertNotNull(invoiceRepository.findById(invoice.getId()))
+            () -> assertNotNull(invoiceRepository.findByIdAndCustomerId(newInvoice.getId(), newCustomer.getId())),
+            () -> assertEquals(Optional.empty(),invoiceRepository.findByIdAndCustomerId(newInvoice.getId(), -100L))
         );
 
     }

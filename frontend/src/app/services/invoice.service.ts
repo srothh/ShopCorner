@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
 import {Invoice} from '../dtos/invoice';
 import {Product} from '../dtos/product';
 import {OperatorAuthService} from './auth/operator-auth.service';
+import {Pagination} from '../dtos/pagination';
+import {InvoiceType} from '../dtos/invoiceType.enum';
+import {Customer} from '../dtos/customer';
+import {CustomerAuthService} from './auth/customer-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,19 +17,27 @@ export class InvoiceService {
 
   private invoiceBaseUri: string = this.globals.backendUri + '/invoices';
   private productBaseUri: string = this.globals.backendUri + '/products';
-
-  constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
+  private customerBaseUri: string = this.globals.backendUri + '/customers';
+  constructor(private httpClient: HttpClient,
+              private globals: Globals,
+              private operatorAuthService: OperatorAuthService,
+              private customerAuthService: CustomerAuthService) {
   }
 
   /**
-   * Loads all invoices from the backend
+   * Retrieve a page of invoice from the backend.
    *
-   * @return invoiceList with all invoices
+   * @param page the number of the page to fetch
+   * @param pageCount the size of the page to be fetched
+   * @param type the invoiceType of the invoices
+   * @return The invoice retrieved from the backend
    */
-  getInvoice(): Observable<Invoice[]> {
-    return this.httpClient.get<Invoice[]>(this.invoiceBaseUri, {
-      headers: this.getHeadersForOperator()
-    });
+  getAllInvoicesForPage(page: number, pageCount: number, type: InvoiceType): Observable<Pagination<Invoice>> {
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount))
+      .set(this.globals.requestParamKeys.invoice.invoiceType, String(type));
+    return this.httpClient.get<Pagination<Invoice>>(this.invoiceBaseUri, {params, headers: this.getHeadersForOperator()});
   }
 
   /**
@@ -35,6 +47,18 @@ export class InvoiceService {
    */
   getProducts(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.productBaseUri + '/simple', {
+      headers: this.getHeadersForOperator()
+    });
+  }
+
+  /**
+   * Loads customer by invoiceId from the backend
+   *
+   * @param id of the invoice
+   * @return customer
+   */
+  getCustomerById(id: number): Observable<Customer> {
+    return this.httpClient.get<Customer>(this.customerBaseUri + '/' + id, {
       headers: this.getHeadersForOperator()
     });
   }
@@ -63,6 +87,16 @@ export class InvoiceService {
   }
 
   /**
+   * Set invoice entry to canceled.
+   *
+   * @param invoice to be updated
+   * @return invoice updated from the given invoice and invoice entry
+   */
+  setInvoiceCanceled(invoice: Invoice): Observable<Invoice> {
+    return this.httpClient.patch<Invoice>(this.invoiceBaseUri + '/' + invoice.id, invoice);
+  }
+
+  /**
    * Creates a new invoice entry and a pdf in the backend.
    *
    * @param invoice to be created
@@ -79,7 +113,6 @@ export class InvoiceService {
    * @return pdf generated from the given invoice and invoice entry
    */
   createInvoiceAsPdf(invoice: Invoice): Observable<any> {
-
     return this.httpClient.post(this.invoiceBaseUri, invoice , this.getPdfHeadersForOperator());
   }
 
@@ -89,10 +122,9 @@ export class InvoiceService {
   }
 
   private getPdfHeadersForOperator(): any {
-    const httpOptions = {
+    return {
       responseType: 'blob' as 'json',
       headers: new HttpHeaders().set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`).set('Accept', 'application/pdf')
     };
-    return httpOptions;
   }
 }

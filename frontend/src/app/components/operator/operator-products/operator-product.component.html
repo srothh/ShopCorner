@@ -1,43 +1,59 @@
-<div *ngIf="errorOccurred===true" class="alert alert-danger" role="alert">
-  {{ errorMessage }}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="operator-product-container">
-  <div class="operator-product-header mt-3">
-    <h3>Produkte</h3>
+<div>
+  <div *ngIf="errorOccurred()" class="alert alert-danger" role="alert">
+    {{ getErrorMessage() }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="resetState()">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
-  <div class="operator-product-body">
-    <button type="button" class="btn btn-primary mb-3" (click)="addNewProduct()">Produkt hinzufügen</button>
-    <div>
 
-      <div class="float-right ">
-        <div *ngIf="selectedProducts.length >0; else not_selected">
-        <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteCommit">
-          Auswahl löschen
-        </button>
+  <br>
+  <div class="product-header">
+    <div class="d-flex justify-content-between">
+      <h2>Produkte</h2>
+
+      <div *ngIf="getPermission() === 'ADMIN'" class="btn-toolbar">
+        <div class="mr-2">
+          <button type="button" class="btn btn-primary" (click)="addNewProduct()">Produkt hinzufügen</button>
         </div>
-        <ng-template #not_selected>
-          <button type="button" class="btn btn-outline-danger btn-sm" disabled>Auswahl löschen</button>
-        </ng-template>
-
+        <div>
+          <div *ngIf="selectedProducts.length >0; else not_selected">
+            <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">
+              Auswahl löschen
+            </button>
+          </div>
+          <ng-template #not_selected>
+          <span>
+            <button type="button" class="btn btn-outline-danger" disabled>Auswahl löschen</button>
+          </span>
+          </ng-template>
+        </div>
+        <div class="button_block"></div>
+      </div>
     </div>
-
-    <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else last_page">
-      Zeigt {{1 + (pageSize * page)}}-{{(pageSize * (page + 1))}}
-      von {{collectionSize}}</p>
-    <ng-template #last_page>
-      <p style="font-size: 10px; color: gray" *ngIf="collectionSize > 0; else empty_content">Zeigt {{(1 + (pageSize * page))}}-{{collectionSize}}
-        von {{collectionSize}}</p>
-      <ng-template #empty_content>
-        <p style="font-size: 10px; color: gray">Keine Produkte im Sortiment</p>
-      </ng-template>
-    </ng-template>
+    <app-base-product-search-bar (errorOccurred)="error = $event.error; errorMessage = $event.errorMessage"
+                                 (resetAndFetchProducts)="resetAndFetchProducts($event)"></app-base-product-search-bar>
   </div>
-  <div class="border rounded " style="height: 560px; margin-top: 32px">
+
+  <hr>
+
+  <div *ngIf="pageableProducts.collectionSize > 0 else no_products">
+    <div>
+      <h6 class="text-muted small">
+        Zeigt {{pageableProducts.itemsIndexStart()}}-{{pageableProducts.itemsIndexEnd()}}
+        von {{pageableProducts.collectionSize}}</h6>
+    </div>
+  </div>
+  <ng-template #no_products>
+    <div>
+      <h6 class="text-muted small">
+        Keine Produkte gefunden
+      </h6>
+    </div>
+  </ng-template>
+
+  <div class="border rounded mt-4" style="height: 560px;">
     <table class="table table-hover table-sm" data-pagination="true" data-page-list="[1,2]">
-      <thead class="thead-light">
+      <thead class="table-secondary">
       <tr>
         <th scope="col">Ausgewählt</th>
         <th scope="col">Name</th>
@@ -46,10 +62,8 @@
         <th scope="col">Preis</th>
       </tr>
       </thead>
-
-
       <tbody>
-      <tr *ngFor="let product of products; let i = index" style="cursor: pointer"
+      <tr *ngFor="let product of getPaginatedProducts(); let i = index" style="cursor: pointer"
           (click)="goToProductDetails(product, $event)">
         <td>
           <div class="custom-control custom-checkbox">
@@ -62,16 +76,13 @@
         <td>{{(product.taxRate?.percentage + '%') || '--'}}</td>
         <td>{{product.category?.name || '--'}}</td>
         <td>{{product.price}}</td>
-
       </tr>
       </tbody>
-
-
     </table>
   </div>
-  <div class="d-flex justify-content-between p-2">
-    <button class="btn btn-dark" (click)=previousPage()>Vorherige Seite</button>
-    <button class="btn btn-dark" (click)=nextPage()>Nächste Seite</button>
+  <div class="d-flex justify-content-between pt-3">
+    <button type="button" class="btn btn-primary" (click)=pageableProducts.previousPage()>Vorherige Seite</button>
+    <button type="button" class="btn btn-primary" (click)=pageableProducts.nextPage()>Nächste Seite</button>
   </div>
 
   <div class="modal fade" id="deleteCommit" tabindex="-1" role="dialog" aria-labelledby="deleteCommitLabel"
@@ -98,9 +109,4 @@
     </div>
   </div>
 
-
 </div>
-
-
-</div>
-

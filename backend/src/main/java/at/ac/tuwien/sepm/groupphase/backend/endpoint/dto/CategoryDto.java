@@ -14,7 +14,6 @@ public class CategoryDto {
     @NotBlank
     @Size(min = 3, max = 20)
     private String name;
-    private Set<Product> products = new HashSet<>();
 
     public CategoryDto() {
     }
@@ -35,14 +34,6 @@ public class CategoryDto {
         this.name = name;
     }
 
-    public Set<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -52,14 +43,12 @@ public class CategoryDto {
         }
         CategoryDto categoryDto = (CategoryDto) o;
         return Objects.equals(id, categoryDto.id)
-            && Objects.equals(name, categoryDto.name)
-            && Objects.equals(products, categoryDto.products);
-
+            && Objects.equals(name, categoryDto.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, products);
+        return Objects.hash(id, name);
     }
 
     @Override
@@ -69,8 +58,6 @@ public class CategoryDto {
             "id=" + id
             +
             ", name='" + name + '\''
-            +
-            ", products=" + products
             +
             '}';
     }
