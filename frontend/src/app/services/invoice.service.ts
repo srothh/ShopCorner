@@ -93,7 +93,8 @@ export class InvoiceService {
    * @return invoice updated from the given invoice and invoice entry
    */
   setInvoiceCanceled(invoice: Invoice): Observable<Invoice> {
-    return this.httpClient.patch<Invoice>(this.invoiceBaseUri + '/' + invoice.id, invoice);
+    console.log(invoice);
+    return this.httpClient.patch<Invoice>(this.invoiceBaseUri + '/' + invoice.id, invoice, {headers: this.getHeadersForOperator()});
   }
 
   /**
