@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Product} from '../../../dtos/product';
 import {ProductService} from '../../../services/product/product.service';
 import {Router} from '@angular/router';
+import {ShopService} from '../../../services/shop.service';
+import {Globals} from '../../../global/globals';
 
 @Component({
   selector: 'app-home',
@@ -9,20 +11,26 @@ import {Router} from '@angular/router';
   styleUrls: ['./shop-home.component.scss']
 })
 export class ShopHomeComponent implements OnInit {
-
   products: Product[];
   page = 0;
   pageSize = 18;
   collectionSize = 0;
 
+  bannerTitle = this.globals.defaultSettings.bannerTitle;
+  bannerText = this.globals.defaultSettings.bannerText;
+
   error = false;
   errorMessage = '';
 
-  constructor(private productService: ProductService, private router: Router) {
+  constructor(private productService: ProductService,
+              private router: Router,
+              private globals: Globals,
+              private shopService: ShopService) {
   }
 
   ngOnInit(): void {
     this.fetchProducts();
+    this.configureBanner();
   }
 
   fetchProducts(): void {
@@ -50,5 +58,11 @@ export class ShopHomeComponent implements OnInit {
    */
   vanishError() {
     this.error = false;
+  }
+
+  private configureBanner() {
+    const settings = this.shopService.getSettings();
+    this.bannerTitle = settings.bannerTitle;
+    this.bannerText = settings.bannerText;
   }
 }
