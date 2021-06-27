@@ -23,6 +23,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -99,7 +100,8 @@ public class OrderServiceImpl implements OrderService {
         } else if (pageCount > 50) {
             pageCount = 50;
         }
-        Pageable returnPage = PageRequest.of(page, pageCount);
+
+        Pageable returnPage = PageRequest.of(page, pageCount, Sort.by(Sort.Direction.DESC, "invoice.date"));
         return orderRepository.findAll(returnPage);
     }
 

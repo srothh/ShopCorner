@@ -58,6 +58,22 @@ export class OrderService {
   getCancellationPeriod(): Observable<CancellationPeriod> {
     return this.httpClient.get<CancellationPeriod>(this.orderBaseURI + '/settings');
   }
+
+  /**
+   * fetches all orders from the backend
+   *
+   * @param page that is needed
+   * @param pageCount amount of orders per page
+   */
+  getOrdersPage(page: number, pageCount: number): Observable<Pagination<Order>> {
+    console.log('Get orders for page: ', page);
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount));
+
+    return this.httpClient.get<Pagination<Order>>(this.orderBaseURI, {params, headers: this.getHeadersForOperator()});
+  }
+
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
