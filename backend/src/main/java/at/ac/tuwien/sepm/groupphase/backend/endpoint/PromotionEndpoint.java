@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
@@ -65,5 +64,17 @@ public class PromotionEndpoint {
         LOGGER.info("GET api/v1/promotions?page={}&page_count={}", page, pageCount);
         Page<Promotion> promotionPage = promotionService.getAllPromotions(page, pageCount);
         return new PaginationDto<>(promotionMapper.promotionListToPromotionDtoList(promotionPage.getContent()), page, pageCount, promotionPage.getTotalPages(), promotionService.getPromotionCount());
+    }
+
+    /**
+     * Retrieves a promotion based on its code.
+     *
+     * @return The found promotion
+     */
+    @GetMapping(value = "/{code}")
+    @PermitAll
+    public PromotionDto getPromotionByCode(@PathVariable String code) {
+        LOGGER.info("GET ap1/v1/promotions/{}", code);
+        return promotionMapper.promotionToPromotionDto(promotionService.findPromotionByCode(code));
     }
 }

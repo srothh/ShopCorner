@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Promotion;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.PromotionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.PromotionService;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
@@ -63,6 +64,17 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public List<Promotion> findAll() {
         return promotionRepository.findAll();
+    }
+
+    @Override
+    public Promotion findPromotionByCode(String code) {
+        Promotion promotion = this.promotionRepository.findByCode(code);
+        if (promotion == null) {
+            throw new NotFoundException("Keine Aktion mit gegebenem Code gefunden");
+        } else {
+            return promotion;
+
+        }
     }
 
 
