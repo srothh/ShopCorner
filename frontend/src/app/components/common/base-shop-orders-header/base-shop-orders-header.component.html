@@ -16,7 +16,7 @@
       <a href="#" class="link-primary" (click)="downloadInvoice($event, order.invoice.id, order.invoice.date)">PDF download</a>
     </div>
     <div class="order-cancel">
-      <button class="btn btn-dark">Stornieren</button>
+      <button class="btn btn-dark" (click)="canceledOrder()">Stornieren</button>
     </div>
   </div>
 </div>

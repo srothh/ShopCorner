@@ -35,6 +35,24 @@ public interface OrderService {
     Page<Order> getAllOrders(int page, int pageCount);
 
     /**
+     * Retrieves a order by id from the database.
+     *
+     * @param orderId The id of the Order
+     * @return the order by id
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    Order getOrderById(Long orderId);
+
+    /**
+     * Updates the given order in the database to canceled.
+     *
+     * @param order is the order to be canceled
+     * @return The canceled order from the database
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Order setInvoiceCanceled(Order order);
+
+    /**
      * Retrieves a PaginationDto containing a Page of orders from a specific customer from the database.
      *
      * @param page The number of the page to retrieve

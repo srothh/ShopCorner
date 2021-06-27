@@ -31,4 +31,8 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
     });
   }
 
+  canceledOrder() {
+
+  }
+
 }
