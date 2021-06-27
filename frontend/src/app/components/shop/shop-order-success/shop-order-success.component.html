@@ -11,7 +11,7 @@
       <ul class="list-group list-group-flush">
         <li class="list-group-item" *ngFor="let product of products">
           <div class="d-flex justify-content-between">
-            <span>{{ product.cartItemQuantity + ' x ' + product.name + ' mit MwSt.'}}</span>
+            <span>{{ product.cartItemQuantity +' x ' +product.name + ' (inkl. MwSt.)'}}</span>
             <span>{{(product.price * product.taxRate.calculationFactor).toFixed(2)}}</span>
           </div>
         </li>

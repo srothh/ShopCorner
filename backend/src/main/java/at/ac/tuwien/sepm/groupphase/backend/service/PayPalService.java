@@ -18,6 +18,7 @@ public interface PayPalService {
      * @param order the order containing all information for the payment process
      *
      * @return a redirect URL to confirm the payment
+     * @throws PayPalRESTException is being thrown when processing Paypal's API ends in a failure
      */
     public String createPayment(Order order) throws PayPalRESTException;
 
@@ -26,7 +27,9 @@ public interface PayPalService {
      *
      * @param confirmedPayment the confirmed payment contains the necessary parameters to confirm the payment
      *
+     *
      * @return the created Payment object
+     * @throws PayPalRESTException is being thrown when processing Paypal's API ends in a failure
      */
     public Payment confirmPayment(ConfirmedPayment confirmedPayment) throws PayPalRESTException;
 

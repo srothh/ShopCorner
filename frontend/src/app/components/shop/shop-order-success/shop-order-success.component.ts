@@ -59,18 +59,26 @@ export class ShopOrderSuccessComponent implements OnInit {
       if (this.promotionId) {
         this.getPromotion();
       }
-      this.confirmedPayment = new ConfirmedPayment(0, this.paymentId, this.payerId);
-      this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
-        if (finalisedPaymentData.includes('Payment successful')) {
-          this.paymentSucceeded = true;
-          this.placeNewOrder();
-          this.cartGlobals.resetCart();
-          // after payment -> discard paymentId and payerID
-
+      this.paypalService.getConfirmedPayment(this.paymentId, this.payerId).subscribe((cp) => {
+        this.alreadyOrdered = cp !== null;
+        if(this.alreadyOrdered === false) {
+          this.confirmPayment();
+        } else {
+          this.goToHome();
         }
-      }, error => {
-        this.paymentSucceeded = false;
       });
+    });
+  }
+
+  confirmPayment(){
+    this.confirmedPayment = new ConfirmedPayment(null, this.paymentId, this.payerId);
+    this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
+      if (finalisedPaymentData.includes('Payment successful')) {
+        this.paymentSucceeded = true;
+        this.placeNewOrder();
+      }
+    }, error => {
+      this.paymentSucceeded = false;
     });
   }
 
@@ -84,6 +92,7 @@ export class ShopOrderSuccessComponent implements OnInit {
     return this.cartGlobals.getCartSize();
   }
 
+
   placeNewOrder() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
@@ -91,6 +100,7 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.orderService.placeNewOrder(order).subscribe(() => {
     });
   }
+
 
   getTotalPrice() {
     return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes();
@@ -153,6 +163,7 @@ export class ShopOrderSuccessComponent implements OnInit {
   }
 
   goToHome() {
+    this.cartGlobals.resetCart();
     this.router.navigate(['/home']).then();
   }
 }

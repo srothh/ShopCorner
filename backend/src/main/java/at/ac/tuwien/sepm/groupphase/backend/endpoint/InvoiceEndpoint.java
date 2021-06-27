@@ -16,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
@@ -43,6 +44,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -100,17 +102,13 @@ public class InvoiceEndpoint {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
         LOGGER.info("GET api/v1/invoices?page={}&page_count={}&invoiceType={}", page, pageCount, invoiceType);
-        PaginationDto<SimpleInvoiceDto> dto;
         Page<Invoice> invoicePage = invoiceService.findAll(page, pageCount, invoiceType);
         if (invoiceType == InvoiceType.operator) {
-            dto =
-                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getInvoiceCount());
-        } else {
-            dto =
-                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
+            return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getInvoiceCount());
+        } else if (invoiceType == InvoiceType.customer) {
+            return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
         }
-        return dto;
-
+        return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCanceledInvoiceCount());
     }
 
 
@@ -136,6 +134,25 @@ public class InvoiceEndpoint {
     }
 
     /**
+     * Set an invoice to canceled in the database.
+     *
+     * @param invoiceId id of the invoice which should be updated in the database
+     * @return DetailedInvoiceDto with the updated invoice
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping(value = "/{id}")
+    @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
+    public DetailedInvoiceDto resetInvoiceCanceled(@Valid @RequestBody DetailedInvoiceDto invoiceDto, @PathVariable("id") Long invoiceId) {
+        LOGGER.info("PATCH /api/v1/invoices/{}: {}", invoiceId, invoiceDto);
+        if (!invoiceDto.getId().equals(invoiceId)) {
+            throw new ServiceException("Bad Request, invoiceId is not valid");
+        }
+        Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(this.invoiceService.findOneById(invoiceId));
+        return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice);
+    }
+
+    /**
      * Finds an invoice and generates a PDF from it.
      *
      * @param id id of the invoice
@@ -154,15 +171,13 @@ public class InvoiceEndpoint {
         } else if (invoice.getInvoiceType() == InvoiceType.customer) {
             contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
         } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
-            // TODO: createPdfInvoiceCanceled
+            contents = this.pdfGeneratorService.createPdfCanceledInvoiceOperator(invoice);
         } else {
             return ResponseEntity.status(402).build();
         }
 
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
     }
-
-
 
 
     /**
