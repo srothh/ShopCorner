@@ -111,6 +111,9 @@ public class Validator {
         if (!promotion.getExpirationDate().isAfter(LocalDateTime.now())) {
             throw new ValidationException("Expirationdate has to be after creationdate");
         }
+        if (promotion.getDiscount() > promotion.getMinimumOrderValue()) {
+            throw new ValidationException("Rabatt kann nicht gößer als der Mindestbestellwert sein");
+        }
         List<Promotion> promotions = promotionService.findAll();
 
         for (Promotion p : promotions) {

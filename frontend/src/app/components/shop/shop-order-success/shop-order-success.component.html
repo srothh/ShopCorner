@@ -15,10 +15,14 @@
             <span>{{(product.price * product.taxRate.calculationFactor).toFixed(2)}}</span>
           </div>
         </li>
+        <li class="list-group-item d-flex justify-content-between" *ngIf="promotion">
+          <span >Gutscheincode ({{promotion.code}}) </span>
+          <span>-{{promotion.discount}} €</span>
+        </li>
         <li class="list-group-item">
           <div class="d-flex justify-content-between">
-            <span><strong>Gesamtpreis (inkl. MwSt.)</strong></span>
-            <span><strong>{{this.getTotalPrice().toFixed(2)}}</strong></span>
+            <span><strong>Gesamtpreis mit Mwst.</strong></span>
+            <span><strong>{{this.getTotalPriceWithPromotion().toFixed(2)}}</strong></span>
           </div>
         </li>
       </ul>

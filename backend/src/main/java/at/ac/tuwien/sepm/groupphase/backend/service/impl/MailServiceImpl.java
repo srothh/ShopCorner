@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Promotion;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
@@ -73,6 +74,10 @@ public class MailServiceImpl implements MailService {
         thymeleafContext.setVariable("sum", (double) Math.round(subtotal * 100) / 100);
         thymeleafContext.setVariable("tax", (double) Math.round(tax * 100) / 100);
         thymeleafContext.setVariable("end", order.getInvoice().getAmount());
+        Promotion promotion = order.getPromotion();
+        if (promotion != null) {
+            thymeleafContext.setVariable("promotionDiscount", promotion.getDiscount());
+        }
         String htmlBody = thymeleafTemplateEngine.process("emailTemplate.html", thymeleafContext);
 
         MimeMessage email = emailSender.createMimeMessage();

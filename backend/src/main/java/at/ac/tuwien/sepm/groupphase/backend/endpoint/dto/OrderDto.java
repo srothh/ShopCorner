@@ -11,11 +11,19 @@ public class OrderDto {
     @Valid
     @NotNull
     private DetailedInvoiceDto invoice;
+    private PromotionDto promotion;
 
     public OrderDto(Long id, CustomerDto customer, DetailedInvoiceDto invoice) {
         this.id = id;
         this.invoice = invoice;
         this.customer = customer;
+    }
+
+    public OrderDto(Long id, CustomerDto customer, DetailedInvoiceDto invoice, PromotionDto promotion) {
+        this.id = id;
+        this.invoice = invoice;
+        this.customer = customer;
+        this.promotion = promotion;
     }
 
     public OrderDto() {
@@ -24,6 +32,14 @@ public class OrderDto {
     public OrderDto(CustomerDto customer, DetailedInvoiceDto invoice) {
         this.invoice = invoice;
         this.customer = customer;
+    }
+
+    public PromotionDto getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(PromotionDto promotion) {
+        this.promotion = promotion;
     }
 
     public Long getId() {
