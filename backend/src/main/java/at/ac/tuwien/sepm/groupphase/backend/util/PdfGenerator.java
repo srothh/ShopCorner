@@ -12,7 +12,6 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.styledxmlparser.jsoup.Jsoup;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Document;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
-
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +64,7 @@ public class PdfGenerator {
             this.addInvoiceInformation(document, invoice);
             this.addOrderInformation(document, invoice);
             this.addCustomerInformation(document, customer);
-            this.addProductTable(document, invoice, 1);
+            this.addProductTable(document, invoice, order.getPromotion() == null ? 0 : order.getPromotion().getDiscount(), 1);
 
         } else if (customer != null && invoice.getInvoiceType() == InvoiceType.canceled) {
             document = Jsoup.parse(htmlCanceledCustomer);
@@ -73,20 +72,20 @@ public class PdfGenerator {
             this.addInvoiceInformation(document, invoice);
             this.addCustomerInformation(document, customer);
             this.addOrderInformation(document, invoice);
-            this.addProductTable(document, invoice, -1);
+            this.addProductTable(document, invoice, order.getPromotion() == null ? 0 : order.getPromotion().getDiscount(), -1);
 
         } else if (invoice.getInvoiceType() == InvoiceType.operator) {
             document = Jsoup.parse(htmlOperator);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
             this.addInvoiceInformation(document, invoice);
             this.addOrderInformation(document, invoice);
-            this.addProductTable(document, invoice, 1);
+            this.addProductTable(document, invoice, 0, 1);
 
         } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
             document = Jsoup.parse(htmlCanceledOperator);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
             this.addInvoiceInformation(document, invoice);
-            this.addProductTable(document, invoice, -1);
+            this.addProductTable(document, invoice, 0, -1);
         }
 
         this.addCompanyFooter(document);
@@ -95,7 +94,6 @@ public class PdfGenerator {
         HtmlConverter.convertToPdf(document.html(), buffer, properties);
         return buffer.toByteArray();
     }
-
 
 
     private void addCustomerInformation(Document document, Customer customer) {
@@ -129,7 +127,7 @@ public class PdfGenerator {
     }
 
 
-    private void addProductTable(Document document, Invoice invoice, int calculationFactor) {
+    private void addProductTable(Document document, Invoice invoice, double promotionDiscount, int calculationFactor) {
         final Element tableArticle = this.getElement(document, ".article");
         StringBuilder tableItemStringBuilder = new StringBuilder();
         tableItemStringBuilder.append("<tr >");
@@ -162,12 +160,15 @@ public class PdfGenerator {
             tableItemStringBuilder.append("</tr>");
 
         }
+        if (promotionDiscount > 0) {
+            total -= promotionDiscount;
+        }
         tableItemStringBuilder.append("</table>");
         tableArticle.html(tableItemStringBuilder.toString());
-        addTotalTable(document, total, subtotal, tax, calculationFactor);
+        addTotalTable(document, total, subtotal, tax, promotionDiscount, calculationFactor);
     }
 
-    private void addTotalTable(Document document, double total, double subtotal, double tax, int calculationFactor) {
+    private void addTotalTable(Document document, double total, double subtotal, double tax, double promotionDiscount, int calculationFactor) {
         StringBuilder tableTotalStringBuilder = new StringBuilder();
         final Element tableAmount = getElement(document, ".total");
         tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
@@ -178,6 +179,11 @@ public class PdfGenerator {
         tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Steuer</span></td>");
         tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", tax * calculationFactor));
 
+        if (promotionDiscount > 0) {
+            tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
+            tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Gutscheincode</span></td>");
+            tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", -promotionDiscount));
+        }
         tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
         tableTotalStringBuilder.append("<td class=\"right total-text\"><span>Summe</span></td>");
         tableTotalStringBuilder.append(String.format("<td class=\"center\"><span>%1.2f €</span></td></tr>", total * calculationFactor));

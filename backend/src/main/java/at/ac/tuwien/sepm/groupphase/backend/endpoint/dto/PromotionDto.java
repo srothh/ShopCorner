@@ -37,6 +37,7 @@ public class PromotionDto {
         this.minimumOrderValue = minimumOrderValue;
     }
 
+
     public Long getId() {
         return id;
     }

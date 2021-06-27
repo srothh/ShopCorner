@@ -51,6 +51,10 @@ auf unserer <a href="http://localhost:4200/#/home">Website</a>.
         <td>Umsatzsteuer</td>
         <td class="money"><span th:text="${tax}"></span>&euro;</td>
     </tr>
+    <tr th:if="${promotionDiscount != null}">
+        <td>Gutscheincode</td>
+        <td class="money"><span th:text="-${promotionDiscount}"></span>&euro;</td>
+    </tr>
     <tr>
         <td>Endbetrag inkl. USt.</td>
         <td class="money"><span th:text="${end}"></span>&euro;</td>
