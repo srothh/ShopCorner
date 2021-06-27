@@ -36,10 +36,10 @@ public class OrderServiceTest implements TestData {
     private OrderServiceImpl orderService;
     @Mock
     private CancellationPeriod cancellationPeriod;
-    private UUID sessionID = UUID.randomUUID();
+    private final UUID sessionID = UUID.randomUUID();
 
     @Test
-    public void placeNewOrderWithInvoice_thenReturnOrder() {
+    public void placeNewOrderWithInvoice_thenReturnOrder() throws IOException {
         doReturn(order).when(orderService).placeNewOrder(order, sessionID.toString());
     }
 
@@ -49,7 +49,7 @@ public class OrderServiceTest implements TestData {
     }
 
     @Test
-    public void whenPlaceNewOrderWithInvalidSessionId_thenThrowServiceException() {
+    public void whenPlaceNewOrderWithInvalidSessionId_thenThrowServiceException() throws IOException {
         doThrow(ServiceException.class).when(orderService).placeNewOrder(order, "default");
     }
 
