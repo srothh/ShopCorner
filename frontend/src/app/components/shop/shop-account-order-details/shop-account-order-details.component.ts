@@ -140,7 +140,7 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
   attemptToCancelInvoiceModal() {
     const modalRef = this.modalService.open(NgdbModalActionComponent);
     modalRef.componentInstance.title = 'Stornieren';
-    modalRef.componentInstance.body = 'Wollen Sie die Rechnung unwiderruflich storinieren?';
+    modalRef.componentInstance.body = 'Wollen Sie die Rechnung unwiderruflich stornieren?';
     modalRef.componentInstance.actionButtonTitle = 'Stornieren';
     modalRef.componentInstance.actionButtonStyle = 'danger';
     modalRef.componentInstance.action = () => {
@@ -153,7 +153,7 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
       this.isCanceled = true;
     }, (error) => {
       this.error = true;
-      this.errorMessage = error.error;
+      this.errorMessage = error;
     });
   }
 
@@ -166,7 +166,7 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
       this.isCancelable = invoiceDate > today;
     }, (error) => {
       this.error = true;
-      this.errorMessage = error.error;
+      this.errorMessage = error;
     });
   }
 
