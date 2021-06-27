@@ -332,7 +332,7 @@ public class InvoiceEndpointTest implements TestData {
             () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
             () -> {
                 String content = response.getContentAsString();
-                assertEquals(("Could not find invoice with id 0"), content);
+                assertEquals(("Rechnung mit id 0 konnte nicht gefunden werden"), content);
             }
         );
     }
