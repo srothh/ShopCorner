@@ -59,19 +59,16 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
         if (order.invoice.invoiceType === 'canceled') {
           this.isCanceled = true;
         }
-      }, error => {
-        this.error = true;
-        this.errorMessage = error;
+      }, _ => {
+          this.router.navigate(['404']);
       }, () => {
           this.items = this.order.invoice.items;
           this.time = this.order.invoice.date.substring(11);
-          this.day = this.order.invoice.date.substring(8, 10);
-          this.month = this.order.invoice.date.substring(5, 7);
-          this.year = this.order.invoice.date.substring(0, 4);
-
+          this.day = this.order.invoice.date.substring(8,10);
+          this.month = this.order.invoice.date.substring(5,7);
+          this.year = this.order.invoice.date.substring(0,4);
     });
   }
-
 
   vanishError() {
     this.error = false;
