@@ -77,11 +77,11 @@ public class MailServiceImpl implements MailService {
         thymeleafContext.setVariable("address", replaceSpecialChar(addressString));
         thymeleafContext.setVariable("sum", (double) Math.round(subtotal * 100) / 100);
         thymeleafContext.setVariable("tax", (double) Math.round(tax * 100) / 100);
-        thymeleafContext.setVariable("end", order.getInvoice().getAmount());
+        thymeleafContext.setVariable("end", (double) Math.round(order.getInvoice().getAmount() * 100) / 100);
         thymeleafContext.setVariable("cancel", cancellationPeriod.getDays());
         Promotion promotion = order.getPromotion();
         if (promotion != null) {
-            thymeleafContext.setVariable("promotionDiscount", promotion.getDiscount());
+            thymeleafContext.setVariable("promotionDiscount", (double) Math.round(promotion.getDiscount() * 100) / 100);
         }
         String htmlBody = thymeleafTemplateEngine.process("emailTemplate.html", thymeleafContext);
 
