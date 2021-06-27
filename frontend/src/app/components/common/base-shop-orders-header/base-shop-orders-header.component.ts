@@ -23,6 +23,7 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.isCanceled = this.order.invoice.invoiceType === 'canceled';
+    this.cancellationPeriod();
   }
   downloadInvoice(event: Event, invoiceId: number, invoiceDate: string) {
     event.preventDefault();
@@ -55,7 +56,17 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
       this.error = true;
       this.errorMessage = error.error;
     });
-
   }
 
+  cancellationPeriod() {
+    let days;
+    this.orderService.getCancellationPeriod().subscribe((item) => {
+      days = item.days;
+    });
+    const date = this.order.invoice.date;
+    const temp = new Date(date);
+    temp.setDate(temp.getDate() - days);
+    console.log(new Date(new Date().getTime() - (days * 24 * 60 * 60 )));
+
+  }
 }
