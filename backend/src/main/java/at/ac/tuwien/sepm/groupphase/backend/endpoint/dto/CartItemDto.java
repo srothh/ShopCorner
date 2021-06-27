@@ -9,10 +9,10 @@ public class CartItemDto {
 
     Long id;
 
-    @NotNull
+    @NotNull(message = "ProductId darf nicht null sein")
     private Long productId;
 
-    @Min(value = 1, message = "Minimum number of items is 1")
+    @Min(value = 1, message = "Die minimale Anzahl ist 1")
     private int quantity;
 
     public CartItemDto() {

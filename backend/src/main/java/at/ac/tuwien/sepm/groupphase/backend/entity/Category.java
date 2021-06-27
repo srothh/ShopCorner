@@ -20,7 +20,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+    @NotBlank(message = "Name darf nicht leer sein")
     @Size(min = 3, max = 20)
     private String name;
 

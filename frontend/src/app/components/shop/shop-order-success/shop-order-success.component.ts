@@ -107,7 +107,7 @@ export class ShopOrderSuccessComponent implements OnInit {
 
 
   placeNewOrder() {
-    this.createInvoice();
+    this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
     this.orderService.placeNewOrder(order).subscribe((orderData) => {
     }, error => {

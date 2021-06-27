@@ -10,7 +10,7 @@ public class CartDto {
 
     private Long id;
 
-    @NotNull
+    @NotNull(message = "CartItems darf nicht null sein")
     private Set<CartItemDto> cartItems = new HashSet<>();
 
     public CartDto() {

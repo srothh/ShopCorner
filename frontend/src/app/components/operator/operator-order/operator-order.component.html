@@ -38,7 +38,7 @@
       <tbody>
       <tr *ngFor="let order of orders">
         <td><span>{{order.invoice.date.replace('T', ', ')}} Uhr</span></td>
-        <td><span>{{order.invoice.amount}}€</span></td>
+        <td><span>{{order.invoice.amount.toFixed(2)}}€</span></td>
         <td><span>{{order.customer.name}}</span></td>
         <td><span>
           <button class="btn btn-link" type="submit" (click)="downloadInvoice(order.invoice.id, order.invoice.date)">PDF download</button>

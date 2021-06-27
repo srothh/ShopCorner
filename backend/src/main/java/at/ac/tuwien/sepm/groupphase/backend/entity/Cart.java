@@ -26,7 +26,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "SessionId darf nicht null sein")
     @Column(nullable = false, unique = true)
     private UUID sessionId;
 
@@ -34,7 +34,7 @@ public class Cart {
     @JoinColumn(name = "cart_id")
     private Set<CartItem> items = new HashSet<>();
 
-    @NotNull
+    @NotNull(message = "Erzeugungsdatum darf nicht null sein")
     LocalDateTime createdAt;
 
     public Cart() {
