@@ -28,7 +28,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
               this.router.navigate(['404']);
               return throwError(error.error);
             case 500:
-              return throwError('Serverprobleme')
+              return throwError('Serverprobleme');
             default:
               return throwError(error.error);
           }
