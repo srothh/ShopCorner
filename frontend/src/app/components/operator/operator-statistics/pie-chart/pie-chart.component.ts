@@ -18,6 +18,9 @@ export class PieChartComponent implements OnInit {
   public chartOptions = {
     scaleShowVerticalLines: false,
     responsive: true,
+    legend: {
+      position: { position: 'left' },
+    },
     plugins: {
       datalabels: {
         formatter: (value, ctx) => this.percentageLabels[ctx.dataIndex],
