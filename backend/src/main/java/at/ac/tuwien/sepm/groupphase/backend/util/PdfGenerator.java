@@ -6,13 +6,16 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ShopSettings;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.service.ShopService;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.styledxmlparser.jsoup.Jsoup;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Document;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -29,10 +32,17 @@ public class PdfGenerator {
     private final String htmlCustomer;
     private final String htmlCanceledOperator;
     private final String htmlCanceledCustomer;
+    private final ShopService shopService;
+    private ShopSettings shopSettings;
 
-    public PdfGenerator() {
+    @Autowired
+    public PdfGenerator(ShopService shopService) {
         String directory = "src/main/resources/invoice-templates";
+        this.shopService = shopService;
+
         try {
+            shopSettings = this.shopService.getSettings();
+
             BufferedReader in = new BufferedReader(new FileReader(directory + "/operatorInvoiceTemplate_v1.html"));
             htmlOperator = in.lines().collect(Collectors.joining());
             in = new BufferedReader(new FileReader(directory + "/customerInvoiceTemplate_v1.html"));
@@ -44,6 +54,10 @@ public class PdfGenerator {
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);
         }
+    }
+
+    public void updateCompanyInformation(ShopSettings shopSettings) {
+        this.shopSettings = shopSettings;
     }
 
     /**
@@ -61,6 +75,7 @@ public class PdfGenerator {
         if (customer != null && invoice.getInvoiceType() == InvoiceType.customer) {
             document = Jsoup.parse(htmlCustomer);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+            this.addLogo(document);
             this.addInvoiceInformation(document, invoice);
             this.addOrderInformation(document, invoice);
             this.addCustomerInformation(document, customer);
@@ -69,6 +84,7 @@ public class PdfGenerator {
         } else if (customer != null && invoice.getInvoiceType() == InvoiceType.canceled) {
             document = Jsoup.parse(htmlCanceledCustomer);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+            this.addLogo(document);
             this.addInvoiceInformation(document, invoice);
             this.addCustomerInformation(document, customer);
             this.addOrderInformation(document, invoice);
@@ -77,6 +93,7 @@ public class PdfGenerator {
         } else if (invoice.getInvoiceType() == InvoiceType.operator) {
             document = Jsoup.parse(htmlOperator);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+            this.addLogo(document);
             this.addInvoiceInformation(document, invoice);
             this.addOrderInformation(document, invoice);
             this.addProductTable(document, invoice, 0, 1);
@@ -84,6 +101,7 @@ public class PdfGenerator {
         } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
             document = Jsoup.parse(htmlCanceledOperator);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+            this.addLogo(document);
             this.addInvoiceInformation(document, invoice);
             this.addProductTable(document, invoice, 0, -1);
         }
@@ -115,6 +133,10 @@ public class PdfGenerator {
         int postalCode = customer.getAddress().getPostalCode();
         document.body().select(".customer-city").html(postalCode + " ");
 
+    }
+
+    private void addLogo(Document document) {
+        document.body().select(".logo").attr("src",shopSettings.getLogo());
     }
 
     private void addOrderInformation(Document document, Invoice invoice) {
@@ -193,10 +215,27 @@ public class PdfGenerator {
 
 
     private void addCompanyFooter(Document document) {
-        document.body().select(".name").html("ShopCorner");
-        document.body().select(".address").html("Favoritenstraße 9/11, 1040 Wien");
-        document.body().select(".phone").html("01 5880119501");
-        document.body().select(".email").html("admin@shop-corner.at");
+        StringBuilder address = new StringBuilder();
+        address.append(shopSettings.getStreet());
+        if (shopSettings.getHouseNumber() != null) {
+            if ("".equals(shopSettings.getHouseNumber())) {
+                address.append(" ").append(shopSettings.getHouseNumber());
+            }
+        }
+        if (shopSettings.getDoorNumber() != null) {
+            if ("".equals(shopSettings.getDoorNumber())) {
+                address.append(" / ").append(shopSettings.getDoorNumber());
+            }
+        }
+        if (shopSettings.getStairNumber() != 0) {
+            address.append(" / ").append(shopSettings.getStairNumber());
+        }
+        address.append(", ").append(shopSettings.getPostalCode()+" ").append(shopSettings.getCity());
+        document.body().select(".name").html(shopSettings.getTitle());
+        document.body().select(".address").html(address.toString());
+        document.body().select(".phone").html(shopSettings.getPhoneNumber());
+        document.body().select(".email").html(shopSettings.getEmail());
+
     }
 
     private Element getElement(Document document, String cssClass) {

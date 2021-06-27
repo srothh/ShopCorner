@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ShopSettings;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceArchiveService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
@@ -57,6 +58,12 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
             return this.invoiceArchiveService.createInvoiceArchive(order.getInvoice().getInvoiceNumber(), pdfGenerator.generatePdf(order.getInvoice(), order));
         }
         return this.invoiceArchiveService.findByInvoiceNumber(order.getInvoice().getInvoiceNumber());
+    }
+
+    @Override
+    public void updateCompanyInformation(ShopSettings shopSettings) {
+        LOGGER.trace("updateCompanyInformation({})", shopSettings);
+        this.pdfGenerator.updateCompanyInformation(shopSettings);
     }
 
 
