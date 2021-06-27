@@ -49,7 +49,7 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
     const invoice = new Invoice();
     invoice.date = '';
     invoice.amount = 0;
-    this.order = new Order(0, invoice, new Customer(0, '', '', '', '', address, ''));
+    this.order = new Order(0, invoice, new Customer(0, '', '', '', '', address, ''), null);
     this.cancellationPeriod();
     const id = +this.route.snapshot.paramMap.get('id');
 
@@ -149,7 +149,7 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
   }
 
   canceledOrder() {
-    this.orderService.setOrderCanceled(this.order).subscribe((item) => {
+    this.orderService.setOrderCanceled(this.order).subscribe(() => {
       this.isCanceled = true;
     }, (error) => {
       this.error = true;
