@@ -49,7 +49,7 @@
     <div *ngIf="!toggleForm&&!toggleDetailView">
       <div>
         <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
-          Keine Kund_innen gespeichert.
+          Keine Rechnungen gespeichert.
         </p>
         <ng-template #not_empty>
           <p style="font-size: 10px; color: gray" *ngIf="(pageSize * (page + 1)) < collectionSize; else other_content">

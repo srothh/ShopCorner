@@ -10,13 +10,6 @@
   </div>
 </div>
 
-<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Error!</strong> {{ errorMessage }}
-  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-
 <body class>
 <div class="container ">
   <div class="row">
@@ -31,12 +24,20 @@
           <strong>{{getTotalTaxes().toFixed(2)}} €</strong>
         </li>
         <li class="list-group-item d-flex justify-content-between">
-          <span>Gesamt </span>
+          <span>Zwischensumme </span>
           <strong>{{getTotalPrice().toFixed(2)}} €</strong>
         </li>
+        <li class="list-group-item d-flex justify-content-between" *ngIf="promotion">
+          <span >Gutscheincode ({{promotion.code}}) </span>
+          <strong>-{{promotion.discount}} €</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Gesamtpreis </span>
+          <strong>{{getTotalPriceWithPromotion().toFixed(2)}} €</strong>
+        </li>
       </ul>
-      <small *ngIf="cancellationPeriod && cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
-      <small *ngIf="cancellationPeriod && cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} nach dem Bestellungseingang stornierbar.</small>
+      <small *ngIf="cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
+      <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} Tag(en) nach dem Bestellungseingang stornierbar.</small>
 
       <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="proceedToPay()">Bezahlen mit Paypal
       </button>
@@ -44,7 +45,7 @@
     </div>
     <div class="col-md-8 order-md-1">
       <h4 class="mb-3">Rechnungsdaten</h4>
-      <form>
+      <form [formGroup]="orderForm">
         <div class="mb-3">
           <label for="firstName">Name</label>
           <input type="text" class="form-control" id="firstName" value="{{customer.name}}" disabled>
@@ -97,17 +98,31 @@
             </div>
             <span class="text-muted">{{product.price}} €</span>
           </li>
+          <li class="list-group-item d-flex justify-content-between flex-row bg-light">
+            <div class="text-success">
+              <h6 class="my-0 pb-1">Gutscheincode</h6>
+              <div class = "d-flex flex-row">
+                <input type="text" name="promoCode" formControlName="promoCode" class="form-control" id="promoCode">
+                <button type="button" (click)="getPromotion()" class="btn btn-primary submit ">Anwenden</button>
+              </div>
+              <small class="text-danger"
+                     *ngIf="promotionError">
+                {{promotionErrorMessage}}
+              </small>
+            </div>
+            <span class="text-success" *ngIf="promotion">-{{promotion.discount}} €</span>
+          </li>
           <li class="list-group-item d-flex justify-content-between">
-            <span>Gesamtpreis </span>
-            <strong>{{getTotalPrice().toFixed(2)}} €</strong>
+            <span>Gesamtpreis (inkl. Steuern)</span>
+            <strong>{{getTotalPriceWithPromotion().toFixed(2)}} €</strong>
           </li>
         </ul>
         <div>
-          <small *ngIf="cancellationPeriod && cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
-          <small *ngIf="cancellationPeriod && cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} Tag(en) nach dem Bestellungseingang stornierbar.</small>
+          <small *ngIf="cancellationPeriod.days === 0"> Bestellungen sind nicht stornierbar.</small>
+          <small *ngIf="cancellationPeriod.days !== 0"> Bestellungen sind innerhalb von {{cancellationPeriod.days}} Tag(en) nach dem Bestellungseingang stornierbar.</small>
 
           <button class="btn btn-primary btn-lg btn-block" type="submit" (click)="proceedToPay()">Bezahlen mit Paypal
-        </button></div>
+          </button></div>
       </form>
 
     </div>

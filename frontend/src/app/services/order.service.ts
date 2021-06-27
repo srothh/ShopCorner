@@ -5,8 +5,8 @@ import {Observable} from 'rxjs';
 import {Order} from '../dtos/order';
 import {CancellationPeriod} from '../dtos/cancellationPeriod';
 import {OperatorAuthService} from './auth/operator-auth.service';
-import {Pagination} from '../dtos/pagination';
 import {CustomerAuthService} from './auth/customer-auth.service';
+import {Pagination} from '../dtos/pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,18 @@ export class OrderService {
   constructor(private httpClient: HttpClient, private globals: Globals,
               private operatorAuthService: OperatorAuthService,
               private customerAuthService: CustomerAuthService) {
+  }
+
+  /**
+   * Gets the order specified by the id
+   *
+   * @param id the id of the order to be retrieved from the database
+   * @return An observable with the requested order
+   */
+  getOrderById(id: number) {
+    return this.httpClient.get<Order>(this.orderBaseURI + '/' + id, {
+      headers: this.getHeadersForCustomer()
+    });
   }
 
   /** Places a new order
@@ -46,6 +58,22 @@ export class OrderService {
   getCancellationPeriod(): Observable<CancellationPeriod> {
     return this.httpClient.get<CancellationPeriod>(this.orderBaseURI + '/settings');
   }
+
+  /**
+   * fetches all orders from the backend
+   *
+   * @param page that is needed
+   * @param pageCount amount of orders per page
+   */
+  getOrdersPage(page: number, pageCount: number): Observable<Pagination<Order>> {
+    console.log('Get orders for page: ', page);
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.pagination.page, String(page))
+      .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount));
+
+    return this.httpClient.get<Pagination<Order>>(this.orderBaseURI, {params, headers: this.getHeadersForOperator()});
+  }
+
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
