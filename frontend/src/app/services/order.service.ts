@@ -7,6 +7,7 @@ import {CancellationPeriod} from '../dtos/cancellationPeriod';
 import {OperatorAuthService} from './auth/operator-auth.service';
 import {Pagination} from '../dtos/pagination';
 import {CustomerAuthService} from './auth/customer-auth.service';
+import {Invoice} from '../dtos/invoice';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,16 @@ export class OrderService {
   setCancellationPeriod(cancellationPeriod: CancellationPeriod): Observable<CancellationPeriod> {
     return this.httpClient.put<CancellationPeriod>(this.orderBaseURI + '/settings',
       cancellationPeriod, {headers: this.getHeadersForOperator()});
+  }
+
+  /**
+   * Set order entry to canceled.
+   *
+   * @param order to be updated
+   * @return order updated from the given invoice and invoice entry
+   */
+  setOrderCanceled(order: Order): Observable<Order> {
+    return this.httpClient.patch<Order>(this.orderBaseURI + '/' + order.id, order, {headers: this.getHeadersForCustomer()});
   }
 
   /** gets the cancellation period from the backend

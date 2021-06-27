@@ -9,14 +9,15 @@
       <p>{{order.invoice.date | date: 'dd.MM.YYYY'}}</div>
     <div class="order-total-price">
       <p class="font-weight-bolder">Gesamtpreis (inkl. MwSt.): </p>
-      <p>{{order.invoice.amount + ' EUR'}}</p>
+      <p>{{(isCanceled? order.invoice.amount * (-1):order.invoice.amount).toFixed(2) + ' EUR'}}</p>
     </div>
     <div class="order-invoice">
-      <p class="font-weight-bolder">Rechnung: </p>
+      <p class="font-weight-bolder" *ngIf="isCanceled">Strono Rechnung: </p>
+      <p class="font-weight-bolder" *ngIf="!isCanceled">Rechnung: </p>
       <a href="#" class="link-primary" (click)="downloadInvoice($event, order.invoice.id, order.invoice.date)">PDF download</a>
     </div>
-    <div class="order-cancel">
-      <button class="btn btn-dark" (click)="canceledOrder()">Stornieren</button>
+    <div class="order-cancel" *ngIf="!isCanceled">
+      <button class="btn btn-dark" (click)="attemptToCancelInvoiceModal()">Stornieren</button>
     </div>
   </div>
 </div>
