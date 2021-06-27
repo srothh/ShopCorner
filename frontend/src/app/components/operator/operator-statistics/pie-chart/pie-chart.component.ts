@@ -19,7 +19,7 @@ export class PieChartComponent implements OnInit {
     scaleShowVerticalLines: false,
     responsive: true,
     legend: {
-      position: { position: 'left' },
+      position: 'left',
     },
     plugins: {
       datalabels: {
