@@ -69,6 +69,11 @@ export class OperatorPromotionComponent implements OnInit {
     return this.authService.getUserRole() === this.globals.roles.admin;
   }
 
+  changeComponent(val: boolean) {
+    this.form = val;
+    this.loadPromotionsForPage();
+  }
+
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
