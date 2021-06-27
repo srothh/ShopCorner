@@ -137,7 +137,6 @@ public class InvoiceEndpoint {
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
     public DetailedInvoiceDto resetInvoiceCanceled(@Valid @RequestBody DetailedInvoiceDto invoiceDto, @PathVariable("id") Long invoiceId) {
         LOGGER.info("PATCH /api/v1/invoices/{}: {}", invoiceId, invoiceDto);
-        System.out.println(invoiceId);
         if (!invoiceDto.getId().equals(invoiceId)) {
             throw new ServiceException("Bad Request, invoiceId is not valid");
         }
