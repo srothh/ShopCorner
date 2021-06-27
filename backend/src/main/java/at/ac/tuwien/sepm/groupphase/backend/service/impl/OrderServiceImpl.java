@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
     private final Properties properties = new Properties();
 
     private final String cancellationKey = "cancellationPeriod";
-    private final String configPath = "src/main/resources/orderSettings.config";
+    private final String configPath = "src/main/resources/order.settings";
     private final MailService mailService;
     private final ProductService productService;
 
@@ -75,6 +75,7 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("invalid sessionId");
         }
         order.setInvoice(this.invoiceService.createInvoice(order.getInvoice()));
+        order.getInvoice().setOrderNumber(Long.toHexString(order.getInvoice().getId()));
         mailService.sendMail(order);
         updateProductsInOrder(order);
         return orderRepository.save(order);

@@ -54,6 +54,7 @@ import { OperatorOrderSettingsComponent } from './components/operator/operator-o
 import { ShopAccountOrderDetailsComponent } from './components/shop/shop-account-order-details/shop-account-order-details.component';
 import { BaseShopOrdersHeaderComponent } from './components/common/base-shop-orders-header/base-shop-orders-header.component';
 import { BaseShopOrderItemComponent } from './components/common/base-shop-order-item/base-shop-order-item.component';
+import { ShopNotFoundComponent } from './components/shop/shop-not-found/shop-not-found.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +109,7 @@ import { BaseShopOrderItemComponent } from './components/common/base-shop-order-
     BaseShopOrdersHeaderComponent,
     BaseShopOrderItemComponent,
     ShopAccountOrderDetailsComponent,
+    ShopNotFoundComponent,
   ],
   imports: [
     BrowserModule,
