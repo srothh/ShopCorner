@@ -8,59 +8,57 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Email;
 
 public class ShopSettingsDto {
-    @NotBlank
-    @NotNull
-    @Size(max = 50)
+    @NotBlank(message = "Es muss ein Titel angegeben werden.")
+    @NotNull(message = "Es muss ein Titel angegeben werden.")
+    @Size(max = 50, message = "Titel darf maximal 50 Zeichen lang sein.")
     String title;
 
-    @NotBlank
-    @NotNull
+    @NotBlank(message = "Es muss ein Logo angegeben werden.")
+    @NotNull(message = "Es muss ein Logo angegeben werden.")
     String logo;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 128)
+    @NotBlank(message = "Es muss ein Banner Titel angegeben werden.")
+    @NotNull(message = "Es muss ein Banner Titel angegeben werden.")
+    @Size(max = 128, message = "Banner Titel darf maximal 128 Zeichen lang sein.")
     String bannerTitle;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 255)
+    @NotBlank(message = "Es muss ein Banner Text angegeben werden.")
+    @NotNull(message = "Es muss ein Banner Text angegeben werden.")
+    @Size(max = 255, message = "Banner Text darf maximal 255 Zeichen lang sein.")
     String bannerText;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 128)
+    @NotBlank(message = "Es muss eine Strasse angegeben werden.")
+    @NotNull(message = "Es muss eine Strasse angegeben werden.")
+    @Size(max = 128, message = "Strasse darf maximal 128 Zeichen lang sein.")
     String street;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 64)
+    @NotBlank(message = "Es muss eine Hausnummer angegeben werden.")
+    @NotNull(message = "Es muss eine Hausnummer angegeben werden.")
+    @Size(max = 64, message = "Hausnummer darf maximal 64 Zeichen lang sein.")
     String houseNumber;
 
     int stairNumber;
 
-    @Size(max = 64)
+    @Size(max = 64, message = "Türe darf maximal 64 Zeichen lang sein.")
     String doorNumber;
 
-    @NotNull
-    @Min(value = 1000, message = "Invalid postal code")
-    @Max(value = 9999, message = "Invalid postal code")
+    @NotNull(message = "Es muss eine Postleitzahl angegeben werden.")
+    @Min(value = 1000, message = "Ungültige Postleitzahl")
+    @Max(value = 9999, message = "Ungültige Postleitzahl")
     int postalCode;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 100)
+    @Size(max = 100, message = "Stadt darf maximal 100 Zeichen lang sein.")
     String city;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 128)
+    @NotBlank(message = "Es muss eine Telefonnummer angegeben werden.")
+    @NotNull(message = "Es muss eine Telefonnummer angegeben werden.")
+    @Size(max = 128, message = "Telefonnummer darf maximal 128 Zeichen lang sein.")
     String phoneNumber;
 
-    @NotBlank
-    @NotNull
-    @Email
-    @Size(max = 255)
+    @NotBlank(message = "Es muss eine E-Mail angegeben werden.")
+    @NotNull(message = "Es muss eine E-Mail angegeben werden.")
+    @Email(message = "Die E-Mail ist ungültig.")
+    @Size(max = 255, message = "Email darf maximal 255 Zeichen lang sein.")
     String email;
 
     public String getTitle() {
