@@ -1,35 +1,25 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
-import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceArchiveService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 
-import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 
-import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 
 
@@ -64,17 +54,16 @@ public class InvoiceEndpoint {
     private final InvoiceService invoiceService;
     private final InvoiceItemMapper invoiceItemMapper;
     private final PdfGeneratorService pdfGeneratorService;
-    private final InvoiceArchiveService invoiceArchiveService;
 
     @Autowired
-    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService,
-                           PdfGeneratorService pdfGeneratorService,
-                            InvoiceArchiveService invoiceArchiveService) {
+    public InvoiceEndpoint(InvoiceMapper invoiceMapper,
+                           InvoiceItemMapper invoiceItemMapper,
+                           InvoiceService invoiceService,
+                           PdfGeneratorService pdfGeneratorService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
         this.pdfGeneratorService = pdfGeneratorService;
-        this.invoiceArchiveService = invoiceArchiveService;
     }
 
     /**
@@ -168,19 +157,17 @@ public class InvoiceEndpoint {
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
         LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
-        byte[] contents = null;
 
         if (invoice.getInvoiceType() == InvoiceType.operator) {
-            contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
+            return new ResponseEntity<>(this.pdfGeneratorService.createPdfInvoiceOperator(invoice), this.generateHeader(), HttpStatus.OK);
         } else if (invoice.getInvoiceType() == InvoiceType.customer) {
-            contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
+            return new ResponseEntity<>(this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice), this.generateHeader(), HttpStatus.OK);
         } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
-            contents = this.pdfGeneratorService.createPdfCanceledInvoiceOperator(invoice);
-        } else {
-            return ResponseEntity.status(402).build();
+            return new ResponseEntity<>(this.pdfGeneratorService.createPdfCanceledInvoiceOperator(invoice), this.generateHeader(), HttpStatus.OK);
         }
+        return ResponseEntity.status(402).build();
 
-        return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
+
     }
 
 
