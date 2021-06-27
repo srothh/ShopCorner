@@ -63,9 +63,18 @@ export class BarChartComponent implements OnInit {
     const tempCu = [];
     const tempCa = [];
     const months = [];
-    for (let d = new Date(this.start); d.getMonth() <= this.end.getMonth() || d.getFullYear() < this.end.getFullYear();
-         d.setMonth(d.getMonth() + 1)) {
+    for (let d = new Date(this.start); (d.getMonth() <= this.end.getMonth() && d.getMonth() < 11)
+    || d.getFullYear() < this.end.getFullYear(); d.setMonth(d.getMonth() + 1)) {
+      console.log(d);
       const month = d.toISOString().split('T')[0];
+      months.push(month.substring(0,7));
+      tempOp.push(0);
+      tempCu.push(0);
+      tempCa.push(0);
+      this.chartLabels.push(month.substring(0,7));
+    }
+    if (this.end.getMonth() === 11) {
+      const month = this.end.toISOString().split('T')[0];
       months.push(month.substring(0,7));
       tempOp.push(0);
       tempCu.push(0);

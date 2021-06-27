@@ -10,7 +10,6 @@ import {Category} from '../../../dtos/category';
 import {ProductService} from '../../../services/product/product.service';
 import {CategoryService} from '../../../services/category.service';
 import {ProductsTopsellerChartComponent} from './products-topseller-chart/products-topseller-chart.component';
-import {ProductsTopMoneyChartComponent} from './products-top-money-chart/products-top-money-chart.component';
 
 @Component({
   selector: 'app-operator-statistics',
@@ -57,8 +56,8 @@ export class OperatorStatisticComponent implements OnInit {
   getMonth(month: string) {
     this.start =  new Date(month);
     this.end = new Date(this.start);
-    this.end.setMonth(this.end.getMonth()+1);
-    this.end.setDate(this.end.getDate()-1);
+    this.end.setMonth(this.end.getMonth() + 1);
+    this.end.setDate(this.end.getDate() - 1);
     this.startPicker = this.start.toISOString().split('T')[0];
     this.endPicker = this.end.toISOString().split('T')[0];
     this.loadInvoicesForTime();
