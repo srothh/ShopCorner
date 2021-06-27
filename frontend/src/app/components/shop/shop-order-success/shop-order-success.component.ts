@@ -38,6 +38,8 @@ export class ShopOrderSuccessComponent implements OnInit {
   alreadyOrdered: boolean;
   promotionId;
   promotion: Promotion;
+  error = false;
+  errorMessage = '';
 
   constructor(private paypalService: PaypalService,
               private activatedRoute: ActivatedRoute,
@@ -85,6 +87,9 @@ export class ShopOrderSuccessComponent implements OnInit {
   getPromotion() {
     this.promotionService.getPromotionByCode(this.promotionId).subscribe((promotion: Promotion) => {
       this.promotion = promotion;
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
