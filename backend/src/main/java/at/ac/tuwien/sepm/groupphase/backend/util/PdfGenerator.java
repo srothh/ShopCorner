@@ -12,7 +12,6 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.styledxmlparser.jsoup.Jsoup;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Document;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
-
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.stereotype.Component;
 
@@ -80,7 +79,7 @@ public class PdfGenerator {
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
             this.addInvoiceInformation(document, invoice);
             this.addOrderInformation(document, invoice);
-            this.addProductTable(document, invoice,0, 1);
+            this.addProductTable(document, invoice, 0, 1);
 
         } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
             document = Jsoup.parse(htmlCanceledOperator);
@@ -95,7 +94,6 @@ public class PdfGenerator {
         HtmlConverter.convertToPdf(document.html(), buffer, properties);
         return buffer.toByteArray();
     }
-
 
 
     private void addCustomerInformation(Document document, Customer customer) {
@@ -161,6 +159,9 @@ public class PdfGenerator {
             tableItemStringBuilder.append(String.format("<td class=\"center amount\"><span>%s</span></td>", String.format("%.2f €", totalPerProduct * calculationFactor)));
             tableItemStringBuilder.append("</tr>");
 
+        }
+        if (promotionDiscount > 0) {
+            total -= promotionDiscount;
         }
         tableItemStringBuilder.append("</table>");
         tableArticle.html(tableItemStringBuilder.toString());
