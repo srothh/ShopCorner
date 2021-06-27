@@ -83,12 +83,28 @@ export class LineChartComponent implements OnInit {
     this.tempCu = [];
     this.tempOp = [];
     const days = [];
+    let adjust = false;
+    let setOff = this.start.getTimezoneOffset();
+    let previousSetOff = this.start.getTimezoneOffset();
     for (let d = new Date(this.start); d<= this.end; d.setDate(d.getDate() + 1)) {
+      setOff = d.getTimezoneOffset();
+      if (previousSetOff > setOff) {
+        adjust = true;
+      } else if (previousSetOff < setOff) {
+        adjust = false;
+      }
       days.push(d.toISOString().split('T')[0]);
       this.temp.push(0);
       this.tempOp.push(0);
       this.tempCu.push(0);
-      this.chartLabels.push(d.toISOString().split('T')[0]);
+      if (adjust) {
+        const adjusted = new Date(d);
+        adjusted.setDate(d.getDate()+1);
+        this.chartLabels.push(adjusted.toISOString().split('T')[0]);
+      } else {
+        this.chartLabels.push(d.toISOString().split('T')[0]);
+      }
+      previousSetOff = d.getTimezoneOffset();
     }
     for (const invoice of this.invoices) {
       if (invoice.invoiceType !== InvoiceType.canceled) {

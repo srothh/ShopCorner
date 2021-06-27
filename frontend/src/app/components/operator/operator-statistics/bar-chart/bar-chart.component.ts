@@ -65,7 +65,6 @@ export class BarChartComponent implements OnInit {
     const months = [];
     for (let d = new Date(this.start); (d.getMonth() <= this.end.getMonth() && d.getMonth() < 11)
     || d.getFullYear() < this.end.getFullYear(); d.setMonth(d.getMonth() + 1)) {
-      console.log(d);
       const month = d.toISOString().split('T')[0];
       months.push(month.substring(0,7));
       tempOp.push(0);
