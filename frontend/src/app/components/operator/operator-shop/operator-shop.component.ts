@@ -11,6 +11,10 @@ import {ShopSettings} from '../../../dtos/shop-settings';
 export class OperatorShopComponent implements OnInit {
   settingsFormGroup: FormGroup;
 
+  error: boolean;
+  errorMessage: string;
+  successfulUpdate: boolean;
+
   constructor(private formBuilder: FormBuilder, private shopService: ShopService) { }
 
   ngOnInit(): void {
@@ -31,9 +35,7 @@ export class OperatorShopComponent implements OnInit {
   loadSettings() {
     this.shopService.loadSettings().subscribe((shopSettings) => {
       this.loadShopSettingsIntoForm(shopSettings);
-    }, error => {
-      console.log(error);
-    });
+    }, error => this.handleError(error));
   }
 
   updateSettings() {
@@ -43,10 +45,22 @@ export class OperatorShopComponent implements OnInit {
     const bannerBody = this.settingsFormGroup.controls['bannerText'].value;
     const shopSettings = new ShopSettings(title, logo, bannerTitle, bannerBody);
     this.shopService.updateSettings(shopSettings).subscribe(() => {
-      console.log('finito');
-    }, error => {
-      console.log(error);
-    });
+      this.successfulUpdate = true;
+    }, error => this.handleError(error));
+  }
+
+  vanishSuccess() {
+    this.successfulUpdate = false;
+  }
+
+  vanishError() {
+    this.error = false;
+    this.errorMessage = '';
+  }
+
+  private handleError(error) {
+    this.error = true;
+    this.errorMessage = error;
   }
 
   private loadShopSettingsIntoForm(shopSettings: ShopSettings) {
