@@ -7,6 +7,7 @@ import {Router} from '@angular/router';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {Cart} from '../../../dtos/cart';
 import {CartItem} from '../../../dtos/cartItem';
+import {ProductService} from '../../../services/product/product.service';
 
 @Component({
   selector: 'app-shop-cart',
@@ -132,7 +133,16 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   }
 
   routeToCheckout() {
-    this.router.navigate(['checkout']);
+    const mappedProducts = this.products.map(ProductService.productMapper);
+    mappedProducts.forEach((product) => {
+      if (product.hasExpiration && product.hasExpired){
+        this.error = true;
+        this.errorMessage = `Das Produkt "${product.name}" ist nicht verfügbar. Bitte setzen Sie ihren Einkauf ohne dieses Produkt fort.`;
+      }
+    });
+    if (!this.error) {
+      this.router.navigate(['checkout']);
+    }
   }
 
   routeBackToShop() {
