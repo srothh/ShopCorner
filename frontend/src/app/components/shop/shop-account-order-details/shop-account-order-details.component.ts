@@ -40,16 +40,14 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
     const id = +this.route.snapshot.paramMap.get('id');
 
     this.orderService.getOrderById(id)
-      .subscribe(order => this.order = order, error => {
-        this.error = true;
-        this.errorMessage = error;
-      }, ()=>{
+      .subscribe(order => this.order = order, _ => {
+          this.router.navigate(['404']);
+      }, () => {
           this.items = this.order.invoice.items;
           this.time = this.order.invoice.date.substring(11);
           this.day = this.order.invoice.date.substring(8,10);
           this.month = this.order.invoice.date.substring(5,7);
           this.year = this.order.invoice.date.substring(0,4);
-
     });
   }
 
