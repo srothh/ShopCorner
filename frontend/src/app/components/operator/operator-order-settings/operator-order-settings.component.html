@@ -5,6 +5,13 @@
   </button>
 </div>
 
+<div *ngIf="successfulUpdate" class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Erfolgreich! </strong> Stornierungszeitraum wurde erfolgreich geändert.
+  <button type="button" (click)="vanishSuccess()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
 <div class="pt-5 container mx-auto">
   <div class="row">
     <div class="col-md-6 mx-auto">
