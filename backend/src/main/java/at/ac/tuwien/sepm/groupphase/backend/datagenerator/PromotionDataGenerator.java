@@ -42,12 +42,14 @@ public class PromotionDataGenerator {
             for (int i = 0; i < 300; i++) {
                 String code = faker.lorem().word() + faker.lorem().word();
                 if (contains.add(code)) {
+                    double sale = faker.number().randomDouble(2, 6, 50);
+                    double min = faker.number().randomDouble(2, (int) sale + 1, 60);
                     promotionRepository.save(
-                        new Promotion(faker.lorem().word(), faker.number().randomDouble(2, 1, 1000), LocalDateTime.now().withNano(0), LocalDateTime
+                        new Promotion(faker.lorem().word(), sale, LocalDateTime.now().withNano(0), LocalDateTime
                             .of(faker.number().numberBetween(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.YEAR) + faker.number().numberBetween(1, 5)), faker.number().numberBetween(1, 12),
                                 faker.number().numberBetween(1, 30),
                                 faker.number().numberBetween(1, 23), faker.number().numberBetween(1, 59), faker.number().numberBetween(0, 59)), code,
-                            faker.number().randomDouble(2, 5, 150)));
+                            min));
                 }
 
             }

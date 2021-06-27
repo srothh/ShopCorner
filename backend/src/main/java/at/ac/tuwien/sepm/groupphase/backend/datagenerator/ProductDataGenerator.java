@@ -131,7 +131,7 @@ public class ProductDataGenerator {
             Product prod = Product.ProductBuilder.getProductBuilder()
                 .withName(faker.space().nasaSpaceCraft())
                 .withDescription(faker.lorem().sentence(2))
-                .withPrice(faker.number().randomDouble(2, 1, 200))
+                .withPrice(faker.number().randomDouble(2, 1, 100))
                 .withTaxRate(taxRate)
                 .withCategory(category1)
                 .withExpiresAt(futureLocalDateTime).withSaleCount(0L)
@@ -141,7 +141,7 @@ public class ProductDataGenerator {
             Product prod1 = Product.ProductBuilder.getProductBuilder()
                 .withName(faker.food().ingredient())
                 .withDescription(faker.lorem().sentence(2))
-                .withPrice(faker.number().randomDouble(2, 1, 200))
+                .withPrice(faker.number().randomDouble(2, 1, 100))
                 .withTaxRate(taxRate)
                 .withCategory(category2)
                 .withExpiresAt(pastLocalDateTime).withSaleCount(0L)
@@ -151,7 +151,7 @@ public class ProductDataGenerator {
             Product prod2 = Product.ProductBuilder.getProductBuilder()
                 .withName(faker.food().spice())
                 .withDescription(faker.lorem().sentence(2))
-                .withPrice(faker.number().randomDouble(2, 1, 200))
+                .withPrice(faker.number().randomDouble(2, 1, 100))
                 .withTaxRate(taxRate)
                 .withCategory(category3).withSaleCount(0L)
                 .build();
@@ -160,7 +160,7 @@ public class ProductDataGenerator {
             Product prod3 = Product.ProductBuilder.getProductBuilder()
                 .withName(faker.food().vegetable())
                 .withDescription(faker.lorem().sentence(2))
-                .withPrice(faker.number().randomDouble(2, 1, 200))
+                .withPrice(faker.number().randomDouble(2, 1, 100))
                 .withTaxRate(taxRate)
                 .withCategory(category4).withSaleCount(0L)
                 .build();
@@ -174,7 +174,7 @@ public class ProductDataGenerator {
             LOGGER.debug("invoices already generated");
         } else {
             List<Product> products = productRepository.findAll();
-            for (int i = 1; i <= 500; i++) {
+            for (int i = 1; i <= 700; i++) {
                 int rand = (int) (Math.random() * 10) + 1;
                 List<InvoiceItem> items = new ArrayList<>();
                 int[] used = new int[rand];
@@ -216,7 +216,7 @@ public class ProductDataGenerator {
                 }
             }
             List<Customer> customers = customerRepository.findAll();
-            for (int i = 1; i <= 800; i++) {
+            for (int i = 1; i <= 1000; i++) {
                 int rand = (int) (Math.random() * 10) + 1;
                 List<InvoiceItem> items = new ArrayList<>();
                 int[] used = new int[rand];
