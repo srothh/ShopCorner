@@ -22,7 +22,7 @@ public interface OrderService {
      * @return the order that has just been saved.
      * @throws RuntimeException upon encountering errors with the database
      */
-    Order placeNewOrder(Order order, String session);
+    Order placeNewOrder(Order order, String session) throws IOException;
 
     /**
      * Retrieves a PaginationDto containing a Page of orders from the database.

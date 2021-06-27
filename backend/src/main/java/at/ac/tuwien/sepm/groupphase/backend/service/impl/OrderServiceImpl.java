@@ -71,14 +71,14 @@ public class OrderServiceImpl implements OrderService {
         @CacheEvict(value = "orderPages", allEntries = true),
         @CacheEvict(value = "counts", key = "'orders'")
     })
-    public Order placeNewOrder(Order order, String session) {
+    public Order placeNewOrder(Order order, String session) throws IOException {
         LOGGER.trace("placeNewOrder({},{})", order, session);
         if (session.equals("default") || !this.cartService.validateSession(UUID.fromString(session))) {
             throw new ServiceException("invalid sessionId");
         }
         order.setInvoice(this.invoiceService.createInvoice(order.getInvoice()));
         order.getInvoice().setOrderNumber(Long.toHexString(order.getInvoice().getId()));
-        mailService.sendMail(order);
+        mailService.sendMail(order, getCancellationPeriod());
         updateProductsInOrder(order);
         return orderRepository.save(order);
     }
@@ -100,7 +100,6 @@ public class OrderServiceImpl implements OrderService {
         } else if (pageCount > 50) {
             pageCount = 50;
         }
-
         Pageable returnPage = PageRequest.of(page, pageCount, Sort.by(Sort.Direction.DESC, "invoice.date"));
         return orderRepository.findAll(returnPage);
     }
