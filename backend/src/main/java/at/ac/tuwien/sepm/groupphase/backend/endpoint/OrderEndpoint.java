@@ -19,9 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.security.Principal;
 
 @RestController
 @RequestMapping(OrderEndpoint.BASE_URL)
@@ -88,6 +91,26 @@ public class OrderEndpoint {
         LOGGER.info("GET api/v1/orders?page={}&page_count={}", page, pageCount);
         Page<Order> orderPage = orderService.getAllOrders(page, pageCount);
         return new PaginationDto<>(orderMapper.orderListToOrderDtoList(orderPage.getContent()), page, pageCount, orderPage.getTotalPages(), orderPage.getTotalElements());
+    }
+
+    /**
+     * Get specified order by id.
+     *
+     * @param id of the order to be retrieved
+     * @return the specified order
+     */
+    @Secured({"ROLE_CUSTOMER"})
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Retrieve order", security = @SecurityRequirement(name = "apiKey"))
+    public OrderDto getOrderById(@PathVariable Long id, Principal principal) {
+        LOGGER.info("GET " + BASE_URL + "/{}", id);
+        Order order = this.orderService.findOrderById(id);
+        if (order.getCustomer().getLoginName().equals(principal.getName())) {
+            return this.orderMapper.orderToOrderDto(order);
+        }
+
+        throw new AccessDeniedException("Illegal access");
     }
 
     /**

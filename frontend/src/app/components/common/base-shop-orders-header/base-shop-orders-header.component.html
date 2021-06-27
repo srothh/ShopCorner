@@ -19,6 +19,11 @@
     <div class="order-cancel" *ngIf="!isCanceled&&isCancelable">
       <button class="btn btn-dark" (click)="attemptToCancelInvoiceModal()">Stornieren</button>
     </div>
+
+    <div class="order-detail">
+    <a routerLink="/account/orders/{{order.id}}"> <button class="btn btn-dark"> Zur Detailansicht </button> </a>
+    </div>
+
   </div>
 </div>
 

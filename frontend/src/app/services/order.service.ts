@@ -5,8 +5,8 @@ import {Observable} from 'rxjs';
 import {Order} from '../dtos/order';
 import {CancellationPeriod} from '../dtos/cancellationPeriod';
 import {OperatorAuthService} from './auth/operator-auth.service';
-import {Pagination} from '../dtos/pagination';
 import {CustomerAuthService} from './auth/customer-auth.service';
+import {Pagination} from '../dtos/pagination';
 import {Invoice} from '../dtos/invoice';
 
 @Injectable({
@@ -19,6 +19,18 @@ export class OrderService {
   constructor(private httpClient: HttpClient, private globals: Globals,
               private operatorAuthService: OperatorAuthService,
               private customerAuthService: CustomerAuthService) {
+  }
+
+  /**
+   * Gets the order specified by the id
+   *
+   * @param id the id of the order to be retrieved from the database
+   * @return An observable with the requested order
+   */
+  getOrderById(id: number) {
+    return this.httpClient.get<Order>(this.orderBaseURI + '/' + id, {
+      headers: this.getHeadersForCustomer()
+    });
   }
 
   /** Places a new order

@@ -37,6 +37,8 @@ import {OperatorCategoryDetailsComponent} from './components/operator/operator-c
 import {ShopOrderSuccessComponent} from './components/shop/shop-order-success/shop-order-success.component';
 import {OrderSuccessGuard} from './guards/order-success.guard';
 import {OperatorOrderSettingsComponent} from './components/operator/operator-order-settings/operator-order-settings.component';
+import {ShopAccountOrderDetailsComponent} from './components/shop/shop-account-order-details/shop-account-order-details.component';
+import {ShopNotFoundComponent} from './components/shop/shop-not-found/shop-not-found.component';
 
 const routes: Routes = [
   {
@@ -49,12 +51,13 @@ const routes: Routes = [
       {path: 'account', canActivate: [CustomerAuthGuard], component: ShopAccountComponent},
       {path: 'account/profile', canActivate: [CustomerAuthGuard], component: ShopAccountProfileComponent},
       {path: 'account/orders', canActivate: [CustomerAuthGuard], component: ShopAccountOrdersComponent},
+      {path: 'account/orders/:id', canActivate: [CustomerAuthGuard], component: ShopAccountOrderDetailsComponent},
       {path: 'cart', component: ShopCartComponent},
       {path: 'register', component: ShopRegistrationComponent},
       {path: 'order-success', canActivate: [OrderSuccessGuard], component: ShopOrderSuccessComponent},
       {path: 'register', component: ShopRegistrationComponent},
-      {path: 'checkout', canActivate: [CustomerAuthGuard], component: ShopCheckoutComponent}
-    ]
+      {path: 'checkout', canActivate: [CustomerAuthGuard], component: ShopCheckoutComponent},
+    ],
   },
   {
     path: 'operator', canActivate: [OperatorAuthGuard], component: OperatorComponent, children: [
@@ -78,7 +81,9 @@ const routes: Routes = [
       {path: 'account/edit', component: OperatorEditAccountComponent},
     ],
   },
-  {path: 'operator/login', canActivate: [PreventOperatorLoginGuard], component: OperatorLoginComponent}
+  {path: 'operator/login', canActivate: [PreventOperatorLoginGuard], component: OperatorLoginComponent},
+  {path: '404', component: ShopNotFoundComponent},
+  {path: '**', redirectTo: '/404'},
 ];
 
 @NgModule({

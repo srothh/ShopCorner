@@ -1,0 +1,57 @@
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Bestelldetails konnten nicht geladen werden!</strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+  <div class="container mt-5">
+
+    <h2>Bestelldetails</h2>
+    <h5>bestellt am {{ this.day}}.{{this.month}}.{{this.year}}, {{this.time}} Uhr | Bestellung #{{this.order.id}}</h5>
+      <div class="mb-3">
+        <div class="card mb-4">
+          <div class="address-info d-flex flex-column ml-4 mt-4">
+          <div class="font-weight-bold">Lieferadresse:</div>
+          <div>{{this.order.customer.name}}</div>
+          <div> Straße: {{this.order.customer.address.street}} {{this.order.customer.address.houseNumber}}</div>
+          <div> PLZ: {{this.order.customer.address.postalCode}}</div>
+          <div> Tür: {{this.order.customer.address.doorNumber}}</div>
+          <div> Stiege: {{this.order.customer.address.stairNumber}}
+          <a routerLink="/account/profile"> <button class="btn btn-dark float-right mb-4 mr-4"> Für zukünftige Bestellungen ändern </button> </a>
+          </div>
+        </div>
+        </div>
+      </div>
+
+    <div>
+        <div class="card mb-3 rounded-lg shadow-sm" *ngFor="let item of this.items">
+          <div class="product-info d-flex flex-column mt-4 ml-4 mb-4">
+            <img *ngIf="item.product.picture !== null" src="{{getImageSource(item.product)}}" width="100"
+                 height="100">
+            <object *ngIf="item.product.picture == null" data="assets/no_image_available.svg" width="100"
+                    height="100"></object>
+            <div
+              class="order-product-name font-weight-bold">{{ item.numberOfItems + ' x ' + item.product.name}} </div>
+            <div class="order-product-description">{{item.product.description}}</div>
+            <div
+              class="order-product-price">{{(item.product.price * item.product.taxRate.calculationFactor).toFixed(2) + ' EUR'}} </div>
+          </div>
+
+          <p class="buy-product-again">
+            <button class="btn btn-dark float-right mr-4" (click)="addToCart(item.product)"> Erneut kaufen? </button>
+          </p>
+
+        </div>
+      </div>
+
+
+    <h5 class="order-amount font-weight-bold">
+      Gesamtpreis (inkl. MwSt.):
+    </h5>
+    <h5>{{ order.invoice.amount}} EUR
+    <button class="btn btn-dark float-right mr-4"> Stornieren </button>
+    <button class="btn btn-dark float-right mr-4" (click)="downloadInvoice(order.invoice.id, order.invoice.date)"> Rechnungsdownload </button></h5>
+  </div>
+
+
