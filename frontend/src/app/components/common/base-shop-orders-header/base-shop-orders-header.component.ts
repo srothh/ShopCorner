@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Order} from '../../../dtos/order';
-import {InvoiceService} from '../../../services/invoice.service';
 import {MeService} from '../../../services/me.service';
 import {OrderService} from '../../../services/order.service';
 import {NgdbModalActionComponent} from '../ngbd-modal-action/ngdb-modal-action.component';
@@ -17,14 +16,17 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
   error: boolean;
   errorMessage: boolean;
   isCanceled = false;
+  isCancelable = false;
   constructor(private meService: MeService,
               private orderService: OrderService,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal) {
+  }
 
   ngOnInit(): void {
     this.isCanceled = this.order.invoice.invoiceType === 'canceled';
     this.cancellationPeriod();
   }
+
   downloadInvoice(event: Event, invoiceId: number, invoiceDate: string) {
     event.preventDefault();
     this.meService.getInvoiceAsPdfByIdForCustomer(invoiceId).subscribe((data) => {
@@ -52,6 +54,7 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
 
   canceledOrder() {
     this.orderService.setOrderCanceled(this.order).subscribe((item) => {
+      this.isCanceled = true;
     }, (error) => {
       this.error = true;
       this.errorMessage = error.error;
@@ -59,14 +62,16 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
   }
 
   cancellationPeriod() {
-    let days;
     this.orderService.getCancellationPeriod().subscribe((item) => {
-      days = item.days;
-    });
-    const date = this.order.invoice.date;
-    const temp = new Date(date);
-    temp.setDate(temp.getDate() - days);
-    console.log(new Date(new Date().getTime() - (days * 24 * 60 * 60 )));
+        const date = this.order.invoice.date;
+        const invoiceDate = new Date(date);
+        const today = new Date();
+        invoiceDate.setDate(invoiceDate.getDate() + item.days);
+        this.isCancelable = invoiceDate > today;
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error.error;
+      });
 
   }
 }

@@ -11,6 +11,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
+import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
@@ -37,8 +38,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
 
 @RestController
 @RequestMapping(OrderEndpoint.BASE_URL)
@@ -48,13 +47,15 @@ public class OrderEndpoint {
     private final OrderMapper orderMapper;
     private final OrderService orderService;
     private final CancellationPeriodMapper cancellationPeriodMapper;
+    private final PdfGeneratorService pdfGeneratorService;
 
 
     @Autowired
-    public OrderEndpoint(OrderMapper orderMapper, OrderService orderService, CancellationPeriodMapper cancellationPeriodMapper) {
+    public OrderEndpoint(OrderMapper orderMapper, OrderService orderService, CancellationPeriodMapper cancellationPeriodMapper, PdfGeneratorService pdfGeneratorService) {
         this.orderMapper = orderMapper;
         this.orderService = orderService;
         this.cancellationPeriodMapper = cancellationPeriodMapper;
+        this.pdfGeneratorService = pdfGeneratorService;
     }
 
     /**
@@ -140,7 +141,9 @@ public class OrderEndpoint {
         if (duration.toDays() > days) {
             throw new ServiceException("Stornofrist ist vorbei");
         }
-        return orderMapper.orderToOrderDto(this.orderService.setInvoiceCanceled(order));
+        Order canceledOrder = this.orderService.setInvoiceCanceled(order);
+        this.pdfGeneratorService.setPdfOrderCanceled(canceledOrder);
+        return orderMapper.orderToOrderDto(canceledOrder);
     }
 
 

@@ -16,7 +16,7 @@
       <p class="font-weight-bolder" *ngIf="!isCanceled">Rechnung: </p>
       <a href="#" class="link-primary" (click)="downloadInvoice($event, order.invoice.id, order.invoice.date)">PDF download</a>
     </div>
-    <div class="order-cancel" *ngIf="!isCanceled">
+    <div class="order-cancel" *ngIf="!isCanceled&&isCancelable">
       <button class="btn btn-dark" (click)="attemptToCancelInvoiceModal()">Stornieren</button>
     </div>
   </div>
