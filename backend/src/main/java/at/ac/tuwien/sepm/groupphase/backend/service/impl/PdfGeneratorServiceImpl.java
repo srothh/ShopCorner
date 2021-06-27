@@ -58,6 +58,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     @Override
     public byte[] createPdfInvoiceCustomer(Order order) {
         LOGGER.trace("createPdfInvoiceCustomer({})", order);
+        System.out.println(order.getInvoice().getOrderNumber());
         if (this.invoiceArchiveService.invoiceExistsByInvoiceNumber(order.getInvoice().getInvoiceNumber())) {
             return this.invoiceArchiveService.createInvoiceArchive(order.getInvoice().getInvoiceNumber(), pdfGenerator.generatePdf(order.getInvoice(), order));
         }
