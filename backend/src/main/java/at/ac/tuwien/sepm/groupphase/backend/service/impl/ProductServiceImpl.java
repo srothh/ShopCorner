@@ -146,7 +146,7 @@ public class ProductServiceImpl implements ProductService {
         LOGGER.trace("updateProduct({})", product);
         validator.validateProduct(product);
         Product updateProduct = this.productRepository
-            .findById(productId).orElseThrow(() -> new NotFoundException("Could not find product with Id:" + productId));
+            .findById(productId).orElseThrow(() -> new NotFoundException("Produkt mit id " + productId + " konnte nicht gefunden werden"));
         updateProduct.setName(product.getName());
         updateProduct.setDescription(product.getDescription());
         updateProduct.setPrice(product.getPrice());
@@ -163,7 +163,7 @@ public class ProductServiceImpl implements ProductService {
     public Product findById(Long productId) {
         LOGGER.trace("findById{}", productId);
         return productRepository.findById(productId)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
+            .orElseThrow(() -> new NotFoundException(String.format("Produkt mit id %d konnte nicht gefunden werden", productId)));
     }
 
     @Cacheable(value = "counts", key = "'products'")
@@ -183,7 +183,7 @@ public class ProductServiceImpl implements ProductService {
         LOGGER.trace("deleteProductById{}", productId);
         boolean softDelete = false;
         Product productToDelete = productRepository.findById(productId)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
+            .orElseThrow(() -> new NotFoundException(String.format("Produkt mit id %d konnte nicht gefunden werden", productId)));
         softDelete = this.invoiceItemService.findAllInvoicesItems().stream()
             .map(InvoiceItem::getProduct)
             .anyMatch(product -> product.getId().equals(productId));

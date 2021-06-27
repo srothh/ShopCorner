@@ -100,14 +100,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice findOneById(Long id) {
         LOGGER.trace("findOneById({})", id);
-        return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
+        return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Rechnung mit id %d konnte nicht gefunden werden", id)));
     }
 
     @Override
     public Invoice getByIdAndCustomerId(Long id, Long customerId) {
         LOGGER.trace("getByIdAndCustomerId({}, {})", id, customerId);
         return this.invoiceRepository.findByIdAndCustomerId(id, customerId)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
+            .orElseThrow(() -> new NotFoundException(String.format("Rechnung mit id %d konnte nicht gefunden werden", id)));
     }
 
     @Caching(evict = {

@@ -159,7 +159,7 @@ public class MeEndpoint {
             return customerMapper.customerToCustomerDto(customerService.update(customer));
         }
 
-        throw new AccessDeniedException("Illegal Access");
+        throw new AccessDeniedException("Unberechtigter Zugriff");
 
     }
 

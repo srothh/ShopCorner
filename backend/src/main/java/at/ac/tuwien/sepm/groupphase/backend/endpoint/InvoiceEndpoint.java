@@ -146,7 +146,7 @@ public class InvoiceEndpoint {
     public DetailedInvoiceDto resetInvoiceCanceled(@Valid @RequestBody DetailedInvoiceDto invoiceDto, @PathVariable("id") Long invoiceId) {
         LOGGER.info("PATCH /api/v1/invoices/{}: {}", invoiceId, invoiceDto);
         if (!invoiceDto.getId().equals(invoiceId)) {
-            throw new ServiceException("Bad Request, invoiceId is not valid");
+            throw new ServiceException("InvoiceId ungültig");
         }
         Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(this.invoiceService.findOneById(invoiceId));
         return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice);

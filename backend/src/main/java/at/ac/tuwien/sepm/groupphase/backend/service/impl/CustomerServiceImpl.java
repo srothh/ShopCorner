@@ -66,7 +66,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (customer != null) {
             return customer;
         }
-        throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
+        throw new NotFoundException(String.format("Kunde mit Username %s konnte nicht gefunden werden", loginName));
     }
 
     @Caching(evict = {
@@ -105,7 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
         LOGGER.trace("update({})", customer);
         validator.validateUpdatedCustomer(customer, customerRepository);
         Customer c = customerRepository.findById(customer.getId())
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", customer.getId())));
+            .orElseThrow(() -> new NotFoundException(String.format("Kunde mit id %d konnte nicht gefunden werden", customer.getId())));
 
         if (!customer.getAddress().equals(c.getAddress())) {
             Address address = addressService.addNewAddress(customer.getAddress());
@@ -124,13 +124,13 @@ public class CustomerServiceImpl implements CustomerService {
     public void updatePassword(Long id, String oldPassword, String newPassword) {
         LOGGER.trace("updatePassword({})", id);
         Customer customer = customerRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", id)));
+            .orElseThrow(() -> new NotFoundException(String.format("Kunde mit id %d konnte nicht gefunden werden", id)));
 
         if (passwordEncoder.matches(oldPassword, customer.getPassword())) {
             customer.setPassword(passwordEncoder.encode(newPassword));
             customerRepository.save(customer);
         } else {
-            throw new ValidationException("Password could not be updated");
+            throw new ValidationException("Passwort konnte nicht upgedated werden");
         }
     }
 
@@ -172,7 +172,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer findCustomerById(Long id) {
         LOGGER.trace("findAll()");
-        return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find Customer"));
+        return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Kunde konnte nicht gefunden werden"));
     }
 
     @Override

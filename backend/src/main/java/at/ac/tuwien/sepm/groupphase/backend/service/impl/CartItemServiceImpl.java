@@ -44,7 +44,7 @@ public class CartItemServiceImpl implements CartItemService {
     public Set<CartItem> updateCartItem(Cart cart, CartItem cartItem) {
         LOGGER.trace("updateCartItem({},{})", cart, cartItem);
         Set<CartItem> cartItems = cart.getItems();
-        CartItem oldCartItem = this.cartItemRepository.findById(cartItem.getId()).orElseThrow(() -> new NotFoundException("Could not find cart item to delete"));
+        CartItem oldCartItem = this.cartItemRepository.findById(cartItem.getId()).orElseThrow(() -> new NotFoundException("Der zu löschende Artikel konnte nicht gefunden werden"));
         cartItems.remove(oldCartItem);
         oldCartItem.setQuantity(cartItem.getQuantity());
         cartItems.add(oldCartItem);
