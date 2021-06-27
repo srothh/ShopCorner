@@ -6,6 +6,9 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * A service class handling Invoices.
  */
@@ -17,6 +20,7 @@ public interface InvoiceService {
      * @param id the id of the invoice entry
      * @return the invoice entry
      * @throws NotFoundException when no invoice with the id is found
+     * @throws RuntimeException  upon encountering errors with the database
      */
     Invoice findOneById(Long id);
 
@@ -76,11 +80,21 @@ public interface InvoiceService {
     /**
      * Returns page with all needed Invoices.
      *
-     * @param page        which should be returned
+     * @param page which should be returned
      * @param invoiceType of invoices which should be returned
-     * @param pageCount   amount of invoices per page
+     * @param pageCount amount of invoices per page
      * @return Page with all Invoices with right permission
      */
     Page<Invoice> findAll(int page, int pageCount, InvoiceType invoiceType);
+
+    /**
+     * Returns all Invoices in specified time period.
+     *
+     * @param start of time period
+     * @param end of time period
+     * @return List of Invoices in time period
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    List<Invoice> findByDate(LocalDateTime start, LocalDateTime end);
 
 }

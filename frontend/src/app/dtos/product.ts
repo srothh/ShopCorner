@@ -15,6 +15,7 @@ export class Product {
     public picture: string | ArrayBuffer,
     public expiresAt: Date,
     public deleted: boolean,
+    public saleCount,
   ) {
   }
 

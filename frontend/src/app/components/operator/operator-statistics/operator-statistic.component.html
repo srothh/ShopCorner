@@ -1,3 +1,75 @@
-<div>
-  Implement statistics management here
+<br>
+<h2>Statistiken</h2>
+
+<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error! </strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
+
+<div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
+  <label class="btn btn-light active ">
+    <input type="radio" name="buttons" id="option1" (click)="showProducts = false" checked>
+    Umsatz
+  </label>
+  <label class="btn btn-light">
+    <input type="radio" name="buttons" id="option2" (click)=viewProducts()>
+    Produkte
+  </label>
+</div>
+<hr/>
+<div *ngIf="!showProducts; else product_stats">
+  <div class="row">
+    <div style="margin-left: 20px">
+      <label for="start">Von:</label>
+    </div>
+    <div class="col-2">
+      <input type="date" id="start" [(ngModel)]="startPicker" maxlength="10" placeholder="{{start}}"
+             name="start">
+    </div>
+    <div style="margin-left: 10px">
+      <label for="end">Bis:</label>
+    </div>
+    <div class="col-2">
+      <input type="date" id="end" [(ngModel)]="endPicker" maxlength="10" placeholder="{{end}}" name="end">
+    </div>
+    <div class="col-1">
+      <button class="btn btn-primary btn-sm" (click)="update()">Suchen</button>
+    </div>
+  </div>
+  <br>
+  <div class="card">
+    <div class="stat">
+      <app-line-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end"></app-line-chart>
+    </div>
+    <hr/>
+    <div class="stat">
+      <app-bar-chart *ngIf="loaded" [invoices]="invoices" [start]="start" [end]="end"
+                     (clickEvent)="getMonth($event)"></app-bar-chart>
+    </div>
+    <hr/>
+    <div class="stat">
+      <app-pie-chart *ngIf="loaded" [invoices]="invoices"></app-pie-chart>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #product_stats>
+  <label for="categoryFilter">
+    Filtern nach Kategorien</label>
+  <select class="custom-select" name="category-names" id="categoryFilter"
+          [(ngModel)]="selected"
+          (change)="changeCategory()">
+    <option selected value="-1">Alle</option>
+    <option *ngFor="let category of this.categories" [value]="category.id">{{category.name}}</option>
+  </select>
+  <br>
+  <br>
+  <div class="card">
+    <div class="stat">
+      <app-products-topseller-chart *ngIf="loaded" [products]="products"></app-products-topseller-chart>
+    </div>
+  </div>
+</ng-template>
