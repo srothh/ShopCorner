@@ -72,7 +72,7 @@ public class ProductDataGenerator {
 
     @PostConstruct
     public void generateProducts() {
-        if (productRepository.findAll().size() > 0) {
+        if (productRepository.count() > 0) {
             LOGGER.debug("products already generated");
         } else {
             for (Map.Entry<Double, Double> entry : TAX_RATES.entrySet()) {
@@ -170,7 +170,7 @@ public class ProductDataGenerator {
     }
 
     public void generateInvoices() {
-        if (invoiceRepository.findAll().size() > 0) {
+        if (invoiceRepository.count() > 0) {
             LOGGER.debug("invoices already generated");
         } else {
             List<Product> products = productRepository.findAll();

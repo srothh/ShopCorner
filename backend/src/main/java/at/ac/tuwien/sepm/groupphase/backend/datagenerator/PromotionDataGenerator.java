@@ -33,7 +33,7 @@ public class PromotionDataGenerator {
     @Transactional
     @PostConstruct
     public void generatePromotions() {
-        if (promotionRepository.findAll().size() > 0) {
+        if (promotionRepository.count() > 0) {
             LOGGER.debug("Promotions already generated");
         } else {
             LOGGER.info(new Timestamp(System.currentTimeMillis()).toString());
