@@ -35,6 +35,16 @@ public interface OrderService {
     Page<Order> getAllOrders(int page, int pageCount);
 
     /**
+     * Returns the specified order from the database.
+     *
+     * @param id the id of the order to be retrieved
+     * @return the specified order
+     * @throws NotFoundException is thrown if the specified order does not exists
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    Order findOrderById(Long id);
+
+    /**
      * Retrieves a PaginationDto containing a Page of orders from a specific customer from the database.
      *
      * @param page The number of the page to retrieve
