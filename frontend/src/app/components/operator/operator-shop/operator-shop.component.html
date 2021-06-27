@@ -1,3 +1,112 @@
-<div>
-  Implement shop/layout management here
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Error! </strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div *ngIf="successfulUpdate" class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Erfolgreich! </strong> Shop Einstellungen wurden erfolgreich gespeichert.
+  <button type="button" (click)="vanishSuccess()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="container mb-5">
+  <div>
+    <div class="d-flex justify-content-between mt-3">
+      <h2>Shop Einstellungen</h2>
+      <button class="btn btn-primary" (click)="updateSettings()">Speichern</button>
+    </div>
+    <hr>
+  </div>
+  <div class="d-flex flex-column mt-4" style="gap: 50px">
+    <div>
+      <h4>Allgemein</h4>
+      <div class="my-3">
+        <form>
+          <div class="form-group w-75" [formGroup]="settingsFormGroup">
+            <label for="title" class="form-label">Shop Titel</label>
+            <input type="text" class="form-control" id="title" formControlName="title">
+          </div>
+        </form>
+        <form>
+          <div class="form-group w-75">
+            <label for="logo" class="form-label">Shop Logo</label>
+            <input type="file" class="form-control-file" accept="image/png, image/jpeg" id="logo" alt=""
+                   (change)="selectFile($event)">
+          </div>
+          <img [src]="settingsFormGroup.value.logo" width="150" height="150" alt="">
+        </form>
+      </div>
+    </div>
+
+    <div>
+      <h4>Banner</h4>
+      <div class="my-3">
+        <form>
+          <div class="form-group w-75" [formGroup]="settingsFormGroup">
+            <label for="banner-title" class="form-label">Banner Titel</label>
+            <input type="text" class="form-control" id="banner-title" formControlName="bannerTitle">
+          </div>
+        </form>
+        <form>
+          <div class="form-group w-75" [formGroup]="settingsFormGroup">
+            <label for="banner-body" class="form-label">Banner Text</label>
+            <textarea type="text" class="form-control" id="banner-body" formControlName="bannerText"></textarea>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div>
+      <h4>Unternehmensdaten</h4>
+      <div class="my-3">
+        <form>
+          <div class="row w-75">
+            <div class="col" [formGroup]="settingsFormGroup">
+              <label for="street" class="form-label">Strasse</label>
+              <input type="text" placeholder="Strasse" class="form-control" id="street" formControlName="street">
+            </div>
+            <div class="col" [formGroup]="settingsFormGroup">
+              <label for="houseNumber" class="form-label">Hausnummer</label>
+              <input type="text" placeholder="Hausnummer" class="form-control" id="houseNumber" formControlName="houseNumber">
+            </div>
+          </div>
+          <div class="row w-75 mt-4">
+            <div class="col" [formGroup]="settingsFormGroup">
+              <label for="stairNumber" class="form-label">Stiege <small class="text-muted">(Optional)</small>
+              </label>
+              <input type="number" placeholder="Stiege" class="form-control" id="stairNumber" formControlName="stairNumber">
+            </div>
+            <div class="col" [formGroup]="settingsFormGroup">
+              <label for="doorNumber" class="form-label">Tür <small class="text-muted">(Optional)</small></label>
+              <input type="text" placeholder="Tür" class="form-control" id="doorNumber" formControlName="doorNumber">
+            </div>
+          </div>
+          <div class="row w-75 mt-4">
+            <div class="col" [formGroup]="settingsFormGroup">
+              <label for="postalCode" class="form-label">Postleitzahl</label>
+              <input type="number" placeholder="Postleitzahl" class="form-control" id="postalCode" formControlName="postalCode">
+            </div>
+            <div class="col" [formGroup]="settingsFormGroup">
+              <label for="city" class="form-label">Stadt</label>
+              <input type="text" placeholder="Stadt" class="form-control" id="city" formControlName="city">
+            </div>
+          </div>
+          <div class="row w-75 mt-4">
+            <div class="col" [formGroup]="settingsFormGroup">
+              <label for="phoneNumber" class="form-label">Telefon</label>
+              <input type="text" placeholder="Telefon" class="form-control" id="phoneNumber" formControlName="phoneNumber">
+            </div>
+            <div class="col" [formGroup]="settingsFormGroup">
+              <label for="email" class="form-label">E-Mail</label>
+              <input type="email" placeholder="E-Mail" class="form-control" id="email" formControlName="email">
+            </div>
+          </div>
+        </form>
+        <form>
+        </form>
+      </div>
+    </div>
+
+  </div>
 </div>
