@@ -1,3 +1,6 @@
+### Settings-Files ###
+*.settings
+
 ### PDF-Files ###
 *.pdf
 
