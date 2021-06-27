@@ -76,6 +76,7 @@ public class InvoiceArchiveRepositoryTest implements TestData {
 
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
+        taxRate.setPercentage((TEST_TAX_RATE_PERCENTAGE/100) + 1);
 
         // product
         product.setId(0L);
@@ -102,7 +103,7 @@ public class InvoiceArchiveRepositoryTest implements TestData {
         newInvoice.setAmount(TEST_INVOICE_AMOUNT);
         newInvoice.setInvoiceType(InvoiceType.operator);
         String invoiceNumber = newInvoice.getInvoiceNumber();
-        byte[] pdf = pdfGeneratorService.createPdfInvoiceOperator(invoiceService.createInvoice(newInvoice));
+        byte[] pdf = pdfGeneratorService.createPdfInvoiceOperator(newInvoice);
         invoiceArchive.setInvoiceNumber(invoiceNumber);
         invoiceArchive.setInvoiceAsPdf(pdf);
     }

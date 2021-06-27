@@ -31,7 +31,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-/*
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
@@ -83,6 +83,7 @@ public class InvoiceArchiveServiceTest implements TestData {
 
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
+        taxRate.setCalculationFactor((TEST_TAX_RATE_PERCENTAGE/100)+1);
 
         // product
         product.setId(0L);
@@ -109,7 +110,7 @@ public class InvoiceArchiveServiceTest implements TestData {
         newInvoice.setAmount(TEST_INVOICE_AMOUNT);
         newInvoice.setInvoiceType(InvoiceType.operator);
         this.invoiceNumber = newInvoice.getInvoiceNumber();
-        this.pdf = pdfGeneratorService.createPdfInvoiceOperator(invoiceService.createInvoice(newInvoice));
+        this.pdf = pdfGeneratorService.createPdfInvoiceOperator(newInvoice);
     }
 
     @Test
@@ -137,4 +138,3 @@ public class InvoiceArchiveServiceTest implements TestData {
         assertTrue(exists);
     }
 }
-*/

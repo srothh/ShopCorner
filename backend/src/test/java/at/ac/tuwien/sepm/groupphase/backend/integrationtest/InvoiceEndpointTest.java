@@ -115,7 +115,7 @@ public class InvoiceEndpointTest implements TestData {
 
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
-        taxRate.setCalculationFactor(TEST_TAX_RATE_PERCENTAGE/100);
+        taxRate.setCalculationFactor((TEST_TAX_RATE_PERCENTAGE/100)+1);
 
         // product
         product.setId(0L);

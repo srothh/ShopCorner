@@ -2,7 +2,10 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.*;
+import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
@@ -39,6 +42,15 @@ public class MailServiceTest implements TestData {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
+    @Autowired
+    private InvoiceItemRepository invoiceItemRepository;
+
+    @Autowired
+    private TaxRateRepository taxRateRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
     private final Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
     private final Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
 
@@ -53,6 +65,7 @@ public class MailServiceTest implements TestData {
     @BeforeEach
     public void beforeEach() {
         invoiceRepository.deleteAll();
+        invoiceItemRepository.deleteAll();
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -63,13 +76,17 @@ public class MailServiceTest implements TestData {
 
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
+        taxRate.setPercentage(1.2);
 
         // product
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
         product.setPrice(TEST_PRODUCT_PRICE);
-        product.setTaxRate(taxRate);
+        /*product.setTaxRate(taxRate);
+        product.setCategory(category);
+*/
+        product.setTaxRate(taxRateRepository.save(taxRate));
         product.setCategory(category);
 
         // invoiceItem

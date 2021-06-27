@@ -139,7 +139,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     private void calculateAmount(Invoice invoice) {
         double total = 0;
         for (InvoiceItem item : invoice.getItems()) {
-            total += item.getNumberOfItems() * item.getProduct().getPrice() * item.getProduct().getTaxRate().getCalculationFactor();
+            if (item.getProduct().getTaxRate().getCalculationFactor() != null) {
+                total += item.getNumberOfItems() * item.getProduct().getPrice() * item.getProduct().getTaxRate().getCalculationFactor();
+            } else {
+                total += item.getNumberOfItems() * item.getProduct().getPrice() * ((item.getProduct().getTaxRate().getPercentage() / 100) + 1);
+            }
         }
         if (invoice.getAmount() != total) {
             invoice.setAmount(total);

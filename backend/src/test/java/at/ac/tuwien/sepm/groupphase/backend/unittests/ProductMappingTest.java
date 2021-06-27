@@ -17,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
-/*
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
@@ -98,4 +98,3 @@ public class ProductMappingTest implements TestData {
 
 
 }
-*/
