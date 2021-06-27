@@ -106,6 +106,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order findOrderById(Long id) {
+        LOGGER.trace("findOrderById({})", id);
+        return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find order"));
+    }
+
+    @Override
     @Cacheable(value = "orderPages")
     public Page<Order> getAllOrdersByCustomer(int page, int pageCount, Long customerId) {
         LOGGER.trace("getAllOrdersByCustomerId({})", customerId);
