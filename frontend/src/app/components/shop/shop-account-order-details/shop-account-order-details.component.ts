@@ -41,13 +41,8 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
 
     this.orderService.getOrderById(id)
       .subscribe(order => this.order = order, error => {
-        console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       }, ()=>{
           this.items = this.order.invoice.items;
           this.time = this.order.invoice.date.substring(11);
@@ -84,7 +79,6 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
       if (quantity <= 12) {
         cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemQuantity'] = quantity;
         this.cartGlobals.updateCart(product, quantity);
-        console.log('quantity ', quantity);
         const cartItem = new CartItem(product.id, quantity);
         cartItem.id = cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemId'];
         this.cartService.updateToCart(cartItem).subscribe( (item) => {
