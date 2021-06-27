@@ -55,8 +55,6 @@ const routes: Routes = [
       {path: 'order-success', canActivate: [OrderSuccessGuard], component: ShopOrderSuccessComponent},
       {path: 'register', component: ShopRegistrationComponent},
       {path: 'checkout', canActivate: [CustomerAuthGuard], component: ShopCheckoutComponent},
-      {path: '404', component: ShopNotFoundComponent},
-      {path: '**', redirectTo: '/404'},
     ],
   },
   {
@@ -81,7 +79,9 @@ const routes: Routes = [
       {path: 'account/edit', component: OperatorEditAccountComponent},
     ],
   },
-  {path: 'operator/login', canActivate: [PreventOperatorLoginGuard], component: OperatorLoginComponent}
+  {path: 'operator/login', canActivate: [PreventOperatorLoginGuard], component: OperatorLoginComponent},
+  {path: '404', component: ShopNotFoundComponent},
+  {path: '**', redirectTo: '/404'},
 ];
 
 @NgModule({
