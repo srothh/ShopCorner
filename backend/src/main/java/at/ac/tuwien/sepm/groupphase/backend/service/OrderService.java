@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -97,4 +98,14 @@ public interface OrderService {
      * @throws RuntimeException upon encountering problems with the database
      */
     void updateProductsInOrder(Order order);
+
+    /**
+     * Finds all orders currently saved in the database.
+     *
+     *
+     * @throws RuntimeException upon encountering problems with the database
+     */
+    List<Order> findAllOrders();
+
+
 }

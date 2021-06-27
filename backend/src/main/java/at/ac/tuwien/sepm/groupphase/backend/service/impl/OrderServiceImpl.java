@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -88,6 +89,12 @@ public class OrderServiceImpl implements OrderService {
             product.setSaleCount(product.getSaleCount() + p.getNumberOfItems());
 
         }
+    }
+
+    @Override
+    public List<Order> findAllOrders() {
+        LOGGER.trace("findAllOrders()");
+        return this.orderRepository.findAll();
     }
 
     @Override
