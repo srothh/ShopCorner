@@ -24,7 +24,7 @@ export class PieChartComponent implements OnInit {
       },
     }
   };
-  public chartLabels = ['Betreiber', 'Kunden'];
+  public chartLabels = ['Kunden', 'Betreiber'];
   public percentageLabels = [];
   public chartType: ChartType = 'pie';
   public chartLegend = true;
@@ -61,9 +61,9 @@ export class PieChartComponent implements OnInit {
     const overallAmount = customerAmount + operatorAmount;
     const opPercentage = operatorAmount / overallAmount * 100;
     const custPercentage = customerAmount / overallAmount * 100;
-    this.percentageLabels.push(Math.round(opPercentage * 100) / 100 + '%');
     this.percentageLabels.push(Math.round(custPercentage * 100) / 100 + '%');
-    this.chartData = [{data: [operatorAmount, customerAmount], label: 'Amount'}];
+    this.percentageLabels.push(Math.round(opPercentage * 100) / 100 + '%');
+    this.chartData = [{data: [customerAmount, operatorAmount], label: 'Amount'}];
     setTimeout(() => {
       if (this.chart && this.chart.chart && this.chart.chart.config) {
         this.chart.chart.config.data.labels = this.chartLabels;

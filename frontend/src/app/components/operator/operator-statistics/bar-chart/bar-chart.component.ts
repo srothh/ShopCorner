@@ -96,7 +96,7 @@ export class BarChartComponent implements OnInit {
       tempCu[i] = Math.round(tempCu[i] * 100) / 100;
       tempOp[i] = Math.round(tempOp[i] * 100) / 100;
     }
-    this.chartData = [{data: tempOp, label: 'Betreiber'}, {data: tempCu, label: 'Kunden'}, {data: tempCa, label: 'Storniert'}];
+    this.chartData = [{data: tempCu, label: 'Kunden'}, {data: tempOp, label: 'Betreiber'}, {data: tempCa, label: 'Storniert'}];
     setTimeout(() => {
       if (this.chart && this.chart.chart && this.chart.chart.config) {
         this.chart.chart.config.data.labels = this.chartLabels;
