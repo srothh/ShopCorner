@@ -61,7 +61,7 @@ public class OrderEndpoint {
     @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Place a new order", security = @SecurityRequirement(name = "apiKey"))
-    public OrderDto placeNewOrder(@Valid @RequestBody OrderDto orderDto, @CookieValue(name = "sessionId", defaultValue = "default") String sessionId) {
+    public OrderDto placeNewOrder(@Valid @RequestBody OrderDto orderDto, @CookieValue(name = "sessionId", defaultValue = "default") String sessionId) throws IOException {
         LOGGER.info("POST " + BASE_URL);
         return orderMapper.orderToOrderDto(orderService.placeNewOrder(orderMapper.orderDtoToOrder(orderDto), sessionId));
     }
