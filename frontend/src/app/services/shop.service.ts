@@ -5,7 +5,8 @@ import {OperatorAuthService} from './auth/operator-auth.service';
 import {Observable} from 'rxjs';
 import {Operator} from '../dtos/operator';
 import {ShopSettings} from '../dtos/shop-settings';
-import {tap} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
+import {Product} from '../dtos/product';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,17 @@ export class ShopService {
   private shopSettingsKey = 'shopSettings';
 
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) { }
+
+  static shopSettingsMapper(s: ShopSettings) {
+    return new ShopSettings(
+      s.title, s.logo,
+      s.bannerTitle, s.bannerText,
+      s.street, s.houseNumber,
+      s.stairNumber, s.doorNumber,
+      s.postalCode, s.city,
+      s.phoneNumber, s.email
+    );
+  }
 
   /**
    * Updates the shops settings in the backend
@@ -27,7 +39,8 @@ export class ShopService {
       .pipe(
         tap(() => {
           this.setSettings(shopSettings);
-        })
+        }),
+        map(ShopService.shopSettingsMapper),
       );
   }
 
@@ -40,7 +53,8 @@ export class ShopService {
       .pipe(
         tap((shopSettings) => {
           this.setSettings(shopSettings);
-        })
+        }),
+        map(ShopService.shopSettingsMapper)
     );
   }
 

@@ -42,12 +42,8 @@ public class ShopServiceImpl implements ShopService {
         try {
             in = new FileInputStream(f);
         } catch (FileNotFoundException e) {
-            ShopSettings shopSettings = ShopSettings.ShopSettingsBuilder.getShopSettingsBuilder()
-                .withTitle("ShopCorner")
-                .withLogo("https://i.imgur.com/zMBx1FY.png")
-                .withBannerTitle("ShopCorner")
-                .withBannerText("Willkommen bei ShopCorner!")
-                .build();
+            // If no settings file exists, create one with default values
+            ShopSettings shopSettings = createDefaultShopSettings();
             this.updateSettings(shopSettings);
             in = new FileInputStream(f);
         }
@@ -55,5 +51,22 @@ public class ShopServiceImpl implements ShopService {
         ShopSettings shopSettings = ShopSettings.buildFromProperties(properties);
         in.close();
         return shopSettings;
+    }
+
+    private ShopSettings createDefaultShopSettings() {
+        return ShopSettings.ShopSettingsBuilder.getShopSettingsBuilder()
+            .withTitle("ShopCorner")
+            .withLogo("https://i.imgur.com/zMBx1FY.png")
+            .withBannerTitle("ShopCorner")
+            .withBannerText("Willkommen bei ShopCorner!")
+            .withStreet("Musterstrasse")
+            .withHouseNumber("23")
+            .withStairNumber(3)
+            .withDoorNumber("15A")
+            .withPostalCode(1220)
+            .withCity("Wien")
+            .withPhoneNumber("+436991234567")
+            .withEmail("musteremail@shop.com")
+            .build();
     }
 }

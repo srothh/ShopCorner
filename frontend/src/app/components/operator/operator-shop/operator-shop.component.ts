@@ -28,7 +28,7 @@ export class OperatorShopComponent implements OnInit {
     reader.readAsDataURL(fileToUpload);
     reader.onload = ((loadEvent) => {
       // fileSource should be string in a base64-encoded format
-      this.settingsFormGroup.controls['imageSource'].setValue(loadEvent.target.result);
+      this.settingsFormGroup.controls[ShopSettings.formKey.logo].setValue(loadEvent.target.result);
     });
   }
 
@@ -39,11 +39,7 @@ export class OperatorShopComponent implements OnInit {
   }
 
   updateSettings() {
-    const title = this.settingsFormGroup.controls['title'].value;
-    const logo = this.settingsFormGroup.controls['imageSource'].value;
-    const bannerTitle = this.settingsFormGroup.controls['bannerTitle'].value;
-    const bannerBody = this.settingsFormGroup.controls['bannerText'].value;
-    const shopSettings = new ShopSettings(title, logo, bannerTitle, bannerBody);
+    const shopSettings = ShopSettings.buildFromFormGroup(this.settingsFormGroup);
     this.shopService.updateSettings(shopSettings).subscribe(() => {
       this.successfulUpdate = true;
     }, error => this.handleError(error));
@@ -64,18 +60,23 @@ export class OperatorShopComponent implements OnInit {
   }
 
   private loadShopSettingsIntoForm(shopSettings: ShopSettings) {
-    this.settingsFormGroup.controls['title'].setValue(shopSettings.title);
-    this.settingsFormGroup.controls['imageSource'].setValue(shopSettings.logo);
-    this.settingsFormGroup.controls['bannerTitle'].setValue(shopSettings.bannerTitle);
-    this.settingsFormGroup.controls['bannerText'].setValue(shopSettings.bannerText);
+    this.settingsFormGroup = shopSettings.buildFormGroup(this.settingsFormGroup);
   }
 
   private initializeForm() {
     this.settingsFormGroup = this.formBuilder.group({
-      title: [''],
-      imageSource: [''],
-      bannerTitle: [''],
-      bannerText: [''],
+      title: [],
+      logo: [],
+      bannerTitle: [],
+      bannerText: [],
+      street: [],
+      houseNumber: [],
+      stairNumber: [],
+      doorNumber: [],
+      postalCode: [],
+      city: [],
+      phoneNumber: [],
+      email: [],
     });
   }
 
