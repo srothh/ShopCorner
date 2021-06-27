@@ -72,6 +72,5 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
         this.error = true;
         this.errorMessage = error.error;
       });
-
   }
 }
