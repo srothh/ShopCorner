@@ -1,6 +1,13 @@
 <br>
 <h2>Statistiken</h2>
 
+<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error! </strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
 <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
   <label class="btn btn-light active ">
     <input type="radio" name="buttons" id="option1" (click)="showProducts = false" checked>

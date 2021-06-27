@@ -88,6 +88,13 @@ export class OperatorStatisticComponent implements OnInit {
   }
 
   /**
+   * Error flag will be deactivated, which clears the error message
+   */
+  vanishError() {
+    this.error = false;
+  }
+
+  /**
    * calls on Service class to fetch all customer accounts from backend
    */
   private loadInvoicesForTime() {
@@ -102,7 +109,7 @@ export class OperatorStatisticComponent implements OnInit {
       },
       error => {
         this.error = true;
-        this.errorMessage = error.error;
+        this.errorMessage = error;
       }
     );
   }
@@ -115,11 +122,7 @@ export class OperatorStatisticComponent implements OnInit {
         this.fetchProducts();
       }, error => {
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       }
     );
   }
@@ -135,11 +138,7 @@ export class OperatorStatisticComponent implements OnInit {
         }
       }, error => {
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       });
   }
 }
