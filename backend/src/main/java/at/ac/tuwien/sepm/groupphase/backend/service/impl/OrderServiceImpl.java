@@ -123,7 +123,6 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAllByCustomerId(returnPage, customerId);
     }
 
-
     @Override
     @Cacheable(value = "counts", key = "'orders'")
     public long getOrderCount() {
@@ -175,7 +174,6 @@ public class OrderServiceImpl implements OrderService {
         LOGGER.trace("setInvoiceCanceled({})", order);
         Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(order.getInvoice());
         order.setInvoice(canceledInvoice);
-
         return this.orderRepository.save(order);
     }
 }
