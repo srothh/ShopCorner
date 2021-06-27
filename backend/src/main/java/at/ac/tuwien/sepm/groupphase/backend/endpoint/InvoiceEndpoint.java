@@ -114,7 +114,7 @@ public class InvoiceEndpoint {
      * @param end of time period
      * @return List with all Invoices in given time period
      */
-    @PermitAll
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping(value = "/stats")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all invoices in time period", security = @SecurityRequirement(name = "apiKey"))
