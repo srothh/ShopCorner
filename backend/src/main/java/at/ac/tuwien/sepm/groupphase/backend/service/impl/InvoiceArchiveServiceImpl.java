@@ -40,4 +40,12 @@ public class InvoiceArchiveServiceImpl implements InvoiceArchiveService {
         invoiceArchive.setInvoiceNumber(invoiceNumber);
         return this.invoiceArchivedRepository.save(invoiceArchive).getInvoiceAsPdf();
     }
+
+    @Override
+    public void updateInvoiceArchive(String invoiceNumber, byte[] content) {
+        LOGGER.trace("createInvoiceArchive({},{})", invoiceNumber, content);
+        InvoiceArchive invoiceArchive = this.invoiceArchivedRepository.findInvoiceArchiveByInvoiceNumber(invoiceNumber).orElseThrow(() -> new NotFoundException("Rechnung konnte nicht gefunden werden."));
+        invoiceArchive.setInvoiceAsPdf(content);
+        this.invoiceArchivedRepository.save(invoiceArchive);
+    }
 }

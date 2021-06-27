@@ -98,6 +98,8 @@ export class ShopProductDetailsComponent implements OnInit, OnDestroy {
   private fetchProduct(id: number) {
     this.productService.getProductById(id).subscribe((product) => {
       this.product = product;
+    }, _ => {
+      this.router.navigate(['404']);
     });
   }
 

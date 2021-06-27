@@ -48,4 +48,21 @@ public interface PdfGeneratorService {
      * @param shopSettings the updates company information
      */
     void updateCompanyInformation(ShopSettings shopSettings);
+
+    /**
+     * Recreates an invoice pdf to a canceled invoice pdf.
+     *
+     * @param invoice to recreates the pdf
+     */
+    void setPdfInvoiceCanceled(Invoice invoice);
+
+
+    /**
+     * Recreates an invoice pdf of an order to a canceled invoice pdf.
+     *
+     * @param order to recreates the invoice pdf
+     */
+    void setPdfOrderCanceled(Order order);
+
+
 }
