@@ -109,6 +109,9 @@ import { ShopNotFoundComponent } from './components/shop/shop-not-found/shop-not
     BaseShopOrdersHeaderComponent,
     BaseShopOrderItemComponent,
     ShopAccountOrderDetailsComponent,
+    OperatorPromotionFormComponent,
+    OperatorPromotionComponent,
+    BaseProductSearchBarComponent,
     ShopNotFoundComponent,
   ],
   imports: [

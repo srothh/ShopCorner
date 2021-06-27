@@ -16,6 +16,8 @@ import {Cart} from '../../../dtos/cart';
 import {MeService} from '../../../services/me.service';
 import {CartService} from '../../../services/cart.service';
 import {ConfirmedPayment} from '../../../dtos/confirmedPayment';
+import {PromotionService} from '../../../services/promotion.service';
+import {Promotion} from '../../../dtos/promotion';
 
 @Component({
   selector: 'app-shop-order-success',
@@ -30,10 +32,14 @@ export class ShopOrderSuccessComponent implements OnInit {
   paymentSucceeded: boolean;
   products: Product[];
   customer: Customer;
-  invoice: Invoice;
+  invoiceDto: Invoice;
   cart: Cart;
   confirmedPayment: ConfirmedPayment;
   alreadyOrdered: boolean;
+  promotionId;
+  promotion: Promotion;
+  error = false;
+  errorMessage = '';
 
   constructor(private paypalService: PaypalService,
               private activatedRoute: ActivatedRoute,
@@ -41,7 +47,8 @@ export class ShopOrderSuccessComponent implements OnInit {
               private cartGlobals: CartGlobals,
               private orderService: OrderService,
               private meService: MeService,
-              private cartService: CartService) {
+              private cartService: CartService,
+              private promotionService: PromotionService) {
   }
 
   ngOnInit(): void {
@@ -50,6 +57,10 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.paymentId = params['paymentId'];
       this.payerId = params['PayerID'];
+      this.promotionId = params['promotion'];
+      if (this.promotionId) {
+        this.getPromotion();
+      }
       this.paypalService.getConfirmedPayment(this.paymentId, this.payerId).subscribe((cp) => {
         this.alreadyOrdered = cp !== null;
         if(this.alreadyOrdered === false) {
@@ -60,6 +71,7 @@ export class ShopOrderSuccessComponent implements OnInit {
       });
     });
   }
+
   confirmPayment(){
     this.confirmedPayment = new ConfirmedPayment(null, this.paymentId, this.payerId);
     this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
@@ -72,12 +84,28 @@ export class ShopOrderSuccessComponent implements OnInit {
     });
   }
 
-  placeNewOrder() {
-    this.createInvoice();
-    const order: Order = new Order(0, this.invoice, this.customer);
-    this.orderService.placeNewOrder(order).subscribe((orderData) => {
+  getPromotion() {
+    this.promotionService.getPromotionByCode(this.promotionId).subscribe((promotion: Promotion) => {
+      this.promotion = promotion;
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
     });
   }
+
+  getCartSize() {
+    return this.cartGlobals.getCartSize();
+  }
+
+
+  placeNewOrder() {
+    this.creatInvoiceDto();
+    const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
+    console.log(order);
+    this.orderService.placeNewOrder(order).subscribe(() => {
+    });
+  }
+
 
   getTotalPrice() {
     return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes();
@@ -99,6 +127,14 @@ export class ShopOrderSuccessComponent implements OnInit {
     return subtotal;
   }
 
+  getTotalPriceWithPromotion() {
+    if (this.promotion) {
+      return this.getTotalPrice() - this.promotion.discount;
+    } else {
+      return this.getTotalPrice();
+    }
+  }
+
   fetchCustomer() {
     this.meService.getMyProfileData().subscribe(
       (customer: Customer) => {
@@ -108,20 +144,20 @@ export class ShopOrderSuccessComponent implements OnInit {
     );
   }
 
-  createInvoice() {
-    this.invoice = new Invoice();
-    this.invoice.invoiceNumber = '';
+  creatInvoiceDto() {
+    this.invoiceDto = new Invoice();
+    this.invoiceDto.invoiceNumber = '';
 
     for (const item of this.products) {
       if (item !== undefined) {
         const invItem = new InvoiceItem(new InvoiceItemKey(item.id), item, item.cartItemQuantity);
-        this.invoice.items.push(invItem);
+        this.invoiceDto.items.push(invItem);
       }
     }
-    this.invoice.amount = +this.getTotalPrice().toFixed(2);
-    this.invoice.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
-    this.invoice.customerId = this.customer.id;
-    this.invoice.invoiceType = InvoiceType.customer;
+    this.invoiceDto.amount = +this.getTotalPriceWithPromotion().toFixed(2);
+    this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
+    this.invoiceDto.customerId = this.customer.id;
+    this.invoiceDto.invoiceType = InvoiceType.customer;
   }
 
   getCartItems() {

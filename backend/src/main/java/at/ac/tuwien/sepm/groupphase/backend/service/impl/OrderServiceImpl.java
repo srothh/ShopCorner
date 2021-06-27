@@ -71,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
         @CacheEvict(value = "counts", key = "'orders'")
     })
     public Order placeNewOrder(Order order, String session) {
-        LOGGER.info("placeNewOrder({})", order);
+        LOGGER.trace("placeNewOrder({},{})", order, session);
         if (session.equals("default") || !this.cartService.validateSession(UUID.fromString(session))) {
             throw new ServiceException("invalid sessionId");
         }
