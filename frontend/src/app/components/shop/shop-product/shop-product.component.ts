@@ -55,13 +55,10 @@ export class ShopProductComponent implements OnInit {
   }
 
   errorOccurred() {
-    return this.error || this.pageableProducts.error;
+    return this.pageableProducts.error;
   }
 
   getErrorMessage() {
-    if (this.error) {
-      return this.errorMessage;
-    }
     return this.pageableProducts.errorMessage;
   }
 
@@ -69,8 +66,6 @@ export class ShopProductComponent implements OnInit {
    * Error flag will be deactivated, which clears the error message
    */
   vanishError() {
-    this.error = false;
-    this.errorMessage = '';
     this.pageableProducts.vanishError();
   }
 }

@@ -123,7 +123,6 @@ public class Validator {
         }
     }
 
-
     public void validateNewInvoiceItem(Set<InvoiceItem> items) {
         LOGGER.trace("validateNewInvoiceItem({})", items);
         if (items == null) {

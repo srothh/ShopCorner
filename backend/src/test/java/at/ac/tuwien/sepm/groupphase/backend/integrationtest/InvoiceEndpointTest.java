@@ -49,7 +49,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ExtendWith(SpringExtension.class)
@@ -116,6 +115,7 @@ public class InvoiceEndpointTest implements TestData {
 
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
+        taxRate.setCalculationFactor((TEST_TAX_RATE_PERCENTAGE/100)+1);
 
         // product
         product.setId(0L);
@@ -260,7 +260,7 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenTwoInvoices_whenFindAllWithPageAndPermission_thenListWithSizeTwoAndOverviewOfAllInvoices()
         throws Exception {
-        Invoice newInvoice1 = this.invoiceService.createInvoice(invoice1);
+        this.invoiceService.createInvoice(invoice1);
         Invoice newInvoice2 = this.invoiceService.createInvoice(invoice2);
 
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&invoiceType=operator")
@@ -281,9 +281,9 @@ public class InvoiceEndpointTest implements TestData {
         List<SimpleInvoiceDto> simpleInvoiceDtoList = paginationDto.getItems();
         SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtoList.get(0);
         assertAll(
-            () -> assertEquals(newInvoice1.getId(), simpleInvoiceDto.getId()),
+            () -> assertEquals(newInvoice2.getId(), simpleInvoiceDto.getId()),
             () -> assertNotNull(simpleInvoiceDto.getDate()),
-            () -> assertEquals(newInvoice1.getAmount(), simpleInvoiceDto.getAmount())
+            () -> assertEquals(newInvoice2.getAmount(), simpleInvoiceDto.getAmount())
         );
     }
 

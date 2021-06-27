@@ -31,7 +31,7 @@ public class PdfGenerator {
     private final String htmlCanceledCustomer;
 
     public PdfGenerator() {
-        String directory = "htmlToPdfTemplate";
+        String directory = "src/main/resources/invoice-templates";
         try {
             BufferedReader in = new BufferedReader(new FileReader(directory + "/operatorInvoiceTemplate_v1.html"));
             htmlOperator = in.lines().collect(Collectors.joining());

@@ -19,6 +19,7 @@ import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {PromotionService} from '../../../services/promotion.service';
 import {Promotion} from '../../../dtos/promotion';
+import {ProductService} from '../../../services/product/product.service';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -38,6 +39,8 @@ export class ShopCheckoutComponent implements OnInit {
   promotion: Promotion = null;
   promotionError = false;
   promotionErrorMessage = '';
+  error = false;
+  errorMessage: string;
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
               private orderService: OrderService, private paypalService: PaypalService, private router: Router,
@@ -96,21 +99,23 @@ export class ShopCheckoutComponent implements OnInit {
       this.cart = cart;
     });
   }
-
   proceedToPay() {
-    this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
-    console.log(this.promotion);
-    this.paypalService.createPayment(order).subscribe((redirectUrl) => {
-      if (this.promotion) {
-        window.location.href = (redirectUrl + '&promotion=' + order.promotion.code);
-      } else {
-        window.location.href = redirectUrl;
+    const mappedProducts = this.products.map(ProductService.productMapper);
+    mappedProducts.forEach((product) => {
+      if (product.hasExpiration && product.hasExpired){
+        this.error = true;
+        this.errorMessage = `Das Produkt "${product.name}" ist nicht verfügbar. Bitte setzen Sie ihren Einkauf ohne dieses Produkt fort.`;
       }
-      this.loading = true;
     });
+    if (!this.error) {
+      this.creatInvoiceDto();
+      const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
+      this.paypalService.createPayment(order).subscribe((redirectUrl) => {
+        window.location.href = redirectUrl;
+        this.loading = true;
+      });
+    }
   }
-
   creatInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
@@ -125,6 +130,9 @@ export class ShopCheckoutComponent implements OnInit {
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
+  }
+  vanishError() {
+    this.error = false;
   }
 
   getPromotion() {

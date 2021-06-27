@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice</title>
-    <link rel="stylesheet" type="text/css" href="htmlToPdfTemplate/operatorInvoiceTemplate_v1.css">
+    <link rel="stylesheet" type="text/css" href="src/main/resources/invoice-templates/invoiceTemplate.css">
 
 </head>
 <body>
@@ -20,7 +20,25 @@
     </tr>
 
     <tr>
-        <td class="right" style="width: 100%"></td>
+        <td class="right" style="width: 100%">
+            <table class="right" style="margin-top: 1rem">
+                <tr>
+                    <td class="left customer-name">
+                        <a>{{customerName}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left customer-street">
+                        <a>{{customerStreet}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left customer-city">
+                        <a>{{customerCity}}</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
         <td class="right" style="width: 100%"></td>
         <td class="right">
             <table class="right none-border" style="margin-top: 1rem">
@@ -37,7 +55,7 @@
                         <a>Zahlungsart: </a>
                     </td>
                     <td class="left">
-                        <a>Barzahlung</a>
+                        <a>PayPal</a>
                     </td>
                 </tr>
                 <tr>
@@ -46,6 +64,14 @@
                     </td>
                     <td class="left invoice-number">
                         <a>{{invoiceNumber}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left">
+                        <a>Bestellnummer: </a>
+                    </td>
+                    <td class="left order-number">
+                        <a>{{number}}</a>
                     </td>
                 </tr>
             </table>
@@ -125,3 +151,5 @@
 </footer>
 </body>
 </html>
+
+
