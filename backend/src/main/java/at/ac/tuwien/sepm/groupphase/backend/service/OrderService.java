@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -22,7 +23,7 @@ public interface OrderService {
      * @return the order that has just been saved.
      * @throws RuntimeException upon encountering errors with the database
      */
-    Order placeNewOrder(Order order, String session);
+    Order placeNewOrder(Order order, String session) throws IOException;
 
     /**
      * Retrieves a PaginationDto containing a Page of orders from the database.
@@ -43,6 +44,16 @@ public interface OrderService {
      * @throws RuntimeException upon encountering errors with the database
      */
     Order findOrderById(Long id);
+
+
+    /**
+     * Updates the given order in the database to canceled.
+     *
+     * @param order is the order to be canceled
+     * @return The canceled order from the database
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Order setInvoiceCanceled(Order order);
 
     /**
      * Retrieves a PaginationDto containing a Page of orders from a specific customer from the database.
@@ -97,4 +108,14 @@ public interface OrderService {
      * @throws RuntimeException upon encountering problems with the database
      */
     void updateProductsInOrder(Order order);
+
+    /**
+     * Finds all orders currently saved in the database.
+     *
+     *
+     * @throws RuntimeException upon encountering problems with the database
+     */
+    List<Order> findAllOrders();
+
+
 }
