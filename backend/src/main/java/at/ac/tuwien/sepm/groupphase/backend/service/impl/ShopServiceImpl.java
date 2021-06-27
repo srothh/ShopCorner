@@ -40,6 +40,7 @@ public class ShopServiceImpl implements ShopService {
         shopSettings.setProperties(properties);
         properties.store(out, "ShopSettings");
         out.close();
+        this.pdfGeneratorService.updateCompanyInformation(shopSettings);
         return shopSettings;
     }
 
