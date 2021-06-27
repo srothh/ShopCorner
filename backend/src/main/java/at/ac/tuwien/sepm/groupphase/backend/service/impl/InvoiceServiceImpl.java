@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -33,6 +34,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final Validator validator;
     private final InvoiceItemService invoiceItemService;
+
 
     @Autowired
     public InvoiceServiceImpl(InvoiceRepository invoiceRepository, Validator validator, InvoiceItemService invoiceItemService) {
@@ -51,7 +53,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         } else if (pageCount > 50) {
             pageCount = 50;
         }
-        Pageable returnPage = PageRequest.of(page, pageCount);
+        Pageable returnPage = PageRequest.of(page, pageCount, Sort.by("date").descending());
         if (invoiceType == InvoiceType.operator) {
             return this.invoiceRepository.findAll(returnPage);
         }
@@ -70,7 +72,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         LOGGER.trace("getInvoiceCount()");
         return invoiceRepository.count();
     }
-
 
     @Override
     @Cacheable(value = "counts", key = "'customerInvoices'")
@@ -129,6 +130,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         LOGGER.trace("createInvoice({})", invoice);
         validator.validateNewInvoice(invoice);
         validator.validateNewInvoiceItem(invoice.getItems());
+        calculateAmount(invoice);
         Set<InvoiceItem> items = invoice.getItems();
         invoice.setItems(null);
         LocalDateTime firstDateOfYear = LocalDateTime.now().toLocalDate().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay();
@@ -142,6 +144,18 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     }
 
-
+    private void calculateAmount(Invoice invoice) {
+        double total = 0;
+        for (InvoiceItem item : invoice.getItems()) {
+            if (item.getProduct().getTaxRate().getCalculationFactor() != null) {
+                total += item.getNumberOfItems() * item.getProduct().getPrice() * item.getProduct().getTaxRate().getCalculationFactor();
+            } else {
+                total += item.getNumberOfItems() * item.getProduct().getPrice() * ((item.getProduct().getTaxRate().getPercentage() / 100) + 1);
+            }
+        }
+        if (invoice.getAmount() != total) {
+            invoice.setAmount(total);
+        }
+    }
 
 }

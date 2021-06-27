@@ -23,7 +23,6 @@ import java.util.Set;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 
-import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 
 
@@ -61,7 +60,9 @@ public class InvoiceEndpoint {
     private final PdfGeneratorService pdfGeneratorService;
 
     @Autowired
-    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService,
+    public InvoiceEndpoint(InvoiceMapper invoiceMapper,
+                           InvoiceItemMapper invoiceItemMapper,
+                           InvoiceService invoiceService,
                            PdfGeneratorService pdfGeneratorService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
@@ -142,7 +143,6 @@ public class InvoiceEndpoint {
         invoice.setItems(items);
         Invoice createdInvoice = invoiceService.createInvoice(invoice);
         final byte[] contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoiceService.findOneById(createdInvoice.getId()));
-
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.CREATED);
     }
 
@@ -178,18 +178,17 @@ public class InvoiceEndpoint {
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
         LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
-        byte[] contents = null;
-        if (invoice.getInvoiceType() == InvoiceType.operator) {
-            contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
-        } else if (invoice.getInvoiceType() == InvoiceType.customer) {
-            contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
-        } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
-            contents = this.pdfGeneratorService.createPdfCanceledInvoiceOperator(invoice);
-        } else {
-            return ResponseEntity.status(402).build();
-        }
 
-        return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
+        if (invoice.getInvoiceType() == InvoiceType.operator) {
+            return new ResponseEntity<>(this.pdfGeneratorService.createPdfInvoiceOperator(invoice), this.generateHeader(), HttpStatus.OK);
+        } else if (invoice.getInvoiceType() == InvoiceType.customer) {
+            return new ResponseEntity<>(this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice), this.generateHeader(), HttpStatus.OK);
+        } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
+            return new ResponseEntity<>(this.pdfGeneratorService.createPdfCanceledInvoiceOperator(invoice), this.generateHeader(), HttpStatus.OK);
+        }
+        return ResponseEntity.status(402).build();
+
+
     }
 
 

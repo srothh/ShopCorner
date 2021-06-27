@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.*;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.*;
 
 import at.ac.tuwien.sepm.groupphase.backend.util.InvoiceSpecifications;
@@ -67,6 +66,7 @@ public class InvoiceRepositoryTest implements TestData {
 
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
+        taxRate.setCalculationFactor((TEST_TAX_RATE_PERCENTAGE/100)+1);
 
         // product
         product.setId(0L);

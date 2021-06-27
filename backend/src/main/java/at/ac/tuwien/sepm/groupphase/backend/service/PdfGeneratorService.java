@@ -40,13 +40,6 @@ public interface PdfGeneratorService {
      */
     byte[] createPdfInvoiceCustomer(Order order);
 
-    /**
-     * Creates a canceled invoice pdf for customers from a given order.
-     *
-     * @param order to generate a pdf of it
-     * @return byte array canceled invoice pdf.
-     */
-    byte[] createPdfCanceledInvoiceCustomer(Order order);
 
 
 }

@@ -59,6 +59,7 @@ import { BarChartComponent } from './components/operator/operator-statistics/bar
 import { PieChartComponent } from './components/operator/operator-statistics/pie-chart/pie-chart.component';
 import { ProductsTopsellerChartComponent } from
     './components/operator/operator-statistics/products-topseller-chart/products-topseller-chart.component';
+import { ShopNotFoundComponent } from './components/shop/shop-not-found/shop-not-found.component';
 
 @NgModule({
   declarations: [
@@ -116,6 +117,7 @@ import { ProductsTopsellerChartComponent } from
     BarChartComponent,
     PieChartComponent,
     ProductsTopsellerChartComponent,
+    ShopNotFoundComponent,
   ],
   imports: [
     BrowserModule,
