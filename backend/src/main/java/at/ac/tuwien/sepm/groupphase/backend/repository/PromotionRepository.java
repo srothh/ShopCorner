@@ -17,7 +17,6 @@ public interface PromotionRepository extends JpaRepository<Promotion, Long> {
      *
      * @return the Promotion with the given code
      * */
-    @Query("select p from Promotion p where p.code =:code")
-    Promotion getPromotionByCode(@Param("code") String code);
+    Promotion findByCode(String code);
 
 }

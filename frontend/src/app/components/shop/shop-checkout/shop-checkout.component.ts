@@ -102,9 +102,9 @@ export class ShopCheckoutComponent implements OnInit {
     const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
     console.log(this.promotion);
     this.paypalService.createPayment(order).subscribe((redirectUrl) => {
-      if(this.promotion){
+      if (this.promotion) {
         window.location.href = (redirectUrl + '&promotion=' + order.promotion.code);
-      }else{
+      } else {
         window.location.href = redirectUrl;
       }
       this.loading = true;
@@ -129,22 +129,25 @@ export class ShopCheckoutComponent implements OnInit {
 
   getPromotion() {
     this.promotionService.getPromotionByCode(this.orderForm.controls.promoCode.value).subscribe((promotion: Promotion) => {
-      if(this.isValidCode(promotion)){
+      if (this.isValidCode(promotion)) {
         this.promotionError = false;
         this.promotionErrorMessage = '';
         this.promotion = promotion;
       }
+    }, (error) => {
+      this.promotionError = true;
+      this.promotionErrorMessage = error;
     });
   }
 
   private isValidCode(promotion: Promotion) {
     if (this.getTotalPrice() >= promotion.minimumOrderValue && new Date(Date.now()) <= new Date(promotion.expirationDate)) {
       return true;
-    }else if (this.getTotalPrice() >= promotion.minimumOrderValue){
+    } else if (this.getTotalPrice() >= promotion.minimumOrderValue) {
       this.promotionError = true;
       this.promotionErrorMessage = 'Gutscheincode abgelaufen!';
       return false;
-    }else {
+    } else {
       this.promotionError = true;
       this.promotionErrorMessage = 'Mindestbestellwert nicht erreicht!!';
       return false;
