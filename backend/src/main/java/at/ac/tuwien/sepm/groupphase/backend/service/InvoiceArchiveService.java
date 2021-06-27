@@ -32,4 +32,13 @@ public interface InvoiceArchiveService {
      * @throws ServiceException upon encountering errors with the database
      */
     byte[] createInvoiceArchive(String invoiceNumber, byte[] content);
+
+
+    /**
+     * Updates the invoice in the archive to canceled.
+     *
+     * @param invoiceNumber the number of the invoice to be updated
+     * @param content the new content of the invoice
+     */
+    void updateInvoiceArchive(String invoiceNumber, byte[] content);
 }

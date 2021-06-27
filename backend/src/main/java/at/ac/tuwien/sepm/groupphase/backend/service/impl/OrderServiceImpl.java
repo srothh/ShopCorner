@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.CancellationPeriod;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
+import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -87,7 +88,6 @@ public class OrderServiceImpl implements OrderService {
         for (InvoiceItem p : order.getInvoice().getItems()) {
             Product product = productService.findById(p.getProduct().getId());
             product.setSaleCount(product.getSaleCount() + p.getNumberOfItems());
-
         }
     }
 
@@ -122,7 +122,6 @@ public class OrderServiceImpl implements OrderService {
         Pageable returnPage = PageRequest.of(page, pageCount);
         return orderRepository.findAllByCustomerId(returnPage, customerId);
     }
-
 
     @Override
     @Cacheable(value = "counts", key = "'orders'")
@@ -165,4 +164,16 @@ public class OrderServiceImpl implements OrderService {
         return new CancellationPeriod(days);
     }
 
+
+    @Caching(evict = {
+        @CacheEvict(value = "orderPages", allEntries = true),
+        @CacheEvict(value = "counts", key = "'orders'")
+    })
+    @Override
+    public Order setInvoiceCanceled(Order order) {
+        LOGGER.trace("setInvoiceCanceled({})", order);
+        Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(order.getInvoice());
+        order.setInvoice(canceledInvoice);
+        return this.orderRepository.save(order);
+    }
 }

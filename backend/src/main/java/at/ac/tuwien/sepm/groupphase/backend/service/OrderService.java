@@ -44,6 +44,16 @@ public interface OrderService {
      */
     Order findOrderById(Long id);
 
+
+    /**
+     * Updates the given order in the database to canceled.
+     *
+     * @param order is the order to be canceled
+     * @return The canceled order from the database
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Order setInvoiceCanceled(Order order);
+
     /**
      * Retrieves a PaginationDto containing a Page of orders from a specific customer from the database.
      *
