@@ -19,7 +19,7 @@ public interface InvoiceArchivedRepository extends JpaRepository<InvoiceArchive,
     boolean existsInvoiceArchiveByInvoiceNumber(String invoiceNumber);
 
     /**
-     * Find all a invoice by invoiceNumber.
+     * Find an invoice by invoiceNumber.
      *
      * @param invoiceNumber assigned to the invoice
      * @return the invoice assigned to the session

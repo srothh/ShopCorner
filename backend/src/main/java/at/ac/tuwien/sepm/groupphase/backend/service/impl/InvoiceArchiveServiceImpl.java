@@ -22,7 +22,7 @@ public class InvoiceArchiveServiceImpl implements InvoiceArchiveService {
     @Override
     public byte[] findByInvoiceNumber(String invoiceNumber) {
         LOGGER.trace("findByInvoiceNumber({})", invoiceNumber);
-        InvoiceArchive archive = invoiceArchivedRepository.findInvoiceArchiveByInvoiceNumber(invoiceNumber).orElseThrow(() -> new NotFoundException("Could not find invoice"));
+        InvoiceArchive archive = invoiceArchivedRepository.findInvoiceArchiveByInvoiceNumber(invoiceNumber).orElseThrow(() -> new NotFoundException("Rechnung konnte nicht gefunden werden."));
         return archive.getInvoiceAsPdf();
     }
 
