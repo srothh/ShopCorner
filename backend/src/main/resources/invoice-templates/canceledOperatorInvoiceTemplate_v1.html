@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice</title>
-    <link rel="stylesheet" type="text/css" href="htmlToPdfTemplate/operatorInvoiceTemplate_v1.css">
+    <link rel="stylesheet" type="text/css" href="src/main/resources/invoice-templates/invoiceTemplate.css">
 
 </head>
 <body>
@@ -21,23 +21,6 @@
 
     <tr>
         <td class="right" style="width: 100%">
-            <table class="right" style="margin-top: 1rem">
-                <tr>
-                    <td class="left customer-name">
-                        <a>{{customerName}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="left customer-street">
-                        <a>{{customerStreet}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="left customer-city">
-                        <a>{{customerCity}}</a>
-                    </td>
-                </tr>
-            </table>
         </td>
         <td class="right" style="width: 100%"></td>
         <td class="right">
@@ -64,14 +47,6 @@
                     </td>
                     <td class="left invoice-number">
                         <a>{{invoiceNumber}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="left">
-                        <a>Bestellnummer: </a>
-                    </td>
-                    <td class="left">
-                        <a>{{number}}</a>
                     </td>
                 </tr>
             </table>

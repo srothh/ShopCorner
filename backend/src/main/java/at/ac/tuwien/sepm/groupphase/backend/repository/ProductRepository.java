@@ -59,7 +59,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     @Query("select c from Product c where c.name like %:name% and c.category.id = :categoryId")
     Page<Product> findAllByNameAndCategoryId(@Param("name") String name, @Param("categoryId") Long categoryId, Pageable pageable);
-
-
-
 }
