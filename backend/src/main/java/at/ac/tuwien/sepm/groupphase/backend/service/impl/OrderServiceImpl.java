@@ -69,13 +69,13 @@ public class OrderServiceImpl implements OrderService {
         @CacheEvict(value = "orderPages", allEntries = true),
         @CacheEvict(value = "counts", key = "'orders'")
     })
-    public Order placeNewOrder(Order order, String session) {
+    public Order placeNewOrder(Order order, String session) throws IOException {
         LOGGER.info("placeNewOrder({})", order);
         if (session.equals("default") || !this.cartService.validateSession(UUID.fromString(session))) {
             throw new ServiceException("invalid sessionId");
         }
         order.setInvoice(this.invoiceService.createInvoice(order.getInvoice()));
-        mailService.sendMail(order);
+        mailService.sendMail(order, getCancellationPeriod());
         updateProductsInOrder(order);
         return orderRepository.save(order);
     }

@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,6 +50,7 @@ public class MailServiceTest implements TestData {
     private final Category category = new Category();
     private final TaxRate taxRate = new TaxRate();
     private final Order order = new Order();
+    private final CancellationPeriod cancellationPeriod = new CancellationPeriod(10);
 
     @BeforeEach
     public void beforeEach() {
@@ -94,8 +96,8 @@ public class MailServiceTest implements TestData {
     }
 
     @Test
-    public void sendsMailToCustomer() {
-        mailService.sendMail(order);
+    public void sendsMailToCustomer() throws IOException {
+        mailService.sendMail(order, cancellationPeriod);
         MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
         assertAll(
             () -> assertNotNull(receivedMessage),
