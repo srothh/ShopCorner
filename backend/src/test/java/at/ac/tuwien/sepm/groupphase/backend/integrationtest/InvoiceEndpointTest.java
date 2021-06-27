@@ -260,8 +260,8 @@ public class InvoiceEndpointTest implements TestData {
     @Test
     public void givenTwoInvoices_whenFindAllWithPageAndPermission_thenListWithSizeTwoAndOverviewOfAllInvoices()
         throws Exception {
-        Invoice newInvoice1 = this.invoiceService.createInvoice(invoice1);
-        this.invoiceService.createInvoice(invoice2);
+        this.invoiceService.createInvoice(invoice1);
+        Invoice newInvoice2 = this.invoiceService.createInvoice(invoice2);
 
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&invoiceType=operator")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -281,9 +281,9 @@ public class InvoiceEndpointTest implements TestData {
         List<SimpleInvoiceDto> simpleInvoiceDtoList = paginationDto.getItems();
         SimpleInvoiceDto simpleInvoiceDto = simpleInvoiceDtoList.get(0);
         assertAll(
-            () -> assertEquals(newInvoice1.getId(), simpleInvoiceDto.getId()),
+            () -> assertEquals(newInvoice2.getId(), simpleInvoiceDto.getId()),
             () -> assertNotNull(simpleInvoiceDto.getDate()),
-            () -> assertEquals(newInvoice1.getAmount(), simpleInvoiceDto.getAmount())
+            () -> assertEquals(newInvoice2.getAmount(), simpleInvoiceDto.getAmount())
         );
     }
 
