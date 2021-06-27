@@ -258,10 +258,10 @@ public class ProductDataGenerator {
                     itemSet.add(item);
                     invoice.setItems(itemSet);
                     invoiceItemRepository.save(item);
-                    Order order = new Order(invoice, customers.get(custId));
-                    orderService.updateProductsInOrder(order);
-                    orderRepository.save(order);
                 }
+                Order order = new Order(invoice, customers.get(custId));
+                orderService.updateProductsInOrder(order);
+                orderRepository.save(order);
             }
         }
     }
