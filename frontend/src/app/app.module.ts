@@ -106,6 +106,9 @@ import { BaseShopOrderItemComponent } from './components/common/base-shop-order-
     OperatorOrderSettingsComponent,
     BaseShopOrdersHeaderComponent,
     BaseShopOrderItemComponent,
+    OperatorPromotionFormComponent,
+    OperatorPromotionComponent,
+    BaseProductSearchBarComponent,
   ],
   imports: [
     BrowserModule,
