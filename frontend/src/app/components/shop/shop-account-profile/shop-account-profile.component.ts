@@ -168,7 +168,6 @@ export class ShopAccountProfileComponent implements OnInit {
    * @private
    */
   private initializeForm() {
-    // TODO: add validators
     this.editForm = this.formBuilder.group({
       loginName: [this.myProfile.loginName],
       email: [this.myProfile.email],

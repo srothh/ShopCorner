@@ -1,11 +1,11 @@
-<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Error!</strong> {{ errorMessage }}
-  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+<div *ngIf="error" class="alert alert-danger" role="alert">
+  {{ errorMessage }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="vanishError()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 
-<form class="row g-3" [formGroup]="promotionForm"  id="myForm">
+<form class="row g-3" [formGroup]="promotionForm" id="myForm">
   <div class="col-md-6 mt-3">
     <div class="form-group required">
       <label for="name" class="form-label"><b>Name </b></label>
@@ -25,7 +25,7 @@
     <div class="form-group required">
       <label for="discount" class="form-label"><b>Rabatt </b></label>
       <input type="number" min="0" class="form-control" id="discount" name="discount"
-              required formControlName="discount">
+             required formControlName="discount">
       <div *ngIf="promotionForm.get('discount').invalid &&
         promotionForm.get('discount').errors &&
         (promotionForm.get('discount').dirty || promotionForm.get('discount').touched)">
@@ -37,24 +37,6 @@
     </div>
   </div>
 
-  <div class="col-md-6 mt-3">
-    <div class="form-group required">
-      <label for="expirationDate" class="form-label"><b>Ablaufdatum </b></label>
-      <div class="input-group">
-        <input class="form-control" placeholder="yyyy-mm-dd"
-               name="expirationDate" id="expirationDate" ngbDatepicker #d="ngbDatepicker"
-               formControlName="expirationDate">
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6 mt-3 align-items-center">
-    <div class="form-group required">
-      <ngb-timepicker id="time" formControlName="time"></ngb-timepicker>
-    </div>
-  </div>
   <div class="col-md-6 mt-3">
     <div class="form-group required">
       <label for="code" class="form-label"><b>Gutscheincode </b></label>
@@ -84,6 +66,27 @@
         </small>
       </div>
     </div>
+  </div>
+
+
+  <div class="col-md-6 mt-3">
+    <label for="expirationDate" class="form-label"><b>Ablaufdatum </b></label>
+
+    <div class="form-group d-flex align-items-center">
+      <div class="input-group mr-2">
+        <input class="form-control" placeholder="yyyy-mm-dd"
+               name="expirationDate" id="expirationDate" ngbDatepicker #d="ngbDatepicker"
+               formControlName="expirationDate">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+        </div>
+
+      </div>
+      <ngb-timepicker id="time" formControlName="time"></ngb-timepicker>
+
+    </div>
+  </div>
+  <div class="col-md-6 mt-3">
   </div>
   <div class="col-md-6 mt-3">
     <button class="btn btn-primary" type="submit" (click)="addNewPromotion()" [disabled]="!promotionForm.valid">

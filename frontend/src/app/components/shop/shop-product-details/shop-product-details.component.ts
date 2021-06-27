@@ -1,23 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {Product} from '../../../dtos/product';
 import {ProductService} from '../../../services/product/product.service';
 import {Globals} from '../../../global/globals';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {CartItem} from '../../../dtos/cartItem';
 import {CartService} from '../../../services/cart.service';
+import {filter} from 'rxjs/operators';
+import {Observable, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-shop-product-details',
   templateUrl: './shop-product-details.component.html',
   styleUrls: ['./shop-product-details.component.scss']
 })
-export class ShopProductDetailsComponent implements OnInit {
-
+export class ShopProductDetailsComponent implements OnInit, OnDestroy {
+  product: Product;
   error = false;
   errorMessage = '';
-
-  product: Product;
+  private urlSubscription: Subscription;
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -36,6 +37,14 @@ export class ShopProductDetailsComponent implements OnInit {
       const id = this.activatedRoute.snapshot.paramMap.get('id');
       this.fetchProduct(Number(id));
     }
+    this.urlSubscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
+      const id = this.activatedRoute.snapshot.paramMap.get('id');
+      this.fetchProduct(Number(id));
+    });
+  }
+
+  ngOnDestroy() {
+    this.urlSubscription.unsubscribe();
   }
 
   getImageSource(product: Product): string {

@@ -4,7 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
+import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceArchiveService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
@@ -20,18 +20,23 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final PdfGenerator pdfGenerator;
     private final OrderService orderService;
+    private final InvoiceArchiveService invoiceArchiveService;
 
     @Autowired
-    public PdfGeneratorServiceImpl(PdfGenerator pdfGenerator, OrderService orderService) {
+    public PdfGeneratorServiceImpl(PdfGenerator pdfGenerator, OrderService orderService, InvoiceArchiveService invoiceArchiveService) {
         this.pdfGenerator = pdfGenerator;
         this.orderService = orderService;
+        this.invoiceArchiveService = invoiceArchiveService;
     }
 
 
     @Override
     public byte[] createPdfInvoiceOperator(Invoice invoice) {
         LOGGER.trace("createPdfInvoiceOperator({})", invoice);
-        return pdfGenerator.generatePdf(invoice, null);
+        if (!this.invoiceArchiveService.invoiceExistsByInvoiceNumber(invoice.getInvoiceNumber())) {
+            return this.invoiceArchiveService.createInvoiceArchive(invoice.getInvoiceNumber(), pdfGenerator.generatePdf(invoice, null));
+        }
+        return this.invoiceArchiveService.findByInvoiceNumber(invoice.getInvoiceNumber());
     }
 
 
@@ -39,13 +44,19 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     public byte[] createPdfInvoiceCustomerFromInvoice(Invoice invoice) {
         LOGGER.trace("createPdfInvoiceCustomerFromInvoice({})", invoice);
         Order order = this.orderService.getOrderByInvoice(invoice);
-        return pdfGenerator.generatePdf(order.getInvoice(), order);
+        if (!this.invoiceArchiveService.invoiceExistsByInvoiceNumber(invoice.getInvoiceNumber())) {
+            return this.invoiceArchiveService.createInvoiceArchive(invoice.getInvoiceNumber(), pdfGenerator.generatePdf(order.getInvoice(), order));
+        }
+        return this.invoiceArchiveService.findByInvoiceNumber(invoice.getInvoiceNumber());
     }
 
     @Override
     public byte[] createPdfInvoiceCustomer(Order order) {
         LOGGER.trace("createPdfInvoiceCustomer({})", order);
-        return pdfGenerator.generatePdf(order.getInvoice(), order);
+        if (!this.invoiceArchiveService.invoiceExistsByInvoiceNumber(order.getInvoice().getInvoiceNumber())) {
+            return this.invoiceArchiveService.createInvoiceArchive(order.getInvoice().getInvoiceNumber(), pdfGenerator.generatePdf(order.getInvoice(), order));
+        }
+        return this.invoiceArchiveService.findByInvoiceNumber(order.getInvoice().getInvoiceNumber());
     }
 
 
@@ -56,17 +67,15 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
             throw new ServiceException("Diese Rechnung kann nicht storniert werden");
         }
         if (invoice.getCustomerId() == null) {
-            return pdfGenerator.generatePdf(invoice, null);
+            if (!this.invoiceArchiveService.invoiceExistsByInvoiceNumber(invoice.getInvoiceNumber())) {
+                return this.invoiceArchiveService.createInvoiceArchive(invoice.getInvoiceNumber(), pdfGenerator.generatePdf(invoice, null));
+            }
+            return this.invoiceArchiveService.findByInvoiceNumber(invoice.getInvoiceNumber());
         }
-        return pdfGenerator.generatePdf(invoice, this.orderService.getOrderByInvoice(invoice));
+        if (!this.invoiceArchiveService.invoiceExistsByInvoiceNumber(invoice.getInvoiceNumber())) {
+            return this.invoiceArchiveService.createInvoiceArchive(invoice.getInvoiceNumber(), pdfGenerator.generatePdf(invoice, this.orderService.getOrderByInvoice(invoice)));
+        }
+        return this.invoiceArchiveService.findByInvoiceNumber(invoice.getInvoiceNumber());
     }
 
-    @Override
-    public byte[] createPdfCanceledInvoiceCustomer(Order order) {
-        LOGGER.trace("createPdfCanceledInvoiceCustomer({})", order);
-        if (order.getInvoice().getInvoiceType() != InvoiceType.canceled) {
-            throw new ServiceException("Diese Rechnung kann nicht storniert werden");
-        }
-        return pdfGenerator.generatePdf(order.getInvoice(), order);
-    }
 }

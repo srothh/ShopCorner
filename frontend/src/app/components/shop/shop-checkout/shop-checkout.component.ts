@@ -16,6 +16,7 @@ import {PaypalService} from '../../../services/paypal.service';
 import {Router} from '@angular/router';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
+import {ProductService} from '../../../services/product/product.service';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -31,7 +32,6 @@ export class ShopCheckoutComponent implements OnInit {
   cart: Cart;
   cancellationPeriod: CancellationPeriod;
   loading: boolean;
-
   error = false;
   errorMessage = '';
 
@@ -89,15 +89,21 @@ export class ShopCheckoutComponent implements OnInit {
   }
 
   proceedToPay() {
-    this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer);
-    this.paypalService.createPayment(order).subscribe((redirectUrl) => {
-      window.location.href = redirectUrl;
-      this.loading = true;
-    }, error => {
-      this.error = true;
-      this.errorMessage = error;
+    const mappedProducts = this.products.map(ProductService.productMapper);
+    mappedProducts.forEach((product) => {
+      if (product.hasExpiration && product.hasExpired){
+        this.error = true;
+        this.errorMessage = `Das Produkt "${product.name}" ist nicht verfügbar. Bitte setzen Sie ihren Einkauf ohne dieses Produkt fort.`;
+      }
     });
+    if (!this.error) {
+      this.creatInvoiceDto();
+      const order: Order = new Order(0, this.invoiceDto, this.customer);
+      this.paypalService.createPayment(order).subscribe((redirectUrl) => {
+        window.location.href = redirectUrl;
+        this.loading = true;
+      });
+    }
   }
 
   creatInvoiceDto() {
@@ -136,6 +142,7 @@ export class ShopCheckoutComponent implements OnInit {
       this.errorMessage = error;
     }));
   }
+
 
 
 }

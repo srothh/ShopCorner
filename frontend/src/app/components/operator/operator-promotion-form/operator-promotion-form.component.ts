@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Promotion} from '../../../dtos/promotion';
 import {PromotionService} from '../../../services/promotion.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-operator-promotion-form',
@@ -9,7 +10,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
   styleUrls: ['./operator-promotion-form.component.scss']
 })
 export class OperatorPromotionFormComponent implements OnInit {
-
+  @Output() operatorPromotionFormComponentSuccess: EventEmitter<any> = new EventEmitter();
   newPromotion: Promotion;
   today = new Date(Date.now());
   promotionForm: FormGroup;
@@ -44,10 +45,15 @@ export class OperatorPromotionFormComponent implements OnInit {
     this.newPromotion = new Promotion(0, this.promotionForm.controls.name.value, this.promotionForm.controls.discount.value,
       '', expDate, this.promotionForm.controls.code.value, this.promotionForm.controls.minimum.value);
     this.promotionService.addPromotion(this.newPromotion).subscribe(() => {
+      this.onSuccess(false);
     }, error => {
       this.error = true;
       this.errorMessage = error;
     });
+  }
+
+  onSuccess(val: boolean) {
+    this.operatorPromotionFormComponentSuccess.emit(val);
   }
 
   vanishError() {

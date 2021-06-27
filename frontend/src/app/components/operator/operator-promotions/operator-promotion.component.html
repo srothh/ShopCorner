@@ -59,7 +59,7 @@
 </div>
 <div>
   <div *ngIf="form">
-  <app-operator-promotion-form></app-operator-promotion-form>
+  <app-operator-promotion-form (operatorPromotionFormComponentSuccess)="changeComponent($event)"></app-operator-promotion-form>
   </div>
 </div>
 
