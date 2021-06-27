@@ -65,7 +65,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.count();
     }
 
-
     @Override
     @Cacheable(value = "counts", key = "'customerInvoices'")
     public Long getCustomerInvoiceCount() {
@@ -123,6 +122,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         LOGGER.trace("createInvoice({})", invoice);
         validator.validateNewInvoice(invoice);
         validator.validateNewInvoiceItem(invoice.getItems());
+        calculateAmount(invoice);
         Set<InvoiceItem> items = invoice.getItems();
         invoice.setItems(null);
         LocalDateTime firstDateOfYear = LocalDateTime.now().toLocalDate().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay();
@@ -136,6 +136,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     }
 
-
+    private void calculateAmount(Invoice invoice) {
+        double total = 0;
+        for (InvoiceItem item : invoice.getItems()) {
+            total += item.getNumberOfItems()*item.getProduct().getPrice()*item.getProduct().getTaxRate().getCalculationFactor();
+        }
+        if (invoice.getAmount() != total) {
+            invoice.setAmount(total);
+        }
+    }
 
 }

@@ -16,6 +16,7 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
   constructor(private meService: MeService) { }
 
   ngOnInit(): void {
+    console.log(this.order.invoice);
   }
   downloadInvoice(event: Event, invoiceId: number, invoiceDate: string) {
     event.preventDefault();
