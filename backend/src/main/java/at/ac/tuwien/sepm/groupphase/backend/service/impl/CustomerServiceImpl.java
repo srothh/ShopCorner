@@ -171,7 +171,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer findCustomerById(Long id) {
-        LOGGER.trace("findAll()");
+        LOGGER.trace("findCustomerById({})", id);
         return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find Customer"));
     }
 
