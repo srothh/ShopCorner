@@ -58,7 +58,13 @@ export class OperatorStatisticComponent implements OnInit {
     this.end.setMonth(this.end.getMonth() + 1);
     this.end.setDate(this.end.getDate() - 1);
     this.startPicker = this.start.toISOString().split('T')[0];
-    this.endPicker = this.end.toISOString().split('T')[0];
+    if (this.end.getMonth() === 2) {
+      const tempDate = new Date(this.end);
+      tempDate.setDate(tempDate.getDate()+1);
+      this.endPicker = tempDate.toISOString().split('T')[0];
+    } else {
+      this.endPicker = this.end.toISOString().split('T')[0];
+    }
     this.loadInvoicesForTime();
   }
 
