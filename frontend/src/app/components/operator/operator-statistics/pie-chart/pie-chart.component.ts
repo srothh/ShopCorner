@@ -28,7 +28,7 @@ export class PieChartComponent implements OnInit {
     }
   };
   public chartLabels = ['Kunden', 'Betreiber'];
-  public percentageLabels = [];
+  public percentageLabels: string[];
   public chartType: ChartType = 'pie';
   public chartLegend = true;
   public chartColors: Color[] = [
@@ -48,8 +48,8 @@ export class PieChartComponent implements OnInit {
   }
 
   update(invoices: Invoice[]) {
-    this.invoices = invoices;
     this.percentageLabels = [];
+    this.invoices = invoices;
     let operatorAmount = 0;
     let customerAmount = 0;
     for (const invoice of this.invoices) {
@@ -62,10 +62,14 @@ export class PieChartComponent implements OnInit {
     operatorAmount = Math.round(operatorAmount * 100) / 100;
     customerAmount = Math.round(customerAmount * 100) / 100;
     const overallAmount = customerAmount + operatorAmount;
-    const opPercentage = operatorAmount / overallAmount * 100;
-    const custPercentage = customerAmount / overallAmount * 100;
-    this.percentageLabels.push(Math.round(custPercentage * 100) / 100 + '%');
-    this.percentageLabels.push(Math.round(opPercentage * 100) / 100 + '%');
+    console.log(overallAmount);
+    if (overallAmount > 0) {
+      const opPercentage = operatorAmount / overallAmount * 100;
+      const custPercentage = customerAmount / overallAmount * 100;
+      this.percentageLabels = [(Math.round(custPercentage * 100) / 100 + '%'), Math.round(opPercentage * 100) / 100 + '%'];
+    } else {
+      this.percentageLabels = ['Keine Daten verfügbar', 'Keine Daten verfügbar'];
+    }
     this.chartData = [{data: [customerAmount, operatorAmount], label: 'Amount'}];
     setTimeout(() => {
       if (this.chart && this.chart.chart && this.chart.chart.config) {
