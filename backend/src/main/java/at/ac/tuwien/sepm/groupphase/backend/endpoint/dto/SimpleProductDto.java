@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 
 import javax.validation.constraints.DecimalMin;
@@ -19,6 +18,7 @@ public class SimpleProductDto {
     @DecimalMin(value = "0.0", message = "Preis muss mindestens 0€ betragen")
     private Double price;
     private TaxRate taxRate;
+    private Long saleCount;
     private boolean deleted;
 
 
@@ -73,41 +73,43 @@ public class SimpleProductDto {
         this.deleted = deleted;
     }
 
+    public Long getSaleCount() {
+        return saleCount;
+    }
+
+    public void setSaleCount(Long saleCount) {
+        this.saleCount = saleCount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SimpleProductDto)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        SimpleProductDto simpleProductDto = (SimpleProductDto) o;
-        return Objects.equals(id, simpleProductDto.id)
-            && Objects.equals(name, simpleProductDto.name)
-            && Objects.equals(description, simpleProductDto.description)
-            && Objects.equals(price, simpleProductDto.price)
-            && Objects.equals(taxRate, simpleProductDto.taxRate);
+        SimpleProductDto that = (SimpleProductDto) o;
+        return deleted == that.deleted && Objects.equals(id, that.id) && Objects.equals(name, that.name)
+            && Objects.equals(description, that.description) && Objects.equals(price, that.price)
+            && Objects.equals(taxRate, that.taxRate) && Objects.equals(saleCount, that.saleCount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, taxRate);
+        return Objects.hash(id, name, description, price, taxRate, saleCount, deleted);
     }
 
     @Override
     public String toString() {
         return "SimpleProductDto{"
-            +
-            "id=" + id
-            +
-            ", name='" + name + '\''
-            +
-            ", description='" + description + '\''
-            +
-            ", amount=" + price
-            +
-            ", taxRate=" + taxRate
-            +
-            '}';
+            + "id=" + id
+            + ", name='" + name + '\''
+            + ", description='" + description + '\''
+            + ", price=" + price
+            + ", taxRate=" + taxRate
+            + ", saleCount=" + saleCount
+            + ", deleted=" + deleted
+            + '}';
     }
 }

@@ -15,6 +15,9 @@ import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Set;
 
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
@@ -29,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -86,11 +90,10 @@ public class InvoiceEndpoint {
      *
      * @return List with all SimpleInvoices
      */
-
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
+    @Operation(summary = "Retrieve all invoices of type for page", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<SimpleInvoiceDto> getAllInvoices(@Valid PaginationRequestDto paginationRequestDto, @RequestParam("invoiceType") InvoiceType invoiceType) {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
@@ -104,6 +107,24 @@ public class InvoiceEndpoint {
         return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCanceledInvoiceCount());
     }
 
+    /**
+     * Get all invoices in a given time period.
+     *
+     * @param start of time period
+     * @param end of time period
+     * @return List with all Invoices in given time period
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping(value = "/stats")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Retrieve all invoices in time period", security = @SecurityRequirement(name = "apiKey"))
+    public List<SimpleInvoiceDto> getAllByDate(@RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Calendar start,
+                                               @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Calendar end) {
+        LOGGER.info("GET api/v1/invoices/stats?start={}&end={}", start, end);
+        LocalDateTime starting = LocalDateTime.of(start.get(Calendar.YEAR), start.get(Calendar.MONTH) + 1, start.get(Calendar.DATE), 0, 0);
+        LocalDateTime ending = LocalDateTime.of(end.get(Calendar.YEAR), end.get(Calendar.MONTH) + 1, end.get(Calendar.DATE), 23, 59);
+        return invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.findByDate(starting, ending));
+    }
 
     /**
      * Creates a database entry and generates a pdf.
@@ -135,12 +156,13 @@ public class InvoiceEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(value = "/{id}")
     @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
-    public DetailedInvoiceDto resetInvoiceCanceled(@Valid @RequestBody DetailedInvoiceDto invoiceDto, @PathVariable("id") Long invoiceId) {
+    public DetailedInvoiceDto setInvoiceCanceled(@Valid @RequestBody DetailedInvoiceDto invoiceDto, @PathVariable("id") Long invoiceId) {
         LOGGER.info("PATCH /api/v1/invoices/{}: {}", invoiceId, invoiceDto);
         if (!invoiceDto.getId().equals(invoiceId)) {
             throw new ServiceException("InvoiceId ungültig");
         }
         Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(this.invoiceService.findOneById(invoiceId));
+        this.pdfGeneratorService.setPdfInvoiceCanceled(canceledInvoice);
         return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice);
     }
 

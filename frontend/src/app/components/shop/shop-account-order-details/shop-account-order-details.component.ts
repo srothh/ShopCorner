@@ -10,6 +10,11 @@ import {Globals} from '../../../global/globals';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {CartService} from '../../../services/cart.service';
 import {MeService} from '../../../services/me.service';
+import {NgdbModalActionComponent} from '../../common/ngbd-modal-action/ngdb-modal-action.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Customer} from '../../../dtos/customer';
+import {Address} from '../../../dtos/address';
+import {Invoice} from '../../../dtos/invoice';
 
 @Component({
   selector: 'app-shop-account-order-details',
@@ -28,31 +33,42 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
   year: string;
   time: string;
 
+  isCanceled = false;
+  isCancelable = false;
   constructor(private route: ActivatedRoute, private orderService: OrderService,
               private router: Router,
               private productService: ProductService,
               private globals: Globals,
               private cartGlobals: CartGlobals,
               private cartService: CartService,
-              private meService: MeService) { }
+              private meService: MeService,
+              private modalService: NgbModal) { }
 
   ngOnInit(): void {
+    const address = new Address(0, '', 0, '', 0, '');
+    const invoice = new Invoice();
+    invoice.date = '';
+    invoice.amount = 0;
+    this.order = new Order(0, invoice, new Customer(0, '', '', '', '', address, ''), null);
+    this.cancellationPeriod();
     const id = +this.route.snapshot.paramMap.get('id');
 
     this.orderService.getOrderById(id)
-      .subscribe(order => this.order = order, error => {
-        this.error = true;
-        this.errorMessage = error;
-      }, ()=>{
+      .subscribe(order => {
+        this.order = order;
+        if (order.invoice.invoiceType === 'canceled') {
+          this.isCanceled = true;
+        }
+      }, _ => {
+          this.router.navigate(['404']);
+      }, () => {
           this.items = this.order.invoice.items;
           this.time = this.order.invoice.date.substring(11);
           this.day = this.order.invoice.date.substring(8,10);
           this.month = this.order.invoice.date.substring(5,7);
           this.year = this.order.invoice.date.substring(0,4);
-
     });
   }
-
 
   vanishError() {
     this.error = false;
@@ -116,4 +132,40 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
     }
     return 'Error: no picture available';
   }
+
+
+  attemptToCancelInvoiceModal() {
+    const modalRef = this.modalService.open(NgdbModalActionComponent);
+    modalRef.componentInstance.title = 'Stornieren';
+    modalRef.componentInstance.body = 'Wollen Sie die Rechnung unwiderruflich stornieren?';
+    modalRef.componentInstance.actionButtonTitle = 'Stornieren';
+    modalRef.componentInstance.actionButtonStyle = 'danger';
+    modalRef.componentInstance.action = () => {
+      this.canceledOrder();
+    };
+  }
+
+  canceledOrder() {
+    this.orderService.setOrderCanceled(this.order).subscribe(() => {
+      this.isCanceled = true;
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
+    });
+  }
+
+  cancellationPeriod() {
+    this.orderService.getCancellationPeriod().subscribe((item) => {
+      const date = this.order.invoice.date;
+      const invoiceDate = new Date(date);
+      const today = new Date();
+      invoiceDate.setDate(invoiceDate.getDate() + item.days);
+      this.isCancelable = invoiceDate > today;
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
+    });
+  }
+
+
 }

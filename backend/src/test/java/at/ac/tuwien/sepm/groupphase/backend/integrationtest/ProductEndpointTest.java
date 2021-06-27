@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
@@ -10,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -17,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 
@@ -316,4 +317,56 @@ public class ProductEndpointTest implements TestData {
     }
 
 
+    @Test
+    public void givenSeveralProductsWithTaxRateAndACategory_whenFindByCategory_getListWithOnlySearchedFor() throws Exception {
+        TaxRate newTaxRate = taxRateRepository.save(taxRate);
+        Category newCategory = categoryRepository.save(category);
+        product.setTaxRate(newTaxRate);
+        product.setCategory(newCategory);
+        product2.setName("product2");
+        product2.setPrice(20.0);
+        product2.setCategory(newCategory);
+        product2.setTaxRate(newTaxRate);
+        product3.setName("product3");
+        product3.setPrice(20.0);
+        product3.setTaxRate(newTaxRate);
+        Product newProduct = productRepository.save(product);
+        Product newProduct2 = productRepository.save(product2);
+        Product newProduct3 = productRepository.save(product3);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(PRODUCTS_BASE_URI + "/stats?categoryId=" + newCategory.getId())
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        List<Product> products = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>() {
+            });
+        assertAll(
+            () -> assertEquals(2, products.size()),
+            () -> assertEquals(newProduct, products.get(0)),
+            () -> assertEquals(newProduct2, products.get(1))
+        );
+
+        MvcResult mvcResultAll = this.mockMvc.perform(get(PRODUCTS_BASE_URI + "/stats?categoryId=" + (-1L))
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse responseAll = mvcResultAll.getResponse();
+        assertNotNull(responseAll);
+        assertEquals(HttpStatus.OK.value(), responseAll.getStatus());
+
+        List<Product> productsAll = objectMapper.readValue(responseAll.getContentAsString(),
+            new TypeReference<>() {
+            });
+        assertAll(
+            () -> assertEquals(3, productsAll.size()),
+            () -> assertEquals(newProduct, productsAll.get(0)),
+            () -> assertEquals(newProduct2, productsAll.get(1)),
+            () -> assertEquals(newProduct3, productsAll.get(2))
+        );
+    }
 }

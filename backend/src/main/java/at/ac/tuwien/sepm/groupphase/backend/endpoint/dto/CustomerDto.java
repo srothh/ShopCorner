@@ -23,6 +23,9 @@ public class CustomerDto {
     private AddressDto address;
 
     private String phoneNumber;
+    private boolean deleted;
+
+
 
     public CustomerDto() {
     }
@@ -82,5 +85,13 @@ public class CustomerDto {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

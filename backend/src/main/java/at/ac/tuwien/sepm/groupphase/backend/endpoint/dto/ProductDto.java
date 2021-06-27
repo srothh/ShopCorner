@@ -16,7 +16,7 @@ public class ProductDto {
     @Size(min = 3, max = 50, message = "Name muss mindestens 3 und maximal 50 Zeichen enthalten")
     private String name;
     @Length(max = 200, message = "Beschreibung darf maximal 200 Zeichen enthalten")
-    @NotBlank
+    @NotBlank(message = "Beschreibung darf nicht leer sein")
     private String description;
     @DecimalMin(value = "0.0", message = "Preis kann nicht 0€ sein")
     private Double price;

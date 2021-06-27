@@ -1,13 +1,17 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CancellationPeriodDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CancellationPeriodMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
+import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
@@ -19,6 +23,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,6 +38,8 @@ import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.security.Principal;
 
 @RestController
@@ -42,13 +50,15 @@ public class OrderEndpoint {
     private final OrderMapper orderMapper;
     private final OrderService orderService;
     private final CancellationPeriodMapper cancellationPeriodMapper;
+    private final PdfGeneratorService pdfGeneratorService;
 
 
     @Autowired
-    public OrderEndpoint(OrderMapper orderMapper, OrderService orderService, CancellationPeriodMapper cancellationPeriodMapper) {
+    public OrderEndpoint(OrderMapper orderMapper, OrderService orderService, CancellationPeriodMapper cancellationPeriodMapper, PdfGeneratorService pdfGeneratorService) {
         this.orderMapper = orderMapper;
         this.orderService = orderService;
         this.cancellationPeriodMapper = cancellationPeriodMapper;
+        this.pdfGeneratorService = pdfGeneratorService;
     }
 
     /**
@@ -61,7 +71,7 @@ public class OrderEndpoint {
     @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Place a new order", security = @SecurityRequirement(name = "apiKey"))
-    public OrderDto placeNewOrder(@Valid @RequestBody OrderDto orderDto, @CookieValue(name = "sessionId", defaultValue = "default") String sessionId) {
+    public OrderDto placeNewOrder(@Valid @RequestBody OrderDto orderDto, @CookieValue(name = "sessionId", defaultValue = "default") String sessionId) throws IOException {
         LOGGER.info("POST " + BASE_URL);
         return orderMapper.orderToOrderDto(orderService.placeNewOrder(orderMapper.orderDtoToOrder(orderDto), sessionId));
     }
@@ -130,6 +140,33 @@ public class OrderEndpoint {
     public CancellationPeriodDto getCancellationPeriod() throws IOException {
         LOGGER.info("GET " + BASE_URL + "/settings");
         return cancellationPeriodMapper.cancellationPeriodToCancellationPeriodDto(orderService.getCancellationPeriod());
+    }
+
+    /**
+     * Set an order to canceled in the database.
+     *
+     * @param orderId id of the order which should be updated in the database
+     * @param orderDto order which should be updated in the database
+     * @return DetailedInvoiceDto with the updated invoice
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE", "ROLE_CUSTOMER"})
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping(value = "/{id}")
+    @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
+    public OrderDto setOrderCanceled(@Valid @RequestBody OrderDto orderDto, @PathVariable("id") Long orderId) throws IOException {
+        LOGGER.info("PATCH /api/v1/setOrderCanceled/{}: {}", orderId, orderDto);
+        if (!orderDto.getId().equals(orderId)) {
+            throw new ServiceException("Bad Request, orderId is not valid");
+        }
+        Order order = this.orderService.findOrderById(orderId);
+        int days = this.orderService.getCancellationPeriod().getDays();
+        Duration duration = Duration.between(order.getInvoice().getDate(), LocalDateTime.now());
+        if (duration.toDays() > days) {
+            throw new ServiceException("Stornofrist ist vorbei");
+        }
+        Order canceledOrder = this.orderService.setInvoiceCanceled(order);
+        this.pdfGeneratorService.setPdfOrderCanceled(canceledOrder);
+        return orderMapper.orderToOrderDto(canceledOrder);
     }
 
 

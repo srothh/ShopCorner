@@ -38,6 +38,10 @@ public class Customer {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    private boolean deleted;
+
+
+
     public Customer() {
     }
 
@@ -114,6 +118,14 @@ public class Customer {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

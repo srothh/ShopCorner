@@ -5,13 +5,16 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.CancellationPeriod;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.OrderServiceImpl;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.MockitoRule;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,8 +29,10 @@ import static org.mockito.Mockito.doThrow;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest
-@RunWith(MockitoJUnitRunner.class)
 public class OrderServiceTest implements TestData {
+
+    @Rule
+    private final MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     Order order;
@@ -36,10 +41,12 @@ public class OrderServiceTest implements TestData {
     private OrderServiceImpl orderService;
     @Mock
     private CancellationPeriod cancellationPeriod;
-    private UUID sessionID = UUID.randomUUID();
+    private final UUID sessionID = UUID.randomUUID();
+    @Mock
+    private Page<Order> orders;
 
     @Test
-    public void placeNewOrderWithInvoice_thenReturnOrder() {
+    public void placeNewOrderWithInvoice_thenReturnOrder() throws IOException {
         doReturn(order).when(orderService).placeNewOrder(order, sessionID.toString());
     }
 
@@ -49,13 +56,13 @@ public class OrderServiceTest implements TestData {
     }
 
     @Test
-    public void whenPlaceNewOrderWithInvalidSessionId_thenThrowServiceException() {
+    public void whenPlaceNewOrderWithInvalidSessionId_thenThrowServiceException() throws IOException {
         doThrow(ServiceException.class).when(orderService).placeNewOrder(order, "default");
     }
 
     @Test
-    public void whenGetAllOrdersWithNoOrdersPersisted_thenThrowNullPointerException() {
-        doThrow(NullPointerException.class).when(orderService).getAllOrders(0,10);
+    public void whenGetAllOrdersWithNoOrdersPersisted_thenReturnEmptyPage() {
+        doReturn(orders).when(orderService).getAllOrders(0,10);
     }
 
 }

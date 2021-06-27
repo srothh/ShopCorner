@@ -104,7 +104,8 @@ export class OperatorProductFormComponent implements OnInit {
       false,
       null,
       null,
-      false);
+      false,
+      0);
   }
 
   setFormProperties(): void {

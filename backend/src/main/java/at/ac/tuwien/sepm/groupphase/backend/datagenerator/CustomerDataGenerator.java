@@ -36,13 +36,13 @@ public class CustomerDataGenerator {
     @Transactional
     @PostConstruct
     public void generateOperators() {
-        if (customerRepository.findAll().size() > 0) {
+        if (customerRepository.count() > 0) {
             LOGGER.debug("customers already generated");
         } else {
             Faker faker = new Faker(new Locale("de-AT"));
             Set<String> loginNames = new HashSet<>();
             Set<String> emails = new HashSet<>();
-            for (int i = 0; i < 500; i++) {
+            for (int i = 0; i < 1000; i++) {
                 String email = faker.internet().emailAddress();
                 String loginName = faker.name().username();
                 if (loginNames.add(loginName) && emails.add(email)) {

@@ -13,7 +13,7 @@ import {Globals} from '../../../global/globals';
 export class ShopHomeComponent implements OnInit {
   products: Product[];
   page = 0;
-  pageSize = 18;
+  pageSize = 15;
   collectionSize = 0;
 
   bannerTitle = this.globals.defaultSettings.bannerTitle;

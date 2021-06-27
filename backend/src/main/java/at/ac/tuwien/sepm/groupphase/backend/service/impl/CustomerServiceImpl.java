@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
+import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,15 +37,22 @@ public class CustomerServiceImpl implements CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final AddressService addressService;
+    private final OrderService orderService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final Validator validator;
 
     @Autowired
-    public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService, Validator validator) {
+    public CustomerServiceImpl(PasswordEncoder passwordEncoder,
+                               CustomerRepository customerRepository,
+                               AddressRepository addressRepository,
+                               AddressService addressService,
+                               Validator validator,
+                               OrderService orderService) {
         this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository;
         this.addressService = addressService;
         this.validator = validator;
+        this.orderService = orderService;
     }
 
     @Override
@@ -63,10 +71,10 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findCustomerByLoginName(String loginName) {
         LOGGER.trace("findCustomerByLoginName({})", loginName);
         Customer customer = customerRepository.findByLoginName(loginName);
-        if (customer != null) {
+        if (customer != null && !customer.isDeleted()) {
             return customer;
         }
-        throw new NotFoundException(String.format("Kunde mit Username %s konnte nicht gefunden werden", loginName));
+        throw new NotFoundException(String.format("User mit dem Namen %s konnte nicht gefunden werden", loginName));
     }
 
     @Caching(evict = {
@@ -76,8 +84,17 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteCustomerByLoginName(String loginName) {
         LOGGER.trace("deleteCustomerByLoginName({})", loginName);
+        boolean softDelete = false;
         Customer customer = customerRepository.findByLoginName(loginName);
-        customerRepository.delete(customer);
+        softDelete = this.orderService.findAllOrders()
+            .stream()
+            .anyMatch(order -> order.getCustomer().getId().equals(customer.getId()));
+        if (!softDelete) {
+            customerRepository.delete(customer);
+        } else {
+            customer.setDeleted(true);
+            customerRepository.save(customer);
+        }
     }
 
     @Transactional
