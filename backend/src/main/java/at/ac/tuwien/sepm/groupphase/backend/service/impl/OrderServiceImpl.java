@@ -75,7 +75,9 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("invalid sessionId");
         }
         order.setInvoice(this.invoiceService.createInvoice(order.getInvoice()));
+        order.getInvoice().setOrderNumber(Long.toHexString(order.getInvoice().getId()));
         mailService.sendMail(order, getCancellationPeriod());
+        mailService.sendMail(order);
         updateProductsInOrder(order);
         return orderRepository.save(order);
     }

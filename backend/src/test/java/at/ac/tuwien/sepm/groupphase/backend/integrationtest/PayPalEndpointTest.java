@@ -41,8 +41,6 @@ public class PayPalEndpointTest implements TestData {
     @Autowired
     private MockMvc mockMvc;
 
-
-
     @Autowired
     private ObjectMapper objectMapper;
 
