@@ -89,7 +89,7 @@ export class OperatorInvoiceComponent implements OnInit {
     return false;
   }
   canceledInvoice() {
-    this.invoiceService.setInvoiceCanceled(this.detailViewInvoice).subscribe((item) => {
+    this.invoiceService.setInvoiceCanceled(this.detailViewInvoice).subscribe(() => {
     }, (error) => {
       this.error = true;
       this.errorMessage = error.error;

@@ -3,14 +3,16 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.*;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.*;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OrderRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +33,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,16 +62,10 @@ public class MeEndpointTest implements TestData {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private AddressMapper addressMapper;
-
-    @Autowired
     private JwtTokenizer jwtTokenizer;
 
     @Autowired
     private CustomerRepository customerRepository;
-
-    @Autowired
-    private InvoiceMapper invoiceMapper;
 
     @Autowired
     private OrderRepository orderRepository;
@@ -75,6 +73,17 @@ public class MeEndpointTest implements TestData {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
+    @Autowired
+    private InvoiceItemRepository invoiceItemRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private TaxRateRepository taxRateRepository;
 
     @Autowired
     private SecurityProperties securityProperties;
@@ -86,6 +95,11 @@ public class MeEndpointTest implements TestData {
     private final Customer customer2 = new Customer("mail@gmail.com", TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, "login", address, 0L, "");
     private final Customer customer3 = new Customer("somemail@gmail.com", TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, "login3", address, 0L, "");
     private final Invoice invoice = new Invoice();
+    private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
+    private final InvoiceItem invoiceItem = new InvoiceItem();
+    private final Product product = new Product();
+    private final Category category = new Category();
+    private final TaxRate taxRate = new TaxRate();
 
     @BeforeEach
     @CacheEvict(value = "counts", allEntries = true)
@@ -93,9 +107,43 @@ public class MeEndpointTest implements TestData {
         orderRepository.deleteAll();
         customerRepository.deleteAll();
         invoiceRepository.deleteAll();
+        invoiceItemRepository.deleteAll();
         Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
         Customer customer2 = new Customer("mail@gmail.com", TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, "login", address, 0L, "");
 
+        invoiceRepository.deleteAll();
+        categoryRepository.deleteAll();
+        taxRateRepository.deleteAll();
+        productRepository.deleteAll();
+        invoiceRepository.deleteAll();
+
+        product.setId(0L);
+        product.setName(TEST_PRODUCT_NAME);
+        product.setDescription(TEST_PRODUCT_DESCRIPTION);
+        product.setPrice(TEST_PRODUCT_PRICE);
+
+        category.setId(1L);
+        category.setName(TEST_CATEGORY_NAME);
+
+        taxRate.setId(1L);
+        taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
+        taxRate.setCalculationFactor((TEST_TAX_RATE_PERCENTAGE/100)+1);
+
+        // product
+        product.setId(0L);
+        product.setName(TEST_PRODUCT_NAME);
+        product.setDescription(TEST_PRODUCT_DESCRIPTION);
+        product.setPrice(TEST_PRODUCT_PRICE);
+        product.setTaxRate(taxRateRepository.save(taxRate));
+        product.setCategory(categoryRepository.save(category));
+
+        // invoiceItem
+        invoiceItemKey.setInvoiceId(null);
+        invoiceItemKey.setProductId(product.getId());
+
+        invoiceItem.setId(invoiceItemKey);
+        invoiceItem.setProduct(productRepository.save(product));
+        invoiceItem.setNumberOfItems(10);
     }
 
 
@@ -258,7 +306,15 @@ public class MeEndpointTest implements TestData {
         invoice.setInvoiceNumber("1456");
         invoice.setAmount(150.0);
         invoice.setCustomerId(newCustomer.getId());
+        invoice.setOrderNumber("asd");
+        Set<InvoiceItem> items = new HashSet<>();
+        items.add(invoiceItem);
+        invoice.setItems(null);
         Invoice newInvoice = invoiceRepository.save(invoice);
+        for (InvoiceItem item : items) {
+            item.setInvoice(newInvoice);
+            invoiceItemRepository.save(item);
+        }
         Order order = new Order(invoice, newCustomer);
         orderRepository.save(order);
 
