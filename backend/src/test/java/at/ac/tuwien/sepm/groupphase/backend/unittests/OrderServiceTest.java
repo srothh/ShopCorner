@@ -44,7 +44,6 @@ public class OrderServiceTest implements TestData {
     private final UUID sessionID = UUID.randomUUID();
     @Mock
     private Page<Order> orders;
-    private final UUID sessionID = UUID.randomUUID();
 
     @Test
     public void placeNewOrderWithInvoice_thenReturnOrder() throws IOException {
