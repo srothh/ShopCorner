@@ -14,7 +14,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceArchivedRepository
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
-import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceArchiveService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,8 +29,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest

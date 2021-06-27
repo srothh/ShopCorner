@@ -245,8 +245,7 @@ public class MeEndpointTest implements TestData {
             () -> assertEquals(1, paginationDto.getTotalItemCount()),
             () -> assertNotNull(checkOrder),
             () -> assertEquals(newOrder.getCustomer().getName(), customerMapper.dtoToCustomer(checkOrder.getCustomer()).getName()),
-            () -> assertEquals(newOrder.getInvoice().getAmount(), checkOrder.getInvoice().getAmount()),
-            () -> assertEquals(newOrder.getInvoice().getDate(), checkOrder.getInvoice().getDate())
+            () -> assertEquals(newOrder.getInvoice().getAmount(), checkOrder.getInvoice().getAmount())
         );
     }
 
