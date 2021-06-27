@@ -6,11 +6,11 @@ import javax.validation.constraints.NotNull;
 
 public class UpdatePasswordDto {
 
-    @NotNull(message = "oldPassword must not be null")
-    @NotBlank
+    @NotNull(message = "Altes passwort darf nicht null sein")
+    @NotBlank(message = "Altes passwort darf nicht leer sein")
     private String oldPassword;
-    @NotNull(message = "newPassword must not be null")
-    @NotBlank
+    @NotNull(message = "Neues passwort darf nicht null sein")
+    @NotBlank(message = "Neues passwort darf nicht leer sein")
     private String newPassword;
 
     public UpdatePasswordDto(){}

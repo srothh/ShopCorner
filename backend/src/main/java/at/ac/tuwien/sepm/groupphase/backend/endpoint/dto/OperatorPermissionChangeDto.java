@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class OperatorPermissionChangeDto {
 
-    @NotNull(message = "Permissions must not be null")
+    @NotNull(message = "Berechtigungslevel darf nicht null sein")
     @Enumerated(EnumType.STRING)
     private Permissions permissions;
 

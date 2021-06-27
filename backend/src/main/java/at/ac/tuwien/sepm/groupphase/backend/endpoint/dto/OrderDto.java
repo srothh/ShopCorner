@@ -6,10 +6,10 @@ import javax.validation.constraints.NotNull;
 public class OrderDto {
     private Long id;
     @Valid
-    @NotNull
+    @NotNull(message = "Kunde darf nicht null sein")
     private CustomerDto customer;
     @Valid
-    @NotNull
+    @NotNull(message = "Rechnung darf nicht null sein")
     private DetailedInvoiceDto invoice;
     private PromotionDto promotion;
 
