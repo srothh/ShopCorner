@@ -158,7 +158,7 @@ public class OrderEndpoint {
         if (!orderDto.getId().equals(orderId)) {
             throw new ServiceException("Bad Request, orderId is not valid");
         }
-        Order order = this.orderService.getOrderById(orderId);
+        Order order = this.orderService.findOrderById(orderId);
         int days = this.orderService.getCancellationPeriod().getDays();
         Duration duration = Duration.between(order.getInvoice().getDate(), LocalDateTime.now());
         if (duration.toDays() > days) {

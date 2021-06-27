@@ -44,14 +44,6 @@ public interface OrderService {
      */
     Order findOrderById(Long id);
 
-    /**
-     * Retrieves a order by id from the database.
-     *
-     * @param orderId The id of the Order
-     * @return the order by id
-     * @throws RuntimeException upon encountering errors with the database
-     */
-    //Order getOrderById(Long orderId);
 
     /**
      * Updates the given order in the database to canceled.

@@ -164,11 +164,6 @@ public class OrderServiceImpl implements OrderService {
         return new CancellationPeriod(days);
     }
 
-    @Override
-    public Order getOrderById(Long orderId) {
-        return this.orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Konnte gewünschte Bestellung nicht finde"));
-    }
-
 
     @Caching(evict = {
         @CacheEvict(value = "orderPages", allEntries = true),
