@@ -39,7 +39,15 @@ export class Globals {
     title: 'ShopCorner',
     logo: 'https://i.imgur.com/zMBx1FY.png',
     bannerTitle: 'ShopCorner',
-    bannerText: 'Willkommen bei ShopCorner!'
+    bannerText: 'Willkommen bei ShopCorner!',
+    street: 'Musterstrasse',
+    houseNumber: '23',
+    stairNumber: 3,
+    doorNumber: '15A',
+    postalCode: 1220,
+    city: 'Wien',
+    phoneNumber: '+436991234567',
+    email: 'musteremail@shop.com',
   };
 
   private findBackendUrl(): string {
