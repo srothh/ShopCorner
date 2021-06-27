@@ -13,7 +13,7 @@ public interface PromotionService {
      *
      * @param promotion the promotion to add
      * @return the promotion added
-     * @throws RuntimeException upon encountering errors with the database
+     * @throws RuntimeException    upon encountering errors with the database
      * @throws ValidationException when the promotion is invalid
      */
     Promotion addNewPromotion(Promotion promotion);
@@ -43,4 +43,12 @@ public interface PromotionService {
      * @throws RuntimeException upon encountering errors with the database
      */
     List<Promotion> findAll();
+
+    /**
+     * Finds a promotion based on its code.
+     *
+     * @param code THe code of the promotion
+     * @return The promotion as found in the datastore
+     */
+    Promotion findPromotionByCode(String code);
 }

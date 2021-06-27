@@ -42,9 +42,14 @@ export class PromotionService {
     return this.httpClient.get<Pagination<Promotion>>(this.promotionBaseUri, {params, headers: this.getHeadersForOperator()});
   }
 
+  getPromotionByCode(code: string) {
+    return this.httpClient.get<Promotion>(this.promotionBaseUri + '/' + code);
+  }
+
 
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
+
 }

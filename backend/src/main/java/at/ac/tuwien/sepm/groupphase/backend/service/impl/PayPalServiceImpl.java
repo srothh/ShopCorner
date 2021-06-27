@@ -35,6 +35,8 @@ public class PayPalServiceImpl implements PayPalService {
     private final PayPalProperties payPalProperties;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final ConfirmedPaymentRepository confirmedPaymentRepository;
+    private static final String successUrl = "http://localhost:4200/#/order-success";
+    private static final String cancelUrl = "http://localhost:4200/#/checkout";
 
     @Autowired
     public PayPalServiceImpl(PayPalProperties payPalProperties, ConfirmedPaymentRepository confirmedPaymentRepository) {
@@ -67,8 +69,12 @@ public class PayPalServiceImpl implements PayPalService {
         payment.setTransactions(transactions);
 
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:4200/#/checkout");
-        redirectUrls.setReturnUrl("http://localhost:4200/#/order-success");
+        redirectUrls.setCancelUrl(cancelUrl);
+        if (order.getPromotion() != null) {
+            redirectUrls.setReturnUrl(successUrl + "?promotion=" + order.getPromotion().getCode());
+        } else {
+            redirectUrls.setReturnUrl(successUrl);
+        }
 
         payment.setRedirectUrls(redirectUrls);
 
