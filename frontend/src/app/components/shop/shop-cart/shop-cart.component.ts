@@ -28,6 +28,12 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   constructor(private cartService: CartService, private globals: Globals, private cartGlobals: CartGlobals, private router: Router) {
   }
 
+  private static sanitizeHTML(str: string) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerText;
+  }
+
   ngOnInit(): void {
     this.products = this.cartGlobals.getCart();
     this.cartItems = [];
@@ -154,12 +160,6 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
    */
   vanishError() {
     this.error = false;
-  }
-
-  private static sanitizeHTML(str: string) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerText;
   }
 
   private fetchCart() {

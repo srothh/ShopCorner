@@ -19,6 +19,10 @@ export class OperatorPromotionFormComponent implements OnInit {
   constructor(private promotionService: PromotionService, private formBuilder: FormBuilder) {
   }
 
+  private static addLeadingZero(num: number): string {
+    return num < 10 ? '0' + num : num.toString();
+  }
+
   ngOnInit(): void {
 
     this.promotionForm = this.formBuilder.group({
@@ -58,9 +62,4 @@ export class OperatorPromotionFormComponent implements OnInit {
   vanishError() {
     this.error = false;
   }
-
-  private static addLeadingZero(num: number): string {
-    return num < 10 ? '0' + num : num.toString();
-  }
-
 }
