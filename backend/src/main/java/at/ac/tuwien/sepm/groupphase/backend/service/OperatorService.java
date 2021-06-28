@@ -21,6 +21,7 @@ public interface OperatorService extends UserDetailsService {
      * @param loginName the login name
      * @return a Spring Security user
      * @throws UsernameNotFoundException is thrown if the specified user does not exists
+     * @throws RuntimeException upon encountering errors with the database
      */
     @Override
     UserDetails loadUserByUsername(String loginName) throws UsernameNotFoundException;
@@ -29,7 +30,7 @@ public interface OperatorService extends UserDetailsService {
      * Find an operator based on the login name.
      *
      * @param loginName the login name
-     * @return an operator
+     * @return an operator with loginName
      * @throws NotFoundException when no operator with the id is found
      * @throws RuntimeException  upon encountering errors with the database
      */
@@ -48,10 +49,11 @@ public interface OperatorService extends UserDetailsService {
     /**
      * Returns page with all needed Operators.
      *
-     * @param page        which should be returned
+     * @param page which should be returned
      * @param permissions of Operators which should be returned
-     * @param pageCount   amount of operators per page
+     * @param pageCount amount of operators per page
      * @return Page with all Operators with right permission
+     * @throws RuntimeException upon encountering errors with the database
      */
     Page<Operator> findAll(int page, int pageCount, Permissions permissions);
 
@@ -59,6 +61,7 @@ public interface OperatorService extends UserDetailsService {
      * Find all operators.
      *
      * @return a list of operators
+     * @throws RuntimeException upon encountering errors with the database
      */
     List<Operator> findAll();
 
@@ -74,7 +77,7 @@ public interface OperatorService extends UserDetailsService {
     /**
      * Changes Permission of operater with id.
      *
-     * @param id          of operator that should be changed
+     * @param id of operator that should be changed
      * @param permissions that operator should get
      * @throws NotFoundException when no operator with the id is found
      * @throws RuntimeException  upon encountering errors with the database

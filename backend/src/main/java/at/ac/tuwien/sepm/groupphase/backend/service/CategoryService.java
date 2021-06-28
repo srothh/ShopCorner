@@ -26,7 +26,6 @@ public interface CategoryService {
      *
      * @param page the current page
      * @param pageSize number of entries per page
-     *
      * @return all categories that were previously saved in a page Object given by page and pageSize
      * @throws RuntimeException occurs during database operations
      */
@@ -53,6 +52,7 @@ public interface CategoryService {
      *
      * @param categoryId the id of the category to execute the update
      * @param category the new category with updated fields
+     * @throws RuntimeException upon encountering errors with the database
      */
     void updateCategory(Long categoryId, Category category);
 
@@ -60,7 +60,7 @@ public interface CategoryService {
      * Deletes a category entity in the database with the given Id.
      *
      * @param categoryId the id of the category to execute the delete action
-     *
+     * @throws RuntimeException upon encountering errors with the database
      */
     void deleteCategory(Long categoryId);
 
@@ -68,7 +68,6 @@ public interface CategoryService {
      * Gets the category entity  with the given Id.
      *
      * @param categoryId the id of the category to retrieve from the database
-     *
      * @return the requested category specified by the id
      * @throws NotFoundException is being thrown when the request category is not found
      * @throws RuntimeException is being thrown if some error occurs during data processing

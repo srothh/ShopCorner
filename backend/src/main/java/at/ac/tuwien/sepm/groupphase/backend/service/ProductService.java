@@ -29,6 +29,7 @@ public interface ProductService {
      * @param categoryId the category id, which a product contains
      * @param name the name of the product
      * @return all products that are currently saved in the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     Page<Product> getAllProductsPerPage(int page, int pageCount, Long categoryId, String sortBy, String name);
 
@@ -36,6 +37,7 @@ public interface ProductService {
      * Gets all products  that were previously added in the database.
      *
      * @return all products that are currently saved in the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     List<Product> getAllProducts();
 
