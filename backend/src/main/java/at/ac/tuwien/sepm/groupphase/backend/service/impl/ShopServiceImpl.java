@@ -25,11 +25,9 @@ public class ShopServiceImpl implements ShopService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final String settingsPath = "src/main/resources/shop.settings";
     private final Properties properties = new Properties();
-    private final PdfGeneratorService pdfGeneratorService;
 
     @Autowired
-    public ShopServiceImpl(@Lazy PdfGeneratorService pdfGeneratorService) {
-        this.pdfGeneratorService = pdfGeneratorService;
+    public ShopServiceImpl() {
     }
 
     @Override
@@ -40,7 +38,6 @@ public class ShopServiceImpl implements ShopService {
         shopSettings.setProperties(properties);
         properties.store(out, "ShopSettings");
         out.close();
-        this.pdfGeneratorService.updateCompanyInformation(shopSettings);
         return shopSettings;
     }
 

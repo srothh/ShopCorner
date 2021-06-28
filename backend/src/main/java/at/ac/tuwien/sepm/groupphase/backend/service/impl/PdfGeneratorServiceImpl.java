@@ -25,20 +25,14 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     private final PdfGenerator pdfGenerator;
     private final OrderService orderService;
     private final InvoiceArchiveService invoiceArchiveService;
-    private final ShopService shopService;
-    private final ShopSettings shopSettings;
 
     @Autowired
-    public PdfGeneratorServiceImpl(@Lazy PdfGenerator pdfGenerator,
-                                   @Lazy OrderService orderService,
-                                   @Lazy InvoiceArchiveService invoiceArchiveService,
-                                   @Lazy ShopService shopService) throws IOException {
+    public PdfGeneratorServiceImpl(PdfGenerator pdfGenerator,
+                                   OrderService orderService,
+                                   InvoiceArchiveService invoiceArchiveService) {
         this.pdfGenerator = pdfGenerator;
         this.orderService = orderService;
         this.invoiceArchiveService = invoiceArchiveService;
-        this.shopService = shopService;
-        this.shopSettings = shopService.getSettings();
-        this.pdfGenerator.setShopSettings(this.shopSettings);
     }
 
     @Override
@@ -85,12 +79,12 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
         }
         return this.invoiceArchiveService.findByInvoiceNumber(order.getInvoice().getInvoiceNumber());
     }
-
+    /*
     @Override
     public void updateCompanyInformation(ShopSettings shopSettings) {
         LOGGER.trace("updateCompanyInformation({})", shopSettings);
         this.pdfGenerator.updateCompanyInformation(shopSettings);
-    }
+    }*/
 
 
     @Override
