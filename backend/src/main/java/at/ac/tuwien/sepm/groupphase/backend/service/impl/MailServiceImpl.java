@@ -78,10 +78,15 @@ public class MailServiceImpl implements MailService {
         thymeleafContext.setVariable("sum", (double) Math.round(subtotal * 100) / 100);
         thymeleafContext.setVariable("tax", (double) Math.round(tax * 100) / 100);
         thymeleafContext.setVariable("end", (double) Math.round(order.getInvoice().getAmount() * 100) / 100);
-        thymeleafContext.setVariable("cancel", cancellationPeriod.getDays());
+        if (cancellationPeriod.getDays() == 0) {
+            thymeleafContext.setVariable("cancel", "Diese Bestellung ist unwiderruflich!");
+        } else {
+            thymeleafContext.setVariable("cancel", "Sie k&ouml;nnen ihr Bestellung innerhalb eines Zeitraums von " + cancellationPeriod.getDays() + " Tagen unter\n"
+                + "    <a href=\"http://localhost:4200/#/account/orders\">Meine Bestellungen</a> stornieren.");
+        }
         Promotion promotion = order.getPromotion();
         if (promotion != null) {
-            thymeleafContext.setVariable("promotionDiscount", (double) Math.round(promotion.getDiscount() * 100) / 100);
+            thymeleafContext.setVariable("promotionDiscount", (double) -Math.round(promotion.getDiscount() * 100) / 100);
         }
         String htmlBody = thymeleafTemplateEngine.process("emailTemplate.html", thymeleafContext);
 
