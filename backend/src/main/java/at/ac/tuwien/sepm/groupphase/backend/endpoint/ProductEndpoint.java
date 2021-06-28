@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductSearchDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
@@ -108,6 +108,28 @@ public class ProductEndpoint {
     public List<SimpleProductDto> getAllSimpleProducts() {
         LOGGER.info("GET" + BASE_URL + "/simple");
         return this.productService.getAllProducts()
+            .stream()
+            .map(this.productMapper::simpleProductEntityToDto)
+            .filter(productDto -> !productDto.isDeleted())
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets all simple products from the database by category, which omits some fields like picture and category.
+     *
+     * @param categoryId of category that should be searched for
+     * @return all simple products ( product without picture,category) in a dto - format NOT PAGINATED
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping("/stats")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(
+        summary = "Returns all products that are currently stored in the database without picture and category",
+        security = @SecurityRequirement(name = "apiKey")
+    )
+    public List<SimpleProductDto> getAllSimpleProductsByCategory(@RequestParam long categoryId) {
+        LOGGER.info("GET" + BASE_URL + "/stats?category={}", categoryId);
+        return this.productService.getAllProductsByCategory(categoryId)
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
             .filter(productDto -> !productDto.isDeleted())

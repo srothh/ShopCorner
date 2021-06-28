@@ -32,6 +32,10 @@ export class Globals {
     paypal: {
       payerId: 'payerId',
       paymentId: 'paymentId'
+    },
+    date: {
+      start: 'start',
+      end: 'end'
     }
   };
 

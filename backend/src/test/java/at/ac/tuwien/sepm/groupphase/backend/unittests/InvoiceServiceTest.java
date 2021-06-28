@@ -14,9 +14,16 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
+import at.ac.tuwien.sepm.groupphase.backend.service.impl.InvoiceServiceImpl;
+import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -25,21 +32,31 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class InvoiceServiceTest implements TestData {
+
     private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
     private final InvoiceItem invoiceItem = new InvoiceItem();
     private final Invoice invoice = new Invoice();
     private final Product product = new Product();
     private final Category category = new Category();
     private final TaxRate taxRate = new TaxRate();
+
+    @Rule
+    private final MockitoRule rule = MockitoJUnit.rule();
+    @Mock
+    private Invoice invoiceMock;
+    @Spy
+    @InjectMocks
+    InvoiceServiceImpl invoiceServiceMock;
 
     @Autowired
     InvoiceService invoiceService;
@@ -102,9 +119,31 @@ public class InvoiceServiceTest implements TestData {
     }
 
     @Test
-    public void createInvoice() {
-       Invoice created = invoiceService.createInvoice(invoice);
-       assertNotNull(created);
+    public void createNewInvoice_thenReturnInvoice() {
+        doReturn(invoiceMock).when(invoiceServiceMock).createInvoice(invoiceMock);
+    }
+
+    @Test
+    public void whenGivenOneInvoice_findByDateInside_thenReturnListWithInvoice() {
+        Invoice created = invoiceService.createInvoice(invoice);
+        List<Invoice> invoiceList = invoiceService.findByDate(LocalDateTime.now().minusDays(10), LocalDateTime.now());
+        Invoice got = invoiceList.get(0);
+        assertAll(
+            () -> assertEquals(1, invoiceList.size()),
+            () -> assertEquals(created.getId(), got.getId()),
+            () -> assertEquals(created.getAmount(), got.getAmount()),
+            () -> assertEquals(created.getItems().size(), got.getItems().size()),
+            () -> assertEquals(created.getInvoiceNumber(), got.getInvoiceNumber())
+        );
+    }
+
+    @Test
+    public void whenGivenOneInvoice_findByDateOutside_thenReturnEmptyList() {
+        invoiceService.createInvoice(invoice);
+        List<Invoice> invoiceList = invoiceService.findByDate(LocalDateTime.now().minusDays(10), LocalDateTime.now().minusDays(5));
+        assertAll(
+            () -> assertEquals(0, invoiceList.size())
+        );
     }
 
     @Test
