@@ -275,17 +275,20 @@ public class ProductEndpointTest implements TestData {
 
     @Test
     public void givenATaxRate_whenDeleteByNonExistingId_then404() throws Exception {
-       // taxRateRepository.save(taxRate);
         this.productRepository.deleteAll();
-        product.setId(-1000L);
 
-        ResultActions mvcResult = this.mockMvc.perform(
-            delete(PRODUCTS_BASE_URI + "/" + product.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
-            .andExpect(status().isNotFound());
+        MvcResult mvcResult = this.mockMvc.perform(delete(PRODUCTS_BASE_URI + "/" + -1000L)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 
     }
+
     @Test
     public void givenSeveralProductsWithTaxRateAndACategory_whenDeleteMultiple_verifyProductsDeleted() throws Exception {
         TaxRate newTaxRate = taxRateRepository.save(taxRate);
@@ -306,14 +309,14 @@ public class ProductEndpointTest implements TestData {
 
         List<Long> ids = List.of(newProduct.getId(), newProduct2.getId(), newProduct3.getId());
 
-        for (Long id: ids) {
+        for (Long id : ids) {
             ResultActions mvcResult = this.mockMvc.perform(
                 delete(PRODUCTS_BASE_URI + "/" + id)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
                 .andExpect(status().isOk());
         }
-        assertEquals(0,productRepository.findAll().size());
+        assertEquals(0, productRepository.findAll().size());
 
     }
 
