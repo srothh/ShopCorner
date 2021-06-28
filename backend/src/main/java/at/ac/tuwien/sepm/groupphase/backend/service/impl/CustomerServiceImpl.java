@@ -192,10 +192,4 @@ public class CustomerServiceImpl implements CustomerService {
         LOGGER.trace("findCustomerById({})", id);
         return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Kunde konnte nicht gefunden werden"));
     }
-
-    @Override
-    public Long getCountByCategory() {
-        return null;
-    }
-
 }
