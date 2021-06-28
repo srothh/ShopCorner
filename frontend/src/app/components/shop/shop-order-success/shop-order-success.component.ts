@@ -85,7 +85,7 @@ export class ShopOrderSuccessComponent implements OnInit {
         this.paymentSucceeded = true;
         this.placeNewOrder();
       }
-    }, () => {
+    }, (error) => {
       this.paymentSucceeded = false;
       this.error = true;
       this.errorMessage = error;
