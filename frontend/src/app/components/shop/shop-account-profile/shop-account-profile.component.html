@@ -53,6 +53,11 @@
         <input *ngIf="isEditMode" type="text" name="newPassword" formControlName="newPassword" class="form-control"
                id="newPassword">
       </div>
+      <small placement="left"
+             ngbPopover="Um Ihr Passwort aktualisieren zu können, müssen altes und neues Passwort angegeben werden." popoverTitle="Passwort Informationen" class="text-muted" style="cursor: pointer">
+        <fa-icon class="mr-2" [icon]="faInfo"></fa-icon>
+        Passwort Informationen
+      </small>
       <div>
         <label for="phoneNumber">Telefon</label>
         <input *ngIf="isEditMode" type="text" name="phoneNumber" formControlName="phoneNumber" class="form-control" id="phoneNumber">

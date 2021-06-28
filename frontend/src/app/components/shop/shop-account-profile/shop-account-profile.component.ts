@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faEdit, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faMinusCircle, faInfo} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Customer} from '../../../dtos/customer';
 import {MeService} from '../../../services/me/me.service';
@@ -19,6 +19,7 @@ export class ShopAccountProfileComponent implements OnInit {
   // Fontawesome Styling Components
   faEdit = faEdit;
   faMinusCircle = faMinusCircle;
+  faInfo = faInfo;
 
   editForm: FormGroup;
   isEditMode = false;
@@ -150,6 +151,7 @@ export class ShopAccountProfileComponent implements OnInit {
    * @private
    */
   private editData() {
+    this.resetPassword();
     const user = this.customerAuthService.getUser();
 
     this.meService.updateProfileData(this.myProfile).subscribe(() => {
@@ -162,6 +164,11 @@ export class ShopAccountProfileComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  private resetPassword() {
+    this.editForm.controls['password'].setValue('');
+    this.editForm.controls['newPassword'].setValue('');
   }
 
   private updateForm() {

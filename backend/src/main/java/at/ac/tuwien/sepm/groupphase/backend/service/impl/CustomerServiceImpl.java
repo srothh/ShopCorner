@@ -148,7 +148,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setPassword(passwordEncoder.encode(newPassword));
             customerRepository.save(customer);
         } else {
-            throw new ValidationException("Passwort konnte nicht upgedated werden");
+            throw new ValidationException("Das alte Passwort ist inkorrekt.");
         }
     }
 
