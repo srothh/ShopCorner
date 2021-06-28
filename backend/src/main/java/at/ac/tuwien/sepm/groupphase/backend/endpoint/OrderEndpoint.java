@@ -112,6 +112,12 @@ public class OrderEndpoint {
         throw new AccessDeniedException("Illegal access");
     }
 
+    /**
+     * Get specified order by orderNumber.
+     *
+     * @param orderNumber of the order to be retrieved
+     * @return the specified order
+     */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("/{orderNumber}/order")
     @ResponseStatus(HttpStatus.OK)
