@@ -64,7 +64,7 @@ public class InvoiceEndpoint {
     @Autowired
     public InvoiceEndpoint(InvoiceMapper invoiceMapper,
                            InvoiceItemMapper invoiceItemMapper,
-                           InvoiceService invoiceService,
+                           @Lazy InvoiceService invoiceService,
                            @Lazy PdfGeneratorService pdfGeneratorService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
