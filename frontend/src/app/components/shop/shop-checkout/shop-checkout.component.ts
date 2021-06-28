@@ -40,7 +40,7 @@ export class ShopCheckoutComponent implements OnInit {
   promotionError = false;
   promotionErrorMessage = '';
   error = false;
-  errorMessage: string;
+  errorMessage = '';
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
               private orderService: OrderService, private paypalService: PaypalService, private router: Router,
@@ -93,12 +93,20 @@ export class ShopCheckoutComponent implements OnInit {
     return tax;
   }
 
+  vanishError() {
+    this.error = false;
+  }
+
   getCartItems() {
     this.cartService.getCart().subscribe((cart: Cart
     ) => {
       this.cart = cart;
+    }, error => {
+      this.error = true;
+      this.errorMessage = error;
     });
   }
+
   proceedToPay() {
     const mappedProducts = this.products.map(ProductService.productMapper);
     mappedProducts.forEach((product) => {
@@ -130,9 +138,6 @@ export class ShopCheckoutComponent implements OnInit {
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
-  }
-  vanishError() {
-    this.error = false;
   }
 
   getPromotion() {
@@ -167,6 +172,9 @@ export class ShopCheckoutComponent implements OnInit {
       (customer: Customer) => {
         this.customer = customer;
         this.getCartItems();
+      }, error => {
+        this.error = true;
+        this.errorMessage = error;
       }
     );
   }
@@ -175,7 +183,8 @@ export class ShopCheckoutComponent implements OnInit {
     this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
       this.cancellationPeriod = cancellationPeriod;
     }, (error => {
-      console.log(error);
+      this.error = true;
+      this.errorMessage = error;
     }));
   }
 

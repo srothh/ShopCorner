@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
 import {Router} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
@@ -11,10 +11,10 @@ import {faEdit} from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./operator-home.component.scss']
 })
 export class OperatorHomeComponent implements OnInit {
+
+
   operator: Operator;
   user: string;
-
-  submitted = false;
   error = false;
   errorMessage = '';
 
@@ -28,20 +28,15 @@ export class OperatorHomeComponent implements OnInit {
     this.user = this.authenticationService.getUser();
 
     this.operatorService.getOperatorByLoginName(this.user)
-      .subscribe(operator => this.operator = operator, error => {
-        console.log(error);
+      .subscribe(operator => this.operator = operator, (error) => {
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       });
   }
 
   goToEdit() {
     this.router.navigate(['/operator/account/edit']);
-  };
+  }
 
   vanishError() {
     this.error = false;

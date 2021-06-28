@@ -64,13 +64,8 @@ export class ShopAccountProfileComponent implements OnInit {
         modalRef.componentInstance.body = 'Ihr Konto wurde erfolgreich gelöscht!';
       });
     }, error => {
-      console.log(error);
       this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
+      this.errorMessage = error;
     });
   }
 
@@ -115,13 +110,8 @@ export class ShopAccountProfileComponent implements OnInit {
 
     if(this.editForm.value.password !== '' && this.editForm.value.newPassword !== ''){
       this.meService.updatePassword(this.editForm.value.password, this.editForm.value.newPassword).subscribe(() => {}, error => {
-        console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       }, ()=> {
         this.editData();
       });
@@ -147,13 +137,8 @@ export class ShopAccountProfileComponent implements OnInit {
       this.myProfile = myProfile;
       this.initializeForm();
     }, error => {
-      console.log(error);
       this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
+      this.errorMessage = error;
     });
   }
 
@@ -167,13 +152,8 @@ export class ShopAccountProfileComponent implements OnInit {
 
     this.meService.updateProfileData(this.myProfile).subscribe(() => {
     }, error => {
-      console.log(error);
       this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
+      this.errorMessage = error;
     }, () => {
       if (this.myProfile.loginName !== user) {
         this.customerAuthService.logoutUser();

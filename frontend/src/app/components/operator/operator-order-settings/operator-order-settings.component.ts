@@ -14,6 +14,8 @@ export class OperatorOrderSettingsComponent implements OnInit {
   errorMessage = '';
   cancellationPeriodForm: FormGroup;
   cancellationPeriod: CancellationPeriod = {days: 1};
+  successfulUpdate = false;
+
   constructor(private orderService: OrderService, private formBuilder: FormBuilder) {
   }
 
@@ -31,19 +33,24 @@ export class OperatorOrderSettingsComponent implements OnInit {
   setCancellationPeriod() {
     const period = new CancellationPeriod(this.cancellationPeriodForm.controls.days.value);
     this.orderService.setCancellationPeriod(period).subscribe(() => {
-
+      this.successfulUpdate = true;
     }, (error) => {
       this.error = true;
-      this.errorMessage = error.message;
+      this.errorMessage = error;
     });
+  }
+
+  vanishSuccess() {
+    this.successfulUpdate = false;
   }
 
   getCancellationPeriod() {
     this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
       this.cancellationPeriod = cancellationPeriod;
-    }, (error => {
-      console.log(error);
-    }));
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
+    });
   }
 
 }

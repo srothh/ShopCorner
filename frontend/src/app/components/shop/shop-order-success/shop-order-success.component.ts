@@ -68,7 +68,13 @@ export class ShopOrderSuccessComponent implements OnInit {
         } else {
           this.goToHome();
         }
+      }, error => {
+        this.error = true;
+        this.errorMessage = error;
       });
+    }, error => {
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -81,6 +87,8 @@ export class ShopOrderSuccessComponent implements OnInit {
       }
     }, error => {
       this.paymentSucceeded = false;
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -101,8 +109,11 @@ export class ShopOrderSuccessComponent implements OnInit {
   placeNewOrder() {
     this.creatInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
-    console.log(order);
-    this.orderService.placeNewOrder(order).subscribe(() => {
+    this.orderService.placeNewOrder(order).subscribe((orderData) => {
+    }, error => {
+      this.paymentSucceeded = false;
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -140,6 +151,9 @@ export class ShopOrderSuccessComponent implements OnInit {
       (customer: Customer) => {
         this.customer = customer;
         this.getCartItems();
+      }, error => {
+        this.error = true;
+        this.errorMessage = error;
       }
     );
   }
@@ -164,7 +178,11 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.cartService.getCart().subscribe((cart: Cart
     ) => {
       this.cart = cart;
-    });
+    }, error => {
+        this.error = true;
+        this.errorMessage = error;
+      }
+    );
   }
 
   goToHome() {

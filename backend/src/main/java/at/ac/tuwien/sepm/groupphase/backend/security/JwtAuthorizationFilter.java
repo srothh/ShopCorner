@@ -56,13 +56,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         if (!token.startsWith(securityProperties.getAuthTokenPrefix())) {
-            throw new IllegalArgumentException("Authorization header is malformed or missing");
+            throw new IllegalArgumentException("Authorization header fehlerhaft oder nicht vorhanden");
         }
 
         byte[] signingKey = securityProperties.getJwtSecret().getBytes();
 
         if (!token.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Token must start with 'Bearer'");
+            throw new IllegalArgumentException("Token muss mit 'Bearer' beginnen");
         }
         Claims claims = Jwts.parserBuilder().setSigningKey(signingKey).build()
             .parseClaimsJws(token.replace(securityProperties.getAuthTokenPrefix(), ""))
@@ -76,7 +76,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             .collect(Collectors.toList());
 
         if (username == null || username.isEmpty()) {
-            throw new IllegalArgumentException("Token contains no user");
+            throw new IllegalArgumentException("Token enthält keinen User");
         }
 
         return new UsernamePasswordAuthenticationToken(username, null, authorities);

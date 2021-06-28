@@ -80,7 +80,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     public byte[] createPdfCanceledInvoiceOperator(Invoice invoice) {
         LOGGER.trace("createPdfCanceledInvoiceOperator({})", invoice);
         if (invoice.getInvoiceType() != InvoiceType.canceled) {
-            throw new ServiceException("It is not possible to cancel this invoice");
+            throw new ServiceException("Diese Rechnung kann nicht storniert werden");
         }
         if (invoice.getCustomerId() == null) {
             if (!this.invoiceArchiveService.invoiceExistsByInvoiceNumber(invoice.getInvoiceNumber())) {

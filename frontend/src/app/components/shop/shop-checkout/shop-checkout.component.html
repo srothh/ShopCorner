@@ -93,7 +93,7 @@
         <ul class="list-group mb-3 overflow-auto">
           <li class="list-group-item d-flex justify-content-between lh-condensed" *ngFor="let product of products">
             <div>
-              <h6 class="my-0">{{product.cartItemQuantity + ' x ' + product.name}}</h6>
+              <h6 class="my-0">{{product.name}}</h6>
               <small class="text-muted">{{product.description}}</small>
             </div>
             <span class="text-muted">{{product.cartItemQuantity + ' x ' +product.price}} €</span>

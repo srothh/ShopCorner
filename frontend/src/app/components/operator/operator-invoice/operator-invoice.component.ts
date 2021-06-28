@@ -45,6 +45,10 @@ export class OperatorInvoiceComponent implements OnInit {
     this.toggleDetailView = false;
   }
 
+  vanishError() {
+    this.error = false;
+  }
+
   /**
    * goes to next page if not on the last page
    */
@@ -95,7 +99,7 @@ export class OperatorInvoiceComponent implements OnInit {
     this.invoiceService.setInvoiceCanceled(this.detailViewInvoice).subscribe(() => {
     }, (error) => {
       this.error = true;
-      this.errorMessage = error.error;
+      this.errorMessage = error;
     });
     this.loadInvoicesForPage();
     this.toggleSide();
@@ -172,7 +176,7 @@ export class OperatorInvoiceComponent implements OnInit {
       },
       error => {
         this.error = true;
-        this.errorMessage = error.error;
+        this.errorMessage = error;
       }
     );
   }

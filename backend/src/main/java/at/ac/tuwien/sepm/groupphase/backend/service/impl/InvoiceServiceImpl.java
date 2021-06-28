@@ -121,7 +121,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public Invoice getByIdAndCustomerId(Long id, Long customerId) {
         LOGGER.trace("getByIdAndCustomerId({}, {})", id, customerId);
         return this.invoiceRepository.findByIdAndCustomerId(id, customerId)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
+            .orElseThrow(() -> new NotFoundException(String.format("Rechnung mit id %d konnte nicht gefunden werden", id)));
     }
 
     @Caching(evict = {

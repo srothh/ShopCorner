@@ -1,4 +1,11 @@
 <div class="container">
+  <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Error!</strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
   <br>
   <h2 [hidden]="toggleForm">Rechnung</h2>
   <div class="d-flex justify-content-between">

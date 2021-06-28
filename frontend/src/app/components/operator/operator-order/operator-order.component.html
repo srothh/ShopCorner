@@ -1,12 +1,13 @@
-
 <div>
-  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Error! </strong> {{ errorMessage }}
     <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <br>
+  <h2>Bestellungen
+    <a routerLink="/operator/orders/settings"> <button class="btn btn-dark float-right"> Bestelleinstellungen </button> </a></h2>
   <div class="d-flex justify-content-between align-items-center">
     <h2>Bestellungen</h2>
     <button class="btn btn-primary" routerLink="/operator/orders/settings">
@@ -41,12 +42,12 @@
       </thead>
       <tbody>
       <tr *ngFor="let order of orders">
-        <td><span>{{order.invoice.date.replace('T', ', ')}} Uhr</span></td>
-        <td><span>{{order.invoice.amount}}€</span></td>
+        <td><span>{{order.invoice.date.replace('T', ', ').substring(0,20)}} Uhr</span></td>
+        <td><span>{{order.invoice.amount.toFixed(2)}}€</span></td>
         <td><span>{{order.customer.name}}</span></td>
-        <td><span>
-          <button class="btn btn-link" type="submit" (click)="downloadInvoice(order.invoice.id, order.invoice.date)">PDF download</button>
-        </span></td>
+        <td>
+          <a class="link-primary" (click)="downloadInvoice(order.invoice.id, order.invoice.date)">PDF download</a>
+        </td>
       </tr>
       </tbody>
     </table>

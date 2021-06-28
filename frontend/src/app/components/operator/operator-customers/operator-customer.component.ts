@@ -63,26 +63,10 @@ export class OperatorCustomerComponent implements OnInit {
       },
       error => {
         this.error = true;
-        this.errorMessage = error.error;
+        this.errorMessage = error;
       }
     );
   }
 
-  /**
-   * calls on Service class to fetch amount of registered customers from backend
-   */
-  private getCustomerCount() {
-    this.customerService.getCustomerCount().subscribe(
-      (count: number) => {
-        this.collectionSize = count;
-        console.log(this.collectionSize);
-
-      },
-      error => {
-        this.error = true;
-        this.errorMessage = error.error;
-      }
-    );
-  }
 
 }

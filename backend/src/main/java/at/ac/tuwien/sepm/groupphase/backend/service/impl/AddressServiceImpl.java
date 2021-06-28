@@ -35,6 +35,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     public Address findAddressById(Long id) {
-        return addressRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find address!"));
+        return addressRepository.findById(id).orElseThrow(() -> new NotFoundException("Adresse konnte nicht gefunden werden"));
     }
 }

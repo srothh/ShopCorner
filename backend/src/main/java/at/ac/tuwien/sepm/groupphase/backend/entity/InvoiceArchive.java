@@ -17,7 +17,7 @@ public class InvoiceArchive {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "InvoiceNumber darf nicht null sein")
     @Column(unique = true)
     private String invoiceNumber;
 

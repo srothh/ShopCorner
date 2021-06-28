@@ -19,13 +19,13 @@ public class SimpleInvoiceDto {
 
     private Long customerId;
 
-    @NotNull(message = "LocalDateTime can not be null")
+    @NotNull(message = "Datum darf nicht null sein")
     private LocalDateTime date;
 
-    @DecimalMin(value = "0.01", message = "The amount can not be smaller than 0.01")
+    @DecimalMin(value = "0.01", message = "Die Kosten dürfen nicht kleiner als 0.01€ sein")
     private double amount;
 
-    @NotNull(message = "InvoiceType must not be null")
+    @NotNull(message = "Rechnungstyp darf nicht null sein")
     @Enumerated(EnumType.STRING)
     private InvoiceType invoiceType;
 

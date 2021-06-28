@@ -14,7 +14,7 @@ import * as AOS from 'aos';
 export class ShopHomeComponent implements OnInit {
   products: Product[];
   page = 0;
-  pageSize = 15;
+  pageSize = 18;
   collectionSize = 0;
 
   bannerTitle = this.globals.defaultSettings.bannerTitle;
@@ -40,13 +40,8 @@ export class ShopHomeComponent implements OnInit {
         this.products = productData.items;
         this.collectionSize = productData.totalItemCount;
       }, error => {
-        console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       });
   }
 

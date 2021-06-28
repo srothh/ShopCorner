@@ -8,21 +8,20 @@ import javax.validation.constraints.Size;
 
 public class CustomerDto {
     private Long id;
-    @NotNull(message = "email must not be null")
-    @Email
-    @Size(max = 255, message = "House number must not have more than 64 Characters")
+    @NotNull(message = "E-Mail darf nicht null sein")
+    @Email(message = "Ungültiges E-Mail-Format")
     private String email;
-    @NotNull(message = "Name must not be null")
-    @Size(max = 255, message = "House number must not have more than 64 Characters")
-    @NotBlank
+    @NotNull(message = "Name darf nicht null sein")
+    @Size(max = 255, message = "Name darf nicht länger als 255 Zeichen sein")
+    @NotBlank(message = "Name darf nicht leer sein")
     private String name;
-    @NotNull(message = "loginName must not be null")
-    @NotBlank
-    @Size(max = 128, message = "House number must not have more than 64 Characters")
+    @NotNull(message = "LoginName darf nicht null sein")
+    @NotBlank(message = "LoginName darf nicht leer sein")
+    @Size(max = 128, message = "LoginName darf nicht länger als 128 Zeichen sein")
     private String loginName;
     @Valid
     private AddressDto address;
-    @Size(max = 128, message = "Phone number must not have more than 128 characters")
+
     private String phoneNumber;
     private boolean deleted;
 

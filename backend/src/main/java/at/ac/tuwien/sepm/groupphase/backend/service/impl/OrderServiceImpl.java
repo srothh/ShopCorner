@@ -145,7 +145,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order getOrderByInvoice(Invoice invoice) {
-        return this.orderRepository.findOrderByInvoice(invoice).orElseThrow(() -> new NotFoundException("Could not find order"));
+        return this.orderRepository.findOrderByInvoice(invoice).orElseThrow(() -> new NotFoundException("Bestellung konnte nicht gefunden werden"));
     }
 
     @Override

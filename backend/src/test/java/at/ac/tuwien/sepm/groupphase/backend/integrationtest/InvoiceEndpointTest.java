@@ -151,8 +151,7 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void g
-        () throws Exception {
+    public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice1);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 

@@ -58,6 +58,9 @@ export class OperatorProductComponent implements OnInit {
       .subscribe(([categoriesData, taxRatesData]) => {
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error;
       });
   }
 
@@ -128,19 +131,16 @@ export class OperatorProductComponent implements OnInit {
         }
       }, error => {
         this.error = true;
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       });
     }
   }
 
   errorOccurred() {
-    return this.error || this.pageableProducts.error;
+    return this.pageableProducts.error;
   }
 
   getErrorMessage() {
-    if (this.error) {
-      return this.errorMessage;
-    }
     return this.pageableProducts.errorMessage;
   }
 

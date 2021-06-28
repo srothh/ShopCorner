@@ -11,8 +11,8 @@ import java.util.Set;
 public class CategoryDto {
 
     private Long id;
-    @NotBlank
-    @Size(min = 3, max = 20)
+    @NotBlank(message = "Name darf nicht leer sein")
+    @Size(min = 3, max = 20, message = "Name muss zwischen 3 und 20 Zeichen lang sein")
     private String name;
 
     public CategoryDto() {

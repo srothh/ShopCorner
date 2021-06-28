@@ -35,11 +35,7 @@ export class OperatorEditAccountComponent implements OnInit {
       .subscribe(operator => this.operator = operator, error => {
         console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       }, () => {
         this.updateForm = this.formBuilder.group({
           name: [this.operator.name, [Validators.required]],
@@ -55,7 +51,7 @@ export class OperatorEditAccountComponent implements OnInit {
     this.error = false;
   }
 
-  save(): void{
+  save(): void {
 
     if (this.updateForm.valid) {
 
@@ -67,22 +63,18 @@ export class OperatorEditAccountComponent implements OnInit {
       this.password = this.updateForm.controls.oldPassword.value;
       this.updatedPassword = this.updateForm.controls.newPassword.value;
 
-      if(this.password !== '' && this.updatedPassword !== ''){
+      if (this.password !== '' && this.updatedPassword !== '') {
         this.operatorService.updatePassword(this.password, this.updatedPassword).subscribe(
-          () => {}, error => {
-            console.log(error);
+          () => {
+          }, error => {
             this.error = true;
-            if (typeof error.error === 'object') {
-              this.errorMessage = error.error.error;
-            } else {
-              this.errorMessage = error.error;
-            }
-          }, ()=> {
-           this.editData();
+            this.errorMessage = error;
+          }, () => {
+            this.editData();
           }
         );
       } else {
-      this.editData();
+        this.editData();
       }
     } else {
       console.log('Invalid input');
@@ -96,20 +88,16 @@ export class OperatorEditAccountComponent implements OnInit {
    *
    * @private
    */
-  private editData(){
+  private editData() {
 
     this.operatorService.updateOperator(this.operator).subscribe(() => {
       this.submitted = true;
     }, error => {
       console.log(error);
       this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
+      this.errorMessage = error;
     }, () => {
-      if(this.operator.loginName !== this.user) {
+      if (this.operator.loginName !== this.user) {
         this.authenticationService.logoutUser();
         this.router.navigate(['/operator/login']);
       } else {
