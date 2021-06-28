@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ShopSettings;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShopService;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
@@ -33,7 +34,6 @@ public class PdfGenerator {
     private final String htmlCustomer;
     private final String htmlCanceledOperator;
     private final String htmlCanceledCustomer;
-    private ShopSettings shopSettings;
     private ShopService shopService;
 
     @Autowired
@@ -41,7 +41,7 @@ public class PdfGenerator {
         String directory = "src/main/resources/invoice-templates";
         this.shopService = shopService;
         try {
-            this.shopSettings = shopService.getSettings();
+
             BufferedReader in = new BufferedReader(new FileReader(directory + "/operatorInvoiceTemplate_v1.html"));
             htmlOperator = in.lines().collect(Collectors.joining());
             in = new BufferedReader(new FileReader(directory + "/customerInvoiceTemplate_v1.html"));
@@ -53,10 +53,6 @@ public class PdfGenerator {
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);
         }
-    }
-
-    public void updateCompanyInformation(ShopSettings shopSettings) {
-        this.shopSettings = shopSettings;
     }
 
     /**
@@ -135,7 +131,11 @@ public class PdfGenerator {
     }
 
     private void addLogo(Document document) {
-        document.body().select(".logo").attr("src", shopSettings.getLogo());
+        try {
+            document.body().select(".logo").attr("src", shopService.getSettings().getLogo());
+        } catch (IOException e) {
+            throw new NotFoundException("Logo konnte nicht gefunden werden");
+        }
     }
 
     private void addOrderInformation(Document document, Invoice invoice) {
@@ -213,26 +213,29 @@ public class PdfGenerator {
 
     private void addCompanyFooter(Document document) {
         StringBuilder address = new StringBuilder();
-        address.append(shopSettings.getStreet());
-        if (shopSettings.getHouseNumber() != null) {
-            if ("".equals(shopSettings.getHouseNumber())) {
-                address.append(" ").append(shopSettings.getHouseNumber());
+        try {
+            address.append(shopService.getSettings().getStreet());
+            if (shopService.getSettings().getHouseNumber() != null) {
+                if ("".equals(shopService.getSettings().getHouseNumber())) {
+                    address.append(" ").append(shopService.getSettings().getHouseNumber());
+                }
             }
-        }
-        if (shopSettings.getDoorNumber() != null) {
-            if ("".equals(shopSettings.getDoorNumber())) {
-                address.append(" / ").append(shopSettings.getDoorNumber());
+            if (shopService.getSettings().getDoorNumber() != null) {
+                if ("".equals(shopService.getSettings().getDoorNumber())) {
+                    address.append(" / ").append(shopService.getSettings().getDoorNumber());
+                }
             }
+            if (shopService.getSettings().getStairNumber() != 0) {
+                address.append(" / ").append(shopService.getSettings().getStairNumber());
+            }
+            address.append(", ").append(shopService.getSettings().getPostalCode() + " ").append(shopService.getSettings().getCity());
+            document.body().select(".name").html(shopService.getSettings().getTitle());
+            document.body().select(".address").html(address.toString());
+            document.body().select(".phone").html(shopService.getSettings().getPhoneNumber());
+            document.body().select(".email").html(shopService.getSettings().getEmail());
+        } catch (IOException e) {
+            throw new NotFoundException("Firmendaten konnte nicht gefunden werden");
         }
-        if (shopSettings.getStairNumber() != 0) {
-            address.append(" / ").append(shopSettings.getStairNumber());
-        }
-        address.append(", ").append(shopSettings.getPostalCode() + " ").append(shopSettings.getCity());
-        document.body().select(".name").html(shopSettings.getTitle());
-        document.body().select(".address").html(address.toString());
-        document.body().select(".phone").html(shopSettings.getPhoneNumber());
-        document.body().select(".email").html(shopSettings.getEmail());
-
     }
 
     private Element getElement(Document document, String cssClass) {
