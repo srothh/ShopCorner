@@ -164,15 +164,7 @@ export class ShopAccountProfileComponent implements OnInit {
   }
 
   private updateForm() {
-    this.editForm.value.loginName = this.myProfile.loginName;
-    this.editForm.value.email = this.myProfile.email;
-    this.editForm.value.name = this.myProfile.name;
-    this.editForm.value.phoneNumber = this.myProfile.phoneNumber;
-    this.editForm.value.street = this.myProfile.loginName;
-    this.editForm.value.postalCode = this.myProfile.address.postalCode;
-    this.editForm.value.houseNumber = this.myProfile.address.houseNumber;
-    this.editForm.value.stairNumber = this.myProfile.address.stairNumber;
-    this.editForm.value.doorNumber = this.myProfile.address.doorNumber;
+    this.editForm = this.myProfile.buildFormGroup(this.editForm);
   }
 
   /**
@@ -182,17 +174,17 @@ export class ShopAccountProfileComponent implements OnInit {
    */
   private initializeForm() {
     this.editForm = this.formBuilder.group({
-      loginName: [],
-      email: [],
-      name: [],
-      phoneNumber: [],
-      password: [],
+      loginName: [''],
+      email: [''],
+      name: [''],
+      phoneNumber: [''],
+      password: [''],
       newPassword: [''],
-      street: [],
-      postalCode: [],
-      houseNumber: [],
-      stairNumber: [],
-      doorNumber: [],
+      street: [''],
+      postalCode: [''],
+      houseNumber: [''],
+      stairNumber: [''],
+      doorNumber: [''],
     });
   }
 }
