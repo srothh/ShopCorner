@@ -135,10 +135,10 @@ public class Validator {
             for (InvoiceItem item : items) {
 
                 if (item.getInvoice() == null) {
-                    throw new ValidationException("Item kann nicht ohne zugehörige Rechnung kreiert werden");
+                    throw new ValidationException("Item kann nicht ohne zugehörige Rechnung erstellt werden");
                 }
                 if (item.getProduct() == null) {
-                    throw new ValidationException("Item kann nicht ohne zugehöriges Produkt kreiert werden");
+                    throw new ValidationException("Item kann nicht ohne zugehöriges Produkt erstellt werden");
                 }
                 if (item.getNumberOfItems() <= 0) {
                     throw new ValidationException("Artikelanzahl muss größer als 0 sein");
