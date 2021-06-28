@@ -128,7 +128,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
     this.invoiceDto.amount = +this.total.toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.invoiceType = InvoiceType.operator;
-    console.log(this.invoiceDto);
   }
 
 
