@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import {Operator} from '../dtos/operator';
+import {Injectable} from '@angular/core';
+import {Operator} from '../../dtos/operator';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Permissions} from '../dtos/permissions.enum';
-import {Globals} from '../global/globals';
-import {OperatorAuthService} from './auth/operator-auth.service';
-import {Pagination} from '../dtos/pagination';
+import {Permissions} from '../../dtos/permissions.enum';
+import {Globals} from '../../global/globals';
+import {OperatorAuthService} from '../auth/operator-auth.service';
+import {Pagination} from '../../dtos/pagination';
 
 
 @Injectable({
@@ -36,8 +36,8 @@ export class OperatorService {
   createOperator(operator: Operator): Observable<Operator> {
     console.log('Create new operator account', operator);
     return this.httpClient.post<Operator>(
-      this.operatorBaseUri,  operator
-    , {headers: this.getHeadersForOperator()});
+      this.operatorBaseUri, operator
+      , {headers: this.getHeadersForOperator()});
   }
 
   /**
@@ -48,8 +48,8 @@ export class OperatorService {
   updateOperator(operator: Operator): Observable<any> {
     console.log('Update operator', operator);
     return this.httpClient.put<Operator>(
-      this.operatorBaseUri + '/' + operator.id,  operator
-    , {headers: this.getHeadersForOperator()});
+      this.operatorBaseUri + '/' + operator.id, operator
+      , {headers: this.getHeadersForOperator()});
   }
 
   /**
@@ -58,7 +58,7 @@ export class OperatorService {
    * @param oldPassword the password to be updated
    * @param newPassword the new password
    */
-  updatePassword(oldPassword: string, newPassword: string): Observable<string>{
+  updatePassword(oldPassword: string, newPassword: string): Observable<string> {
     console.log('Update password');
     return this.httpClient.post<string>(
       this.operatorBaseUri + '/password', {oldPassword, newPassword}
@@ -83,14 +83,6 @@ export class OperatorService {
   }
 
   /**
-   * fetches count of Operators from backend
-   */
-  getOperatorCount(): Observable<number[]> {
-    console.log('Get count of Operators');
-    return this.httpClient.get<number[]>(this.operatorBaseUri + '/count', {headers: this.getHeadersForOperator()});
-  }
-
-  /**
    * sends delete request with id to backend
    *
    * @param id of operator that should be deleted
@@ -107,7 +99,7 @@ export class OperatorService {
    */
   changePermissions(operator: Operator): Observable<void> {
     console.log('Change permissions of operator with id ' + operator.id);
-    if(operator.permissions === Permissions.admin){
+    if (operator.permissions === Permissions.admin) {
       return this.httpClient.patch<void>(this.operatorBaseUri + '/' + operator.id, {permissions: 'employee'},
         {headers: this.getHeadersForOperator()});
     } else {
@@ -120,5 +112,4 @@ export class OperatorService {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
   }
-
 }

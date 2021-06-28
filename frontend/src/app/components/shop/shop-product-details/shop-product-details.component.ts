@@ -5,9 +5,9 @@ import {ProductService} from '../../../services/product/product.service';
 import {Globals} from '../../../global/globals';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {CartItem} from '../../../dtos/cartItem';
-import {CartService} from '../../../services/cart.service';
+import {CartService} from '../../../services/cart/cart.service';
 import {filter} from 'rxjs/operators';
-import {Observable, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-shop-product-details',

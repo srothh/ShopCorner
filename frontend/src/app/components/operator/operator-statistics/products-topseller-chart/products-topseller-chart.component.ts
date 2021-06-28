@@ -39,13 +39,7 @@ export class ProductsTopsellerChartComponent implements OnInit {
       ]
     },
     legend: {
-      onClick: (e, i) => {
-        if (i.text === 'Verkäufe') {
-          this.sortBySales();
-        } else if (i.text === 'Umsatz (in €)') {
-          this.sortByAmounts();
-        }
-      }
+
     }
   };
   public chartLabels = [];

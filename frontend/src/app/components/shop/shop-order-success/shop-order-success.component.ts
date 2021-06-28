@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {faCheckCircle, faTimesCircle} from '@fortawesome/free-solid-svg-icons';
-import {PaypalService} from '../../../services/paypal.service';
+import {PaypalService} from '../../../services/paypal/paypal.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {Product} from '../../../dtos/product';
-import {OrderService} from '../../../services/order.service';
+import {OrderService} from '../../../services/order/order.service';
 import {Order} from '../../../dtos/order';
 import {Customer} from '../../../dtos/customer';
 import {Invoice} from '../../../dtos/invoice';
@@ -13,10 +13,10 @@ import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {formatDate} from '@angular/common';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {Cart} from '../../../dtos/cart';
-import {MeService} from '../../../services/me.service';
-import {CartService} from '../../../services/cart.service';
+import {MeService} from '../../../services/me/me.service';
+import {CartService} from '../../../services/cart/cart.service';
 import {ConfirmedPayment} from '../../../dtos/confirmedPayment';
-import {PromotionService} from '../../../services/promotion.service';
+import {PromotionService} from '../../../services/promotion/promotion.service';
 import {Promotion} from '../../../dtos/promotion';
 
 @Component({
@@ -63,7 +63,7 @@ export class ShopOrderSuccessComponent implements OnInit {
       }
       this.paypalService.getConfirmedPayment(this.paymentId, this.payerId).subscribe((cp) => {
         this.alreadyOrdered = cp !== null;
-        if(this.alreadyOrdered === false) {
+        if (this.alreadyOrdered === false) {
           this.confirmPayment();
         } else {
           this.goToHome();
@@ -72,14 +72,14 @@ export class ShopOrderSuccessComponent implements OnInit {
     });
   }
 
-  confirmPayment(){
+  confirmPayment() {
     this.confirmedPayment = new ConfirmedPayment(null, this.paymentId, this.payerId);
     this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
       if (finalisedPaymentData.includes('Payment successful')) {
         this.paymentSucceeded = true;
         this.placeNewOrder();
       }
-    }, error => {
+    }, () => {
       this.paymentSucceeded = false;
     });
   }
@@ -93,19 +93,13 @@ export class ShopOrderSuccessComponent implements OnInit {
     });
   }
 
-  getCartSize() {
-    return this.cartGlobals.getCartSize();
-  }
-
-
   placeNewOrder() {
-    this.creatInvoiceDto();
+    this.createInvoiceDto();
     const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
     console.log(order);
     this.orderService.placeNewOrder(order).subscribe(() => {
     });
   }
-
 
   getTotalPrice() {
     return this.getTotalPriceWithoutTaxes() + this.getTotalTaxes();
@@ -144,7 +138,7 @@ export class ShopOrderSuccessComponent implements OnInit {
     );
   }
 
-  creatInvoiceDto() {
+  createInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
 

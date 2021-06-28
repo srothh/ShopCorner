@@ -51,7 +51,7 @@ export class CustomerAuthService implements IAuthService {
   /**
    * Returns the username of the logged in user based on the current token
    */
-  getUser(){
+  getUser() {
     if (this.getToken() != null) {
       const decoded: any = jwt_decode(this.getToken());
       return decoded.sub;

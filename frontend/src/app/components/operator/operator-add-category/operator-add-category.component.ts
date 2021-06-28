@@ -1,8 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
 import {Category} from '../../../dtos/category';
-import {CategoryService} from '../../../services/category.service';
-import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-operator-add-category',
@@ -12,9 +9,11 @@ import {Router} from '@angular/router';
 export class OperatorAddCategoryComponent implements OnInit {
   errorOccurred: boolean;
   errorMessage: string;
-  categoryForm: FormGroup;
+
   newCategory: Category;
-  constructor(private formBuilder: FormBuilder, private categoryService: CategoryService, private router: Router) { }
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

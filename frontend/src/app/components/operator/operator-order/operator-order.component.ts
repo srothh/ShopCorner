@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Order} from '../../../dtos/order';
 import {Pagination} from '../../../dtos/pagination';
-import {OrderService} from '../../../services/order.service';
-import {InvoiceService} from '../../../services/invoice.service';
+import {OrderService} from '../../../services/order/order.service';
+import {InvoiceService} from '../../../services/invoice/invoice.service';
 
 @Component({
   selector: 'app-operator-order',

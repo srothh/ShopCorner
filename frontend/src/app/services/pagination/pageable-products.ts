@@ -2,7 +2,6 @@ import {IPageable} from './pageable.interface';
 import {Product} from '../../dtos/product';
 import {ProductService} from '../product/product.service';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Globals} from '../global/globals';
-import {CustomerAuthService} from './auth/customer-auth.service';
+import {Globals} from '../../global/globals';
+import {CustomerAuthService} from '../auth/customer-auth.service';
 import {Observable} from 'rxjs';
-import {Customer} from '../dtos/customer';
-import {Pagination} from '../dtos/pagination';
-import {Order} from '../dtos/order';
+import {Customer} from '../../dtos/customer';
+import {Pagination} from '../../dtos/pagination';
+import {Order} from '../../dtos/order';
 
 
 @Injectable({
@@ -51,11 +51,9 @@ export class MeService {
    * @param oldPassword the password to be updated
    * @param newPassword the new password
    */
-  updatePassword(oldPassword: string, newPassword: string): Observable<string>{
+  updatePassword(oldPassword: string, newPassword: string): Observable<string> {
     console.log('Update password');
-    return this.httpClient.post<string>(
-      this.meBaseUri + '/password', {oldPassword, newPassword}
-      , {headers: this.getHeadersForCustomer()});
+    return this.httpClient.post<string>(this.meBaseUri + '/password', {oldPassword, newPassword}, {headers: this.getHeadersForCustomer()});
   }
   /**
    * Loads invoice pdf by id from the backend for the customer

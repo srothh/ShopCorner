@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {OrderService} from '../../../services/order.service';
+import {OrderService} from '../../../services/order/order.service';
 import {Order} from '../../../dtos/order';
 import {InvoiceItem} from '../../../dtos/invoiceItem';
 import {Product} from '../../../dtos/product';
@@ -8,8 +8,8 @@ import {CartItem} from '../../../dtos/cartItem';
 import {ProductService} from '../../../services/product/product.service';
 import {Globals} from '../../../global/globals';
 import {CartGlobals} from '../../../global/cartGlobals';
-import {CartService} from '../../../services/cart.service';
-import {MeService} from '../../../services/me.service';
+import {CartService} from '../../../services/cart/cart.service';
+import {MeService} from '../../../services/me/me.service';
 import {NgdbModalActionComponent} from '../../common/ngbd-modal-action/ngdb-modal-action.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Customer} from '../../../dtos/customer';
@@ -22,7 +22,6 @@ import {Invoice} from '../../../dtos/invoice';
   styleUrls: ['./shop-account-order-details.component.scss']
 })
 export class ShopAccountOrderDetailsComponent implements OnInit {
-
   error = false;
   errorMessage = '';
 
@@ -35,6 +34,7 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
 
   isCanceled = false;
   isCancelable = false;
+
   constructor(private route: ActivatedRoute, private orderService: OrderService,
               private router: Router,
               private productService: ProductService,
@@ -42,7 +42,8 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
               private cartGlobals: CartGlobals,
               private cartService: CartService,
               private meService: MeService,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal) {
+  }
 
   ngOnInit(): void {
     const address = new Address(0, '', 0, '', 0, '');
@@ -60,14 +61,14 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
           this.isCanceled = true;
         }
       }, _ => {
-          this.router.navigate(['404']);
+        this.router.navigate(['404']);
       }, () => {
-          this.items = this.order.invoice.items;
-          this.time = this.order.invoice.date.substring(11);
-          this.day = this.order.invoice.date.substring(8,10);
-          this.month = this.order.invoice.date.substring(5,7);
-          this.year = this.order.invoice.date.substring(0,4);
-    });
+        this.items = this.order.invoice.items;
+        this.time = this.order.invoice.date.substring(11);
+        this.day = this.order.invoice.date.substring(8, 10);
+        this.month = this.order.invoice.date.substring(5, 7);
+        this.year = this.order.invoice.date.substring(0, 4);
+      });
   }
 
   vanishError() {
@@ -81,7 +82,7 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
     const index = this.cartGlobals.containsProductAtIndex(product);
     if (index === -1) {
       this.cartGlobals.addToCart(product);
-      this.cartService.addProductsToCart(new CartItem(product.id, 1)).subscribe( (item) => {
+      this.cartService.addProductsToCart(new CartItem(product.id, 1)).subscribe((item) => {
         this.cartGlobals.updateCartItem(item);
 
       }, (error) => {
@@ -90,14 +91,14 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
       });
 
     } else {
-      const cart  = this.cartGlobals.getCart();
+      const cart = this.cartGlobals.getCart();
       const quantity = Number(cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemQuantity']) + 1;
       if (quantity <= 12) {
         cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemQuantity'] = quantity;
         this.cartGlobals.updateCart(product, quantity);
         const cartItem = new CartItem(product.id, quantity);
         cartItem.id = cart[this.cartGlobals.containsProductAtIndex(product)]['cartItemId'];
-        this.cartService.updateToCart(cartItem).subscribe( (item) => {
+        this.cartService.updateToCart(cartItem).subscribe((item) => {
           this.cartGlobals.updateCartItem(item);
         }, (error) => {
           this.error = true;
@@ -166,6 +167,4 @@ export class ShopAccountOrderDetailsComponent implements OnInit {
       this.errorMessage = error;
     });
   }
-
-
 }

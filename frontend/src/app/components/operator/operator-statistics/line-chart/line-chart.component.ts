@@ -86,7 +86,7 @@ export class LineChartComponent implements OnInit {
     let adjust = false;
     let setOff = this.start.getTimezoneOffset();
     let previousSetOff = this.start.getTimezoneOffset();
-    for (let d = new Date(this.start); d<= this.end; d.setDate(d.getDate() + 1)) {
+    for (const d = new Date(this.start); d <= this.end; d.setDate(d.getDate() + 1)) {
       setOff = d.getTimezoneOffset();
       if (previousSetOff > setOff) {
         adjust = true;
@@ -99,7 +99,7 @@ export class LineChartComponent implements OnInit {
       this.tempCu.push(0);
       if (adjust) {
         const adjusted = new Date(d);
-        adjusted.setDate(d.getDate()+1);
+        adjusted.setDate(d.getDate() + 1);
         this.chartLabels.push(adjusted.toISOString().split('T')[0]);
       } else {
         this.chartLabels.push(d.toISOString().split('T')[0]);

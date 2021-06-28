@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Category} from '../../../dtos/category';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CategoryService} from '../../../services/category.service';
+import {CategoryService} from '../../../services/category/category.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
-import {faEdit, faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {NgdbModalActionComponent} from '../../common/ngbd-modal-action/ngdb-modal-action.component';
 
@@ -28,7 +28,8 @@ export class OperatorCategoryDetailsComponent implements OnInit {
       this.selectedCategory = this.router.getCurrentNavigation().extras.state[0] as Category;
     }
   }
-  attemptToDeleteCategory(){
+
+  attemptToDeleteCategory() {
     const modalRef = this.modalService.open(NgdbModalActionComponent);
     modalRef.componentInstance.title = 'Warnung';
     modalRef.componentInstance.body = 'Wollen Sie diese Kategorie löschen?';

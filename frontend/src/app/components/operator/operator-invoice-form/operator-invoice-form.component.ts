@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Product} from '../../../dtos/product';
 import {Invoice} from '../../../dtos/invoice';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {InvoiceService} from '../../../services/invoice.service';
+import {InvoiceService} from '../../../services/invoice/invoice.service';
 
 import {formatDate} from '@angular/common';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';

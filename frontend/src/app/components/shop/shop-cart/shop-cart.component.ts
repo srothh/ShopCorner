@@ -1,5 +1,5 @@
 import {AfterContentInit, Component, OnInit} from '@angular/core';
-import {CartService} from '../../../services/cart.service';
+import {CartService} from '../../../services/cart/cart.service';
 import {faAngleLeft, faMinus, faMoneyCheckAlt} from '@fortawesome/free-solid-svg-icons';
 import {Product} from '../../../dtos/product';
 import {Globals} from '../../../global/globals';
@@ -102,9 +102,9 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   }
 
   calcAmount() {
-    document.getElementById('subtotal').innerText = this.sanitizeHTML((this.calcSubtotal() + ''));
-    document.getElementById('tax').innerText = this.sanitizeHTML(this.calcTax() + '');
-    document.getElementById('total').innerText = this.sanitizeHTML(this.calcTotal() + '');
+    document.getElementById('subtotal').innerText = ShopCartComponent.sanitizeHTML((this.calcSubtotal() + ''));
+    document.getElementById('tax').innerText = ShopCartComponent.sanitizeHTML(this.calcTax() + '');
+    document.getElementById('total').innerText = ShopCartComponent.sanitizeHTML(this.calcTotal() + '');
   }
 
   calcSubtotal() {
@@ -135,7 +135,7 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
   routeToCheckout() {
     const mappedProducts = this.products.map(ProductService.productMapper);
     mappedProducts.forEach((product) => {
-      if (product.hasExpiration && product.hasExpired){
+      if (product.hasExpiration && product.hasExpired) {
         this.error = true;
         this.errorMessage = `Das Produkt "${product.name}" ist nicht verfügbar. Bitte setzen Sie ihren Einkauf ohne dieses Produkt fort.`;
       }
@@ -156,7 +156,7 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
     this.error = false;
   }
 
-  private sanitizeHTML(str: string) {
+  private static sanitizeHTML(str: string) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerText;
@@ -168,5 +168,4 @@ export class ShopCartComponent implements OnInit, AfterContentInit {
 
     });
   }
-
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {CategoryService} from '../../../services/category.service';
-import {TaxRateService} from '../../../services/tax-rate.service';
+import {CategoryService} from '../../../services/category/category.service';
+import {TaxRateService} from '../../../services/tax-rate/tax-rate.service';
 import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
 import {forkJoin} from 'rxjs';
@@ -19,10 +19,8 @@ export class OperatorProductDetailsComponent implements OnInit {
   product: Product;
   categoryId: number;
   taxRateId: number;
-  //properties for drop-down
   categories: Category[];
   taxRates: TaxRate[];
-  // util properties
   shouldFetch: boolean;
   errorOccurred: boolean;
   errorMessage: string;
@@ -60,14 +58,14 @@ export class OperatorProductDetailsComponent implements OnInit {
 
   fetchData(): void {
     forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
-      .subscribe(([categoriesData,taxRatesData]) => {
+      .subscribe(([categoriesData, taxRatesData]) => {
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
       });
   }
 
-  deleteProduct(){
-    this.productService.deleteProduct(this.product.id).subscribe(()=>{
+  deleteProduct() {
+    this.productService.deleteProduct(this.product.id).subscribe(() => {
       this.router.navigate(['/operator/products']).then();
     }, error => {
       this.errorOccurred = true;
@@ -75,12 +73,12 @@ export class OperatorProductDetailsComponent implements OnInit {
     });
   }
 
-  resetState(){
+  resetState() {
     this.errorMessage = null;
     this.errorOccurred = undefined;
   }
 
-  goBackToProductsOverview(){
+  goBackToProductsOverview() {
     this.router.navigate(['/operator/products']).then();
   }
 }

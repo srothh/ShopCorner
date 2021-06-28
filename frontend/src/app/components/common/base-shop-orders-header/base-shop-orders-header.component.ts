@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Order} from '../../../dtos/order';
-import {MeService} from '../../../services/me.service';
-import {OrderService} from '../../../services/order.service';
+import {MeService} from '../../../services/me/me.service';
+import {OrderService} from '../../../services/order/order.service';
 import {NgdbModalActionComponent} from '../ngbd-modal-action/ngdb-modal-action.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -53,7 +53,7 @@ export class BaseShopOrdersHeaderComponent implements OnInit {
   }
 
   canceledOrder() {
-    this.orderService.setOrderCanceled(this.order).subscribe((item) => {
+    this.orderService.setOrderCanceled(this.order).subscribe(() => {
       this.isCanceled = true;
     }, (error) => {
       this.error = true;

@@ -1,8 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Promotion} from '../../../dtos/promotion';
-import {PromotionService} from '../../../services/promotion.service';
+import {PromotionService} from '../../../services/promotion/promotion.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-operator-promotion-form',
@@ -37,11 +36,11 @@ export class OperatorPromotionFormComponent implements OnInit {
   }
 
   addNewPromotion() {
-    const expDate = this.addLeadingZero(this.promotionForm.controls.expirationDate.value.year) + '-'
-      + this.addLeadingZero(this.promotionForm.controls.expirationDate.value.month)
-      + '-' + this.addLeadingZero(this.promotionForm.controls.expirationDate.value.day) + 'T'
-      + this.addLeadingZero(this.promotionForm.controls.time.value.hour) + ':'
-      + this.addLeadingZero(this.promotionForm.controls.time.value.minute) + ':' + '00';
+    const expDate = OperatorPromotionFormComponent.addLeadingZero(this.promotionForm.controls.expirationDate.value.year) + '-'
+      + OperatorPromotionFormComponent.addLeadingZero(this.promotionForm.controls.expirationDate.value.month)
+      + '-' + OperatorPromotionFormComponent.addLeadingZero(this.promotionForm.controls.expirationDate.value.day) + 'T'
+      + OperatorPromotionFormComponent.addLeadingZero(this.promotionForm.controls.time.value.hour) + ':'
+      + OperatorPromotionFormComponent.addLeadingZero(this.promotionForm.controls.time.value.minute) + ':' + '00';
     this.newPromotion = new Promotion(0, this.promotionForm.controls.name.value, this.promotionForm.controls.discount.value,
       '', expDate, this.promotionForm.controls.code.value, this.promotionForm.controls.minimum.value);
     this.promotionService.addPromotion(this.newPromotion).subscribe(() => {
@@ -60,7 +59,7 @@ export class OperatorPromotionFormComponent implements OnInit {
     this.error = false;
   }
 
-  private addLeadingZero(num: number): string {
+  private static addLeadingZero(num: number): string {
     return num < 10 ? '0' + num : num.toString();
   }
 

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {faEdit, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Customer} from '../../../dtos/customer';
-import {MeService} from '../../../services/me.service';
+import {MeService} from '../../../services/me/me.service';
 import {Address} from '../../../dtos/address';
 import {CustomerAuthService} from '../../../services/auth/customer-auth.service';
 import {Router} from '@angular/router';
@@ -113,8 +113,9 @@ export class ShopAccountProfileComponent implements OnInit {
       this.editForm.value.phoneNumber
     );
 
-    if(this.editForm.value.password !== '' && this.editForm.value.newPassword !== ''){
-      this.meService.updatePassword(this.editForm.value.password, this.editForm.value.newPassword).subscribe(() => {}, error => {
+    if (this.editForm.value.password !== '' && this.editForm.value.newPassword !== '') {
+      this.meService.updatePassword(this.editForm.value.password, this.editForm.value.newPassword).subscribe(() => {
+      }, error => {
         console.log(error);
         this.error = true;
         if (typeof error.error === 'object') {
@@ -122,7 +123,7 @@ export class ShopAccountProfileComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
-      }, ()=> {
+      }, () => {
         this.editData();
       });
     } else {
@@ -162,7 +163,7 @@ export class ShopAccountProfileComponent implements OnInit {
    *
    * @private
    */
-  private editData(){
+  private editData() {
     const user = this.customerAuthService.getUser();
 
     this.meService.updateProfileData(this.myProfile).subscribe(() => {

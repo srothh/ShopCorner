@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Pagination} from '../../../dtos/pagination';
 import {Promotion} from '../../../dtos/promotion';
-import {PromotionService} from '../../../services/promotion.service';
+import {PromotionService} from '../../../services/promotion/promotion.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {Globals} from '../../../global/globals';
 

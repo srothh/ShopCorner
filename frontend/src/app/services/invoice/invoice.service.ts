@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Globals} from '../global/globals';
+import {Globals} from '../../global/globals';
 import {Observable} from 'rxjs';
-import {Invoice} from '../dtos/invoice';
-import {Product} from '../dtos/product';
-import {OperatorAuthService} from './auth/operator-auth.service';
-import {Pagination} from '../dtos/pagination';
-import {InvoiceType} from '../dtos/invoiceType.enum';
-import {Customer} from '../dtos/customer';
-import {CustomerAuthService} from './auth/customer-auth.service';
+import {Invoice} from '../../dtos/invoice';
+import {Product} from '../../dtos/product';
+import {OperatorAuthService} from '../auth/operator-auth.service';
+import {Pagination} from '../../dtos/pagination';
+import {InvoiceType} from '../../dtos/invoiceType.enum';
+import {Customer} from '../../dtos/customer';
+import {CustomerAuthService} from '../auth/customer-auth.service';
 
 @Injectable({
   providedIn: 'root'

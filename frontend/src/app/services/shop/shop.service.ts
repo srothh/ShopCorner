@@ -1,12 +1,10 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Globals} from '../global/globals';
-import {OperatorAuthService} from './auth/operator-auth.service';
+import {Globals} from '../../global/globals';
+import {OperatorAuthService} from '../auth/operator-auth.service';
 import {Observable} from 'rxjs';
-import {Operator} from '../dtos/operator';
-import {ShopSettings} from '../dtos/shop-settings';
+import {ShopSettings} from '../../dtos/shop-settings';
 import {map, tap} from 'rxjs/operators';
-import {Product} from '../dtos/product';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +13,8 @@ export class ShopService {
   private shopBaseUri: string = this.globals.backendUri + '/shop';
   private shopSettingsKey = 'shopSettings';
 
-  constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) { }
+  constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
+  }
 
   static shopSettingsMapper(s: ShopSettings) {
     return new ShopSettings(
@@ -55,7 +54,7 @@ export class ShopService {
           this.setSettings(shopSettings);
         }),
         map(ShopService.shopSettingsMapper)
-    );
+      );
   }
 
   /**

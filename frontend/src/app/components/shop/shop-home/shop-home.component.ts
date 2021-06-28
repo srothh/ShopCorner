@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Product} from '../../../dtos/product';
 import {ProductService} from '../../../services/product/product.service';
 import {Router} from '@angular/router';
-import {ShopService} from '../../../services/shop.service';
+import {ShopService} from '../../../services/shop/shop.service';
 import {Globals} from '../../../global/globals';
 
 @Component({

@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
-import {Permissions} from '../../../dtos/permissions.enum';
 import {Router} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
-import {OperatorService} from '../../../services/operator.service';
+import {OperatorService} from '../../../services/operator/operator.service';
 
 @Component({
   selector: 'app-operator-home',
@@ -11,8 +10,6 @@ import {OperatorService} from '../../../services/operator.service';
   styleUrls: ['./operator-home.component.scss']
 })
 export class OperatorHomeComponent implements OnInit {
-
-
   operator: Operator;
   user: string;
 
@@ -41,7 +38,7 @@ export class OperatorHomeComponent implements OnInit {
 
   goToEdit() {
     this.router.navigate(['/operator/account/edit']);
-  };
+  }
 
   vanishError() {
     this.error = false;

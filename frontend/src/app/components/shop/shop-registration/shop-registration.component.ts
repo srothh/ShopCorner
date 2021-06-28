@@ -4,8 +4,8 @@ import {CustomerAuthService} from '../../../services/auth/customer-auth.service'
 import {Router} from '@angular/router';
 import {Address} from '../../../dtos/address';
 import {Customer} from '../../../dtos/customer';
-import {AddressService} from '../../../services/address.service';
-import {CustomerService} from '../../../services/customer.service';
+import {AddressService} from '../../../services/address/address.service';
+import {CustomerService} from '../../../services/customer/customer.service';
 
 
 @Component({

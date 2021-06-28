@@ -2,9 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {OperatorService} from '../../../services/operator.service';
+import {OperatorService} from '../../../services/operator/operator.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
-
 
 @Component({
   selector: 'app-operator-edit-account',
@@ -12,7 +11,6 @@ import {OperatorAuthService} from '../../../services/auth/operator-auth.service'
   styleUrls: ['./operator-edit-account.component.scss']
 })
 export class OperatorEditAccountComponent implements OnInit {
-
   user: string;
   operator: Operator;
   password = 'unchanged';
@@ -28,9 +26,7 @@ export class OperatorEditAccountComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.user = this.authenticationService.getUser();
-
     this.operatorService.getOperatorByLoginName(this.user)
       .subscribe(operator => this.operator = operator, error => {
         console.log(error);
@@ -55,10 +51,8 @@ export class OperatorEditAccountComponent implements OnInit {
     this.error = false;
   }
 
-  save(): void{
-
+  save(): void {
     if (this.updateForm.valid) {
-
       this.operator = new Operator(this.operator.id, this.updateForm.controls.name.value,
         this.updateForm.controls.loginName.value,
         this.password, this.updateForm.controls.email.value,
@@ -67,7 +61,7 @@ export class OperatorEditAccountComponent implements OnInit {
       this.password = this.updateForm.controls.oldPassword.value;
       this.updatedPassword = this.updateForm.controls.newPassword.value;
 
-      if(this.password !== '' && this.updatedPassword !== ''){
+      if (this.password !== '' && this.updatedPassword !== '') {
         this.operatorService.updatePassword(this.password, this.updatedPassword).subscribe(
           () => {}, error => {
             console.log(error);
@@ -77,7 +71,7 @@ export class OperatorEditAccountComponent implements OnInit {
             } else {
               this.errorMessage = error.error;
             }
-          }, ()=> {
+          }, () => {
            this.editData();
           }
         );
@@ -87,16 +81,14 @@ export class OperatorEditAccountComponent implements OnInit {
     } else {
       console.log('Invalid input');
     }
-
   }
-
 
   /**
    * Updates user data not related to the password.
    *
    * @private
    */
-  private editData(){
+  private editData() {
 
     this.operatorService.updateOperator(this.operator).subscribe(() => {
       this.submitted = true;
@@ -109,7 +101,7 @@ export class OperatorEditAccountComponent implements OnInit {
         this.errorMessage = error.error;
       }
     }, () => {
-      if(this.operator.loginName !== this.user) {
+      if (this.operator.loginName !== this.user) {
         this.authenticationService.logoutUser();
         this.router.navigate(['/operator/login']);
       } else {
@@ -117,6 +109,4 @@ export class OperatorEditAccountComponent implements OnInit {
       }
     });
   }
-
-
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Customer} from '../../../dtos/customer';
-import {MeService} from '../../../services/me.service';
-import {CartService} from '../../../services/cart.service';
+import {MeService} from '../../../services/me/me.service';
+import {CartService} from '../../../services/cart/cart.service';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {Product} from '../../../dtos/product';
 import {Invoice} from '../../../dtos/invoice';
@@ -9,15 +9,15 @@ import {InvoiceItem} from '../../../dtos/invoiceItem';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {formatDate} from '@angular/common';
 import {Cart} from '../../../dtos/cart';
-import {OrderService} from '../../../services/order.service';
+import {OrderService} from '../../../services/order/order.service';
 import {Order} from '../../../dtos/order';
 import {Address} from '../../../dtos/address';
-import {PaypalService} from '../../../services/paypal.service';
+import {PaypalService} from '../../../services/paypal/paypal.service';
 import {Router} from '@angular/router';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {PromotionService} from '../../../services/promotion.service';
+import {PromotionService} from '../../../services/promotion/promotion.service';
 import {Promotion} from '../../../dtos/promotion';
 import {ProductService} from '../../../services/product/product.service';
 
@@ -27,7 +27,6 @@ import {ProductService} from '../../../services/product/product.service';
   styleUrls: ['./shop-checkout.component.scss']
 })
 export class ShopCheckoutComponent implements OnInit {
-
   customer: Customer = new Customer(0, '', '', '', '', new Address(0, '', 0, '', 0, '')
     , '');
   products: Product[];
@@ -99,16 +98,17 @@ export class ShopCheckoutComponent implements OnInit {
       this.cart = cart;
     });
   }
+
   proceedToPay() {
     const mappedProducts = this.products.map(ProductService.productMapper);
     mappedProducts.forEach((product) => {
-      if (product.hasExpiration && product.hasExpired){
+      if (product.hasExpiration && product.hasExpired) {
         this.error = true;
         this.errorMessage = `Das Produkt "${product.name}" ist nicht verfügbar. Bitte setzen Sie ihren Einkauf ohne dieses Produkt fort.`;
       }
     });
     if (!this.error) {
-      this.creatInvoiceDto();
+      this.createInvoiceDto();
       const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
       this.paypalService.createPayment(order).subscribe((redirectUrl) => {
         window.location.href = redirectUrl;
@@ -116,7 +116,8 @@ export class ShopCheckoutComponent implements OnInit {
       });
     }
   }
-  creatInvoiceDto() {
+
+  createInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
 
@@ -131,6 +132,7 @@ export class ShopCheckoutComponent implements OnInit {
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
   }
+
   vanishError() {
     this.error = false;
   }
@@ -178,6 +180,4 @@ export class ShopCheckoutComponent implements OnInit {
       console.log(error);
     }));
   }
-
-
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {ShopService} from '../../../services/shop.service';
+import {ShopService} from '../../../services/shop/shop.service';
 import {ShopSettings} from '../../../dtos/shop-settings';
 
 @Component({

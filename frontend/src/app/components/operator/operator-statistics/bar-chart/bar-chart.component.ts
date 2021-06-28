@@ -63,25 +63,25 @@ export class BarChartComponent implements OnInit {
     const tempCu = [];
     const tempCa = [];
     const months = [];
-    for (let d = new Date(this.start); (d.getMonth() <= this.end.getMonth() && d.getMonth() < 11)
+    for (const d = new Date(this.start); (d.getMonth() <= this.end.getMonth() && d.getMonth() < 11)
     || d.getFullYear() < this.end.getFullYear(); d.setMonth(d.getMonth() + 1)) {
       const month = d.toISOString().split('T')[0];
-      months.push(month.substring(0,7));
+      months.push(month.substring(0, 7));
       tempOp.push(0);
       tempCu.push(0);
       tempCa.push(0);
-      this.chartLabels.push(month.substring(0,7));
+      this.chartLabels.push(month.substring(0, 7));
     }
     if (this.end.getMonth() === 11) {
       const month = this.end.toISOString().split('T')[0];
-      months.push(month.substring(0,7));
+      months.push(month.substring(0, 7));
       tempOp.push(0);
       tempCu.push(0);
       tempCa.push(0);
-      this.chartLabels.push(month.substring(0,7));
+      this.chartLabels.push(month.substring(0, 7));
     }
     for (const invoice of this.invoices) {
-      const month = invoice.date.substring(0,7);
+      const month = invoice.date.substring(0, 7);
       if (invoice.invoiceType === InvoiceType.operator) {
         tempOp[months.indexOf(month)] += invoice.amount;
       } else if (invoice.invoiceType === InvoiceType.customer) {

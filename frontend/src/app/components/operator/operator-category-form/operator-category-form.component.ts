@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Category} from '../../../dtos/category';
-import {CategoryService} from '../../../services/category.service';
+import {CategoryService} from '../../../services/category/category.service';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute, Router} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
@@ -27,7 +27,7 @@ export class OperatorCategoryFormComponent implements OnInit {
               private authService: OperatorAuthService) { }
 
   ngOnInit(): void {
-    if (this.category === undefined && this.router.url.includes('add')){
+    if (this.category === undefined && this.router.url.includes('add')) {
       this.category = this.createDefaultCategory();
       this.addCategoryEnabled = true;
       this.inEditMode = false;
@@ -42,7 +42,8 @@ export class OperatorCategoryFormComponent implements OnInit {
       this.categoryForm.disable();
     }
   }
-  setFormProperties(){
+
+  setFormProperties() {
     if (this.category === undefined) {
       const categoryId = +this.activatedRouter.snapshot.paramMap.get('id');
       this.fetchSelectedCategory(categoryId);
@@ -50,7 +51,8 @@ export class OperatorCategoryFormComponent implements OnInit {
       this.categoryForm.controls['name'].setValue(this.category.name);
     }
   }
-  fetchSelectedCategory(categoryId: number){
+
+  fetchSelectedCategory(categoryId: number) {
     this.categoryService.getCategoryById(categoryId).subscribe((categoryData) => {
       this.category = categoryData;
       this.setFormProperties();
@@ -59,14 +61,17 @@ export class OperatorCategoryFormComponent implements OnInit {
       this.errorMessage = error.error.message;
     });
   }
-  resetState(){
+
+  resetState() {
     this.errorMessage = null;
     this.errorOccurred = undefined;
   }
-  createDefaultCategory(){
+
+  createDefaultCategory() {
     return new Category(null, null);
   }
-  submitCategory(){
+
+  submitCategory() {
     this.category.name = this.categoryForm.get('name').value.trim();
     if (this.router.url.includes('add')) {
       this.categoryService.addCategory(this.category).subscribe((categoryData) => {
@@ -81,7 +86,8 @@ export class OperatorCategoryFormComponent implements OnInit {
       this.updateCategory();
     }
   }
-  updateCategory(){
+
+  updateCategory() {
     this.categoryService.updateCategory(this.category.id, this.category).subscribe(() => {
       this.inEditMode = true;
       this.addCategoryEnabled = false;
@@ -92,22 +98,23 @@ export class OperatorCategoryFormComponent implements OnInit {
       this.errorMessage = error.error.message;
     });
   }
-  enableEditing(){
+
+  enableEditing() {
     this.inEditMode = true;
     this.addCategoryEnabled = true;
     this.categoryForm.enable();
   }
+
   get categoryFormControl() {
     return this.categoryForm.controls;
   }
+
   whiteSpaceValidator(control: AbstractControl) {
     const isWhitespace = (control.value || '').trim().length < 3;
     const isValid = !isWhitespace;
     return isValid ? null : {whitespace: true};
   }
-  goBackToCategoriesOverview(){
-    this.router.navigate(['operator/categories']).then();
-  }
+
   getPermission(): string {
     return this.authService.getUserRole();
   }

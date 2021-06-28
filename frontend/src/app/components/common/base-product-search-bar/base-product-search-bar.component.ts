@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {faFilter} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {CategoryService} from '../../../services/category.service';
+import {CategoryService} from '../../../services/category/category.service';
 import {Category} from '../../../dtos/category';
 
 @Component({
