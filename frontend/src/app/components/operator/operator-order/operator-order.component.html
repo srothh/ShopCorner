@@ -24,7 +24,7 @@
     </ng-template>
   </div>
   <div class="border rounded" style="height: 560px">
-    <table class="table table-sm" data-pagination="true" data-page-list="[1,3]">
+    <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
       <thead>
       <tr class="table-secondary">
         <th scope="col" class="font-weight-bold">Bestellung aufgegeben am</th>
@@ -39,7 +39,7 @@
         <td><span>{{order.invoice.amount.toFixed(2)}}€</span></td>
         <td><span>{{order.customer.name}}</span></td>
         <td>
-          <button class="btn btn-link" type="submit" (click)="downloadInvoice(order.invoice.id, order.invoice.date)">PDF download</button>
+          <a class="link-primary" (click)="downloadInvoice(order.invoice.id, order.invoice.date)">PDF download</a>
         </td>
       </tr>
       </tbody>

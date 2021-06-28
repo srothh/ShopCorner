@@ -12,7 +12,7 @@
       <p>{{(isCanceled? order.invoice.amount * (-1):order.invoice.amount).toFixed(2) + ' EUR'}}</p>
     </div>
     <div class="order-invoice">
-      <p class="font-weight-bolder" *ngIf="isCanceled">Strono Rechnung: </p>
+      <p class="font-weight-bolder" *ngIf="isCanceled">Storno Rechnung: </p>
       <p class="font-weight-bolder" *ngIf="!isCanceled">Rechnung: </p>
       <a href="#" class="link-primary" (click)="downloadInvoice($event, order.invoice.id, order.invoice.date)">PDF download</a>
     </div>
