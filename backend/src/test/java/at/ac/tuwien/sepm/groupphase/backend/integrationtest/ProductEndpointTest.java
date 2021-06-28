@@ -18,7 +18,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,6 +80,7 @@ public class ProductEndpointTest implements TestData {
     public void beforeEach() {
         productRepository.deleteAll();
         categoryRepository.deleteAll();
+        taxRateRepository.deleteAll();
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
