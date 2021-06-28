@@ -40,15 +40,19 @@ export class OperatorAddProductComponent implements OnInit {
       this.fetchData();
     }
   }
+
   fetchData(): void {
-      forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
-        .subscribe(([categoriesData, taxRatesData]) => {
-          this.categories = categoriesData;
-          this.taxRates = taxRatesData;
-        });
-  }
-  goBackToProductsOverview() {
-    this.router.navigate(['/operator/products']).then();
+    forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
+      .subscribe(([categoriesData, taxRatesData]) => {
+        this.categories = categoriesData;
+        this.taxRates = taxRatesData;
+      }, (error) => {
+        this.errorMessage = error;
+        this.errorOccurred = true;
+      });
   }
 
+  vanishError() {
+    this.errorOccurred = false;
+  }
 }

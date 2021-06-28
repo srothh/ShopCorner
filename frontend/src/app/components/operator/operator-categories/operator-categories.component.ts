@@ -29,7 +29,8 @@ export class OperatorCategoriesComponent implements OnInit {
               private router: Router,
               private urlSerializer: UrlSerializer,
               private authService: OperatorAuthService,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal) {
+  }
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -62,7 +63,7 @@ export class OperatorCategoriesComponent implements OnInit {
       this.errorOccurred = false;
     }, error => {
       this.errorOccurred = true;
-      this.errorMessage = error.error.message;
+      this.errorMessage = error;
     });
   }
 
@@ -113,7 +114,7 @@ export class OperatorCategoriesComponent implements OnInit {
         }
       }, error => {
         this.errorOccurred = true;
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       });
     }
   }

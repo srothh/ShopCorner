@@ -44,11 +44,11 @@ public class CartServiceImpl implements CartService {
         if (this.countCartItemInCartUsingSessionId(sessionId) <= 20) {
             if (item.getQuantity() > 12) {
                 item.setQuantity(12);
-                throw new ServiceException("reached maximum of cart item");
+                throw new ServiceException("Maximale Stückzahl des Artikels erreicht");
             }
             cart.getItems().add(item);
         } else {
-            throw new ServiceException("reached maximum of items in cart");
+            throw new ServiceException("Maximalanzahl im Warenkorb zulässiger Artikel erreicht");
         }
         return this.addItemToCart(cart);
     }
@@ -69,7 +69,7 @@ public class CartServiceImpl implements CartService {
     @Cacheable(value = "cartCounts", key = "#sessionId")
     @Override
     public long countCartItemInCartUsingSessionId(UUID sessionId) {
-        return this.cartRepository.countCartItemInCartUsingSessionId(sessionId).orElseThrow(() -> new NotFoundException("Could not find cart!"));
+        return this.cartRepository.countCartItemInCartUsingSessionId(sessionId).orElseThrow(() -> new NotFoundException("Warenkorb konnte nicht gefunden werden"));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart findCartBySessionId(UUID sessionId) {
         LOGGER.trace("findCartBySessionId({})", sessionId.toString());
-        return this.cartRepository.findBySessionId(sessionId).orElseThrow(() -> new NotFoundException("Could not find cart!"));
+        return this.cartRepository.findBySessionId(sessionId).orElseThrow(() -> new NotFoundException("Warenkorb konnte nicht gefunden werden"));
 
     }
 

@@ -14,22 +14,22 @@ public class OverviewOperatorDto {
 
     private Long id;
 
-    @NotNull(message = "Name must not be null")
+    @NotNull(message = "Name darf nicht null sein")
     @NotBlank
     @Size(max = 255)
     private String name;
 
-    @NotNull(message = "Login name must not be null")
+    @NotNull(message = "Benutzername darf nicht null sein")
     @NotBlank
     @Size(max = 128)
     private String loginName;
 
-    @NotNull(message = "Email must not be null")
+    @NotNull(message = "Email darf nicht null sein")
     @NotBlank
     @Email
     private String email;
 
-    @NotNull(message = "Permissions must not be null")
+    @NotNull(message = "Berechtigungslevel darf nicht null sein")
     @Enumerated(EnumType.STRING)
     private Permissions permissions;
 

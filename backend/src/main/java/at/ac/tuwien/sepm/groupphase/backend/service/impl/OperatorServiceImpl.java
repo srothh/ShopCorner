@@ -77,7 +77,7 @@ public class OperatorServiceImpl implements OperatorService {
         if (operator != null) {
             return operator;
         }
-        throw new NotFoundException(String.format("Could not find the operator with the login name %s", loginName));
+        throw new NotFoundException(String.format("Betreiber mit Username %s konnte nicht gefunden werden", loginName));
     }
 
     @Override
@@ -87,7 +87,7 @@ public class OperatorServiceImpl implements OperatorService {
         if (operator != null) {
             return operator;
         }
-        throw new NotFoundException(String.format("Could not find the operator with the email %s", email));
+        throw new NotFoundException(String.format("Betreiber mit E-Mail %s konnte nicht gefunden werden", email));
     }
 
     @Override
@@ -145,7 +145,7 @@ public class OperatorServiceImpl implements OperatorService {
     public void changePermissions(Long id, Permissions permissions) {
         LOGGER.trace("changePermissions({})", id);
         operatorRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Could not find operator that should get new permissions!"));
+            .orElseThrow(() -> new NotFoundException("Betreiber mit zu änderndem Berechtigugslevel konnte nicht gefunden werden"));
         operatorRepository.setOperatorPermissionsById(permissions, id);
     }
 
@@ -159,7 +159,7 @@ public class OperatorServiceImpl implements OperatorService {
     public void delete(Long id) {
         LOGGER.trace("delete({})", id);
         operatorRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Could not find operator that should be deleted!"));
+            .orElseThrow(() -> new NotFoundException("Zu löschender Betreiber konnte nicht gefunden werden"));
         operatorRepository.deleteById(id);
     }
 
@@ -175,7 +175,7 @@ public class OperatorServiceImpl implements OperatorService {
         validator.validateUpdatedOperator(operator, operatorRepository);
 
         Operator op = operatorRepository.findById(operator.getId())
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find the operator with the id %d", operator.getId())));
+            .orElseThrow(() -> new NotFoundException(String.format("Betreiber mit id %d konnte nicht gefunden werden", operator.getId())));
 
         op.setName(operator.getName());
         op.setLoginName(operator.getLoginName());
@@ -188,13 +188,13 @@ public class OperatorServiceImpl implements OperatorService {
     public void updatePassword(Long id, String oldPassword, String newPassword) {
         LOGGER.trace("updatePassword({})", id);
         Operator op = operatorRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find the operator with the id %d", id)));
+            .orElseThrow(() -> new NotFoundException(String.format("Betreiber mit id %d konnte nicht gefunden werden", id)));
 
         if (passwordEncoder.matches(oldPassword, op.getPassword())) {
             op.setPassword(passwordEncoder.encode(newPassword));
             operatorRepository.save(op);
         } else {
-            throw new ValidationException("Password could not be updated");
+            throw new ValidationException("Password konnte nicht upgedated werden");
         }
     }
 

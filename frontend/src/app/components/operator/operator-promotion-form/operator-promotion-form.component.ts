@@ -15,7 +15,7 @@ export class OperatorPromotionFormComponent implements OnInit {
   promotionForm: FormGroup;
   error = false;
   errorMessage = '';
-
+  form;
   constructor(private promotionService: PromotionService, private formBuilder: FormBuilder) {
   }
 
@@ -51,7 +51,7 @@ export class OperatorPromotionFormComponent implements OnInit {
       this.onSuccess(false);
     }, error => {
       this.error = true;
-      this.errorMessage = error.message;
+      this.errorMessage = error;
     });
   }
 

@@ -45,11 +45,7 @@ export class PageableProducts implements IPageable<Product> {
         this.collectionSize = productData.totalItemCount;
       }, error => {
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       });
   }
 

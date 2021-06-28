@@ -98,7 +98,7 @@ public class ProductDataGenerator {
                 .withName("Kleidung")
                 .build();
             categoryRepository.save(category4);
-            TaxRate taxRate2 = this.taxRateRepository.findById(2L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+            TaxRate taxRate2 = this.taxRateRepository.findById(2L).orElseThrow(() -> new NotFoundException("Steuersatz konnte nicht gefunden werden"));
             Product product1 = Product.ProductBuilder.getProductBuilder()
                 .withName("Banane")
                 .withDescription("leckere Bananen aus Ecuador")
@@ -107,9 +107,9 @@ public class ProductDataGenerator {
                 .withCategory(category3).withSaleCount(0L)
                 .build();
             productRepository.save(product1);
-            TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+            TaxRate taxRate3 = this.taxRateRepository.findById(3L).orElseThrow(() -> new NotFoundException("Steuersatz konnte nicht gefunden werden"));
             Faker faker = new Faker(new Locale("de-AT"));
-            TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Could not find tax-rate"));
+            TaxRate taxRate1 = this.taxRateRepository.findById(1L).orElseThrow(() -> new NotFoundException("Steuersatz konnte nicht gefunden werden"));
             generateProductsWithTaxRate(taxRate1, category1, category2, category3, category4, faker);
             generateProductsWithTaxRate(taxRate2, category1, category2, category3, category4, faker);
             generateProductsWithTaxRate(taxRate3, category1, category2, category3, category4, faker);
@@ -241,7 +241,7 @@ public class ProductDataGenerator {
                 invoice.setAmount((double) Math.round(amount * 100) / 100);
                 invoice.setInvoiceNumber(i + "Customer" + invoice.getDate().getYear());
                 int custId = (int) (Math.random() * customers.size());
-                invoice.setCustomerId((long) custId);
+                invoice.setCustomerId(customers.get(custId).getId());
                 invoice.setOrderNumber("Test" + i);
                 if (i % 100 == 0) {
                     invoice.setInvoiceType(InvoiceType.canceled);

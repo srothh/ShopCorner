@@ -31,6 +31,6 @@ public class TaxRateServiceImpl implements TaxRateService {
 
     public TaxRate findTaxRateById(Long taxRateId) {
         LOGGER.trace("findTaxRateById({})", taxRateId);
-        return this.taxRateRepository.findById(taxRateId).orElseThrow(() -> new NotFoundException("Could not find tax-rate!"));
+        return this.taxRateRepository.findById(taxRateId).orElseThrow(() -> new NotFoundException("Steuersatz konnte nicht gefunden werden"));
     }
 }

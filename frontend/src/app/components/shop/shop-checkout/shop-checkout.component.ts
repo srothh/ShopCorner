@@ -39,7 +39,7 @@ export class ShopCheckoutComponent implements OnInit {
   promotionError = false;
   promotionErrorMessage = '';
   error = false;
-  errorMessage: string;
+  errorMessage = '';
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
               private orderService: OrderService, private paypalService: PaypalService, private router: Router,
@@ -96,6 +96,9 @@ export class ShopCheckoutComponent implements OnInit {
     this.cartService.getCart().subscribe((cart: Cart
     ) => {
       this.cart = cart;
+    }, error => {
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -169,6 +172,9 @@ export class ShopCheckoutComponent implements OnInit {
       (customer: Customer) => {
         this.customer = customer;
         this.getCartItems();
+      }, error => {
+        this.error = true;
+        this.errorMessage = error;
       }
     );
   }
@@ -177,7 +183,8 @@ export class ShopCheckoutComponent implements OnInit {
     this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
       this.cancellationPeriod = cancellationPeriod;
     }, (error => {
-      console.log(error);
+      this.error = true;
+      this.errorMessage = error;
     }));
   }
 }

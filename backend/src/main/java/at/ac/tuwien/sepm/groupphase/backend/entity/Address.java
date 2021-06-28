@@ -19,14 +19,14 @@ public class Address {
     @Column(name = "id", nullable = false, unique = true, updatable = false)
     private Long id;
     @Column(name = "street", nullable = false)
-    @NotBlank
+    @NotBlank(message = "Straße darf nicht leer sein")
     private String street;
     @Column(name = "postal_code", nullable = false)
-    @Min(value = 1000, message = "Invalid postal code")
-    @Max(value = 9999, message = "Invalid postal code")
+    @Min(value = 1000, message = "Ungültige PLZ")
+    @Max(value = 9999, message = "Ungültige PLZ")
     private int postalCode;
     @Column(name = "house_number", nullable = false, length = 64)
-    @NotBlank
+    @NotBlank(message = "Hausnummer darf nicht leer sein")
     private String houseNumber;
     @Column(name = "stair_number", columnDefinition = "BIGINT DEFAULT NULL")
     private int stairNumber;

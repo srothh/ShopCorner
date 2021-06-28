@@ -11,11 +11,11 @@ import java.util.Objects;
 public class SimpleProductDto {
     private Long id;
     @NotBlank
-    @Size(min = 3, max = 20, message = "name should contain at least 3 characters and 20 at most")
+    @Size(min = 3, max = 50, message = "Name muss mindestens 3 und maximal 50 Zeichen enthalten")
     private String name;
-    @Size(max = 70)
+    @Size(max = 200, message = "Beschreibung darf nicht mehr als 200 Zeichen enthalten")
     private String description;
-    @DecimalMin("0.0")
+    @DecimalMin(value = "0.0", message = "Preis muss mindestens 0€ betragen")
     private Double price;
     private TaxRate taxRate;
     private Long saleCount;

@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Invoice} from '../../../dtos/invoice';
 import {InvoiceService} from '../../../services/invoice/invoice.service';
-import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {Customer} from '../../../dtos/customer';
+import {Promotion} from '../../../dtos/promotion';
 
 @Component({
   selector: 'app-operator-invoice-detail-view',
@@ -16,18 +16,20 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
   error = false;
   errorMessage = '';
   download = false;
-  customerExists = false;
+  orderExists = false;
+  promotionExists = false;
   address: string;
+  promotion: Promotion;
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
     this.detailedInvoice = new Invoice();
     this.detailedInvoice.date = '';
     this.detailedInvoice.amount = 0;
-    this.customerExists = this.value.invoiceType === InvoiceType.customer ||
-      (this.value.customerId !== undefined && this.value.customerId !== null);
-    if (this.customerExists) {
-      this.fetchCustomerData(this.value);
+
+    this.orderExists = (this.value.orderNumber !== undefined && this.value.orderNumber !== null);
+    if (this.orderExists ) {
+      this.fetchOrderData(this.value);
     } else {
       this.fetchInvoiceData(this.value.id);
     }
@@ -42,6 +44,9 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
 
   }
 
+  vanishError() {
+    this.error = false;
+  }
 
   downloadInvoiceById() {
     this.invoiceService.getInvoiceAsPdfById(this.value.id ).subscribe((data) => {
@@ -76,21 +81,18 @@ export class OperatorInvoiceDetailViewComponent implements OnInit {
       this.errorMessage = error;
     });
   }
-  private fetchCustomerData(invoice: Invoice) {
-    this.invoiceService.getInvoiceById(invoice.id).subscribe( (item) => {
-      this.detailedInvoice = item;
-
+  private fetchOrderData(invoice: Invoice) {
+    this.invoiceService.getOrderByOrderNumber(invoice.orderNumber).subscribe((order) => {
+      this.detailedInvoice = order.invoice;
+      this.customer = order.customer;
+      this.address = order.customer.address.postalCode + ' ' + order.customer.address.street;
+      this.promotionExists = order.promotion !== null;
+      if (this.promotionExists) {
+        this.promotion = order.promotion;
+      }
     }, (error) => {
       this.error = true;
       this.errorMessage = error;
     });
-      this.invoiceService.getCustomerById(invoice.customerId).subscribe((item) => {
-        this.customer = item;
-        this.address = item.address.postalCode + ' ' + item.address.street + ' ' + item.address.houseNumber;
-
-      }, (error) => {
-        this.error = true;
-        this.errorMessage = error;
-      });
   }
 }

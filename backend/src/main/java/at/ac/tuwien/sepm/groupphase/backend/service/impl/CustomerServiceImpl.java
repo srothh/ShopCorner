@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
+import at.ac.tuwien.sepm.groupphase.backend.util.CustomerSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +123,7 @@ public class CustomerServiceImpl implements CustomerService {
         LOGGER.trace("update({})", customer);
         validator.validateUpdatedCustomer(customer, customerRepository);
         Customer c = customerRepository.findById(customer.getId())
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", customer.getId())));
+            .orElseThrow(() -> new NotFoundException(String.format("Kunde mit id %d konnte nicht gefunden werden", customer.getId())));
 
         if (!customer.getAddress().equals(c.getAddress())) {
             Address address = addressService.addNewAddress(customer.getAddress());
@@ -141,13 +142,13 @@ public class CustomerServiceImpl implements CustomerService {
     public void updatePassword(Long id, String oldPassword, String newPassword) {
         LOGGER.trace("updatePassword({})", id);
         Customer customer = customerRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", id)));
+            .orElseThrow(() -> new NotFoundException(String.format("Kunde mit id %d konnte nicht gefunden werden", id)));
 
         if (passwordEncoder.matches(oldPassword, customer.getPassword())) {
             customer.setPassword(passwordEncoder.encode(newPassword));
             customerRepository.save(customer);
         } else {
-            throw new ValidationException("Password could not be updated");
+            throw new ValidationException("Passwort konnte nicht upgedated werden");
         }
     }
 
@@ -162,7 +163,7 @@ public class CustomerServiceImpl implements CustomerService {
             pageCount = 50;
         }
         Pageable returnPage = PageRequest.of(page, pageCount);
-        return customerRepository.findAll(returnPage);
+        return customerRepository.findAll(CustomerSpecifications.hasDeleted(false), returnPage);
     }
 
     @CacheEvict(value = "customerPages", allEntries = true)
@@ -176,20 +177,20 @@ public class CustomerServiceImpl implements CustomerService {
     @Cacheable(value = "counts", key = "'customers'")
     @Override
     public long getCustomerCount() {
-        return customerRepository.count();
+        return customerRepository.count(CustomerSpecifications.hasDeleted(false));
     }
 
 
     @Override
     public List<Customer> findAll() {
         LOGGER.trace("findAll()");
-        return customerRepository.findAll();
+        return customerRepository.findAll(CustomerSpecifications.hasDeleted(false));
     }
 
     @Override
     public Customer findCustomerById(Long id) {
         LOGGER.trace("findCustomerById({})", id);
-        return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find Customer"));
+        return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Kunde konnte nicht gefunden werden"));
     }
 
     @Override

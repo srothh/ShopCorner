@@ -79,7 +79,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void updateCategory(Long categoryId, Category category) {
         LOGGER.trace("updateCategory({})", category);
         Category updatedCategory = this.categoryRepository
-            .findById(categoryId).orElseThrow(() -> new NotFoundException("Could not find category with Id:" + categoryId));
+            .findById(categoryId).orElseThrow(() -> new NotFoundException("Kategorie mit id " + categoryId + " konnte nicht gefunden werden"));
         updatedCategory.setName(category.getName());
         categoryRepository.save(updatedCategory);
     }
@@ -93,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(Long categoryId) {
         LOGGER.trace("deleteCategory({})", categoryId);
         this.categoryRepository
-            .findById(categoryId).orElseThrow(() -> new NotFoundException("Could not find category with Id:" + categoryId));
+            .findById(categoryId).orElseThrow(() -> new NotFoundException("Kategorie mit id " + categoryId + " konnte nicht gefunden werden"));
         List<Product> products = productService.getAllProductsByCategory(categoryId);
         for (Product p : products) {
             p.setCategory(null);
@@ -103,7 +103,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     public Category getCategoryById(Long categoryId) {
         LOGGER.trace("getCategoryById({})", categoryId);
-        return this.categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Could not find category with Id:" + categoryId));
+        return this.categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Kategorie mit id " + categoryId + " konnte nicht gefunden werden"));
     }
 
 

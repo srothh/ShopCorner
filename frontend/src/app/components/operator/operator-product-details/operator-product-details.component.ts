@@ -61,6 +61,9 @@ export class OperatorProductDetailsComponent implements OnInit {
       .subscribe(([categoriesData, taxRatesData]) => {
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
+      }, (error) => {
+        this.errorOccurred = true;
+        this.errorMessage = error;
       });
   }
 
@@ -69,7 +72,7 @@ export class OperatorProductDetailsComponent implements OnInit {
       this.router.navigate(['/operator/products']).then();
     }, error => {
       this.errorOccurred = true;
-      this.errorMessage = error.error.message;
+      this.errorMessage = error;
     });
   }
 

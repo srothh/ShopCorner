@@ -31,11 +31,7 @@ export class OperatorEditAccountComponent implements OnInit {
       .subscribe(operator => this.operator = operator, error => {
         console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       }, () => {
         this.updateForm = this.formBuilder.group({
           name: [this.operator.name, [Validators.required]],
@@ -63,20 +59,16 @@ export class OperatorEditAccountComponent implements OnInit {
 
       if (this.password !== '' && this.updatedPassword !== '') {
         this.operatorService.updatePassword(this.password, this.updatedPassword).subscribe(
-          () => {}, error => {
-            console.log(error);
+          () => {
+          }, error => {
             this.error = true;
-            if (typeof error.error === 'object') {
-              this.errorMessage = error.error.error;
-            } else {
-              this.errorMessage = error.error;
-            }
+            this.errorMessage = error;
           }, () => {
-           this.editData();
+            this.editData();
           }
         );
       } else {
-      this.editData();
+        this.editData();
       }
     } else {
       console.log('Invalid input');
@@ -95,11 +87,7 @@ export class OperatorEditAccountComponent implements OnInit {
     }, error => {
       console.log(error);
       this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
+      this.errorMessage = error;
     }, () => {
       if (this.operator.loginName !== this.user) {
         this.authenticationService.logoutUser();

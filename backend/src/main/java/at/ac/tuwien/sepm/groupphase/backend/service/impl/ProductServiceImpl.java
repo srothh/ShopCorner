@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
 import at.ac.tuwien.sepm.groupphase.backend.service.TaxRateService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
+import at.ac.tuwien.sepm.groupphase.backend.util.ProductSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -41,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
         ProductRepository productRepository,
         CategoryService categoryService,
         TaxRateService taxRateService,
-        InvoiceItemService invoiceItemService,
+        @Lazy InvoiceItemService invoiceItemService,
         Validator validator) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
@@ -109,28 +112,33 @@ public class ProductServiceImpl implements ProductService {
             .replace("%", "\\%")
             .replace("_", "\\_");
         if (!name.isEmpty() && categoryId == -1) {
-            return this.productRepository.findAllByName(name, pages);
+            return this.productRepository.findAll(Specification.where(ProductSpecifications.hasName(name))
+                .and(ProductSpecifications.hasDeleted(false)), pages);
         } else if (!name.isEmpty() && categoryId > 0) {
-            return this.productRepository.findAllByNameAndCategoryId(name, categoryId, pages);
+            return this.productRepository.findAll(Specification.where(ProductSpecifications.hasName(name))
+                .and(ProductSpecifications.isCategory(categoryId))
+                .and(ProductSpecifications.hasDeleted(false)), pages);
         } else if (name.isEmpty() && categoryId > 0) {
-            return this.productRepository.findAllByCategoryId(categoryId, pages);
+            return this.productRepository.findAll(Specification.where(ProductSpecifications.isCategory(categoryId))
+                .and(ProductSpecifications.hasDeleted(false)), pages);
         }
-        return this.productRepository.findAll(pages);
+        return this.productRepository.findAll(ProductSpecifications.hasDeleted(false), pages);
     }
 
     @Override
     public List<Product> getAllProducts() {
         LOGGER.trace("getAllProducts()");
-        return this.productRepository.findAll();
+        return this.productRepository.findAll(ProductSpecifications.hasDeleted(false));
     }
 
     @Override
     public List<Product> getAllProductsByCategory(Long categoryId) {
         LOGGER.trace("getAllProductsByCategory(categoryId)");
         if (categoryId > 0) {
-            return this.productRepository.findAllByCategoryId(categoryId);
+            return this.productRepository.findAll(Specification.where(ProductSpecifications.isCategory(categoryId))
+                .and(ProductSpecifications.hasDeleted(false)));
         } else {
-            return this.productRepository.findAll();
+            return this.productRepository.findAll(ProductSpecifications.hasDeleted(false));
         }
     }
 
@@ -142,7 +150,7 @@ public class ProductServiceImpl implements ProductService {
         LOGGER.trace("updateProduct({})", product);
         validator.validateProduct(product);
         Product updateProduct = this.productRepository
-            .findById(productId).orElseThrow(() -> new NotFoundException("Could not find product with Id:" + productId));
+            .findById(productId).orElseThrow(() -> new NotFoundException("Produkt mit id " + productId + " konnte nicht gefunden werden"));
         updateProduct.setName(product.getName());
         updateProduct.setDescription(product.getDescription());
         updateProduct.setPrice(product.getPrice());
@@ -159,14 +167,7 @@ public class ProductServiceImpl implements ProductService {
     public Product findById(Long productId) {
         LOGGER.trace("findById{}", productId);
         return productRepository.findById(productId)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
-    }
-
-    @Cacheable(value = "counts", key = "'products'")
-    @Override
-    public Long getProductsCount() {
-        LOGGER.trace("getProductsCount()");
-        return productRepository.count();
+            .orElseThrow(() -> new NotFoundException(String.format("Produkt mit id %d konnte nicht gefunden werden", productId)));
     }
 
     @Caching(evict = {
@@ -179,7 +180,7 @@ public class ProductServiceImpl implements ProductService {
         LOGGER.trace("deleteProductById{}", productId);
         boolean softDelete;
         Product productToDelete = productRepository.findById(productId)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
+            .orElseThrow(() -> new NotFoundException(String.format("Produkt mit id %d konnte nicht gefunden werden", productId)));
         softDelete = this.invoiceItemService.findAllInvoicesItems().stream()
             .map(InvoiceItem::getProduct)
             .anyMatch(product -> product.getId().equals(productId));
@@ -190,12 +191,6 @@ public class ProductServiceImpl implements ProductService {
             productToDelete.setDeleted(true);
             productRepository.save(productToDelete);
         }
-
     }
 
-    @Override
-    @Cacheable(value = "categoryCounts", key = "#page")
-    public Long getCountByCategory(Page page) {
-        return page.getTotalElements();
-    }
 }

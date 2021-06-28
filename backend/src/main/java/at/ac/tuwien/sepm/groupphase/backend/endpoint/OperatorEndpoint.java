@@ -71,7 +71,7 @@ public class OperatorEndpoint {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.toString().equals("[ROLE_EMPLOYEE]") && permissions == Permissions.admin) {
-            throw new AccessDeniedException("Employee can not access admins");
+            throw new AccessDeniedException("Mitarbeiter können nicht auf Admins zugreifen");
         }
         PaginationDto<OverviewOperatorDto> dto;
         Page<Operator> operatorPage = operatorService.findAll(page, pageCount, permissions);
@@ -143,7 +143,7 @@ public class OperatorEndpoint {
             return result;
         }
 
-        throw new AccessDeniedException("Illegal access");
+        throw new AccessDeniedException("Unberechtigter Zugriff");
     }
 
     /**
@@ -174,7 +174,7 @@ public class OperatorEndpoint {
         LOGGER.info("DELETE " + BASE_URL + "/{}", id);
 
         if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id)) {
-            throw new AccessDeniedException("Admins cannot delete their own accounts");
+            throw new AccessDeniedException("Admins können nicht das eigene Konto löschen");
         }
         operatorService.delete(id);
 
@@ -193,7 +193,7 @@ public class OperatorEndpoint {
         LOGGER.info("PATCH " + BASE_URL + "/{}: {}", id, operatorPermissionChangeDto);
 
         if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id)) {
-            throw new AccessDeniedException("Admins cannot change their own permissions");
+            throw new AccessDeniedException("Admins können nicht das eigene Berechtigungslevel ändern");
         }
         operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }

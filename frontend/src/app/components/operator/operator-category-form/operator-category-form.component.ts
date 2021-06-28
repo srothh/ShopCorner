@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Category} from '../../../dtos/category';
 import {CategoryService} from '../../../services/category/category.service';
@@ -20,11 +20,13 @@ export class OperatorCategoryFormComponent implements OnInit {
   addCategoryEnabled: boolean;
   inEditMode: boolean;
   faEdit = faEdit;
+
   constructor(private formBuilder: FormBuilder,
               private categoryService: CategoryService,
               private router: Router,
               private activatedRouter: ActivatedRoute,
-              private authService: OperatorAuthService) { }
+              private authService: OperatorAuthService) {
+  }
 
   ngOnInit(): void {
     if (this.category === undefined && this.router.url.includes('add')) {
@@ -36,7 +38,8 @@ export class OperatorCategoryFormComponent implements OnInit {
       this.inEditMode = true;
     }
     this.categoryForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.whiteSpaceValidator]]});
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.whiteSpaceValidator]]
+    });
     if (this.addCategoryEnabled === false) {
       this.setFormProperties();
       this.categoryForm.disable();
@@ -58,7 +61,7 @@ export class OperatorCategoryFormComponent implements OnInit {
       this.setFormProperties();
     }, error => {
       this.errorOccurred = true;
-      this.errorMessage = error.error.message;
+      this.errorMessage = error;
     });
   }
 
@@ -80,7 +83,7 @@ export class OperatorCategoryFormComponent implements OnInit {
         this.router.navigate(['operator/categories']).then();
       }, error => {
         this.errorOccurred = true;
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       });
     } else {
       this.updateCategory();
@@ -95,7 +98,7 @@ export class OperatorCategoryFormComponent implements OnInit {
 
     }, error => {
       this.errorOccurred = true;
-      this.errorMessage = error.error.message;
+      this.errorMessage = error;
     });
   }
 

@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -62,8 +63,8 @@ public class InvoiceEndpoint {
     @Autowired
     public InvoiceEndpoint(InvoiceMapper invoiceMapper,
                            InvoiceItemMapper invoiceItemMapper,
-                           InvoiceService invoiceService,
-                           PdfGeneratorService pdfGeneratorService) {
+                           @Lazy InvoiceService invoiceService,
+                           @Lazy PdfGeneratorService pdfGeneratorService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
@@ -84,6 +85,7 @@ public class InvoiceEndpoint {
         LOGGER.info("GET /api/v1/invoices/{}", id);
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
     }
+
 
     /**
      * Get overviewing information for all invoices.
@@ -159,7 +161,7 @@ public class InvoiceEndpoint {
     public DetailedInvoiceDto setInvoiceCanceled(@Valid @RequestBody DetailedInvoiceDto invoiceDto, @PathVariable("id") Long invoiceId) {
         LOGGER.info("PATCH /api/v1/invoices/{}: {}", invoiceId, invoiceDto);
         if (!invoiceDto.getId().equals(invoiceId)) {
-            throw new ServiceException("Bad Request, invoiceId is not valid");
+            throw new ServiceException("InvoiceId ungültig");
         }
         Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(this.invoiceService.findOneById(invoiceId));
         this.pdfGeneratorService.setPdfInvoiceCanceled(canceledInvoice);

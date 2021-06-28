@@ -44,7 +44,7 @@ public class Invoice {
     @Fetch(value = FetchMode.SELECT)
     private Set<InvoiceItem> items;
 
-    @NotNull
+    @NotNull(message = "InvoiceType darf nicht null sein")
     @Column(name = "invoiceType")
     @Enumerated(EnumType.STRING)
     private InvoiceType invoiceType;

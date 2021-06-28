@@ -7,7 +7,7 @@ import {TaxRate} from '../../../dtos/tax-rate';
 import {CategoryService} from '../../../services/category/category.service';
 import {TaxRateService} from '../../../services/tax-rate/tax-rate.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
-import {faFilter} from '@fortawesome/free-solid-svg-icons';
+import {faPlusCircle, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
 import {PageableProducts} from '../../../services/pagination/pageable-products';
 import {forkJoin} from 'rxjs';
 
@@ -18,7 +18,8 @@ import {forkJoin} from 'rxjs';
 })
 export class OperatorProductComponent implements OnInit {
   @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
-  faFilter = faFilter;
+  faPlusCircle = faPlusCircle;
+  faMinusCircle = faMinusCircle;
   categories: Category[];
   taxRates: TaxRate[];
   selectedProducts: Product[] = [];
@@ -57,6 +58,9 @@ export class OperatorProductComponent implements OnInit {
       .subscribe(([categoriesData, taxRatesData]) => {
         this.categories = categoriesData;
         this.taxRates = taxRatesData;
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error;
       });
   }
 
@@ -127,19 +131,16 @@ export class OperatorProductComponent implements OnInit {
         }
       }, error => {
         this.error = true;
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       });
     }
   }
 
   errorOccurred() {
-    return this.error || this.pageableProducts.error;
+    return this.pageableProducts.error;
   }
 
   getErrorMessage() {
-    if (this.error) {
-      return this.errorMessage;
-    }
     return this.pageableProducts.errorMessage;
   }
 

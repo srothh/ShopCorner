@@ -43,7 +43,7 @@ public class OperatorJwtAuthenticationFilter extends UsernamePasswordAuthenticat
                 user.getLoginName(),
                 user.getPassword()));
         } catch (IOException e) {
-            throw new BadCredentialsException("Wrong API request or JSON schema", e);
+            throw new BadCredentialsException("Falscher API Request oder JSON-Schema", e);
         }
     }
 

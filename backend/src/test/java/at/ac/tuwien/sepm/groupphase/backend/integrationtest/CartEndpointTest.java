@@ -287,7 +287,6 @@ class CartEndpointTest implements TestData {
 
     @Test
     void givenWrongId_whenDelete_then200() throws Exception {
-
         MvcResult mvcResult = this.mockMvc.perform(delete(CART_BASE_URI + "/" + 0L)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -295,10 +294,5 @@ class CartEndpointTest implements TestData {
         MockHttpServletResponse response = mvcResult.getResponse();
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-
     }
-
-
-
-
 }

@@ -5,6 +5,7 @@ import {ProductService} from '../../../services/product/product.service';
 import {faFilter, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {Router} from '@angular/router';
 import {PageableProducts} from '../../../services/pagination/pageable-products';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-shop-product',
@@ -29,6 +30,7 @@ export class ShopProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchProducts();
+    AOS.init();
   }
 
   fetchProducts(): void {

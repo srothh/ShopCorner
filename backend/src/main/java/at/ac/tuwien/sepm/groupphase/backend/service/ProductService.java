@@ -57,15 +57,6 @@ public interface ProductService {
      */
     Product findById(Long productId);
 
-
-    /**
-     * Retrieve the number of all added products.
-     *
-     * @return retrieves the number of all added products
-     * @throws RuntimeException occurs during database operations
-     */
-    Long getProductsCount();
-
     /**
      * Deletes a specific product with the given productId.
      *
@@ -75,14 +66,6 @@ public interface ProductService {
     void deleteProductById(Long productId);
 
     /**
-     * Deletes a specific product with the given productId.
-     *
-     * @param page the page to fetch the count of
-     * @throws RuntimeException occurs during database operations
-     */
-    Long getCountByCategory(Page page);
-
-    /**
      * Gets all products that are associated to a specific category.
      *
      * @param categoryId the id to search in the database
@@ -90,6 +73,4 @@ public interface ProductService {
      * @throws RuntimeException occurs during database operations
      */
     List<Product> getAllProductsByCategory(Long categoryId);
-
-
 }

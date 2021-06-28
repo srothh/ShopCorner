@@ -1,13 +1,13 @@
 <div class="container mt-5">
   <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Problems!</strong> {{ errorMessage }}
+    <strong>Error!</strong> {{ errorMessage }}
     <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="header">
     <h2>Meine Daten</h2>
-    <div class="btn-toolbar">
+    <div class="btn-toolbar align-items-center">
       <button *ngIf="!isEditMode" class="btn btn-outline-danger mr-2" (click)="attemptToDeleteAccount()">
         <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
         Konto löschen

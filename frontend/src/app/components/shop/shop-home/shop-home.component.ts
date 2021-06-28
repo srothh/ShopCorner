@@ -4,6 +4,7 @@ import {ProductService} from '../../../services/product/product.service';
 import {Router} from '@angular/router';
 import {ShopService} from '../../../services/shop/shop.service';
 import {Globals} from '../../../global/globals';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,7 @@ import {Globals} from '../../../global/globals';
 export class ShopHomeComponent implements OnInit {
   products: Product[];
   page = 0;
-  pageSize = 15;
+  pageSize = 18;
   collectionSize = 0;
 
   bannerTitle = this.globals.defaultSettings.bannerTitle;
@@ -31,6 +32,7 @@ export class ShopHomeComponent implements OnInit {
   ngOnInit(): void {
     this.fetchProducts();
     this.configureBanner();
+    AOS.init();
   }
 
   fetchProducts(): void {
@@ -38,13 +40,8 @@ export class ShopHomeComponent implements OnInit {
         this.products = productData.items;
         this.collectionSize = productData.totalItemCount;
       }, error => {
-        console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       });
   }
 

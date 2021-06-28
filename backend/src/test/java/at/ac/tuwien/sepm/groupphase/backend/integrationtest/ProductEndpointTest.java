@@ -77,6 +77,7 @@ class ProductEndpointTest implements TestData {
     void beforeEach() {
         productRepository.deleteAll();
         categoryRepository.deleteAll();
+        taxRateRepository.deleteAll();
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -160,7 +161,6 @@ class ProductEndpointTest implements TestData {
                 assertEquals(2, errors.length);
             }
         );
-
     }
 
     @Test
@@ -274,13 +274,17 @@ class ProductEndpointTest implements TestData {
         taxRateRepository.save(taxRate);
         product.setId(-1000L);
 
-        ResultActions mvcResult = this.mockMvc.perform(
-            delete(PRODUCTS_BASE_URI + "/" + product.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
-            .andExpect(status().isNotFound());
+        MvcResult mvcResult = this.mockMvc.perform(delete(PRODUCTS_BASE_URI + "/" + product.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 
     }
+
     @Test
     void givenSeveralProductsWithTaxRateAndACategory_whenDeleteMultiple_verifyProductsDeleted() throws Exception {
         TaxRate newTaxRate = taxRateRepository.save(taxRate);
@@ -301,14 +305,14 @@ class ProductEndpointTest implements TestData {
 
         List<Long> ids = List.of(newProduct.getId(), newProduct2.getId(), newProduct3.getId());
 
-        for (Long id: ids) {
+        for (Long id : ids) {
             ResultActions mvcResult = this.mockMvc.perform(
                 delete(PRODUCTS_BASE_URI + "/" + id)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
                 .andExpect(status().isOk());
         }
-        assertEquals(0,productRepository.findAll().size());
+        assertEquals(0, productRepository.findAll().size());
 
     }
 

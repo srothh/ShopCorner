@@ -5,6 +5,7 @@ import {Pagination} from '../../../dtos/pagination';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {NgdbModalActionComponent} from '../../common/ngbd-modal-action/ngdb-modal-action.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-invoice',
@@ -25,6 +26,8 @@ export class OperatorInvoiceComponent implements OnInit {
   invoiceType = InvoiceType.operator;
   onCanceledWindow = false;
 
+  faPlusCircle = faPlusCircle;
+
   constructor(private invoiceService: InvoiceService,
               private modalService: NgbModal) {
   }
@@ -40,6 +43,10 @@ export class OperatorInvoiceComponent implements OnInit {
       this.toggleForm = false;
     }
     this.toggleDetailView = false;
+  }
+
+  vanishError() {
+    this.error = false;
   }
 
   /**
@@ -92,7 +99,7 @@ export class OperatorInvoiceComponent implements OnInit {
     this.invoiceService.setInvoiceCanceled(this.detailViewInvoice).subscribe(() => {
     }, (error) => {
       this.error = true;
-      this.errorMessage = error.error;
+      this.errorMessage = error;
     });
     this.loadInvoicesForPage();
     this.toggleSide();
@@ -169,7 +176,7 @@ export class OperatorInvoiceComponent implements OnInit {
       },
       error => {
         this.error = true;
-        this.errorMessage = error.error;
+        this.errorMessage = error;
       }
     );
   }

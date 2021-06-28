@@ -88,7 +88,7 @@ public class ProductEndpoint {
         return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
-            .filter(productDto -> !productDto.isDeleted())
+
             .collect(Collectors.toList()), page, pageCount, productPage.getTotalPages(), productCount);
     }
 
@@ -109,7 +109,6 @@ public class ProductEndpoint {
         return this.productService.getAllProducts()
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
-            .filter(productDto -> !productDto.isDeleted())
             .collect(Collectors.toList());
     }
 
@@ -131,7 +130,6 @@ public class ProductEndpoint {
         return this.productService.getAllProductsByCategory(categoryId)
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
-            .filter(productDto -> !productDto.isDeleted())
             .collect(Collectors.toList());
     }
 

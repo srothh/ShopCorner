@@ -32,12 +32,12 @@ public class Validator {
 
         Operator op = operatorRepository.findByLoginName(operator.getLoginName());
         if (op != null) {
-            throw new ValidationException("Account already exists!");
+            throw new ValidationException("Konto existiert bereits");
         }
 
         op = operatorRepository.findByEmail(operator.getEmail());
         if (op != null) {
-            throw new ValidationException("Account already exists!");
+            throw new ValidationException("Konto existiert bereits");
         }
 
     }
@@ -47,12 +47,12 @@ public class Validator {
 
         Operator op = operatorRepository.findByLoginName(operator.getLoginName());
         if (op != null && !op.getId().equals(operator.getId())) {
-            throw new ValidationException("Account already exists!");
+            throw new ValidationException("Konto existiert bereits");
         }
 
         op = operatorRepository.findByEmail(operator.getEmail());
         if (op != null && !op.getId().equals(operator.getId())) {
-            throw new ValidationException("Account already exists!");
+            throw new ValidationException("Konto existiert bereits");
         }
 
     }
@@ -62,12 +62,12 @@ public class Validator {
 
         Customer c = customerRepository.findByLoginName(customer.getLoginName());
         if (c != null) {
-            throw new ValidationException("Account already exists!");
+            throw new ValidationException("Konto existiert bereits");
         }
 
         c = customerRepository.findByEmail(customer.getEmail());
         if (c != null) {
-            throw new ValidationException("Account already exists!");
+            throw new ValidationException("Konto existiert bereits");
         }
 
     }
@@ -77,12 +77,12 @@ public class Validator {
 
         Customer c = customerRepository.findByLoginName(customer.getLoginName());
         if (c != null && !c.getId().equals(customer.getId())) {
-            throw new ValidationException("Account already exists!");
+            throw new ValidationException("Konto existiert bereits");
         }
 
         c = customerRepository.findByEmail(customer.getEmail());
         if (c != null && !c.getId().equals(customer.getId())) {
-            throw new ValidationException("Account already exists!");
+            throw new ValidationException("Konto existiert bereits");
         }
 
     }
@@ -94,22 +94,22 @@ public class Validator {
 
 
         if (invoice.getAmount() <= 0) {
-            throw new ValidationException("Something went wrong with the total calculation");
+            throw new ValidationException("Fehler bei der Berechnung des Gesamtbetrags");
         }
         if (invoice.getDate() == null) {
-            throw new ValidationException("The invoice date is not valid");
+            throw new ValidationException("Ungültiges Rechnungsdatum");
         }
         if (invoice.getDate().isBefore(yesterday)) {
-            throw new ValidationException("The invoice date is before it is not valid");
+            throw new ValidationException("Rechnungsdatum vor gültigem Zeitraum");
         }
         if (invoice.getDate().isAfter(today)) {
-            throw new ValidationException("The invoice date is after it is not valid");
+            throw new ValidationException("Rechnungsdatum nach gültigem Zeitraum");
         }
     }
 
     public void validateNewPromotion(Promotion promotion, PromotionService promotionService) {
         if (!promotion.getExpirationDate().isAfter(LocalDateTime.now())) {
-            throw new ValidationException("Expirationdate has to be after creationdate");
+            throw new ValidationException("Auslaufdatum muss nach Erstellungsdatum liegen");
         }
         if (promotion.getDiscount() > promotion.getMinimumOrderValue()) {
             throw new ValidationException("Rabatt kann nicht gößer als der Mindestbestellwert sein");
@@ -118,7 +118,7 @@ public class Validator {
 
         for (Promotion p : promotions) {
             if (p.getCode().equals(promotion.getCode())) {
-                throw new ValidationException("Code has to be unique");
+                throw new ValidationException("Code muss eindeutig sein");
             }
         }
     }
@@ -126,27 +126,27 @@ public class Validator {
     public void validateNewInvoiceItem(Set<InvoiceItem> items) {
         LOGGER.trace("validateNewInvoiceItem({})", items);
         if (items == null) {
-            throw new ValidationException("There are no items in the invoice");
+            throw new ValidationException("Rechnung enthält keine Artikel");
         } else {
             if (items.size() == 0) {
-                throw new ValidationException("There are no items");
+                throw new ValidationException("Rechnung enthält keine Artikel");
             }
             List<Product> productList = new ArrayList<>();
             for (InvoiceItem item : items) {
 
                 if (item.getInvoice() == null) {
-                    throw new ValidationException("Creating item entries without invoice");
+                    throw new ValidationException("Item kann nicht ohne zugehörige Rechnung erstellt werden");
                 }
                 if (item.getProduct() == null) {
-                    throw new ValidationException("Creating item entries without products");
+                    throw new ValidationException("Item kann nicht ohne zugehöriges Produkt erstellt werden");
                 }
                 if (item.getNumberOfItems() <= 0) {
-                    throw new ValidationException("Creating item entries without a quantity");
+                    throw new ValidationException("Artikelanzahl muss größer als 0 sein");
                 }
                 if (!productList.contains(item.getProduct())) {
                     productList.add(item.getProduct());
                 } else {
-                    throw new ValidationException("There are same items in the invoice");
+                    throw new ValidationException("Rechnung enthält Item mehrmals");
                 }
             }
 
@@ -158,7 +158,7 @@ public class Validator {
         if (product.getExpiresAt() != null) {
             LocalDateTime now = LocalDateTime.now();
             if (product.getExpiresAt().isBefore(now)) {
-                throw new ValidationException("Expiration date cannot be in the past");
+                throw new ValidationException("Ablaufdatum kann nicht in der Vergangenheit liegen");
             }
         }
     }

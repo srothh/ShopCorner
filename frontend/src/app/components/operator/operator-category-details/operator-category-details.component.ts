@@ -53,7 +53,7 @@ export class OperatorCategoryDetailsComponent implements OnInit {
     this.categoryService.deleteCategory(categoryId).subscribe(() => {
       this.router.navigate(['operator/categories']).then();
     }, error => {
-      this.errorMessage = error.error.message;
+      this.errorMessage = error;
       this.errorOccurred = true;
     });
   }

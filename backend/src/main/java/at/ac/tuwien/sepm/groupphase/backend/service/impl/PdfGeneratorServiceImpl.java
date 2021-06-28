@@ -23,7 +23,9 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     private final InvoiceArchiveService invoiceArchiveService;
 
     @Autowired
-    public PdfGeneratorServiceImpl(PdfGenerator pdfGenerator, OrderService orderService, InvoiceArchiveService invoiceArchiveService) {
+    public PdfGeneratorServiceImpl(PdfGenerator pdfGenerator,
+                                   OrderService orderService,
+                                   InvoiceArchiveService invoiceArchiveService) {
         this.pdfGenerator = pdfGenerator;
         this.orderService = orderService;
         this.invoiceArchiveService = invoiceArchiveService;
@@ -74,12 +76,11 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
         return this.invoiceArchiveService.findByInvoiceNumber(order.getInvoice().getInvoiceNumber());
     }
 
-
     @Override
     public byte[] createPdfCanceledInvoiceOperator(Invoice invoice) {
         LOGGER.trace("createPdfCanceledInvoiceOperator({})", invoice);
         if (invoice.getInvoiceType() != InvoiceType.canceled) {
-            throw new ServiceException("It is not possible to cancel this invoice");
+            throw new ServiceException("Diese Rechnung kann nicht storniert werden");
         }
         if (invoice.getCustomerId() == null) {
             if (!this.invoiceArchiveService.invoiceExistsByInvoiceNumber(invoice.getInvoiceNumber())) {

@@ -63,7 +63,7 @@ export class OperatorCustomerComponent implements OnInit {
       },
       error => {
         this.error = true;
-        this.errorMessage = error.error;
+        this.errorMessage = error;
       }
     );
   }

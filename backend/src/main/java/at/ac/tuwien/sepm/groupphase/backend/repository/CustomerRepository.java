@@ -2,13 +2,14 @@ package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
  * A repository class for customers.
  */
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
+public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSpecificationExecutor<Customer> {
 
     /**
      * Finds a Customer based on the login name.

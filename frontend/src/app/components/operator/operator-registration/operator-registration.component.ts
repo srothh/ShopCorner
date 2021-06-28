@@ -33,7 +33,6 @@ export class OperatorRegistrationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
   }
 
   vanishError() {
@@ -56,13 +55,8 @@ export class OperatorRegistrationComponent implements OnInit {
         this.submitted = true;
         this.router.navigate(['/operator/accounts']);
       }, error => {
-        console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       });
     } else {
       console.log('Invalid input');
