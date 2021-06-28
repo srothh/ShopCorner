@@ -136,7 +136,7 @@ public class PdfGenerator {
     }
 
     private void addLogo(Document document) {
-        document.body().select(".logo").attr("src",shopSettings.getLogo());
+        document.body().select(".logo").attr("src", shopSettings.getLogo());
     }
 
     private void addOrderInformation(Document document, Invoice invoice) {
@@ -228,7 +228,7 @@ public class PdfGenerator {
         if (shopSettings.getStairNumber() != 0) {
             address.append(" / ").append(shopSettings.getStairNumber());
         }
-        address.append(", ").append(shopSettings.getPostalCode()+" ").append(shopSettings.getCity());
+        address.append(", ").append(shopSettings.getPostalCode() + " ").append(shopSettings.getCity());
         document.body().select(".name").html(shopSettings.getTitle());
         document.body().select(".address").html(address.toString());
         document.body().select(".phone").html(shopSettings.getPhoneNumber());
