@@ -51,6 +51,7 @@ public class PayPalEndpoint {
      *
      * @param orderDto the order containing all information for the payment process
      * @return a redirect URL to confirm the payment
+     * @throws PayPalRESTException if something goes wrong with PayPal
      */
     @Secured({"ROLE_CUSTOMER"})
     @PostMapping()
@@ -65,6 +66,7 @@ public class PayPalEndpoint {
      *
      * @param confirmedPaymentDto the confirmedPaymentDto contains the necessary parameters to confirm the payment
      * @return string indicating the success or failure of a payment
+     * @throws PayPalRESTException if something goes wrong with PayPal
      */
     @Secured({"ROLE_CUSTOMER"})
     @PostMapping("/confirmation")

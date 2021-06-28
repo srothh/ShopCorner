@@ -18,7 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     /**
      * Finds all products that include the 'name'.
      *
-     * @param name     the name of the product
+     * @param name the name of the product
      * @param pageable meta data of the page
      * @return a Page of products
      * @throws RuntimeException upon encountering errors with the database
@@ -30,7 +30,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
      * Finds all products that are assigned to the 'category id'.
      *
      * @param categoryId the category id
-     * @param pageable   meta data of the page
+     * @param pageable meta data of the page
      * @return a Page of products
      * @throws RuntimeException upon encountering errors with the database
      */
@@ -41,7 +41,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
      * Finds all products that are assigned to the 'category id' NOT PAGINATED.
      *
      * @param categoryId the category id
-     *
      * @return list of products
      * @throws RuntimeException upon encountering errors with the database
      */
@@ -51,9 +50,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     /**
      * Finds all products that are assigned to the 'category id' and include the 'name'.
      *
-     * @param name       the name of the product
+     * @param name the name of the product
      * @param categoryId the category id
-     * @param pageable   meta data of the page
+     * @param pageable meta data of the page
      * @return a Page of products
      * @throws RuntimeException upon encountering errors with the database
      */

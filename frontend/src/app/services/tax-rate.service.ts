@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {Observable} from 'rxjs';
-import {Product} from '../dtos/product';
 import {TaxRate} from '../dtos/tax-rate';
 
 @Injectable({
@@ -16,6 +15,8 @@ export class TaxRateService {
 
   /**
    * Loads all tax-rates from the backend
+   *
+   * @return all taxrates
    */
   getTaxRates(): Observable<TaxRate[]> {
     return this.httpClient.get<TaxRate[]>(this.messageBaseUri);

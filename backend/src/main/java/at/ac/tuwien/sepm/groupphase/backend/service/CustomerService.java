@@ -29,7 +29,7 @@ public interface CustomerService extends UserDetailsService {
      * Find a customer based on the login name.
      *
      * @param loginName the login name
-     * @return a customer
+     * @return customer with loginName
      * @throws NotFoundException when no customer with the id is found
      * @throws RuntimeException upon encountering errors with the database
      */
@@ -88,7 +88,7 @@ public interface CustomerService extends UserDetailsService {
     /**
      * Assigns an address to a customer.
      *
-     * @param customer  The customer to assign the address to
+     * @param customer The customer to assign the address to
      * @param addressId The id of the address to assign to the customer
      * @throws NotFoundException when no address with the id is found
      * @throws RuntimeException upon encountering errors with the database
@@ -121,6 +121,13 @@ public interface CustomerService extends UserDetailsService {
      */
     Customer findCustomerById(Long id);
 
+    /**
+     * gets count for category.
+     *
+     * @param page for which count is needed
+     * @param category for which count is needed
+     * @return count by category
+     */
     Long getCountByCategory(Pageable page, Long category);
 
 }

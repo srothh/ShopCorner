@@ -8,7 +8,6 @@ import {OperatorAuthService} from './auth/operator-auth.service';
 import {Pagination} from '../dtos/pagination';
 import {InvoiceType} from '../dtos/invoiceType.enum';
 import {Customer} from '../dtos/customer';
-import {CustomerAuthService} from './auth/customer-auth.service';
 import {Order} from '../dtos/order';
 
 @Injectable({
@@ -23,8 +22,7 @@ export class InvoiceService {
 
   constructor(private httpClient: HttpClient,
               private globals: Globals,
-              private operatorAuthService: OperatorAuthService,
-              private customerAuthService: CustomerAuthService) {
+              private operatorAuthService: OperatorAuthService) {
   }
 
   /**
@@ -61,7 +59,7 @@ export class InvoiceService {
   /**
    * Loads all simple products from the backend
    *
-   * @return simpleProductsList
+   * @return Product[] with all simpleProducts
    */
   getProducts(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.productBaseUri + '/simple', {

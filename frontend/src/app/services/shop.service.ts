@@ -3,10 +3,8 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Globals} from '../global/globals';
 import {OperatorAuthService} from './auth/operator-auth.service';
 import {Observable} from 'rxjs';
-import {Operator} from '../dtos/operator';
 import {ShopSettings} from '../dtos/shop-settings';
 import {map, tap} from 'rxjs/operators';
-import {Product} from '../dtos/product';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +30,7 @@ export class ShopService {
    * Updates the shops settings in the backend
    *
    * @param shopSettings the settings that will override the old
+   * @return shopSettings current settings after update
    */
   updateSettings(shopSettings: ShopSettings): Observable<ShopSettings> {
     console.log('Update settings');
@@ -46,6 +45,8 @@ export class ShopService {
 
   /**
    * Fetches settings from the backend and caches them
+   *
+   * @return shopSettings current settings
    */
   loadSettings(): Observable<ShopSettings> {
     console.log('Load settings from backend into cache');

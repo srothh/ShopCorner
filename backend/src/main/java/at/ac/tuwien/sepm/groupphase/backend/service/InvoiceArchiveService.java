@@ -39,6 +39,7 @@ public interface InvoiceArchiveService {
      *
      * @param invoiceNumber the number of the invoice to be updated
      * @param content the new content of the invoice
+     * @throws RuntimeException upon encountering errors with the database
      */
     void updateInvoiceArchive(String invoiceNumber, byte[] content);
 }

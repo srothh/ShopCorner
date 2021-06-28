@@ -13,7 +13,7 @@ public interface PromotionService {
      *
      * @param promotion the promotion to add
      * @return the promotion added
-     * @throws RuntimeException    upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      * @throws ValidationException when the promotion is invalid
      */
     Promotion addNewPromotion(Promotion promotion);
@@ -21,7 +21,7 @@ public interface PromotionService {
     /**
      * Returns a page of promotions from the database.
      *
-     * @param page      the page number to retrieve from the database
+     * @param page the page number to retrieve from the database
      * @param pageCount the size of the page
      * @return the page as retrieved from the database
      * @throws RuntimeException upon encountering errors with the database
@@ -47,8 +47,9 @@ public interface PromotionService {
     /**
      * Finds a promotion based on its code.
      *
-     * @param code THe code of the promotion
-     * @return The promotion as found in the datastore
+     * @param code the code of the promotion
+     * @return the promotion as found in the datastore
+     * @throws RuntimeException upon encountering errors with the database
      */
     Promotion findPromotionByCode(String code);
 }

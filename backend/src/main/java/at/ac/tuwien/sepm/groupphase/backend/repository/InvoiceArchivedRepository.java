@@ -23,7 +23,6 @@ public interface InvoiceArchivedRepository extends JpaRepository<InvoiceArchive,
      *
      * @param invoiceNumber assigned to the invoice
      * @return the invoice assigned to the session
-     *
      * @throws RuntimeException upon encountering errors with the database
      */
     Optional<InvoiceArchive>  findInvoiceArchiveByInvoiceNumber(String invoiceNumber);

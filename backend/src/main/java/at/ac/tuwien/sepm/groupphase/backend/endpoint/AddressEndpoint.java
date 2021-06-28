@@ -34,6 +34,12 @@ public class AddressEndpoint {
         this.addressService = addressService;
     }
 
+    /**
+     * Creates a new address.
+     *
+     * @param dto of address that should be created
+     * @return created address
+     */
     @PermitAll
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

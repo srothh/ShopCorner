@@ -63,7 +63,7 @@ public class OperatorEndpoint {
      *
      * @param paginationRequestDto describes the pagination request
      * @param permissions of needed operators
-     * @return List with all needed operators
+     * @return page with all needed operators
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
@@ -125,11 +125,12 @@ public class OperatorEndpoint {
 
     }
 
-
     /**
      * Update an already existing operator.
      *
+     * @param id of operator that should be updated
      * @param operatorDto operator to be updated
+     * @param principal the currently logged in user
      * @return updated operator
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
@@ -154,6 +155,7 @@ public class OperatorEndpoint {
      * Update the password of an existing operator.
      *
      * @param updatePasswordDto the old and new password
+     * @param principal the currently logged in user
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @PostMapping("/password")
@@ -170,6 +172,7 @@ public class OperatorEndpoint {
      * Deletes the operator with the given id.
      *
      * @param id of the operator to be deleted
+     * @param principal the currently logged in user
      */
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping(value = "/{id}")
@@ -189,6 +192,7 @@ public class OperatorEndpoint {
      *
      * @param id of operator that needs new permissions
      * @param operatorPermissionChangeDto Dto with permission that should be updated
+     * @param principal the currently logged in user
      */
     @Secured({"ROLE_ADMIN"})
     @PatchMapping(value = "/{id}")

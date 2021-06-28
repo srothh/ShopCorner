@@ -18,6 +18,8 @@ export class CategoryService {
 
   /**
    * Loads all categories from the backend
+   *
+   * @return Category[] with all categories
    */
   getCategories(): Observable<Category[]> {
     return this.httpClient.get<Category[]>(this.categoryBaseUri + '/all');
@@ -28,7 +30,6 @@ export class CategoryService {
    *
    * @param page the current page the user is in
    * @param pageCount number of all entries in a page
-   *
    * @return An Observable with paginated category
    */
   getCategoriesPerPage(page: number, pageCount): Observable<Pagination<Category>> {
