@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
         ProductRepository productRepository,
         CategoryService categoryService,
         TaxRateService taxRateService,
-        InvoiceItemService invoiceItemService,
+        @Lazy InvoiceItemService invoiceItemService,
         Validator validator) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
