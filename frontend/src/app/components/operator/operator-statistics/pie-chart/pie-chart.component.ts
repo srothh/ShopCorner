@@ -23,6 +23,7 @@ export class PieChartComponent implements OnInit {
     },
     plugins: {
       datalabels: {
+        //needed for percentage labels
         formatter: (value, ctx) => this.percentageLabels[ctx.dataIndex],
       },
     }
