@@ -65,10 +65,12 @@ public class OrderEndpoint {
      * Place a new Order.
      *
      * @param orderDto the order to be saved
-     * @return saved order
+     * @param sessionId of current session
+     * @return newly placed order
+     * @throws IOException if something with the shop settings goes wrong
      */
+    @Secured({"ROLE_CUSTOMER"})
     @PostMapping
-    @PermitAll
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Place a new order", security = @SecurityRequirement(name = "apiKey"))
     public OrderDto placeNewOrder(@Valid @RequestBody OrderDto orderDto, @CookieValue(name = "sessionId", defaultValue = "default") String sessionId) throws IOException {
@@ -79,7 +81,9 @@ public class OrderEndpoint {
     /**
      * Retrieves a page of orders from the database.
      *
-     * @return A list of all the retrieved orders
+     * @param page that should be gotten
+     * @param pageCount amount per page
+     * @return A page of all the retrieved orders
      */
     @Secured("ROLE_ADMIN")
     @GetMapping
@@ -97,6 +101,7 @@ public class OrderEndpoint {
      * Get specified order by id.
      *
      * @param id of the order to be retrieved
+     * @param principal currently logged in user
      * @return the specified order
      */
     @Secured({"ROLE_CUSTOMER"})
@@ -162,6 +167,7 @@ public class OrderEndpoint {
      * @param orderId id of the order which should be updated in the database
      * @param orderDto order which should be updated in the database
      * @return DetailedInvoiceDto with the updated invoice
+     * @throws IOException upon encountering problems with the configuration file
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE", "ROLE_CUSTOMER"})
     @ResponseStatus(HttpStatus.OK)
@@ -182,6 +188,5 @@ public class OrderEndpoint {
         this.pdfGeneratorService.setPdfOrderCanceled(canceledOrder);
         return orderMapper.orderToOrderDto(canceledOrder);
     }
-
 
 }
