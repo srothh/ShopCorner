@@ -5,6 +5,7 @@ import {Permissions} from '../../../dtos/permissions.enum';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {Pagination} from '../../../dtos/pagination';
 import {Router} from '@angular/router';
+import {faMinusCircle, faPlusCircle, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-accounts',
@@ -12,7 +13,6 @@ import {Router} from '@angular/router';
   styleUrls: ['./operator-account.component.scss']
 })
 export class OperatorAccountComponent implements OnInit {
-
   error = false;
   errorMessage = '';
   operators: Operator[];
@@ -23,6 +23,9 @@ export class OperatorAccountComponent implements OnInit {
   collectionSizeAdmin = 0;
   collectionSizeEmployee = 0;
   permissions = Permissions.admin;
+  faMinusCircle = faMinusCircle
+  faPlusCircle = faPlusCircle;
+  faExclamationTriangle = faExclamationTriangle;
 
   constructor(private authService: OperatorAuthService,
               private operatorService: OperatorService,

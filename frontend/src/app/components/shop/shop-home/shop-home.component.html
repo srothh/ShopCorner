@@ -29,7 +29,7 @@
     </div>
     <div class="row">
       <div class="col-md-4 col-sm-12 col-lg-4 col-xl-2" *ngFor="let product of products; let index = index">
-        <div class="card-height mb-5">
+        <div class="card-height mb-5" data-aos="fade" data-aos-once="true" data-aos-delay="200">
           <app-base-shop-product-item
             [product]="product"
             (click)="goToProductDetails(product.id, index)">
