@@ -31,7 +31,7 @@ export class PaypalService {
         .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`),
       responseType: 'text' as 'text'
     };
-    return this.httpClient.post(this.paypalBaseURI, order ,options);
+    return this.httpClient.post(this.paypalBaseURI, order, options);
   }
   /** Confirm the previously created new payment
    *
@@ -45,7 +45,7 @@ export class PaypalService {
         .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`),
       responseType: 'text' as 'text'
     };
-    return this.httpClient.post(this.paypalBaseURI + '/confirmation',confirmedPayment, options);
+    return this.httpClient.post(this.paypalBaseURI + '/confirmation', confirmedPayment, options);
   }
   /** Gets a specific ConfirmedPayment specified by paymentId and payerId
    *
@@ -57,7 +57,7 @@ export class PaypalService {
   getConfirmedPayment(paymentId: string, payerId: string): Observable<ConfirmedPayment>{
     const params = new HttpParams()
       .set(this.globals.requestParamKeys.paypal.payerId, payerId)
-      .set(this.globals.requestParamKeys.paypal.paymentId,paymentId);
+      .set(this.globals.requestParamKeys.paypal.paymentId, paymentId);
     const options = {
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`),

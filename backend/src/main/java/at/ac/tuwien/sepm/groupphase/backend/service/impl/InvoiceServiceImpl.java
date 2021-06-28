@@ -123,7 +123,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         LOGGER.trace("createInvoice({})", invoice);
         validator.validateNewInvoice(invoice);
         validator.validateNewInvoiceItem(invoice.getItems());
-        calculateAmount(invoice);
         Set<InvoiceItem> items = invoice.getItems();
         invoice.setItems(null);
         LocalDateTime firstDateOfYear = LocalDateTime.now().toLocalDate().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay();
@@ -135,20 +134,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         createdInvoice.setItems(invoiceItemService.createInvoiceItem(items));
         return createdInvoice;
 
-    }
-
-    private void calculateAmount(Invoice invoice) {
-        double total = 0;
-        for (InvoiceItem item : invoice.getItems()) {
-            if (item.getProduct().getTaxRate().getCalculationFactor() != null) {
-                total += item.getNumberOfItems() * item.getProduct().getPrice() * item.getProduct().getTaxRate().getCalculationFactor();
-            } else {
-                total += item.getNumberOfItems() * item.getProduct().getPrice() * ((item.getProduct().getTaxRate().getPercentage() / 100) + 1);
-            }
-        }
-        if (invoice.getAmount() != total) {
-            invoice.setAmount(total);
-        }
     }
 
 }
