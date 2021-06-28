@@ -84,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteCustomerByLoginName(String loginName) {
         LOGGER.trace("deleteCustomerByLoginName({})", loginName);
-        boolean softDelete = false;
+        boolean softDelete;
         Customer customer = customerRepository.findByLoginName(loginName);
         softDelete = this.orderService.findAllOrders()
             .stream()
@@ -193,7 +193,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Long getCountByCategory(Pageable page, Long category) {
+    public Long getCountByCategory() {
         return null;
     }
 

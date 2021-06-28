@@ -9,10 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -35,7 +33,7 @@ public class Cart {
     private Set<CartItem> items = new HashSet<>();
 
     @NotNull
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     public Cart() {
     }
@@ -51,7 +49,6 @@ public class Cart {
         this.items = items;
         this.createdAt = createdAt;
     }
-
 
 
     public Long getId() {

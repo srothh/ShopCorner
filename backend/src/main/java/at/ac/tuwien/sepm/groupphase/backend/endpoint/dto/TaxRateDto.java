@@ -1,11 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
-import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
-
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 public class TaxRateDto {
     private Long id;

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class CartItemDto {
 
-    Long id;
+    private Long id;
 
     @NotNull
     private Long productId;

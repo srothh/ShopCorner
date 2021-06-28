@@ -6,7 +6,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;

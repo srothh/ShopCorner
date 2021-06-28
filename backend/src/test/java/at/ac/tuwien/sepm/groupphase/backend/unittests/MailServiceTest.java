@@ -3,10 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.*;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceArchivedRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
@@ -31,10 +28,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class MailServiceTest implements TestData {
+class MailServiceTest implements TestData {
 
     @RegisterExtension
-    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+    static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
         .withConfiguration(GreenMailConfiguration.aConfig().withUser("test", "test"))
         .withPerMethodLifecycle(false);
 
@@ -60,7 +57,7 @@ public class MailServiceTest implements TestData {
     private final CancellationPeriod cancellationPeriod = new CancellationPeriod(10);
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         invoiceRepository.deleteAll();
         invoiceArchivedRepository.deleteAll();
         product.setId(0L);
@@ -106,7 +103,7 @@ public class MailServiceTest implements TestData {
     }
 
     @Test
-    public void sendsMailToCustomer() throws IOException {
+    void sendsMailToCustomer() throws IOException {
         mailService.sendMail(order, cancellationPeriod);
         MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
         assertAll(

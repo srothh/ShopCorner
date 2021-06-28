@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class ShopSettings {
@@ -17,24 +16,24 @@ public class ShopSettings {
     private static final String phoneNumberKey = "phoneNumber";
     private static final String emailKey = "email";
 
-    String title;
-    String logo;
-    String bannerTitle;
-    String bannerText;
-    String street;
-    String houseNumber;
-    int stairNumber;
-    String doorNumber;
-    int postalCode;
-    String city;
-    String phoneNumber;
-    String email;
+    private String title;
+    private String logo;
+    private String bannerTitle;
+    private String bannerText;
+    private String street;
+    private String houseNumber;
+    private int stairNumber;
+    private String doorNumber;
+    private int postalCode;
+    private String city;
+    private String phoneNumber;
+    private String email;
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    private void setTitle(String title) {
         this.title = title;
     }
 
@@ -42,7 +41,7 @@ public class ShopSettings {
         return logo;
     }
 
-    public void setLogo(String logo) {
+    private void setLogo(String logo) {
         this.logo = logo;
     }
 
@@ -50,7 +49,7 @@ public class ShopSettings {
         return bannerTitle;
     }
 
-    public void setBannerTitle(String bannerTitle) {
+    private void setBannerTitle(String bannerTitle) {
         this.bannerTitle = bannerTitle;
     }
 
@@ -58,7 +57,7 @@ public class ShopSettings {
         return bannerText;
     }
 
-    public void setBannerText(String bannerText) {
+    private void setBannerText(String bannerText) {
         this.bannerText = bannerText;
     }
 
@@ -66,7 +65,7 @@ public class ShopSettings {
         return street;
     }
 
-    public void setStreet(String street) {
+    private void setStreet(String street) {
         this.street = street;
     }
 
@@ -74,7 +73,7 @@ public class ShopSettings {
         return houseNumber;
     }
 
-    public void setHouseNumber(String houseNumber) {
+    private void setHouseNumber(String houseNumber) {
         this.houseNumber = houseNumber;
     }
 
@@ -82,7 +81,7 @@ public class ShopSettings {
         return stairNumber;
     }
 
-    public void setStairNumber(int stairNumber) {
+    private void setStairNumber(int stairNumber) {
         this.stairNumber = stairNumber;
     }
 
@@ -90,7 +89,7 @@ public class ShopSettings {
         return doorNumber;
     }
 
-    public void setDoorNumber(String doorNumber) {
+    private void setDoorNumber(String doorNumber) {
         this.doorNumber = doorNumber;
     }
 
@@ -98,7 +97,7 @@ public class ShopSettings {
         return postalCode;
     }
 
-    public void setPostalCode(int postalCode) {
+    private void setPostalCode(int postalCode) {
         this.postalCode = postalCode;
     }
 
@@ -106,7 +105,7 @@ public class ShopSettings {
         return city;
     }
 
-    public void setCity(String city) {
+    private void setCity(String city) {
         this.city = city;
     }
 
@@ -114,7 +113,7 @@ public class ShopSettings {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    private void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -122,7 +121,7 @@ public class ShopSettings {
         return email;
     }
 
-    public void setEmail(String email) {
+    private void setEmail(String email) {
         this.email = email;
     }
 
@@ -186,7 +185,7 @@ public class ShopSettings {
         String phoneNumber;
         String email;
 
-        public ShopSettingsBuilder() {
+        ShopSettingsBuilder() {
         }
 
         public static ShopSettingsBuilder getShopSettingsBuilder() {

@@ -87,8 +87,9 @@ public class PdfGenerator {
             this.addInvoiceInformation(document, invoice);
             this.addProductTable(document, invoice, 0, -1);
         }
-
-        this.addCompanyFooter(document);
+        if (document != null) {
+            this.addCompanyFooter(document);
+        }
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         ConverterProperties properties = new ConverterProperties();
         HtmlConverter.convertToPdf(document.html(), buffer, properties);

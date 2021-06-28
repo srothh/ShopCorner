@@ -169,7 +169,7 @@ public class ProductDataGenerator {
         }
     }
 
-    public void generateInvoices() {
+    private void generateInvoices() {
         if (invoiceRepository.count() > 0) {
             LOGGER.debug("invoices already generated");
         } else {

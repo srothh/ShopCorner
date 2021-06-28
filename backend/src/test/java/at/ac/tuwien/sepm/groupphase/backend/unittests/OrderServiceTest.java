@@ -8,12 +8,10 @@ import at.ac.tuwien.sepm.groupphase.backend.service.impl.OrderServiceImpl;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -29,7 +27,7 @@ import static org.mockito.Mockito.doThrow;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest
-public class OrderServiceTest implements TestData {
+class OrderServiceTest implements TestData {
 
     @Rule
     private final MockitoRule rule = MockitoJUnit.rule();
@@ -46,22 +44,22 @@ public class OrderServiceTest implements TestData {
     private Page<Order> orders;
 
     @Test
-    public void placeNewOrderWithInvoice_thenReturnOrder() throws IOException {
+    void placeNewOrderWithInvoice_thenReturnOrder() throws IOException {
         doReturn(order).when(orderService).placeNewOrder(order, sessionID.toString());
     }
 
     @Test
-    public void setCancellationPeriod_thenReturnCancellationPeriod() throws IOException {
+    void setCancellationPeriod_thenReturnCancellationPeriod() throws IOException {
         doReturn(cancellationPeriod).when(orderService).setCancellationPeriod(cancellationPeriod);
     }
 
     @Test
-    public void whenPlaceNewOrderWithInvalidSessionId_thenThrowServiceException() throws IOException {
+    void whenPlaceNewOrderWithInvalidSessionId_thenThrowServiceException() throws IOException {
         doThrow(ServiceException.class).when(orderService).placeNewOrder(order, "default");
     }
 
     @Test
-    public void whenGetAllOrdersWithNoOrdersPersisted_thenReturnEmptyPage() {
+    void whenGetAllOrdersWithNoOrdersPersisted_thenReturnEmptyPage() {
         doReturn(orders).when(orderService).getAllOrders(0,10);
     }
 

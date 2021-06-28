@@ -12,11 +12,11 @@ public class InvoiceItemKey implements Serializable {
 
     @NotNull(message = "InvoiceItemKey invoiceId can not be null")
     @Column(name = "invoice_id")
-    Long invoiceId;
+    private Long invoiceId;
 
     @NotNull(message = "InvoiceItemKey productId can not be null")
     @Column(name = "product_id", nullable = false)
-    Long productId;
+    private Long productId;
 
     public InvoiceItemKey() {
     }

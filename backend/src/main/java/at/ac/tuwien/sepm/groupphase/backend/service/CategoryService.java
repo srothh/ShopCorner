@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 
 
-import java.util.Collection;
 import java.util.List;
 /**
  * Service class handling business logic for Categories.

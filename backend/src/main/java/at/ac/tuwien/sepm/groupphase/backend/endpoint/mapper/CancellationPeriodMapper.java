@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Mapper
 public interface CancellationPeriodMapper {
-    public CancellationPeriod cancellationPeriodDtoToCancellationPeriod(CancellationPeriodDto dto);
+    CancellationPeriod cancellationPeriodDtoToCancellationPeriod(CancellationPeriodDto dto);
 
-    public CancellationPeriodDto cancellationPeriodToCancellationPeriodDto(CancellationPeriod cancellationPeriod);
+    CancellationPeriodDto cancellationPeriodToCancellationPeriodDto(CancellationPeriod cancellationPeriod);
 }

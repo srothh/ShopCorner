@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 // the entire application context
 @DataJpaTest
 @ActiveProfiles("test")
-public class OrderRepositoryTest implements TestData {
+class OrderRepositoryTest implements TestData {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -35,7 +35,7 @@ public class OrderRepositoryTest implements TestData {
     private InvoiceRepository invoiceRepository;
 
     @Test
-    public void givenTwoOrders_whenGet_thenVerifyCustomerOrders(){
+    void givenTwoOrders_whenGet_thenVerifyCustomerOrders(){
         //First Address for customer
         Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
         addressRepository.save(address);

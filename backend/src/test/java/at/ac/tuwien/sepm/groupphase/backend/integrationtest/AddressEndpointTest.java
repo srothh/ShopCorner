@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class AddressEndpointTest implements TestData {
+class AddressEndpointTest implements TestData {
     @Autowired
     private MockMvc mockMvc;
 
@@ -54,13 +54,13 @@ public class AddressEndpointTest implements TestData {
     private final Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         addressRepository.deleteAll();
         Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
     }
 
     @Test
-    public void givenNothing_whenPost_thenAddressWithAllSetPropertiesPlusId() throws Exception {
+    void givenNothing_whenPost_thenAddressWithAllSetPropertiesPlusId() throws Exception {
         AddressDto addressDto = addressMapper.addressToAddressDto(address);
         String body = objectMapper.writeValueAsString(addressDto);
 
@@ -85,7 +85,7 @@ public class AddressEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
+    void givenNothing_whenPostInvalid_then400() throws Exception {
         address.setStreet(null);
         address.setHouseNumber(null);
         AddressDto dto = addressMapper.addressToAddressDto(address);

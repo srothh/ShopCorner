@@ -177,7 +177,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProductById(Long productId) {
         LOGGER.trace("deleteProductById{}", productId);
-        boolean softDelete = false;
+        boolean softDelete;
         Product productToDelete = productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
         softDelete = this.invoiceItemService.findAllInvoicesItems().stream()
@@ -194,8 +194,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "categoryCounts", key = "#category")
-    public Long getCountByCategory(Page page, Long category) {
+    @Cacheable(value = "categoryCounts", key = "#page")
+    public Long getCountByCategory(Page page) {
         return page.getTotalElements();
     }
 }

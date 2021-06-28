@@ -26,12 +26,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest
-public class ProductServiceTest implements TestData {
+class ProductServiceTest implements TestData {
 
     @Rule
     private final MockitoRule rule = MockitoJUnit.rule();
@@ -53,12 +52,12 @@ public class ProductServiceTest implements TestData {
     private ProductService productService;
 
     @Test
-    public void createNewProduct_thenReturnProduct() {
+    void createNewProduct_thenReturnProduct() {
         doReturn(productMock).when(productServiceMock).createProduct(productMock);
     }
 
     @Test
-    public void whenGivenOneProduct_getByCategory_thenReturnProductsWithCategory() {
+    void whenGivenOneProduct_getByCategory_thenReturnProductsWithCategory() {
         Product product = new Product();
 
         product.setName(TEST_PRODUCT_NAME);
@@ -86,7 +85,7 @@ public class ProductServiceTest implements TestData {
     }
 
     @Test
-    public void whenGetAllProductsWithCategoryWhenNoProductPersisted_thenThrowNullPointerException() {
+    void whenGetAllProductsWithCategoryWhenNoProductPersisted_thenThrowNullPointerException() {
         doReturn(products).when(productServiceMock).getAllProductsByCategory(0L);
     }
 }

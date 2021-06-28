@@ -39,8 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-
-public class OrderEndpointTest implements TestData {
+class OrderEndpointTest implements TestData {
 
     private final Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
     private final Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
@@ -65,7 +64,7 @@ public class OrderEndpointTest implements TestData {
     private Order order = new Order();
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         orderRepository.deleteAll();
 
         order = new Order(invoice2, customer);
@@ -74,7 +73,7 @@ public class OrderEndpointTest implements TestData {
 
 
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
+    void givenNothing_whenPostInvalid_then400() throws Exception {
         order.setInvoice(null);
         order.setCustomer(null);
         OrderDto dto = orderMapper.orderToOrderDto(order);
@@ -100,7 +99,7 @@ public class OrderEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPostValidCancellationPeriod_thenCorrectCancellationPeriodPersisted() throws Exception {
+    void givenNothing_whenPostValidCancellationPeriod_thenCorrectCancellationPeriodPersisted() throws Exception {
         CancellationPeriodDto dto = cancellationPeriodMapper.cancellationPeriodToCancellationPeriodDto(cancellationPeriod);
         String body = objectMapper.writeValueAsString(dto);
 

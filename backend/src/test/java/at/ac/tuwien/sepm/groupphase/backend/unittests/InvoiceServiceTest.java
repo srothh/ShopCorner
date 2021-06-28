@@ -41,7 +41,7 @@ import static org.mockito.Mockito.doReturn;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class InvoiceServiceTest implements TestData {
+class InvoiceServiceTest implements TestData {
 
     private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
     private final InvoiceItem invoiceItem = new InvoiceItem();
@@ -77,7 +77,7 @@ public class InvoiceServiceTest implements TestData {
     private InvoiceItemRepository invoiceItemRepository;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         invoiceRepository.deleteAll();
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
@@ -119,12 +119,12 @@ public class InvoiceServiceTest implements TestData {
     }
 
     @Test
-    public void createNewInvoice_thenReturnInvoice() {
+    void createNewInvoice_thenReturnInvoice() {
         doReturn(invoiceMock).when(invoiceServiceMock).createInvoice(invoiceMock);
     }
 
     @Test
-    public void whenGivenOneInvoice_findByDateInside_thenReturnListWithInvoice() {
+    void whenGivenOneInvoice_findByDateInside_thenReturnListWithInvoice() {
         Invoice created = invoiceService.createInvoice(invoice);
         List<Invoice> invoiceList = invoiceService.findByDate(LocalDateTime.now().minusDays(10), LocalDateTime.now());
         Invoice got = invoiceList.get(0);
@@ -138,7 +138,7 @@ public class InvoiceServiceTest implements TestData {
     }
 
     @Test
-    public void whenGivenOneInvoice_findByDateOutside_thenReturnEmptyList() {
+    void whenGivenOneInvoice_findByDateOutside_thenReturnEmptyList() {
         invoiceService.createInvoice(invoice);
         List<Invoice> invoiceList = invoiceService.findByDate(LocalDateTime.now().minusDays(10), LocalDateTime.now().minusDays(5));
         assertAll(
@@ -147,7 +147,7 @@ public class InvoiceServiceTest implements TestData {
     }
 
     @Test
-    public void createInvoiceAndGetTotalInvoiceCount() {
+    void createInvoiceAndGetTotalInvoiceCount() {
         Invoice created = invoiceService.createInvoice(invoice);
         Long count = invoiceService.getInvoiceCount();
         assertNotNull(created);
@@ -155,7 +155,7 @@ public class InvoiceServiceTest implements TestData {
     }
 
     @Test
-    public void createInvoiceAndGetCustomerInvoiceCount() {
+    void createInvoiceAndGetCustomerInvoiceCount() {
         invoice.setInvoiceType(InvoiceType.customer);
         Invoice created = invoiceService.createInvoice(invoice);
         Long count = invoiceService.getCustomerInvoiceCount();
@@ -164,7 +164,7 @@ public class InvoiceServiceTest implements TestData {
     }
 
     @Test
-    public void createInvoiceAndFindOneById() {
+    void createInvoiceAndFindOneById() {
         invoice.setInvoiceType(InvoiceType.customer);
         Invoice created = invoiceService.createInvoice(invoice);
         Invoice foundInvoice = invoiceService.findOneById(created.getId());
@@ -177,7 +177,7 @@ public class InvoiceServiceTest implements TestData {
     }
 
     @Test
-    public void setInvoiceToCanceledAndGetCanceledInvoice() {
+    void setInvoiceToCanceledAndGetCanceledInvoice() {
         invoice.setInvoiceType(InvoiceType.customer);
         Invoice created = this.invoiceService.createInvoice(invoice);
         Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(created);
@@ -194,7 +194,7 @@ public class InvoiceServiceTest implements TestData {
     }
 
     @Test
-    public void createInvoiceAndGetInvoicePage() {
+    void createInvoiceAndGetInvoicePage() {
         invoice.setInvoiceType(InvoiceType.customer);
         Invoice created = invoiceService.createInvoice(invoice);
         Page<Invoice> invoicePage = invoiceService.findAll(0, 15, InvoiceType.customer);

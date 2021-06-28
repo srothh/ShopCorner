@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class InvoiceMappingTest implements TestData {
+class InvoiceMappingTest implements TestData {
     private static final Invoice invoice = new Invoice();
 
 
@@ -86,7 +86,7 @@ public class InvoiceMappingTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenMapSimpleInvoiceDtoToEntity_thenEntityHasAllProperties() {
+    void givenAllProperties_whenMapSimpleInvoiceDtoToEntity_thenEntityHasAllProperties() {
         SimpleInvoiceDto invoiceDto = invoiceMapping.invoiceToSimpleInvoiceDto(invoice);
         assertAll(
             () -> assertEquals(TEST_INVOICE_ID, invoiceDto.getId()),
@@ -97,7 +97,7 @@ public class InvoiceMappingTest implements TestData {
 
 
     @Test
-    public void givenAllProperties_whenMapListWithTwoSimpleInvoiceDtoToDto_thenGetListWithSizeTwoAndAllProperties() {
+    void givenAllProperties_whenMapListWithTwoSimpleInvoiceDtoToDto_thenGetListWithSizeTwoAndAllProperties() {
         List<Invoice> invoiceList = new ArrayList<>();
         invoiceList.add(invoice);
         invoiceList.add(invoice);
@@ -113,7 +113,7 @@ public class InvoiceMappingTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenMapDetailedInvoiceDtoToEntity_thenEntityHasAllProperties() {
+    void givenAllProperties_whenMapDetailedInvoiceDtoToEntity_thenEntityHasAllProperties() {
         DetailedInvoiceDto invoiceDto = invoiceMapping.invoiceToDetailedInvoiceDto(invoice);
         assertAll(
             () -> assertEquals(TEST_INVOICE_ID, invoiceDto.getId()),

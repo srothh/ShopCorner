@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class MeEndpointTest implements TestData {
+class MeEndpointTest implements TestData {
 
     @Autowired
     private MockMvc mockMvc;
@@ -148,7 +148,7 @@ public class MeEndpointTest implements TestData {
 
 
     @Test
-    public void givenNothing_whenPut_then404() throws Exception {
+    void givenNothing_whenPut_then404() throws Exception {
 
         customer.setId(1L);
         CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
@@ -168,7 +168,7 @@ public class MeEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneCustomer_whenPutByExistingId_thenVerifyCustomerChanged() throws Exception {
+    void givenOneCustomer_whenPutByExistingId_thenVerifyCustomerChanged() throws Exception {
         addressRepository.save(address);
         Customer updatedCustomer = customerRepository.save(customer);
 
@@ -209,7 +209,7 @@ public class MeEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoCustomers_whenPutByExistingIdAndIllegalAccess_then403() throws Exception {
+    void givenTwoCustomers_whenPutByExistingIdAndIllegalAccess_then403() throws Exception {
         addressRepository.save(address);
         customerRepository.save(customer);
         Customer updatedCustomer = customerRepository.save(customer2);
@@ -234,7 +234,7 @@ public class MeEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoCustomers_whenPutByExistingIdAndChangedCustomerAlreadyExists_then422() throws Exception {
+    void givenTwoCustomers_whenPutByExistingIdAndChangedCustomerAlreadyExists_then422() throws Exception {
         addressRepository.save(address);
         Customer firstCustomer = customerRepository.save(customer);
         Customer updatedCustomer = customerRepository.save(customer2);
@@ -260,7 +260,7 @@ public class MeEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneCustomerOneOrderAndOneInvoice_whenGet_verifyOrder() throws Exception {
+    void givenOneCustomerOneOrderAndOneInvoice_whenGet_verifyOrder() throws Exception {
         addressRepository.save(address);
         invoice.setInvoiceType(InvoiceType.customer);
         invoice.setDate(LocalDateTime.now());
@@ -298,7 +298,7 @@ public class MeEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneCustomerOneOrderAndOneInvoice_whenGet_verifyValidPDFInvoice() throws Exception {
+    void givenOneCustomerOneOrderAndOneInvoice_whenGet_verifyValidPDFInvoice() throws Exception {
         addressRepository.save(address);
         Customer newCustomer = customerRepository.save(customer3);
         invoice.setInvoiceType(InvoiceType.customer);
@@ -333,7 +333,7 @@ public class MeEndpointTest implements TestData {
 
     }
     @Test
-    public void givenOneCustomerOneInvoiceAndNoOrder_whenGet_then404() throws Exception {
+    void givenOneCustomerOneInvoiceAndNoOrder_whenGet_then404() throws Exception {
         addressRepository.save(address);
         Customer newCustomer = customerRepository.save(customer3);
         invoice.setInvoiceType(InvoiceType.customer);

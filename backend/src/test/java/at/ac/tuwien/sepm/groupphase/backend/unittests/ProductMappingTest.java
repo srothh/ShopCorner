@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class ProductMappingTest implements TestData {
+class ProductMappingTest implements TestData {
     private  final Product product = new Product();
     private  final Category category = new Category();
     private  final TaxRate taxRate = new TaxRate();
@@ -30,7 +30,7 @@ public class ProductMappingTest implements TestData {
     private ProductMapper productMapper;
 
     @Test
-    public void givenNothing_whenMapProductDtoToEntity_thenEntityHasAllProperties(){
+    void givenNothing_whenMapProductDtoToEntity_thenEntityHasAllProperties(){
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -57,7 +57,7 @@ public class ProductMappingTest implements TestData {
 
     }
     @Test
-    public void giveNothing_whenMapSimpleProductDtoToEntity_thenEntityHasAllProperties(){
+    void giveNothing_whenMapSimpleProductDtoToEntity_thenEntityHasAllProperties(){
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -78,7 +78,7 @@ public class ProductMappingTest implements TestData {
 
     //testing porductMapper's .map function to convert base64 string to a binary format
     @Test
-    public void givenNothing_whenDecodeBLOBToBase64_thenExpectValidOriginalFile(){
+    void givenNothing_whenDecodeBLOBToBase64_thenExpectValidOriginalFile(){
         String mockFile = "mockPictureFile.png";
         String encodedString = Base64.getEncoder().encodeToString(mockFile.getBytes());
         byte[] binaryContent = productMapper.map(encodedString);
@@ -87,7 +87,7 @@ public class ProductMappingTest implements TestData {
     }
     @Test
     //testing productMapper's .map function to convert binary data (blob) to a valid base64 string
-    public void givenNothing_whenEncodeBase64ToBLOB_thenExpectValidOriginalFile(){
+    void givenNothing_whenEncodeBase64ToBLOB_thenExpectValidOriginalFile(){
         String mockFile = "mockPictureFile.png";
         byte[] binaryContent = mockFile.getBytes();
         String base64String = productMapper.map(binaryContent);

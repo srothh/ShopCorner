@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ActiveProfiles("test")
-public class CartRepositoryTest implements TestData {
+class CartRepositoryTest implements TestData {
     private final Cart cart = new Cart();
     private final CartItem cartItem = new CartItem();
 
@@ -36,7 +36,7 @@ public class CartRepositoryTest implements TestData {
     private CartItemRepository cartItemRepository;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         this.cartItemRepository.deleteAll();
         this.cartRepository.deleteAll();
 
@@ -51,7 +51,7 @@ public class CartRepositoryTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenSaveCart_thenFindWithCartBySessionIdCheckIfCarExistsDeleteCarByDate() {
+    void givenAllProperties_whenSaveCart_thenFindWithCartBySessionIdCheckIfCarExistsDeleteCarByDate() {
         UUID sessionId = UUID.randomUUID();
         cart.setSessionId(sessionId);
         cartRepository.save(cart);

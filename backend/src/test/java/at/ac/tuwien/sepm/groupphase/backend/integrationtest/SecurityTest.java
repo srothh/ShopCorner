@@ -40,7 +40,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,7 +55,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class SecurityTest implements TestData {
+class SecurityTest implements TestData {
 
     private static final List<Class<?>> mappingAnnotations = Lists.list(
         RequestMapping.class,
@@ -101,7 +100,7 @@ public class SecurityTest implements TestData {
     private Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         customerRepository.deleteAll();
         customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
     }
@@ -111,7 +110,7 @@ public class SecurityTest implements TestData {
      * It is very easy to forget securing one method causing a security vulnerability.
      */
     @Test
-    public void ensureSecurityAnnotationPresentForEveryEndpoint() throws Exception {
+    void ensureSecurityAnnotationPresentForEveryEndpoint() {
         List<Pair<Class<?>, Method>> notSecured = components.stream()
             .map(AopUtils::getTargetClass) // beans may be proxies, get the target class instead
             .filter(clazz -> clazz.getCanonicalName() != null && clazz.getCanonicalName().startsWith(BackendApplication.class.getPackageName())) // limit to our package
@@ -129,7 +128,7 @@ public class SecurityTest implements TestData {
     }
 
     @Test
-    public void givenAdminLoggedIn_whenFindAll_then200() throws Exception {
+    void givenAdminLoggedIn_whenFindAll_then200() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(CUSTOMER_BASE_URI)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
@@ -143,7 +142,7 @@ public class SecurityTest implements TestData {
     }
 
     @Test
-    public void givenEmployeeLoggedIn_whenFindAll_then200() throws Exception {
+    void givenEmployeeLoggedIn_whenFindAll_then200() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(CUSTOMER_BASE_URI)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(EMPLOYEE_USER, EMPLOYEE_ROLES)))
             .andDo(print())
@@ -157,7 +156,7 @@ public class SecurityTest implements TestData {
     }
 
     @Test
-    public void givenNoOneLoggedIn_whenFindAll_then401() throws Exception {
+    void givenNoOneLoggedIn_whenFindAll_then401() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(CUSTOMER_BASE_URI))
             .andDo(print())
             .andReturn();
@@ -167,7 +166,7 @@ public class SecurityTest implements TestData {
     }
 
     @Test
-    public void givenNoOneLoggedIn_whenPost_then201() throws Exception {
+    void givenNoOneLoggedIn_whenPost_then201() throws Exception {
         CustomerRegistrationDto customerRegistrationDto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(customerRegistrationDto);
 

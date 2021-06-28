@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 // the entire application context
 @DataJpaTest
 @ActiveProfiles("test")
-public class ProductRepositoryTest implements TestData {
+class ProductRepositoryTest implements TestData {
 
     @Autowired
     private ProductRepository productRepository;
@@ -31,7 +31,7 @@ public class ProductRepositoryTest implements TestData {
     private TaxRateRepository taxRateRepository;
 
     @Test
-    public void givenNothing_whenSaveProduct_thenFindListWithOneElementAndFindProductById(){
+    void givenNothing_whenSaveProduct_thenFindListWithOneElementAndFindProductById(){
         Product product = new Product();
 
         product.setName(TEST_PRODUCT_NAME);

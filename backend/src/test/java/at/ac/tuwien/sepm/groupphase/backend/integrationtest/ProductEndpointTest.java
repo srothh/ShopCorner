@@ -8,7 +8,6 @@ import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -18,7 +17,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,9 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class ProductEndpointTest implements TestData {
+class ProductEndpointTest implements TestData {
     @Autowired
     private MockMvc mockMvc;
 
@@ -78,7 +74,7 @@ public class ProductEndpointTest implements TestData {
     private final TaxRate taxRate = new TaxRate();
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         productRepository.deleteAll();
         categoryRepository.deleteAll();
         product.setId(0L);
@@ -95,7 +91,7 @@ public class ProductEndpointTest implements TestData {
     }
 
     @Test
-    public void givenACategoryAndATaxRate_whenPost_thenProductWithAllSetPropertiesPlusId() throws Exception {
+    void givenACategoryAndATaxRate_whenPost_thenProductWithAllSetPropertiesPlusId() throws Exception {
         Category newCategory = categoryRepository.save(category);
         TaxRate newTaxRate = taxRateRepository.save(taxRate);
         product.setTaxRate(newTaxRate);
@@ -139,7 +135,7 @@ public class ProductEndpointTest implements TestData {
     }
 
     @Test
-    public void givenACategoryAndATaxRate_whenPostInvalid_then400() throws Exception {
+    void givenACategoryAndATaxRate_whenPostInvalid_then400() throws Exception {
         categoryRepository.save(category);
         taxRateRepository.save(taxRate);
         product.setName(null);
@@ -168,7 +164,7 @@ public class ProductEndpointTest implements TestData {
     }
 
     @Test
-    public void givenATaxRate_whenPostByNonExistingId_then404() throws Exception {
+    void givenATaxRate_whenPostByNonExistingId_then404() throws Exception {
         taxRateRepository.save(taxRate);
         product.setTaxRate(taxRate);
         category.setId(-1L);
@@ -187,7 +183,7 @@ public class ProductEndpointTest implements TestData {
     }
 
     @Test
-    public void givenACategoryAndATaxRate_whenPut_thenVerifyProductChanged() throws Exception {
+    void givenACategoryAndATaxRate_whenPut_thenVerifyProductChanged() throws Exception {
         Category newCategory = categoryRepository.save(category);
         TaxRate newTaxRate = taxRateRepository.save(taxRate);
         product.setCategory(newCategory);
@@ -219,7 +215,7 @@ public class ProductEndpointTest implements TestData {
     }
 
     @Test
-    public void givenATaxRate_whenPutByNonExistingId_then404() throws Exception {
+    void givenATaxRate_whenPutByNonExistingId_then404() throws Exception {
         taxRateRepository.save(taxRate);
         product.setId(1000L);
         ProductDto productDto = productMapper.entityToDto(product);
@@ -235,7 +231,7 @@ public class ProductEndpointTest implements TestData {
     }
 
     @Test
-    public void givenACategoryAndATaxRate_whenPutIllegalArgument_then400() throws Exception {
+    void givenACategoryAndATaxRate_whenPutIllegalArgument_then400() throws Exception {
         Category newCategory = categoryRepository.save(category);
         TaxRate newTaxRate = taxRateRepository.save(taxRate);
         product.setCategory(newCategory);
@@ -257,7 +253,7 @@ public class ProductEndpointTest implements TestData {
     }
 
     @Test
-    public void givenATaxRate_whenDelete_thenVerifyProductDeleted() throws Exception {
+    void givenATaxRate_whenDelete_thenVerifyProductDeleted() throws Exception {
         TaxRate newTaxRate = taxRateRepository.save(taxRate);
         product.setTaxRate(newTaxRate);
         Product newProduct = productRepository.save(product);
@@ -274,7 +270,7 @@ public class ProductEndpointTest implements TestData {
     }
 
     @Test
-    public void givenATaxRate_whenDeleteByNonExistingId_then404() throws Exception {
+    void givenATaxRate_whenDeleteByNonExistingId_then404() throws Exception {
         taxRateRepository.save(taxRate);
         product.setId(-1000L);
 
@@ -286,7 +282,7 @@ public class ProductEndpointTest implements TestData {
 
     }
     @Test
-    public void givenSeveralProductsWithTaxRateAndACategory_whenDeleteMultiple_verifyProductsDeleted() throws Exception {
+    void givenSeveralProductsWithTaxRateAndACategory_whenDeleteMultiple_verifyProductsDeleted() throws Exception {
         TaxRate newTaxRate = taxRateRepository.save(taxRate);
         Category newCategory = categoryRepository.save(category);
         product.setTaxRate(newTaxRate);
@@ -318,7 +314,7 @@ public class ProductEndpointTest implements TestData {
 
 
     @Test
-    public void givenSeveralProductsWithTaxRateAndACategory_whenFindByCategory_getListWithOnlySearchedFor() throws Exception {
+    void givenSeveralProductsWithTaxRateAndACategory_whenFindByCategory_getListWithOnlySearchedFor() throws Exception {
         TaxRate newTaxRate = taxRateRepository.save(taxRate);
         Category newCategory = categoryRepository.save(category);
         product.setTaxRate(newTaxRate);

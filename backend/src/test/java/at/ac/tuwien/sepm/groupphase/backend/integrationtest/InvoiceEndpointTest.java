@@ -55,7 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class InvoiceEndpointTest implements TestData {
+class InvoiceEndpointTest implements TestData {
     @Autowired
     private MockMvc mockMvc;
 
@@ -98,7 +98,7 @@ public class InvoiceEndpointTest implements TestData {
     private final TaxRate taxRate = new TaxRate();
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         invoiceRepository.deleteAll();
         categoryRepository.deleteAll();
         taxRateRepository.deleteAll();
@@ -151,7 +151,7 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
+    void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice1);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
@@ -167,7 +167,7 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenPut_thenCanceledInvoice() throws Exception {
+    void givenAllProperties_whenPut_thenCanceledInvoice() throws Exception {
         Set<InvoiceItem> set1 = invoice1.getItems();
         invoice1.setItems(null);
 
@@ -204,7 +204,7 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
+    void givenItems_whenGetInvoice_thenInvoiceAsPdf() throws Exception {
         Set<InvoiceItem> set1 = invoice1.getItems();
         invoice1.setItems(null);
 
@@ -225,7 +225,7 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenItems_whenGetInvoice_thenInvoice() throws Exception {
+    void givenItems_whenGetInvoice_thenInvoice() throws Exception {
         Set<InvoiceItem> set = invoice1.getItems();
         invoice1.setItems(null);
         invoice1.setDate(LocalDateTime.now());
@@ -258,7 +258,7 @@ public class InvoiceEndpointTest implements TestData {
 
 
     @Test
-    public void givenTwoInvoices_whenFindAllWithPageAndPermission_thenListWithSizeTwoAndOverviewOfAllInvoices()
+    void givenTwoInvoices_whenFindAllWithPageAndPermission_thenListWithSizeTwoAndOverviewOfAllInvoices()
         throws Exception {
         this.invoiceService.createInvoice(invoice1);
         Invoice newInvoice2 = this.invoiceService.createInvoice(invoice2);
@@ -289,7 +289,7 @@ public class InvoiceEndpointTest implements TestData {
 
 
     @Test
-    public void givenNothing_whenSetCanceled_then400() throws Exception {
+    void givenNothing_whenSetCanceled_then400() throws Exception {
         invoiceRepository.deleteAll();
         MvcResult mvcResult = this.mockMvc.perform(patch(INVOICE_BASE_URI + "/" + 0L)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -303,7 +303,7 @@ public class InvoiceEndpointTest implements TestData {
 
 
     @Test
-    public void givenNothing_whenFindPage_thenEmptyList() throws Exception {
+    void givenNothing_whenFindPage_thenEmptyList() throws Exception {
         invoiceRepository.deleteAll();
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "?page=0&page_count=0&invoiceType=operator")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -322,7 +322,7 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenFindById_then404() throws Exception {
+    void givenNothing_whenFindById_then404() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/" + 0L)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
@@ -339,7 +339,7 @@ public class InvoiceEndpointTest implements TestData {
 
 
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
+    void givenNothing_whenPostInvalid_then400() throws Exception {
         invoice1.setAmount(0);
         invoice1.setDate(null);
         invoice1.setItems(null);
@@ -367,7 +367,7 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOne_whenGetByDateInside_returnListWithInvoice() throws Exception {
+    void givenOne_whenGetByDateInside_returnListWithInvoice() throws Exception {
         Set<InvoiceItem> set1 = invoice1.getItems();
         invoice1.setItems(null);
 
@@ -395,7 +395,7 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOne_whenGetByDateOutside_returnEmptyList() throws Exception {
+    void givenOne_whenGetByDateOutside_returnEmptyList() throws Exception {
         Set<InvoiceItem> set1 = invoice1.getItems();
         invoice1.setItems(null);
 
