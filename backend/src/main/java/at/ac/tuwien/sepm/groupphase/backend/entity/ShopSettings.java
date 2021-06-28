@@ -33,7 +33,7 @@ public class ShopSettings {
         return title;
     }
 
-    private void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -41,7 +41,7 @@ public class ShopSettings {
         return logo;
     }
 
-    private void setLogo(String logo) {
+    public void setLogo(String logo) {
         this.logo = logo;
     }
 
@@ -49,7 +49,7 @@ public class ShopSettings {
         return bannerTitle;
     }
 
-    private void setBannerTitle(String bannerTitle) {
+    public void setBannerTitle(String bannerTitle) {
         this.bannerTitle = bannerTitle;
     }
 
@@ -57,7 +57,7 @@ public class ShopSettings {
         return bannerText;
     }
 
-    private void setBannerText(String bannerText) {
+    public void setBannerText(String bannerText) {
         this.bannerText = bannerText;
     }
 
@@ -65,7 +65,7 @@ public class ShopSettings {
         return street;
     }
 
-    private void setStreet(String street) {
+    public void setStreet(String street) {
         this.street = street;
     }
 
@@ -73,7 +73,7 @@ public class ShopSettings {
         return houseNumber;
     }
 
-    private void setHouseNumber(String houseNumber) {
+    public void setHouseNumber(String houseNumber) {
         this.houseNumber = houseNumber;
     }
 
@@ -81,7 +81,7 @@ public class ShopSettings {
         return stairNumber;
     }
 
-    private void setStairNumber(int stairNumber) {
+    public void setStairNumber(int stairNumber) {
         this.stairNumber = stairNumber;
     }
 
@@ -89,7 +89,7 @@ public class ShopSettings {
         return doorNumber;
     }
 
-    private void setDoorNumber(String doorNumber) {
+    public void setDoorNumber(String doorNumber) {
         this.doorNumber = doorNumber;
     }
 
@@ -97,7 +97,7 @@ public class ShopSettings {
         return postalCode;
     }
 
-    private void setPostalCode(int postalCode) {
+    public void setPostalCode(int postalCode) {
         this.postalCode = postalCode;
     }
 
@@ -105,7 +105,7 @@ public class ShopSettings {
         return city;
     }
 
-    private void setCity(String city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
@@ -113,7 +113,7 @@ public class ShopSettings {
         return phoneNumber;
     }
 
-    private void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -121,7 +121,7 @@ public class ShopSettings {
         return email;
     }
 
-    private void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -185,7 +185,7 @@ public class ShopSettings {
         String phoneNumber;
         String email;
 
-        ShopSettingsBuilder() {
+        public ShopSettingsBuilder() {
         }
 
         public static ShopSettingsBuilder getShopSettingsBuilder() {
