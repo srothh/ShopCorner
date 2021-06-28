@@ -275,7 +275,8 @@ public class ProductEndpointTest implements TestData {
 
     @Test
     public void givenATaxRate_whenDeleteByNonExistingId_then404() throws Exception {
-        taxRateRepository.save(taxRate);
+       // taxRateRepository.save(taxRate);
+        this.productRepository.deleteAll();
         product.setId(-1000L);
 
         ResultActions mvcResult = this.mockMvc.perform(

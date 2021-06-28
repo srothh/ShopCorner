@@ -190,7 +190,6 @@ public class ProductServiceImpl implements ProductService {
             productToDelete.setDeleted(true);
             productRepository.save(productToDelete);
         }
-
     }
 
     @Override
