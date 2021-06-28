@@ -5,6 +5,7 @@ import {Pagination} from '../../../dtos/pagination';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {NgdbModalActionComponent} from '../../common/ngbd-modal-action/ngdb-modal-action.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-invoice',
@@ -24,6 +25,8 @@ export class OperatorInvoiceComponent implements OnInit {
   detailViewInvoice: Invoice;
   invoiceType = InvoiceType.operator;
   onCanceledWindow = false;
+
+  faPlusCircle = faPlusCircle;
 
   constructor(private invoiceService: InvoiceService,
               private modalService: NgbModal) {

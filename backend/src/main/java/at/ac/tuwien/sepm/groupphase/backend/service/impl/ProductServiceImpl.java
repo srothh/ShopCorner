@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
 import at.ac.tuwien.sepm.groupphase.backend.service.TaxRateService;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceItemService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
+import at.ac.tuwien.sepm.groupphase.backend.util.ProductSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -110,28 +112,33 @@ public class ProductServiceImpl implements ProductService {
             .replace("%", "\\%")
             .replace("_", "\\_");
         if (!name.isEmpty() && categoryId == -1) {
-            return this.productRepository.findAllByName(name, pages);
+            return this.productRepository.findAll(Specification.where(ProductSpecifications.hasName(name))
+                .and(ProductSpecifications.hasDeleted(false)), pages);
         } else if (!name.isEmpty() && categoryId > 0) {
-            return this.productRepository.findAllByNameAndCategoryId(name, categoryId, pages);
+            return this.productRepository.findAll(Specification.where(ProductSpecifications.hasName(name))
+                .and(ProductSpecifications.isCategory(categoryId))
+                .and(ProductSpecifications.hasDeleted(false)), pages);
         } else if (name.isEmpty() && categoryId > 0) {
-            return this.productRepository.findAllByCategoryId(categoryId, pages);
+            return this.productRepository.findAll(Specification.where(ProductSpecifications.isCategory(categoryId))
+                .and(ProductSpecifications.hasDeleted(false)), pages);
         }
-        return this.productRepository.findAll(pages);
+        return this.productRepository.findAll(ProductSpecifications.hasDeleted(false), pages);
     }
 
     @Override
     public List<Product> getAllProducts() {
         LOGGER.trace("getAllProducts()");
-        return this.productRepository.findAll();
+        return this.productRepository.findAll(ProductSpecifications.hasDeleted(false));
     }
 
     @Override
     public List<Product> getAllProductsByCategory(Long categoryId) {
         LOGGER.trace("getAllProductsByCategory(categoryId)");
         if (categoryId > 0) {
-            return this.productRepository.findAllByCategoryId(categoryId);
+            return this.productRepository.findAll(Specification.where(ProductSpecifications.isCategory(categoryId))
+                .and(ProductSpecifications.hasDeleted(false)));
         } else {
-            return this.productRepository.findAll();
+            return this.productRepository.findAll(ProductSpecifications.hasDeleted(false));
         }
     }
 
@@ -167,7 +174,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Long getProductsCount() {
         LOGGER.trace("getProductsCount()");
-        return productRepository.count();
+        return productRepository.count(ProductSpecifications.hasDeleted(false));
     }
 
     @Caching(evict = {
@@ -178,7 +185,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProductById(Long productId) {
         LOGGER.trace("deleteProductById{}", productId);
-        boolean softDelete = false;
+        boolean softDelete;
         Product productToDelete = productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find product with id: %s", productId)));
         softDelete = this.invoiceItemService.findAllInvoicesItems().stream()
@@ -195,7 +202,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Cacheable(value = "categoryCounts", key = "#category")
-    public Long getCountByCategory(Page page, Long category) {
+    public Long getCountByCategory(Page<Product> page, Long category) {
         return page.getTotalElements();
     }
 }

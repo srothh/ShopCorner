@@ -53,7 +53,7 @@ auf unserer <a href="http://localhost:4200/#/home">Website</a>.
     </tr>
     <tr th:if="${promotionDiscount != null}">
         <td>Gutscheincode</td>
-        <td class="money"><span th:text="-${promotionDiscount}"></span>&euro;</td>
+        <td class="money"><span th:text="${promotionDiscount}"></span>&euro;</td>
     </tr>
     <tr>
         <td>Endbetrag inkl. USt.</td>
@@ -72,8 +72,7 @@ Wir freuen uns auf Ihren n&auml;chsten Besuch!
 Ihr <a href="http://localhost:4200/#/home"><span th:utext="${shop}"></span></a> Team
 <hr/>
 <small>
-    Sie k&ouml;nnen ihr Bestellung innerhalb eines Zeitraums von <span th:utext="${cancel}"></span> Tagen unter
-    <a href="http://localhost:4200/#/account/orders">Meine Bestellungen</a> stornieren.
+    <span th:utext="${cancel}"></span>
 </small>
 </body>
 </html>

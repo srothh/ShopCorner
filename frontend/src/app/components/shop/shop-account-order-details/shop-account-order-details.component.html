@@ -24,34 +24,39 @@
         </div>
       </div>
 
-    <div>
-        <div class="card mb-3 rounded-lg shadow-sm" *ngFor="let item of this.items">
-          <div class="product-info d-flex flex-column mt-4 ml-4 mb-4">
-            <img *ngIf="item.product.picture !== null" src="{{getImageSource(item.product)}}" width="100"
-                 height="100">
-            <object *ngIf="item.product.picture == null" data="assets/no_image_available.svg" width="100"
-                    height="100"></object>
-            <div
-              class="order-product-name font-weight-bold">{{ item.numberOfItems + ' x ' + item.product.name}} </div>
-            <div class="order-product-description">{{item.product.description}}</div>
-            <div
-              class="order-product-price">{{(item.product.price * item.product.taxRate.calculationFactor).toFixed(2) + ' EUR'}} </div>
-          </div>
-
-          <p class="buy-product-again">
-            <button class="btn btn-dark float-right mr-4" (click)="addToCart(item.product)"> Erneut kaufen? </button>
-          </p>
-
-        </div>
+  <div>
+    <div class="card mb-3 rounded-lg shadow-sm" *ngFor="let item of this.items">
+      <div class="product-info d-flex flex-column mt-4 ml-4 mb-4">
+        <img *ngIf="item.product.picture !== null" src="{{getImageSource(item.product)}}" width="100"
+             height="100">
+        <object *ngIf="item.product.picture == null" data="assets/no_image_available.svg" width="100"
+                height="100"></object>
+        <div
+          class="order-product-name font-weight-bold">{{ item.numberOfItems + ' x ' + item.product.name}} </div>
+        <div class="order-product-description">{{item.product.description}}</div>
+        <div
+          class="order-product-price">{{(item.product.price * item.product.taxRate.calculationFactor).toFixed(2) + ' EUR'}} </div>
       </div>
 
+      <p class="buy-product-again">
+        <button class="btn btn-primary float-right mr-4" (click)="addToCart(item.product)"> Erneut kaufen?</button>
+      </p>
 
-    <h5 class="order-amount font-weight-bold">
-      Gesamtpreis (inkl. MwSt.):
-    </h5>
-    <h5>{{isCanceled?order.invoice.amount * (-1):order.invoice.amount}} EUR
-    <button class="btn btn-dark float-right mr-4" *ngIf="!isCanceled&&!isCancelable" (click)="attemptToCancelInvoiceModal()"> Stornieren </button>
-    <button class="btn btn-dark float-right mr-4" (click)="downloadInvoice(order.invoice.id, order.invoice.date)"> Rechnungsdownload </button></h5>
+    </div>
   </div>
+
+
+  <h5 class="order-amount font-weight-bold">
+    Gesamtpreis (inkl. MwSt.):
+  </h5>
+  <span>{{isCanceled ? order.invoice.amount * (-1) : order.invoice.amount.toFixed(2)}} EUR
+    <button class="btn btn-primary float-right mr-4" *ngIf="!isCanceled&&!isCancelable"
+            (click)="attemptToCancelInvoiceModal()"> Stornieren
+    </button>
+    <button class="btn btn-primary float-right mr-4" (click)="downloadInvoice(order.invoice.id, order.invoice.date)">
+      Rechnungsdownload
+    </button>
+  </span>
+</div>
 
 

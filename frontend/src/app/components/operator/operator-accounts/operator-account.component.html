@@ -18,25 +18,40 @@
     </ng-template>
   </div>
   <div class="admin_options" *ngIf="getPermission() === 'ADMIN';" (click)="registerEmployee()">
-    <button type="button" class="btn btn-primary">Mitarbeiter_in registrieren</button>
+    <button type="button" class="btn btn-primary">
+      <fa-icon class="mr-2" [icon]="faPlusCircle"></fa-icon>
+      Mitarbeiter_in registrieren
+    </button>
   </div>
   <div class="admin_options">
     <div *ngIf="selected.length > 0 && getPermission() === 'ADMIN'; else disabled_delete">
-      <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">Auswahl löschen</button>
+      <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">
+        <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
+        Auswahl löschen
+      </button>
     </div>
     <ng-template #disabled_delete>
       <span class="d-inline-block" *ngIf="getPermission() === 'ADMIN';">
-        <button type="button" class="btn btn-outline-danger" disabled>Auswahl löschen</button>
+        <button type="button" class="btn btn-outline-danger" disabled>
+          <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
+          Auswahl löschen
+        </button>
       </span>
     </ng-template>
   </div>
   <div class="admin_options">
     <div *ngIf="selected.length > 0 && getPermission() === 'ADMIN'; else disabled_promote">
-      <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#promoteCommit">Berechtigungslevel ändern</button>
+      <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#promoteCommit">
+        <fa-icon class="mr-2" [icon]="faExclamationTriangle"></fa-icon>
+        Berechtigungslevel ändern
+      </button>
     </div>
     <ng-template #disabled_promote>
       <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Nur für Admins" *ngIf="getPermission() === 'ADMIN';">
-        <button type="button" style="pointer-events: none;" class="btn btn-outline-secondary" disabled>Berechtigungslevel ändern</button>
+        <button type="button" style="pointer-events: none;" class="btn btn-outline-secondary" disabled>
+          <fa-icon class="mr-2" [icon]="faExclamationTriangle"></fa-icon>
+          Berechtigungslevel ändern
+        </button>
       </span>
     </ng-template>
   </div>

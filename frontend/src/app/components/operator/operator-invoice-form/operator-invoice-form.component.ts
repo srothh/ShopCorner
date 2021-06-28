@@ -8,7 +8,7 @@ import {formatDate} from '@angular/common';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {InvoiceItem} from '../../../dtos/invoiceItem';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
-
+import {faPlusCircle, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-invoice-form',
@@ -16,9 +16,6 @@ import {InvoiceType} from '../../../dtos/invoiceType.enum';
   styleUrls: ['./operator-invoice-form.component.scss']
 })
 export class OperatorInvoiceFormComponent implements OnInit {
-
-  shopName = 'shopCorner';
-
   newInvoiceForm: FormGroup;
   submitted = false;
   error = false;
@@ -33,6 +30,8 @@ export class OperatorInvoiceFormComponent implements OnInit {
   tax = 0;
   download = false;
   show = false;
+  faPlusCircle = faPlusCircle;
+  faMinusCircle = faMinusCircle;
 
   constructor(private invoiceService: InvoiceService, private formBuilder: FormBuilder) {
   }

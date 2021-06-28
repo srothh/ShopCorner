@@ -4,6 +4,7 @@ import {ProductService} from '../../../services/product/product.service';
 import {Router} from '@angular/router';
 import {ShopService} from '../../../services/shop.service';
 import {Globals} from '../../../global/globals';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-home',
@@ -31,6 +32,7 @@ export class ShopHomeComponent implements OnInit {
   ngOnInit(): void {
     this.fetchProducts();
     this.configureBanner();
+    AOS.init();
   }
 
   fetchProducts(): void {
