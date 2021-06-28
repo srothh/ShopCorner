@@ -13,12 +13,12 @@ import java.util.Objects;
 public class ProductDto {
     private Long id;
     @NotBlank
-    @Size(min = 3, max = 50, message = "name should contain at least 3 characters and 50 at most")
+    @Size(min = 3, max = 50, message = "Name muss mindestens 3 und maximal 50 Zeichen enthalten")
     private String name;
-    @Length(max = 200)
-    @NotBlank
+    @Length(max = 200, message = "Beschreibung darf maximal 200 Zeichen enthalten")
+    @NotBlank(message = "Beschreibung darf nicht leer sein")
     private String description;
-    @DecimalMin("0.0")
+    @DecimalMin(value = "0.0", message = "Preis kann nicht 0€ sein")
     private Double price;
     private Category category;
     private TaxRate taxRate;

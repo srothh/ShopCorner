@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {Pagination} from '../../../dtos/pagination';
 import {Promotion} from '../../../dtos/promotion';
-import {PromotionService} from '../../../services/promotion.service';
+import {PromotionService} from '../../../services/promotion/promotion.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {Globals} from '../../../global/globals';
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-promotions',
@@ -11,7 +12,6 @@ import {Globals} from '../../../global/globals';
   styleUrls: ['./operator-promotion.component.scss']
 })
 export class OperatorPromotionComponent implements OnInit {
-
   error = false;
   errorMessage = '';
   promotions: Promotion[];
@@ -19,6 +19,7 @@ export class OperatorPromotionComponent implements OnInit {
   pageSize = 15;
   collectionSize = 0;
   form = false;
+  faPlusCircle = faPlusCircle;
 
   constructor(private promotionService: PromotionService,
               private authService: OperatorAuthService,
@@ -69,6 +70,11 @@ export class OperatorPromotionComponent implements OnInit {
     return this.authService.getUserRole() === this.globals.roles.admin;
   }
 
+  changeComponent(val: boolean) {
+    this.form = val;
+    this.loadPromotionsForPage();
+  }
+
   /**
    * calls on Service class to fetch all customer accounts from backend
    */
@@ -81,7 +87,7 @@ export class OperatorPromotionComponent implements OnInit {
       },
       error => {
         this.error = true;
-        this.errorMessage = error.error;
+        this.errorMessage = error;
       }
     );
   }

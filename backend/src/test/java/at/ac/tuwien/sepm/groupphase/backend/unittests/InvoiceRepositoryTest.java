@@ -1,21 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItemKey;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
-import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
-import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import at.ac.tuwien.sepm.groupphase.backend.entity.*;
+import at.ac.tuwien.sepm.groupphase.backend.repository.*;
 
 import at.ac.tuwien.sepm.groupphase.backend.util.InvoiceSpecifications;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,12 +16,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ActiveProfiles("test")
-public class InvoiceRepositoryTest implements TestData {
+class InvoiceRepositoryTest implements TestData {
     private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
     private final InvoiceItem invoiceItem = new InvoiceItem();
     private final Invoice invoice = new Invoice();
@@ -57,8 +47,15 @@ public class InvoiceRepositoryTest implements TestData {
     @Autowired
     private InvoiceItemRepository invoiceItemRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
+
+
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -69,6 +66,7 @@ public class InvoiceRepositoryTest implements TestData {
 
         taxRate.setId(1L);
         taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
+        taxRate.setCalculationFactor((TEST_TAX_RATE_PERCENTAGE/100)+1);
 
         // product
         product.setId(0L);
@@ -96,7 +94,7 @@ public class InvoiceRepositoryTest implements TestData {
 
 
     @Test
-    public void givenAllProperties_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
+    void givenAllProperties_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
         invoiceItemRepository.save(invoiceItem);
         Pageable returnPage = PageRequest.of(0, 15);
@@ -109,12 +107,33 @@ public class InvoiceRepositoryTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenGetInvoice_thenFindListWithOneInvoiceAndFindElementById() {
+    void givenAllProperties_whenGetInvoice_thenFindListWithOneInvoiceAndFindElementById() {
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
         invoiceItemRepository.save(invoiceItem);
         Pageable returnPage = PageRequest.of(0, 15);
         assertAll(
             () -> assertEquals(1, invoiceRepository.findAll(returnPage).getContent().size())
         );
+    }
+
+    @Test
+    void givenAllProperties_whenGetInvoice_thenFindListWIthOneInvoiceWithTheCustomer(){
+        //First Address for customer
+        Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
+        addressRepository.save(address);
+
+        //Then Customer
+        Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
+        Customer newCustomer = customerRepository.save(customer);
+        //Then Invoice
+        Invoice newInvoice = invoiceRepository.save(invoice);
+        invoiceItem.setInvoice(newInvoice);
+        invoiceItemRepository.save(invoiceItem);
+
+        assertAll(
+            () -> assertNotNull(invoiceRepository.findByIdAndCustomerId(newInvoice.getId(), newCustomer.getId())),
+            () -> assertEquals(Optional.empty(),invoiceRepository.findByIdAndCustomerId(newInvoice.getId(), -100L))
+        );
+
     }
 }

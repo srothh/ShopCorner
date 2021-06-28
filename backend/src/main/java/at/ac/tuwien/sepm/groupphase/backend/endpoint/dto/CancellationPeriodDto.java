@@ -6,7 +6,6 @@ public class CancellationPeriodDto {
     public CancellationPeriodDto() {
     }
 
-    ;
 
     public CancellationPeriodDto(int days) {
         this.days = days;

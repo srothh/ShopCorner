@@ -18,20 +18,20 @@ public class Operator {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank
+    @NotBlank(message = "Name darf nicht leer sein")
     private String name;
 
     @Column(nullable = false, length = 128, unique = true)
-    @NotBlank
+    @NotBlank(message = "Benutzername darf nicht leer sein")
     private String loginName;
 
     @Column(nullable = false, length = 60)
-    @NotBlank
+    @NotBlank(message = "Passwort darf nicht leer sein")
     private String password;
 
     @Column(nullable = false, unique = true)
     @Email
-    @NotBlank
+    @NotBlank(message = "Name darf nicht leer sein")
     private String email;
 
     @Column(nullable = false)

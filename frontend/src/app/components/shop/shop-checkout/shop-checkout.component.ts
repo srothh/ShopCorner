@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Customer} from '../../../dtos/customer';
-import {MeService} from '../../../services/me.service';
-import {CartService} from '../../../services/cart.service';
+import {MeService} from '../../../services/me/me.service';
+import {CartService} from '../../../services/cart/cart.service';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {Product} from '../../../dtos/product';
 import {Invoice} from '../../../dtos/invoice';
@@ -9,13 +9,17 @@ import {InvoiceItem} from '../../../dtos/invoiceItem';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {formatDate} from '@angular/common';
 import {Cart} from '../../../dtos/cart';
-import {OrderService} from '../../../services/order.service';
+import {OrderService} from '../../../services/order/order.service';
 import {Order} from '../../../dtos/order';
 import {Address} from '../../../dtos/address';
-import {PaypalService} from '../../../services/paypal.service';
+import {PaypalService} from '../../../services/paypal/paypal.service';
 import {Router} from '@angular/router';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {PromotionService} from '../../../services/promotion/promotion.service';
+import {Promotion} from '../../../dtos/promotion';
+import {ProductService} from '../../../services/product/product.service';
 
 @Component({
   selector: 'app-shop-checkout',
@@ -23,7 +27,6 @@ import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
   styleUrls: ['./shop-checkout.component.scss']
 })
 export class ShopCheckoutComponent implements OnInit {
-
   customer: Customer = new Customer(0, '', '', '', '', new Address(0, '', 0, '', 0, '')
     , '');
   products: Product[];
@@ -31,12 +34,22 @@ export class ShopCheckoutComponent implements OnInit {
   cart: Cart;
   cancellationPeriod: CancellationPeriod;
   loading: boolean;
+  orderForm: FormGroup;
+  promotion: Promotion = null;
+  promotionError = false;
+  promotionErrorMessage = '';
+  error = false;
+  errorMessage = '';
 
   constructor(private meService: MeService, private cartService: CartService, private cartGlobals: CartGlobals,
-              private orderService: OrderService, private paypalService: PaypalService, private router: Router) {
+              private orderService: OrderService, private paypalService: PaypalService, private router: Router,
+              private formBuilder: FormBuilder, private promotionService: PromotionService) {
   }
 
   ngOnInit(): void {
+    this.orderForm = this.formBuilder.group({
+      promoCode: ['']
+    });
     this.fetchCustomer();
     this.products = this.cartGlobals.getCart();
     this.getCancellationPeriod();
@@ -45,6 +58,14 @@ export class ShopCheckoutComponent implements OnInit {
   getStreetAddress(): string {
     return this.customer.address.street + ' ' + this.customer.address.houseNumber + (this.customer.address.doorNumber
       ? '/' + this.customer.address.doorNumber : '');
+  }
+
+  getTotalPriceWithPromotion() {
+    if (this.promotion) {
+      return this.getTotalPrice() - this.promotion.discount;
+    } else {
+      return this.getTotalPrice();
+    }
   }
 
   getCartSize() {
@@ -75,17 +96,31 @@ export class ShopCheckoutComponent implements OnInit {
     this.cartService.getCart().subscribe((cart: Cart
     ) => {
       this.cart = cart;
+    }, error => {
+      this.error = true;
+      this.errorMessage = error;
     });
   }
+
   proceedToPay() {
-    this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer);
-    this.paypalService.createPayment(order).subscribe((redirectUrl) => {
-      window.location.href = redirectUrl;
-      this.loading = true;
+    const mappedProducts = this.products.map(ProductService.productMapper);
+    mappedProducts.forEach((product) => {
+      if (product.hasExpiration && product.hasExpired) {
+        this.error = true;
+        this.errorMessage = `Das Produkt "${product.name}" ist nicht verfügbar. Bitte setzen Sie ihren Einkauf ohne dieses Produkt fort.`;
+      }
     });
+    if (!this.error) {
+      this.createInvoiceDto();
+      const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
+      this.paypalService.createPayment(order).subscribe((redirectUrl) => {
+        window.location.href = redirectUrl;
+        this.loading = true;
+      });
+    }
   }
-  creatInvoiceDto() {
+
+  createInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
 
@@ -95,10 +130,41 @@ export class ShopCheckoutComponent implements OnInit {
         this.invoiceDto.items.push(invItem);
       }
     }
-    this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
+    this.invoiceDto.amount = +this.getTotalPriceWithPromotion().toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
+  }
+
+  vanishError() {
+    this.error = false;
+  }
+
+  getPromotion() {
+    this.promotionService.getPromotionByCode(this.orderForm.controls.promoCode.value).subscribe((promotion: Promotion) => {
+      if (this.isValidCode(promotion)) {
+        this.promotionError = false;
+        this.promotionErrorMessage = '';
+        this.promotion = promotion;
+      }
+    }, (error) => {
+      this.promotionError = true;
+      this.promotionErrorMessage = error;
+    });
+  }
+
+  private isValidCode(promotion: Promotion) {
+    if (this.getTotalPrice() >= promotion.minimumOrderValue && new Date(Date.now()) <= new Date(promotion.expirationDate)) {
+      return true;
+    } else if (this.getTotalPrice() >= promotion.minimumOrderValue) {
+      this.promotionError = true;
+      this.promotionErrorMessage = 'Gutscheincode abgelaufen!';
+      return false;
+    } else {
+      this.promotionError = true;
+      this.promotionErrorMessage = 'Mindestbestellwert nicht erreicht!!';
+      return false;
+    }
   }
 
   private fetchCustomer() {
@@ -106,6 +172,9 @@ export class ShopCheckoutComponent implements OnInit {
       (customer: Customer) => {
         this.customer = customer;
         this.getCartItems();
+      }, error => {
+        this.error = true;
+        this.errorMessage = error;
       }
     );
   }
@@ -114,9 +183,8 @@ export class ShopCheckoutComponent implements OnInit {
     this.orderService.getCancellationPeriod().subscribe((cancellationPeriod: CancellationPeriod) => {
       this.cancellationPeriod = cancellationPeriod;
     }, (error => {
-      console.log(error);
+      this.error = true;
+      this.errorMessage = error;
     }));
   }
-
-
 }

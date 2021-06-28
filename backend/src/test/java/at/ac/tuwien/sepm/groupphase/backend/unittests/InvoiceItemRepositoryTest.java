@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ActiveProfiles("test")
-public class InvoiceItemRepositoryTest implements TestData {
+class InvoiceItemRepositoryTest implements TestData {
     private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
     private final InvoiceItem invoiceItem = new InvoiceItem();
     private final Invoice invoice = new Invoice();
@@ -54,7 +54,7 @@ public class InvoiceItemRepositoryTest implements TestData {
     private InvoiceItemRepository invoiceItemRepository;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -92,7 +92,7 @@ public class InvoiceItemRepositoryTest implements TestData {
 
 
     @Test
-    public void givenAllProperties_whenSaveInvoiceItem_thenFindListWithOneInvoiceAndFindElementById() {
+    void givenAllProperties_whenSaveInvoiceItem_thenFindListWithOneInvoiceAndFindElementById() {
 
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
         invoiceItemRepository.save(invoiceItem);

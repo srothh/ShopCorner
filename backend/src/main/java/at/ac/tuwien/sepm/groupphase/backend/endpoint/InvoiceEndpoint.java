@@ -1,33 +1,28 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OverviewOperatorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceItemMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.InvoiceMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
-import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
 
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Set;
 
-import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 
-import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 
 
@@ -36,13 +31,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,8 +61,10 @@ public class InvoiceEndpoint {
     private final PdfGeneratorService pdfGeneratorService;
 
     @Autowired
-    public InvoiceEndpoint(InvoiceMapper invoiceMapper, InvoiceItemMapper invoiceItemMapper, InvoiceService invoiceService,
-                           PdfGeneratorService pdfGeneratorService) {
+    public InvoiceEndpoint(InvoiceMapper invoiceMapper,
+                           InvoiceItemMapper invoiceItemMapper,
+                           @Lazy InvoiceService invoiceService,
+                           @Lazy PdfGeneratorService pdfGeneratorService) {
         this.invoiceMapper = invoiceMapper;
         this.invoiceService = invoiceService;
         this.invoiceItemMapper = invoiceItemMapper;
@@ -87,32 +87,47 @@ public class InvoiceEndpoint {
     }
 
     /**
-     * Get overviewing information for all invoices.
+     * Get page with invoices.
      *
-     * @return List with all SimpleInvoices
+     * @param paginationRequestDto information about page
+     * @param invoiceType of invoices that are needed
+     * @return page of SimpleInvoices
      */
-
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Retrieve all invoices", security = @SecurityRequirement(name = "apiKey"))
+    @Operation(summary = "Retrieve all invoices of type for page", security = @SecurityRequirement(name = "apiKey"))
     public PaginationDto<SimpleInvoiceDto> getAllInvoices(@Valid PaginationRequestDto paginationRequestDto, @RequestParam("invoiceType") InvoiceType invoiceType) {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
         LOGGER.info("GET api/v1/invoices?page={}&page_count={}&invoiceType={}", page, pageCount, invoiceType);
-        PaginationDto<SimpleInvoiceDto> dto;
         Page<Invoice> invoicePage = invoiceService.findAll(page, pageCount, invoiceType);
         if (invoiceType == InvoiceType.operator) {
-            dto =
-                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getInvoiceCount());
-        } else {
-            dto =
-                new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
+            return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getInvoiceCount());
+        } else if (invoiceType == InvoiceType.customer) {
+            return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCustomerInvoiceCount());
         }
-        return dto;
-
+        return new PaginationDto<>(invoiceMapper.invoiceToSimpleInvoiceDto(invoicePage.getContent()), page, pageCount, invoicePage.getTotalPages(), invoiceService.getCanceledInvoiceCount());
     }
 
+    /**
+     * Get all invoices in a given time period.
+     *
+     * @param start of time period
+     * @param end of time period
+     * @return List with all Invoices in given time period
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping(value = "/stats")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Retrieve all invoices in time period", security = @SecurityRequirement(name = "apiKey"))
+    public List<SimpleInvoiceDto> getAllByDate(@RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Calendar start,
+                                               @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Calendar end) {
+        LOGGER.info("GET api/v1/invoices/stats?start={}&end={}", start, end);
+        LocalDateTime starting = LocalDateTime.of(start.get(Calendar.YEAR), start.get(Calendar.MONTH) + 1, start.get(Calendar.DATE), 0, 0);
+        LocalDateTime ending = LocalDateTime.of(end.get(Calendar.YEAR), end.get(Calendar.MONTH) + 1, end.get(Calendar.DATE), 23, 59);
+        return invoiceMapper.invoiceToSimpleInvoiceDto(invoiceService.findByDate(starting, ending));
+    }
 
     /**
      * Creates a database entry and generates a pdf.
@@ -131,8 +146,28 @@ public class InvoiceEndpoint {
         invoice.setItems(items);
         Invoice createdInvoice = invoiceService.createInvoice(invoice);
         final byte[] contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoiceService.findOneById(createdInvoice.getId()));
-
         return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.CREATED);
+    }
+
+    /**
+     * Set an invoice to canceled in the database.
+     *
+     * @param invoiceDto changes
+     * @param invoiceId id of the invoice which should be updated in the database
+     * @return DetailedInvoiceDto with the updated invoice
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping(value = "/{id}")
+    @Operation(summary = "create new invoice", security = @SecurityRequirement(name = "apiKey"))
+    public DetailedInvoiceDto setInvoiceCanceled(@Valid @RequestBody DetailedInvoiceDto invoiceDto, @PathVariable("id") Long invoiceId) {
+        LOGGER.info("PATCH /api/v1/invoices/{}: {}", invoiceId, invoiceDto);
+        if (!invoiceDto.getId().equals(invoiceId)) {
+            throw new ServiceException("InvoiceId ungültig");
+        }
+        Invoice canceledInvoice = this.invoiceService.setInvoiceCanceled(this.invoiceService.findOneById(invoiceId));
+        this.pdfGeneratorService.setPdfInvoiceCanceled(canceledInvoice);
+        return this.invoiceMapper.invoiceToDetailedInvoiceDto(canceledInvoice);
     }
 
     /**
@@ -148,21 +183,18 @@ public class InvoiceEndpoint {
     public ResponseEntity<byte[]> getInvoiceAsPdf(@PathVariable Long id) {
         LOGGER.info("GET /api/v1/invoices/{}/pdf", id);
         Invoice invoice = invoiceService.findOneById(id);
-        byte[] contents = null;
+
         if (invoice.getInvoiceType() == InvoiceType.operator) {
-            contents = this.pdfGeneratorService.createPdfInvoiceOperator(invoice);
+            return new ResponseEntity<>(this.pdfGeneratorService.createPdfInvoiceOperator(invoice), this.generateHeader(), HttpStatus.OK);
         } else if (invoice.getInvoiceType() == InvoiceType.customer) {
-            contents = this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice);
+            return new ResponseEntity<>(this.pdfGeneratorService.createPdfInvoiceCustomerFromInvoice(invoice), this.generateHeader(), HttpStatus.OK);
         } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
-            // TODO: createPdfInvoiceCanceled
-        } else {
-            return ResponseEntity.status(402).build();
+            return new ResponseEntity<>(this.pdfGeneratorService.createPdfCanceledInvoiceOperator(invoice), this.generateHeader(), HttpStatus.OK);
         }
+        return ResponseEntity.status(402).build();
 
-        return new ResponseEntity<>(contents, this.generateHeader(), HttpStatus.OK);
+
     }
-
-
 
 
     /**

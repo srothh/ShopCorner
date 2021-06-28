@@ -1,14 +1,17 @@
 <div>
-  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Error! </strong> {{ errorMessage }}
     <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <br>
-  <div [hidden]="form" class="d-flex justify-content-between">
+  <div [hidden]="form" class="d-flex justify-content-between align-items-center">
     <h2>Aktionen</h2>
-    <button type="button" *ngIf="!form && isAdmin()" class="btn btn-primary" (click)="toggleForm()">Aktion erstellen</button>
+    <button type="button" *ngIf="!form && isAdmin()" class="btn btn-primary" (click)="toggleForm()">
+      <fa-icon class="mr-2" [icon]="faPlusCircle"></fa-icon>
+      Aktion erstellen
+    </button>
     <button type="button" *ngIf="form" class="btn btn-primary" (click)="toggleForm()">Zurück</button>
   </div>
 
@@ -59,7 +62,7 @@
 </div>
 <div>
   <div *ngIf="form">
-  <app-operator-promotion-form></app-operator-promotion-form>
+  <app-operator-promotion-form (operatorPromotionFormComponentSuccess)="changeComponent($event)"></app-operator-promotion-form>
   </div>
 </div>
 

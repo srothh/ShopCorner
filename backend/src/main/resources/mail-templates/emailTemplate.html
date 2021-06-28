@@ -25,7 +25,7 @@
 
 </head>
 <body>
-<a href="http://localhost:4200/#/home">ShopCorner</a>
+<a href="http://localhost:4200/#/home"><span th:utext="${shop}"></span></a>
 <a href="http://localhost:4200/#/account/profile"> Mein Konto</a>
 <a href="http://localhost:4200/#/account/orders"> Meine Bestellungen</a>
 <hr/>
@@ -51,6 +51,10 @@ auf unserer <a href="http://localhost:4200/#/home">Website</a>.
         <td>Umsatzsteuer</td>
         <td class="money"><span th:text="${tax}"></span>&euro;</td>
     </tr>
+    <tr th:if="${promotionDiscount != null}">
+        <td>Gutscheincode</td>
+        <td class="money"><span th:text="${promotionDiscount}"></span>&euro;</td>
+    </tr>
     <tr>
         <td>Endbetrag inkl. USt.</td>
         <td class="money"><span th:text="${end}"></span>&euro;</td>
@@ -65,13 +69,10 @@ einsehen.
 <br/>
 Wir freuen uns auf Ihren n&auml;chsten Besuch!
 <br/>
-Ihr <a href="http://localhost:4200/#/home">ShopCorner</a> Team
+Ihr <a href="http://localhost:4200/#/home"><span th:utext="${shop}"></span></a> Team
 <hr/>
 <small>
-    Sie k&ouml;nnen ihr Bestellung innerhalb eines Zeitraums von <i>'Hier Zeitraum noch einf&uuml;ge'</i> unter
-    <a href="http://localhost:4200/#/account/orders">Meine Bestellungen</a> stornieren.
+    <span th:utext="${cancel}"></span>
 </small>
-<br/>
-<img src="cid:logo" alt="shop logo"/>
 </body>
 </html>

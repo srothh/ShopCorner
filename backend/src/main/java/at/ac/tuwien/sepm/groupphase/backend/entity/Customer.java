@@ -20,23 +20,27 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name", nullable = false)
-    @NotBlank
+    @NotBlank(message = "Name darf nicht leer sein")
     private String name;
     @Column(name = "login_name", nullable = false, length = 128, unique = true)
-    @NotBlank
+    @NotBlank(message = "LoginName darf nicht leer sein")
     private String loginName;
     @Column(name = "password", nullable = false, length = 60)
-    @NotBlank
+    @NotBlank(message = "Passwort darf nicht leer sein")
     private String password;
     @Column(name = "email", nullable = false, unique = true)
-    @NotBlank
-    @Email
+    @NotBlank(message = "EMail darf nicht leer sein")
+    @Email(message = "Ungültiges E-Mail-Format")
     private String email;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", nullable = false, referencedColumnName = "id", updatable = false)
     private Address address;
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    private boolean deleted;
+
+
 
     public Customer() {
     }
@@ -114,6 +118,14 @@ public class Customer {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

@@ -6,10 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
-import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceService;
-import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
@@ -65,6 +62,7 @@ public class CustomerEndpoint {
     /**
      * Retrieves a page of customers from the database.
      *
+     * @param paginationRequestDto information about page
      * @return A page of customers
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Route, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {AuthRequest} from '../../../dtos/auth-request';
 import {IAuthService} from '../../../services/auth/interface-auth.service';
 
@@ -56,13 +56,8 @@ export class BaseLoginComponent implements OnInit {
       },
       error => {
         console.log('Could not log in due to:');
-        console.log(error);
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       }
     );
   }

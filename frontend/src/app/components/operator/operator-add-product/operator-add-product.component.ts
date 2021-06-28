@@ -1,13 +1,11 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
 import {Product} from '../../../dtos/product';
 import {Router} from '@angular/router';
 import {TaxRate} from '../../../dtos/tax-rate';
 import {Category} from '../../../dtos/category';
 import {forkJoin} from 'rxjs';
-import {CategoryService} from '../../../services/category.service';
-import {TaxRateService} from '../../../services/tax-rate.service';
-import {ProductService} from '../../../services/product/product.service';
+import {CategoryService} from '../../../services/category/category.service';
+import {TaxRateService} from '../../../services/tax-rate/tax-rate.service';
 
 @Component({
   selector: 'app-operator-add-product',
@@ -15,11 +13,11 @@ import {ProductService} from '../../../services/product/product.service';
   styleUrls: ['./operator-add-product.component.scss']
 })
 export class OperatorAddProductComponent implements OnInit {
-  //properties for the newly to be added product
+  // properties for the newly to be added product
   product: Product;
   categoryId: number;
   taxRateId: number;
-  //properties for drop-down
+  // properties for drop-down
   categories: Category[];
   taxRates: TaxRate[];
   // util properties
@@ -42,15 +40,19 @@ export class OperatorAddProductComponent implements OnInit {
       this.fetchData();
     }
   }
+
   fetchData(): void {
-      forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
-        .subscribe(([categoriesData,taxRatesData]) => {
-          this.categories = categoriesData;
-          this.taxRates = taxRatesData;
-        });
-  }
-  goBackToProductsOverview(){
-    this.router.navigate(['/operator/products']).then();
+    forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
+      .subscribe(([categoriesData, taxRatesData]) => {
+        this.categories = categoriesData;
+        this.taxRates = taxRatesData;
+      }, (error) => {
+        this.errorMessage = error;
+        this.errorOccurred = true;
+      });
   }
 
+  vanishError() {
+    this.errorOccurred = false;
+  }
 }

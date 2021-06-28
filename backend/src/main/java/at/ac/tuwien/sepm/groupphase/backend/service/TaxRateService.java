@@ -14,6 +14,7 @@ public interface TaxRateService {
      * Gets all tax_rates that were previously added in the database.
      *
      * @return all tax_rates that are currently saved in the database.
+     * @throws RuntimeException upon encountering errors with the database
      */
     List<TaxRate> getAllTaxRates();
 
@@ -21,7 +22,6 @@ public interface TaxRateService {
      * Gets a tax-rate specified by the id.
      *
      * @param taxRateId the id of the tax-rate to retrieve the associated entity
-     *
      * @return tax-rate with the given Id
      * @throws NotFoundException is thrown when the id could not be found in the database
      * @throws RuntimeException is thrown when an error occurred during data processing

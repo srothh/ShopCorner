@@ -3,18 +3,15 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.PayPalProperties;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ConfirmedPayment;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ConfirmedPaymentRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.PayPalService;
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Transaction;
 import com.paypal.api.payments.Payment;
-import com.paypal.api.payments.ItemList;
 import com.paypal.api.payments.Payer;
 import com.paypal.api.payments.RedirectUrls;
 import com.paypal.api.payments.Links;
-import com.paypal.api.payments.Item;
 
 import com.paypal.api.payments.PaymentExecution;
 import com.paypal.base.rest.APIContext;
@@ -24,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +31,8 @@ public class PayPalServiceImpl implements PayPalService {
     private final PayPalProperties payPalProperties;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final ConfirmedPaymentRepository confirmedPaymentRepository;
+    private static final String successUrl = "http://localhost:4200/#/order-success";
+    private static final String cancelUrl = "http://localhost:4200/#/checkout";
 
     @Autowired
     public PayPalServiceImpl(PayPalProperties payPalProperties, ConfirmedPaymentRepository confirmedPaymentRepository) {
@@ -67,8 +65,12 @@ public class PayPalServiceImpl implements PayPalService {
         payment.setTransactions(transactions);
 
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:4200/#/checkout");
-        redirectUrls.setReturnUrl("http://localhost:4200/#/order-success");
+        redirectUrls.setCancelUrl(cancelUrl);
+        if (order.getPromotion() != null) {
+            redirectUrls.setReturnUrl(successUrl + "?promotion=" + order.getPromotion().getCode());
+        } else {
+            redirectUrls.setReturnUrl(successUrl);
+        }
 
         payment.setRedirectUrls(redirectUrls);
 

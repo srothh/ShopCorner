@@ -43,7 +43,7 @@ public class CustomerJwtAuthenticationFilter extends UsernamePasswordAuthenticat
                 user.getLoginName(),
                 user.getPassword()));
         } catch (IOException e) {
-            throw new BadCredentialsException("Wrong API request or JSON schema", e);
+            throw new BadCredentialsException("Falscher API Request oder JSON-Schema");
         }
     }
 
@@ -52,7 +52,7 @@ public class CustomerJwtAuthenticationFilter extends UsernamePasswordAuthenticat
                                               HttpServletResponse response,
                                               AuthenticationException failed) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(failed.getMessage());
+        response.getWriter().write("Falsche Anmeldedaten.");
         LOGGER.debug("Invalid authentication attempt: {}", failed.getMessage());
     }
 

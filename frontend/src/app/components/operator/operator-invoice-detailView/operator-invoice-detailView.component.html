@@ -1,35 +1,62 @@
-<div class="row" *ngIf="customerExists">
-  <div class="col-sm-1">
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="row" *ngIf="orderExists">
+  <div class="col-sm-2 font-weight-bolder">
     Kunde:
   </div>
-  <div class="col-sm">
+  <div class="col-sm-2">
     {{customer.name}}
   </div>
-  <div class="col-sm-1">
+  <div class="col-sm-1 font-weight-bolder">
     Adresse:
   </div>
-  <div class="col-sm">
-    {{customer.address.postalCode + ' ' + customer.address.street + ' ' + customer.address.houseNumber}}
+  <div class="col-sm-2">
+    {{address}}
+  </div>
+  <div class="col-sm-2 font-weight-bolder">
+    Bestellnummer:
+  </div>
+  <div class="col-sm-1">
+    {{detailedInvoice.orderNumber}}
   </div>
 </div>
 <div class="row">
-  <div class="col-sm-2">
+  <div class="col-sm-2 font-weight-bolder">
     Rechnungsnummer:
   </div>
   <div class="col-sm-2">
     {{detailedInvoice.invoiceNumber}}
   </div>
-  <div class="col-sm-1">
+  <div class="col-sm-1 font-weight-bolder">
     Datum:
   </div>
-  <div class="col-sm-4">
+  <div class="col-sm-2">
     {{detailedInvoice.date.split("T", 1)}}
   </div>
-  <div class="col-sm-1">
+  <div class="col-sm-2 font-weight-bolder">
     Betrag:
   </div>
-  <div class="col-sm-1">
+  <div class="col-sm-2">
     {{detailedInvoice.amount.toFixed(2)}} €
+  </div>
+</div>
+<div class="row" *ngIf="orderExists&&promotionExists">
+  <div class="col-sm-1 font-weight-bolder">
+    Aktion:
+  </div>
+  <div class="col-sm-3">
+    {{promotion.name}}
+  </div>
+  <div class="col-sm-1 font-weight-bolder">
+    Rabatt:
+  </div>
+  <div class="col-sm-1">
+    {{promotion.discount + ' €'}}
   </div>
 </div>
 <div class="row">
@@ -74,7 +101,4 @@
     <button class="btn btn-block btn-primary" type="submit" (click)="onSubmit('show')"> PDF öffnen</button>
   </div>
 </div>
-
-
-
 

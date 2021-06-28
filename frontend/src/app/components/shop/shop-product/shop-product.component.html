@@ -21,11 +21,16 @@
       <app-base-product-search-bar (errorOccurred)="error = $event.error; errorMessage = $event.errorMessage"
                                    (resetAndFetchProducts)="resetAndFetchProducts($event)"></app-base-product-search-bar>
     </div>
+
     <div class="row" *ngIf="pageableProducts.collectionSize > 0 else no_products">
       <div class="col-md-4 col-sm-12 col-lg-4 col-xl-2"
            *ngFor="let product of getPaginatedProducts(); let index = index;">
-        <app-base-shop-product-item [product]="product"
-                                    (click)="goToProductDetails(product.id, index)"></app-base-shop-product-item>
+        <div class="card-height mb-5" data-aos="fade" data-aos-once="true" data-aos-delay="200">
+          <app-base-shop-product-item
+            [product]="product"
+            (click)="goToProductDetails(product.id, index)">
+          </app-base-shop-product-item>
+        </div>
       </div>
     </div>
     <ng-template #no_products>

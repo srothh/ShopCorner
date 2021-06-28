@@ -17,12 +17,18 @@ export class ProductService {
   }
 
   static productMapper(p: Product) {
-    return new Product(p.id, p.name, p.description, p.price, p.category, p.taxRate, p.locked, p.picture, p.expiresAt, p.deleted);
+    return new Product(p.id, p.name, p.description, p.price, p.category, p.taxRate, p.locked, p.picture,
+      p.expiresAt, p.deleted, p.saleCount);
   }
 
   /**
-   * Get page of products from the backend
+   * Get page with products from backend.
    *
+   * @param page that should be gotten
+   * @param pageCount amount of products per page
+   * @param name searched for
+   * @param sortBy what should be sorted after
+   * @param categoryId id of category that should be filtered by
    * @return observable of type Pagination<Product>
    */
   getProducts(page = 0, pageCount = 15, name = '', sortBy = 'id', categoryId = -1): Observable<Pagination<Product>> {
@@ -42,8 +48,22 @@ export class ProductService {
   }
 
   /**
+   * Get list of all products of category
+   *
+   * @param categoryId id of category that should be searched for
+   * @return List of all searched for products
+   */
+  getProductsByCategory(categoryId = -1): Observable<Product[]> {
+    console.log('getProductsByCategory({})', categoryId);
+    const params = new HttpParams()
+      .set(this.globals.requestParamKeys.products.categoryId, String(categoryId));
+    return this.httpClient.get<Product[]>(this.productBaseUri + '/stats', {params, headers: this.getHeadersForOperator()});
+  }
+
+  /**
    * Loads a product with the given Id, if it's present in the backend
    *
+   * @param id of product
    * @return observable of type Product
    */
   getProductById(id: number): Observable<Product> {
@@ -56,6 +76,7 @@ export class ProductService {
    * Adds a new Product in the backend and assigns relationship to category with the given categoryId
    * and the taxRateId
    *
+   * @param product that should be added
    * @return observable of type Product
    */
   addProduct(product: Product): Observable<Product> {
@@ -68,6 +89,8 @@ export class ProductService {
    * updates an existing product in the backend and assigns relationship to a category with the given categoryId
    * and the tax-rate with the given taxRateId
    *
+   * @param productId of product that should be updated
+   * @param product updates
    * @return observable of type voice
    */
   updateProduct(productId: number, product: Product): Observable<void> {
@@ -79,6 +102,7 @@ export class ProductService {
   /**
    * deletes a specific product with the given Id
    *
+   * @param productId of product that should be deleted
    * @return observable of type void
    */
   deleteProduct(productId: number): Observable<void> {

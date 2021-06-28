@@ -8,20 +8,20 @@ import java.time.LocalDateTime;
 public class PromotionDto {
 
     private Long id;
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Name darf nicht null sein")
+    @NotBlank(message = "Name darf nicht leer sein")
     private String name;
-    @NotNull
-    @Min(0)
+    @NotNull(message = "Rabatt darf nicht null sein")
+    @Min(value = 0, message = "Rabatt muss mindestens 0€ betragen")
     private double discount;
     private LocalDateTime creationDate;
-    @NotNull
+    @NotNull(message = "Ablaufdatum darf nicht null sein")
     private LocalDateTime expirationDate;
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Code darf nicht null sein")
+    @NotBlank(message = "Codae darf nicht leer sein")
     private String code;
-    @NotNull
-    @Min(0)
+    @NotNull(message = "Mindestbestellwert darf nicht null sein")
+    @Min(value = 0, message = "Mindestbestellwert muss mindestens 0€ betragen")
     private double minimumOrderValue;
 
     public PromotionDto() {
@@ -36,6 +36,7 @@ public class PromotionDto {
         this.code = code;
         this.minimumOrderValue = minimumOrderValue;
     }
+
 
     public Long getId() {
         return id;

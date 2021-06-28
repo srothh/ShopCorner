@@ -9,10 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -26,7 +24,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "SessionId darf nicht null sein")
     @Column(nullable = false, unique = true)
     private UUID sessionId;
 
@@ -34,8 +32,8 @@ public class Cart {
     @JoinColumn(name = "cart_id")
     private Set<CartItem> items = new HashSet<>();
 
-    @NotNull
-    LocalDateTime createdAt;
+    @NotNull(message = "Erzeugungsdatum darf nicht null sein")
+    private LocalDateTime createdAt;
 
     public Cart() {
     }
@@ -51,7 +49,6 @@ public class Cart {
         this.items = items;
         this.createdAt = createdAt;
     }
-
 
 
     public Long getId() {

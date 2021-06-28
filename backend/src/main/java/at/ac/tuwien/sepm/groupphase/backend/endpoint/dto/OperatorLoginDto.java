@@ -5,10 +5,10 @@ import java.util.Objects;
 
 public class OperatorLoginDto {
 
-    @NotNull(message = "Login name must not be null")
+    @NotNull(message = "LoginName darf nicht null sein")
     private String loginName;
 
-    @NotNull(message = "Password must not be null")
+    @NotNull(message = "Passwort darf nicht null sein")
     private String password;
 
 

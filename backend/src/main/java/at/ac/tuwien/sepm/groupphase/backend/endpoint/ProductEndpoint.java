@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductSearchDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,7 +68,7 @@ public class ProductEndpoint {
      *
      * @param paginationRequestDto describes the pagination request
      * @param productSearchDto describes the product search request
-     * @return all products with all given fields in a dto - format and paginated specified by page and pageCount
+     * @return page with all products with all given fields in a dto - format and paginated specified by page and pageCount
      */
     @PermitAll
     @GetMapping
@@ -89,7 +88,7 @@ public class ProductEndpoint {
         return new PaginationDto<>(productPage.getContent()
             .stream()
             .map(this.productMapper::entityToDto)
-            .filter(productDto -> !productDto.isDeleted())
+
             .collect(Collectors.toList()), page, pageCount, productPage.getTotalPages(), productCount);
     }
 
@@ -110,7 +109,27 @@ public class ProductEndpoint {
         return this.productService.getAllProducts()
             .stream()
             .map(this.productMapper::simpleProductEntityToDto)
-            .filter(productDto -> !productDto.isDeleted())
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets all simple products from the database by category, which omits some fields like picture and category.
+     *
+     * @param categoryId of category that should be searched for
+     * @return all simple products ( product without picture,category) in a dto - format NOT PAGINATED
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping("/stats")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(
+        summary = "Returns all products that are currently stored in the database without picture and category",
+        security = @SecurityRequirement(name = "apiKey")
+    )
+    public List<SimpleProductDto> getAllSimpleProductsByCategory(@RequestParam long categoryId) {
+        LOGGER.info("GET" + BASE_URL + "/stats?category={}", categoryId);
+        return this.productService.getAllProductsByCategory(categoryId)
+            .stream()
+            .map(this.productMapper::simpleProductEntityToDto)
             .collect(Collectors.toList());
     }
 

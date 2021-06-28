@@ -8,6 +8,8 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
+import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
+import at.ac.tuwien.sepm.groupphase.backend.util.CustomerSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,15 +38,22 @@ public class CustomerServiceImpl implements CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final AddressService addressService;
+    private final OrderService orderService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final Validator validator;
 
     @Autowired
-    public CustomerServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository, AddressRepository addressRepository, AddressService addressService, Validator validator) {
+    public CustomerServiceImpl(PasswordEncoder passwordEncoder,
+                               CustomerRepository customerRepository,
+                               AddressRepository addressRepository,
+                               AddressService addressService,
+                               Validator validator,
+                               OrderService orderService) {
         this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository;
         this.addressService = addressService;
         this.validator = validator;
+        this.orderService = orderService;
     }
 
     @Override
@@ -63,10 +72,10 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findCustomerByLoginName(String loginName) {
         LOGGER.trace("findCustomerByLoginName({})", loginName);
         Customer customer = customerRepository.findByLoginName(loginName);
-        if (customer != null) {
+        if (customer != null && !customer.isDeleted()) {
             return customer;
         }
-        throw new NotFoundException(String.format("Could not find the customer with the login name %s", loginName));
+        throw new NotFoundException(String.format("User mit dem Namen %s konnte nicht gefunden werden", loginName));
     }
 
     @Caching(evict = {
@@ -76,8 +85,17 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteCustomerByLoginName(String loginName) {
         LOGGER.trace("deleteCustomerByLoginName({})", loginName);
+        boolean softDelete;
         Customer customer = customerRepository.findByLoginName(loginName);
-        customerRepository.delete(customer);
+        softDelete = this.orderService.findAllOrders()
+            .stream()
+            .anyMatch(order -> order.getCustomer().getId().equals(customer.getId()));
+        if (!softDelete) {
+            customerRepository.delete(customer);
+        } else {
+            customer.setDeleted(true);
+            customerRepository.save(customer);
+        }
     }
 
     @Transactional
@@ -105,7 +123,7 @@ public class CustomerServiceImpl implements CustomerService {
         LOGGER.trace("update({})", customer);
         validator.validateUpdatedCustomer(customer, customerRepository);
         Customer c = customerRepository.findById(customer.getId())
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", customer.getId())));
+            .orElseThrow(() -> new NotFoundException(String.format("Kunde mit id %d konnte nicht gefunden werden", customer.getId())));
 
         if (!customer.getAddress().equals(c.getAddress())) {
             Address address = addressService.addNewAddress(customer.getAddress());
@@ -124,13 +142,13 @@ public class CustomerServiceImpl implements CustomerService {
     public void updatePassword(Long id, String oldPassword, String newPassword) {
         LOGGER.trace("updatePassword({})", id);
         Customer customer = customerRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find the customer with the id %d", id)));
+            .orElseThrow(() -> new NotFoundException(String.format("Kunde mit id %d konnte nicht gefunden werden", id)));
 
         if (passwordEncoder.matches(oldPassword, customer.getPassword())) {
             customer.setPassword(passwordEncoder.encode(newPassword));
             customerRepository.save(customer);
         } else {
-            throw new ValidationException("Password could not be updated");
+            throw new ValidationException("Das alte Passwort ist inkorrekt.");
         }
     }
 
@@ -145,7 +163,7 @@ public class CustomerServiceImpl implements CustomerService {
             pageCount = 50;
         }
         Pageable returnPage = PageRequest.of(page, pageCount);
-        return customerRepository.findAll(returnPage);
+        return customerRepository.findAll(CustomerSpecifications.hasDeleted(false), returnPage);
     }
 
     @CacheEvict(value = "customerPages", allEntries = true)
@@ -159,25 +177,19 @@ public class CustomerServiceImpl implements CustomerService {
     @Cacheable(value = "counts", key = "'customers'")
     @Override
     public long getCustomerCount() {
-        return customerRepository.count();
+        return customerRepository.count(CustomerSpecifications.hasDeleted(false));
     }
 
 
     @Override
     public List<Customer> findAll() {
         LOGGER.trace("findAll()");
-        return customerRepository.findAll();
+        return customerRepository.findAll(CustomerSpecifications.hasDeleted(false));
     }
 
     @Override
     public Customer findCustomerById(Long id) {
-        LOGGER.trace("findAll()");
-        return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find Customer"));
+        LOGGER.trace("findCustomerById({})", id);
+        return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Kunde konnte nicht gefunden werden"));
     }
-
-    @Override
-    public Long getCountByCategory(Pageable page, Long category) {
-        return null;
-    }
-
 }

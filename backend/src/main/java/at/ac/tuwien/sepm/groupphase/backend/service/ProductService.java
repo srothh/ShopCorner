@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -29,6 +28,7 @@ public interface ProductService {
      * @param categoryId the category id, which a product contains
      * @param name the name of the product
      * @return all products that are currently saved in the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     Page<Product> getAllProductsPerPage(int page, int pageCount, Long categoryId, String sortBy, String name);
 
@@ -36,6 +36,7 @@ public interface ProductService {
      * Gets all products  that were previously added in the database.
      *
      * @return all products that are currently saved in the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     List<Product> getAllProducts();
 
@@ -58,15 +59,6 @@ public interface ProductService {
      */
     Product findById(Long productId);
 
-
-    /**
-     * Retrieve the number of all added products.
-     *
-     * @return retrieves the number of all added products
-     * @throws RuntimeException occurs during database operations
-     */
-    Long getProductsCount();
-
     /**
      * Deletes a specific product with the given productId.
      *
@@ -76,15 +68,6 @@ public interface ProductService {
     void deleteProductById(Long productId);
 
     /**
-     * Deletes a specific product with the given productId.
-     *
-     * @param page the page to fetch the count of
-     * @param category the category the page is assigned to
-     * @throws RuntimeException occurs during database operations
-     */
-    Long getCountByCategory(Page page, Long category);
-
-    /**
      * Gets all products that are associated to a specific category.
      *
      * @param categoryId the id to search in the database
@@ -92,6 +75,4 @@ public interface ProductService {
      * @throws RuntimeException occurs during database operations
      */
     List<Product> getAllProductsByCategory(Long categoryId);
-
-
 }

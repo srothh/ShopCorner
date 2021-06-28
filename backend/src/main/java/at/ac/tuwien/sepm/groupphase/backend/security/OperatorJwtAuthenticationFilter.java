@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.security;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CustomerLoginDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OperatorLoginDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -44,7 +43,7 @@ public class OperatorJwtAuthenticationFilter extends UsernamePasswordAuthenticat
                 user.getLoginName(),
                 user.getPassword()));
         } catch (IOException e) {
-            throw new BadCredentialsException("Wrong API request or JSON schema", e);
+            throw new BadCredentialsException("Falscher API Request oder JSON-Schema", e);
         }
     }
 

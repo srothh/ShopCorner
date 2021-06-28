@@ -3,12 +3,9 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CategoryMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.service.CategoryService;
-import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
@@ -17,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,9 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
@@ -54,7 +48,6 @@ public class CategoryEndpoint {
      * Creates a new category in the database.
      *
      * @param categoryDto the category as a dto which contains the given fields to store
-     *
      * @return the newly added category in a dto - format
      */
     @Secured("ROLE_ADMIN")
@@ -71,7 +64,6 @@ public class CategoryEndpoint {
      * Gets all categories that are currently saved in the database in a paginated manner specified by the current page and the pageCount.
      *
      * @param paginationRequestDto describes the pagination request
-     *
      * @return all categories specified by the current page and the pageCount
      */
     @PermitAll
@@ -83,7 +75,7 @@ public class CategoryEndpoint {
         int page = paginationRequestDto.getPage();
         int pageCount = paginationRequestDto.getPageCount();
         Page<Category> categoryPage = this.categoryService.getAllCategoriesPerPage(page, pageCount);
-        return new PaginationDto<CategoryDto>(categoryPage.getContent()
+        return new PaginationDto<>(categoryPage.getContent()
             .stream()
             .map(this.categoryMapper::entityToDto)
             .collect(Collectors.toList()), page, pageCount, categoryPage.getTotalPages(), categoryService.getCategoriesCount());
@@ -92,9 +84,8 @@ public class CategoryEndpoint {
     /**
      * Gets all the categories that were previously saved.
      *
-     * @return all categories that were previously added
-     *
-     * */
+     * @return list of all categories that were previously added
+     */
     @PermitAll
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
@@ -140,9 +131,7 @@ public class CategoryEndpoint {
      * Gets a specific category with the given id.
      *
      * @param categoryId the id of the category to retrieve from the database
-     *
      * @return the requested category with the given id
-     *
      */
     @PermitAll
     @GetMapping("/{categoryId}")

@@ -6,21 +6,29 @@ import {catchError} from 'rxjs/operators';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
+
+  constructor() {
+  }
+
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error) => {
+        console.log(error);
         if (error instanceof HttpErrorResponse) {
-          if(error.status === 0){
-            return throwError('backend unreachable');
-          }else if(error.status === 400){
-            let message = error.error.replace(/[a-zA-Z]*\.[a-zA-Z]*\s/, ' ');
-            message = message.replace(/{Validation errors=\[/, '');
-            message = message.slice(0, -2);
-            return throwError(message
-            );
-          }else{
-            return throwError(error.error
-            );
+          switch (error.status) {
+            case 0:
+              return throwError('Backend nicht erreichbar');
+            case 400:
+              let message = error.error.replace(/[a-zA-Z]*\.[a-zA-Z]*\s/, ' ');
+              message = message.replace(/{Validation errors=\[/, '');
+              message = message.slice(0, -2);
+              return throwError(message);
+            case 404:
+              return throwError(error.error);
+            case 500:
+              return throwError('Serverprobleme');
+            default:
+              return throwError(error.error);
           }
 
         }

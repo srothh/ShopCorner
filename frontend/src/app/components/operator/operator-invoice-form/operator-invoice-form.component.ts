@@ -2,13 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {Product} from '../../../dtos/product';
 import {Invoice} from '../../../dtos/invoice';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {InvoiceService} from '../../../services/invoice.service';
+import {InvoiceService} from '../../../services/invoice/invoice.service';
 
 import {formatDate} from '@angular/common';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {InvoiceItem} from '../../../dtos/invoiceItem';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
-
+import {faPlusCircle, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-invoice-form',
@@ -16,9 +16,6 @@ import {InvoiceType} from '../../../dtos/invoiceType.enum';
   styleUrls: ['./operator-invoice-form.component.scss']
 })
 export class OperatorInvoiceFormComponent implements OnInit {
-
-  shopName = 'shopCorner';
-
   newInvoiceForm: FormGroup;
   submitted = false;
   error = false;
@@ -33,6 +30,8 @@ export class OperatorInvoiceFormComponent implements OnInit {
   tax = 0;
   download = false;
   show = false;
+  faPlusCircle = faPlusCircle;
+  faMinusCircle = faMinusCircle;
 
   constructor(private invoiceService: InvoiceService, private formBuilder: FormBuilder) {
   }
@@ -129,7 +128,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
     this.invoiceDto.amount = +this.total.toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.invoiceType = InvoiceType.operator;
-    console.log(this.invoiceDto);
   }
 
 

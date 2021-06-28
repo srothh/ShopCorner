@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -17,6 +19,7 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name", nullable = false)
+    @Size(max = 256, message = "Name darf nicht länger als 256 Zeichen sein")
     private String name;
     @Column(name = "discount", nullable = false)
     private double discount;
@@ -26,6 +29,7 @@ public class Promotion {
     @Column(name = "expirationDate", nullable = false)
     private LocalDateTime expirationDate;
     @Column(name = "code", nullable = false, unique = true)
+    @Size(max = 64, message = "Code darf nicht länger als 64 Zeichen sein")
     private String code;
     @Column(name = "minimumOrderValue")
     private double minimumOrderValue;

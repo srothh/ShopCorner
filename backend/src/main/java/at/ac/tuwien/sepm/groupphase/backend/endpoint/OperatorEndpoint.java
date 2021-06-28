@@ -12,7 +12,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
 import at.ac.tuwien.sepm.groupphase.backend.service.OperatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,7 +38,6 @@ import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.security.Principal;
 import java.util.Collection;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(OperatorEndpoint.BASE_URL)
@@ -63,7 +59,7 @@ public class OperatorEndpoint {
      *
      * @param paginationRequestDto describes the pagination request
      * @param permissions of needed operators
-     * @return List with all needed operators
+     * @return page with all needed operators
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
@@ -75,7 +71,7 @@ public class OperatorEndpoint {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.toString().equals("[ROLE_EMPLOYEE]") && permissions == Permissions.admin) {
-            throw new AccessDeniedException("Employee can not access admins");
+            throw new AccessDeniedException("Mitarbeiter können nicht auf Admins zugreifen");
         }
         PaginationDto<OverviewOperatorDto> dto;
         Page<Operator> operatorPage = operatorService.findAll(page, pageCount, permissions);
@@ -125,11 +121,12 @@ public class OperatorEndpoint {
 
     }
 
-
     /**
      * Update an already existing operator.
      *
+     * @param id of operator that should be updated
      * @param operatorDto operator to be updated
+     * @param principal the currently logged in user
      * @return updated operator
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
@@ -147,13 +144,14 @@ public class OperatorEndpoint {
             return result;
         }
 
-        throw new AccessDeniedException("Illegal access");
+        throw new AccessDeniedException("Unberechtigter Zugriff");
     }
 
     /**
      * Update the password of an existing operator.
      *
      * @param updatePasswordDto the old and new password
+     * @param principal the currently logged in user
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @PostMapping("/password")
@@ -170,6 +168,7 @@ public class OperatorEndpoint {
      * Deletes the operator with the given id.
      *
      * @param id of the operator to be deleted
+     * @param principal the currently logged in user
      */
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping(value = "/{id}")
@@ -178,7 +177,7 @@ public class OperatorEndpoint {
         LOGGER.info("DELETE " + BASE_URL + "/{}", id);
 
         if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id)) {
-            throw new AccessDeniedException("Admins cannot delete their own accounts");
+            throw new AccessDeniedException("Admins können nicht das eigene Konto löschen");
         }
         operatorService.delete(id);
 
@@ -189,6 +188,7 @@ public class OperatorEndpoint {
      *
      * @param id of operator that needs new permissions
      * @param operatorPermissionChangeDto Dto with permission that should be updated
+     * @param principal the currently logged in user
      */
     @Secured({"ROLE_ADMIN"})
     @PatchMapping(value = "/{id}")
@@ -197,7 +197,7 @@ public class OperatorEndpoint {
         LOGGER.info("PATCH " + BASE_URL + "/{}: {}", id, operatorPermissionChangeDto);
 
         if (operatorService.findOperatorByLoginName(principal.getName()).getId().equals(id)) {
-            throw new AccessDeniedException("Admins cannot change their own permissions");
+            throw new AccessDeniedException("Admins können nicht das eigene Berechtigungslevel ändern");
         }
         operatorService.changePermissions(id, operatorPermissionChangeDto.getPermissions());
     }

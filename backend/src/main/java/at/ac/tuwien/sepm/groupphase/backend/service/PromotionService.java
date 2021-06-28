@@ -21,7 +21,7 @@ public interface PromotionService {
     /**
      * Returns a page of promotions from the database.
      *
-     * @param page      the page number to retrieve from the database
+     * @param page the page number to retrieve from the database
      * @param pageCount the size of the page
      * @return the page as retrieved from the database
      * @throws RuntimeException upon encountering errors with the database
@@ -43,4 +43,13 @@ public interface PromotionService {
      * @throws RuntimeException upon encountering errors with the database
      */
     List<Promotion> findAll();
+
+    /**
+     * Finds a promotion based on its code.
+     *
+     * @param code the code of the promotion
+     * @return the promotion as found in the datastore
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    Promotion findPromotionByCode(String code);
 }

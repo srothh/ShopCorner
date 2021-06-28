@@ -1,8 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Invoice} from '../../../dtos/invoice';
-import {InvoiceService} from '../../../services/invoice.service';
+import {InvoiceService} from '../../../services/invoice/invoice.service';
 import {Pagination} from '../../../dtos/pagination';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
+import {NgdbModalActionComponent} from '../../common/ngbd-modal-action/ngdb-modal-action.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-invoice',
@@ -21,8 +24,12 @@ export class OperatorInvoiceComponent implements OnInit {
   errorMessage = '';
   detailViewInvoice: Invoice;
   invoiceType = InvoiceType.operator;
+  onCanceledWindow = false;
 
-  constructor(private invoiceService: InvoiceService) {
+  faPlusCircle = faPlusCircle;
+
+  constructor(private invoiceService: InvoiceService,
+              private modalService: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -36,6 +43,10 @@ export class OperatorInvoiceComponent implements OnInit {
       this.toggleForm = false;
     }
     this.toggleDetailView = false;
+  }
+
+  vanishError() {
+    this.error = false;
   }
 
   /**
@@ -69,21 +80,88 @@ export class OperatorInvoiceComponent implements OnInit {
     this.detailViewInvoice = invoice;
   }
 
+  isCanceled(invoice: Invoice) {
+    if (this.onCanceledWindow) {
+      return false;
+    }
+    if (invoice !== undefined) {
+      return invoice.invoiceType === InvoiceType.canceled;
+    }
+    return false;
+  }
+  isDetailedInvoiceCanceled() {
+    if (this.detailViewInvoice !== undefined) {
+      return this.detailViewInvoice.invoiceType === InvoiceType.canceled;
+    }
+    return false;
+  }
+  canceledInvoice() {
+    this.invoiceService.setInvoiceCanceled(this.detailViewInvoice).subscribe(() => {
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
+    });
+    this.loadInvoicesForPage();
+    this.toggleSide();
+    this.showAll();
+  }
 
   showAll() {
     this.invoiceType = InvoiceType.operator;
     this.invoices = [];
+    this.resetPage();
     this.loadInvoicesForPage();
+    this.onCanceledWindow = false;
   }
 
   showCustomer() {
     this.invoiceType = InvoiceType.customer;
     this.invoices = [];
+    this.resetPage();
     this.loadInvoicesForPage();
+    this.onCanceledWindow = false;
+
   }
 
   showCanceled() {
-    console.log('TODO');
+    this.invoiceType = InvoiceType.canceled;
+    this.invoices = [];
+    this.resetPage();
+    this.loadInvoicesForPage();
+    this.onCanceledWindow = true;
+  }
+
+  resetPage() {
+    this.page = 0;
+    this.pageSize = 15;
+    this.collectionSize = 0;
+  }
+
+  showToolTip(invoice: Invoice) {
+    let toolTipText = '';
+    switch (invoice.invoiceType) {
+      case InvoiceType.canceled:
+        toolTipText = 'Stronierte Rechnung';
+        break;
+      case InvoiceType.customer:
+        toolTipText = 'Kunden Rechnung';
+        break;
+      case InvoiceType.operator:
+        toolTipText = 'Im Geschäft erstellte Rechnung';
+        break;
+    }
+    return toolTipText;
+  }
+
+  attemptToCancelInvoiceModal() {
+    const modalRef = this.modalService.open(NgdbModalActionComponent);
+    modalRef.componentInstance.title = 'Stornieren';
+    modalRef.componentInstance.body = 'Wollen Sie die Rechnung unwiderruflich storinieren?';
+    modalRef.componentInstance.actionButtonTitle = 'Stornieren';
+    modalRef.componentInstance.actionButtonStyle = 'danger';
+    modalRef.componentInstance.action = () => {
+      this.canceledInvoice();
+    };
   }
 
   /**
@@ -93,11 +171,12 @@ export class OperatorInvoiceComponent implements OnInit {
     this.invoiceService.getAllInvoicesForPage(this.page, this.pageSize, this.invoiceType).subscribe(
       (paginationDto: Pagination<Invoice>) => {
         this.invoices = paginationDto.items;
+        this.pageSize = paginationDto.pageSize;
         this.collectionSize = paginationDto.totalItemCount;
       },
       error => {
         this.error = true;
-        this.errorMessage = error.error;
+        this.errorMessage = error;
       }
     );
   }

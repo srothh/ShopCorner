@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
-import {OperatorService} from '../../../services/operator.service';
+import {OperatorService} from '../../../services/operator/operator.service';
 import {Permissions} from '../../../dtos/permissions.enum';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {Pagination} from '../../../dtos/pagination';
 import {Router} from '@angular/router';
+import {faMinusCircle, faPlusCircle, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-accounts',
@@ -12,7 +13,6 @@ import {Router} from '@angular/router';
   styleUrls: ['./operator-account.component.scss']
 })
 export class OperatorAccountComponent implements OnInit {
-
   error = false;
   errorMessage = '';
   operators: Operator[];
@@ -23,6 +23,9 @@ export class OperatorAccountComponent implements OnInit {
   collectionSizeAdmin = 0;
   collectionSizeEmployee = 0;
   permissions = Permissions.admin;
+  faMinusCircle = faMinusCircle;
+  faPlusCircle = faPlusCircle;
+  faExclamationTriangle = faExclamationTriangle;
 
   constructor(private authService: OperatorAuthService,
               private operatorService: OperatorService,
@@ -79,7 +82,7 @@ export class OperatorAccountComponent implements OnInit {
    * goes to next page if not on the last page
    */
   nextPage() {
-    if ((this.page+1)*this.pageSize<this.currentCollectionSize){
+    if ((this.page + 1) * this.pageSize < this.currentCollectionSize) {
       this.page += 1;
       this.loadOperatorsPage();
     }
@@ -89,7 +92,7 @@ export class OperatorAccountComponent implements OnInit {
    * goes to previous page if not on the first page
    */
   previousPage() {
-    if (this.page>0){
+    if (this.page > 0) {
       this.page -= 1;
       this.loadOperatorsPage();
     }
@@ -101,7 +104,7 @@ export class OperatorAccountComponent implements OnInit {
    * @param operator that should be selescted or deselected
    */
   selectOperator(operator: Operator) {
-    if(this.getPermission() === 'ADMIN') {
+    if (this.getPermission() === 'ADMIN') {
       if (this.selected.includes(operator)) {
         const index = this.selected.indexOf(operator, 0);
         this.selected.splice(index, 1);
@@ -118,14 +121,14 @@ export class OperatorAccountComponent implements OnInit {
     for (const operator of this.selected) {
       this.operatorService.deleteOperator(operator.id).subscribe(
         () => {
-          if (this.selected.indexOf(operator) === this.selected.length-1) {
-            if ((this.page+1)*this.pageSize >= this.currentCollectionSize && this.operators.length === this.selected.length
-              && this.page > 0){
+          if (this.selected.indexOf(operator) === this.selected.length - 1) {
+            if ((this.page + 1) * this.pageSize >= this.currentCollectionSize && this.operators.length === this.selected.length
+              && this.page > 0) {
               this.previousPage();
             } else {
               this.loadOperatorsPage();
             }
-            if(operator.permissions === Permissions.employee) {
+            if (operator.permissions === Permissions.employee) {
               this.collectionSizeEmployee -= this.selected.length;
               this.currentCollectionSize = this.collectionSizeEmployee;
               this.selected = [];
@@ -138,7 +141,7 @@ export class OperatorAccountComponent implements OnInit {
         },
         error => {
           this.error = true;
-          this.errorMessage = error.error;
+          this.errorMessage = error;
         }
       );
     }
@@ -151,14 +154,14 @@ export class OperatorAccountComponent implements OnInit {
     for (const operator of this.selected) {
       this.operatorService.changePermissions(operator).subscribe(
         () => {
-          if (this.selected.indexOf(operator) === this.selected.length-1) {
-            if ((this.page+1)*this.pageSize >= this.currentCollectionSize && this.operators.length === this.selected.length
-              && this.page > 0){
+          if (this.selected.indexOf(operator) === this.selected.length - 1) {
+            if ((this.page + 1) * this.pageSize >= this.currentCollectionSize && this.operators.length === this.selected.length
+              && this.page > 0) {
               this.previousPage();
             } else {
               this.loadOperatorsPage();
             }
-            if(operator.permissions === Permissions.employee) {
+            if (operator.permissions === Permissions.employee) {
               this.collectionSizeEmployee -= this.selected.length;
               this.currentCollectionSize = this.collectionSizeEmployee;
               this.selected = [];
@@ -171,7 +174,7 @@ export class OperatorAccountComponent implements OnInit {
         },
         error => {
           this.error = true;
-          this.errorMessage = error.error;
+          this.errorMessage = error;
         }
       );
     }
@@ -196,7 +199,7 @@ export class OperatorAccountComponent implements OnInit {
       },
       error => {
         this.error = true;
-        this.errorMessage = error.error;
+        this.errorMessage = error;
       }
     );
   }

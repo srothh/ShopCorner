@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class CartEndpointTest implements TestData {
+class CartEndpointTest implements TestData {
     @Autowired
     private MockMvc mockMvc;
 
@@ -65,7 +65,7 @@ public class CartEndpointTest implements TestData {
     private final CartItem cartItem = new CartItem();
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         this.cartItemRepository.deleteAll();
         this.cartRepository.deleteAll();
 
@@ -80,7 +80,7 @@ public class CartEndpointTest implements TestData {
     }
 
     @Test
-    public void givenAllPropertiesWithCookie_DeletePostFirstCartItem_thenCart() throws Exception {
+    void givenAllPropertiesWithCookie_DeletePostFirstCartItem_thenCart() throws Exception {
         UUID sessionId = UUID.randomUUID();
         cart.setSessionId(sessionId);
         this.cartRepository.save(cart);
@@ -98,7 +98,7 @@ public class CartEndpointTest implements TestData {
 
 
     @Test
-    public void givenAllPropertiesWithCookie_GetPostFirstCartItem_thenCart() throws Exception {
+    void givenAllPropertiesWithCookie_GetPostFirstCartItem_thenCart() throws Exception {
         UUID sessionId = UUID.randomUUID();
         cart.setSessionId(sessionId);
         this.cartRepository.save(cart);
@@ -128,7 +128,7 @@ public class CartEndpointTest implements TestData {
 
 
     @Test
-    public void givenAllPropertiesWithCookie_whenPutCartItem_thenCart() throws Exception {
+    void givenAllPropertiesWithCookie_whenPutCartItem_thenCart() throws Exception {
         UUID sessionId = UUID.randomUUID();
         cart.setSessionId(sessionId);
         this.cartRepository.save(cart);
@@ -161,7 +161,7 @@ public class CartEndpointTest implements TestData {
     }
 
     @Test
-    public void givenAllPropertiesWithCookie_whenPostFirstCartItem_thenCart() throws Exception {
+    void givenAllPropertiesWithCookie_whenPostFirstCartItem_thenCart() throws Exception {
         UUID sessionId = UUID.randomUUID();
         cart.setSessionId(sessionId);
         this.cartRepository.save(cart);
@@ -194,7 +194,7 @@ public class CartEndpointTest implements TestData {
 
 
     @Test
-    public void givenAllPropertiesWithoutCookie_whenPostFirstCartItem_thenCartAndCookie() throws Exception {
+    void givenAllPropertiesWithoutCookie_whenPostFirstCartItem_thenCartAndCookie() throws Exception {
         CartItemDto cartItemDto = this.cartItemMapper.cartItemToCartItemDto(cartItem);
         String body = objectMapper.writeValueAsString(cartItemDto);
 
@@ -222,7 +222,7 @@ public class CartEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPost_then400() throws Exception {
+    void givenNothing_whenPost_then400() throws Exception {
 
         String body = objectMapper.writeValueAsString(new CartItemDto());
 
@@ -245,7 +245,7 @@ public class CartEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPut_then400() throws Exception {
+    void givenNothing_whenPut_then400() throws Exception {
         CartItemDto cartItemDto = new CartItemDto();
         String body = objectMapper.writeValueAsString(cartItemDto);
 
@@ -268,7 +268,7 @@ public class CartEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenGet_thenEmptyCartAndCookie() throws Exception {
+    void givenNothing_whenGet_thenEmptyCartAndCookie() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(CART_BASE_URI)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -286,8 +286,7 @@ public class CartEndpointTest implements TestData {
     }
 
     @Test
-    public void givenWrongId_whenDelete_then200() throws Exception {
-
+    void givenWrongId_whenDelete_then200() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(delete(CART_BASE_URI + "/" + 0L)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -295,10 +294,5 @@ public class CartEndpointTest implements TestData {
         MockHttpServletResponse response = mvcResult.getResponse();
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-
     }
-
-
-
-
 }

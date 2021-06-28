@@ -14,26 +14,26 @@ public class OperatorDto {
 
     private Long id;
 
-    @NotNull(message = "Name must not be null")
-    @NotBlank
-    @Size(max = 255)
+    @NotNull(message = "Name darf nicht null sein")
+    @NotBlank(message = "Name darf nicht leer sein")
+    @Size(max = 255, message = "Name darf nicht länger als 255 Zeichen sein")
     private String name;
 
-    @NotNull(message = "Login name must not be null")
-    @NotBlank
-    @Size(max = 128)
+    @NotNull(message = "LoginName darf nicht null sein")
+    @NotBlank(message = "LoginName darf nicht leer sein")
+    @Size(max = 128, message = "LoginName darf nicht länger als 128 Zeichen sein")
     private String loginName;
 
-    @NotNull(message = "Password must not be null")
-    @NotBlank
+    @NotNull(message = "Passwort darf nicht null sein")
+    @NotBlank(message = "Passwort darf nicht leer sein")
     private String password;
 
-    @NotNull(message = "Email must not be null")
-    @NotBlank
-    @Email
+    @NotNull(message = "E-Mail darf nicht null sein")
+    @NotBlank(message = "E-Mail darf nicht leer sein")
+    @Email(message = "Ungültiges E-Mail-Format")
     private String email;
 
-    @NotNull(message = "Permissions must not be null")
+    @NotNull(message = "Berechtigungslevel darf nicht null sein")
     @Enumerated(EnumType.STRING)
     private Permissions permissions;
 

@@ -3,13 +3,16 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.*;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.AddressMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CustomerMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Operator;
+import at.ac.tuwien.sepm.groupphase.backend.entity.*;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceItemRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.InvoiceRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.OrderRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +32,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class MeEndpointTest implements TestData{
+class MeEndpointTest implements TestData {
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,13 +62,28 @@ public class MeEndpointTest implements TestData{
     private ObjectMapper objectMapper;
 
     @Autowired
-    private AddressMapper addressMapper;
-
-    @Autowired
     private JwtTokenizer jwtTokenizer;
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private InvoiceRepository invoiceRepository;
+
+    @Autowired
+    private InvoiceItemRepository invoiceItemRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private TaxRateRepository taxRateRepository;
 
     @Autowired
     private SecurityProperties securityProperties;
@@ -70,18 +93,62 @@ public class MeEndpointTest implements TestData{
     private final Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
     private final Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
     private final Customer customer2 = new Customer("mail@gmail.com", TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, "login", address, 0L, "");
+    private final Customer customer3 = new Customer("somemail@gmail.com", TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, "login3", address, 0L, "");
+    private final Invoice invoice = new Invoice();
+    private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
+    private final InvoiceItem invoiceItem = new InvoiceItem();
+    private final Product product = new Product();
+    private final Category category = new Category();
+    private final TaxRate taxRate = new TaxRate();
 
     @BeforeEach
-    @CacheEvict(value = "counts",allEntries = true)
+    @CacheEvict(value = "counts", allEntries = true)
     public void beforeEach() {
+        orderRepository.deleteAll();
         customerRepository.deleteAll();
+        invoiceRepository.deleteAll();
+        invoiceItemRepository.deleteAll();
         Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "1");
         Customer customer2 = new Customer("mail@gmail.com", TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, "login", address, 0L, "");
+
+        invoiceRepository.deleteAll();
+        categoryRepository.deleteAll();
+        taxRateRepository.deleteAll();
+        productRepository.deleteAll();
+        invoiceRepository.deleteAll();
+
+        product.setId(0L);
+        product.setName(TEST_PRODUCT_NAME);
+        product.setDescription(TEST_PRODUCT_DESCRIPTION);
+        product.setPrice(TEST_PRODUCT_PRICE);
+
+        category.setId(1L);
+        category.setName(TEST_CATEGORY_NAME);
+
+        taxRate.setId(1L);
+        taxRate.setPercentage(TEST_TAX_RATE_PERCENTAGE);
+        taxRate.setCalculationFactor((TEST_TAX_RATE_PERCENTAGE/100)+1);
+
+        // product
+        product.setId(0L);
+        product.setName(TEST_PRODUCT_NAME);
+        product.setDescription(TEST_PRODUCT_DESCRIPTION);
+        product.setPrice(TEST_PRODUCT_PRICE);
+        product.setTaxRate(taxRateRepository.save(taxRate));
+        product.setCategory(categoryRepository.save(category));
+
+        // invoiceItem
+        invoiceItemKey.setInvoiceId(null);
+        invoiceItemKey.setProductId(product.getId());
+
+        invoiceItem.setId(invoiceItemKey);
+        invoiceItem.setProduct(productRepository.save(product));
+        invoiceItem.setNumberOfItems(10);
     }
 
 
     @Test
-    public void givenNothing_whenPut_then404() throws Exception {
+    void givenNothing_whenPut_then404() throws Exception {
 
         customer.setId(1L);
         CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
@@ -101,9 +168,9 @@ public class MeEndpointTest implements TestData{
     }
 
     @Test
-    public void givenOneCustomer_whenPutByExistingId_thenVerifyCustomerChanged() throws Exception {
+    void givenOneCustomer_whenPutByExistingId_thenVerifyCustomerChanged() throws Exception {
         addressRepository.save(address);
-        Customer updatedCustomer =  customerRepository.save(customer);
+        Customer updatedCustomer = customerRepository.save(customer);
 
         updatedCustomer.setName("New Name");
         updatedCustomer.setPassword("unchanged");
@@ -142,7 +209,7 @@ public class MeEndpointTest implements TestData{
     }
 
     @Test
-    public void givenTwoCustomers_whenPutByExistingIdAndIllegalAccess_then403() throws Exception {
+    void givenTwoCustomers_whenPutByExistingIdAndIllegalAccess_then403() throws Exception {
         addressRepository.save(address);
         customerRepository.save(customer);
         Customer updatedCustomer = customerRepository.save(customer2);
@@ -167,7 +234,7 @@ public class MeEndpointTest implements TestData{
     }
 
     @Test
-    public void givenTwoCustomers_whenPutByExistingIdAndChangedCustomerAlreadyExists_then422() throws Exception {
+    void givenTwoCustomers_whenPutByExistingIdAndChangedCustomerAlreadyExists_then422() throws Exception {
         addressRepository.save(address);
         Customer firstCustomer = customerRepository.save(customer);
         Customer updatedCustomer = customerRepository.save(customer2);
@@ -190,6 +257,100 @@ public class MeEndpointTest implements TestData{
         assertAll(
             () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus())
         );
+    }
+
+    @Test
+    void givenOneCustomerOneOrderAndOneInvoice_whenGet_verifyOrder() throws Exception {
+        addressRepository.save(address);
+        invoice.setInvoiceType(InvoiceType.customer);
+        invoice.setDate(LocalDateTime.now());
+        invoice.setInvoiceNumber("123");
+        invoice.setAmount(50.0);
+        invoiceRepository.save(invoice);
+        Customer newCustomer = customerRepository.save(customer3);
+        Order order = new Order(invoice, newCustomer);
+        Order newOrder = orderRepository.save(order);
+        PaginationRequestDto paginationRequestDto = new PaginationRequestDto();
+        paginationRequestDto.setPage(0);
+        paginationRequestDto.setPageCount(5);
+        String body = objectMapper.writeValueAsString(paginationRequestDto);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(ME_BASE_URI + "/orders")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(newCustomer.getLoginName(), CUSTOMER_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        PaginationDto<OrderDto> paginationDto = objectMapper.readValue(response.getContentAsString(), new TypeReference<>() {
+        });
+        List<OrderDto> orders = paginationDto.getItems();
+        OrderDto checkOrder = orders.get(0);
+        assertAll(
+            () -> assertEquals(1, orders.size()),
+            () -> assertEquals(1, paginationDto.getTotalItemCount()),
+            () -> assertNotNull(checkOrder),
+            () -> assertEquals(newOrder.getCustomer().getName(), customerMapper.dtoToCustomer(checkOrder.getCustomer()).getName()),
+            () -> assertEquals(newOrder.getInvoice().getAmount(), checkOrder.getInvoice().getAmount())
+        );
+    }
+
+    @Test
+    void givenOneCustomerOneOrderAndOneInvoice_whenGet_verifyValidPDFInvoice() throws Exception {
+        addressRepository.save(address);
+        Customer newCustomer = customerRepository.save(customer3);
+        invoice.setInvoiceType(InvoiceType.customer);
+        invoice.setDate(LocalDateTime.now());
+        invoice.setInvoiceNumber("1456");
+        invoice.setAmount(150.0);
+        invoice.setCustomerId(newCustomer.getId());
+        invoice.setOrderNumber("asd");
+        Set<InvoiceItem> items = new HashSet<>();
+        items.add(invoiceItem);
+        invoice.setItems(null);
+        Invoice newInvoice = invoiceRepository.save(invoice);
+        for (InvoiceItem item : items) {
+            item.setInvoice(newInvoice);
+            invoiceItemRepository.save(item);
+        }
+        Order order = new Order(invoice, newCustomer);
+        orderRepository.save(order);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(ME_BASE_URI + "/invoices/" + newInvoice.getId() + "/pdf")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(newCustomer.getLoginName(), CUSTOMER_ROLES)))
+            .andDo(print())
+            .andReturn();
+
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        assertAll(
+            () -> assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType()),
+            () -> assertNotNull(response)
+        );
+
+    }
+    @Test
+    void givenOneCustomerOneInvoiceAndNoOrder_whenGet_then404() throws Exception {
+        addressRepository.save(address);
+        Customer newCustomer = customerRepository.save(customer3);
+        invoice.setInvoiceType(InvoiceType.customer);
+        invoice.setDate(LocalDateTime.now());
+        invoice.setInvoiceNumber("1456");
+        invoice.setAmount(150.0);
+        invoice.setCustomerId(newCustomer.getId());
+        Invoice newInvoice = invoiceRepository.save(invoice);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(ME_BASE_URI + "/invoices/" + newInvoice.getId() + "/pdf")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(newCustomer.getLoginName(), CUSTOMER_ROLES)))
+            .andDo(print())
+            .andReturn();
+
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+
     }
 
 }

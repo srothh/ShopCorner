@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {CategoryService} from '../../../services/category.service';
+import {CategoryService} from '../../../services/category/category.service';
 import {Category} from '../../../dtos/category';
 import {ProductService} from '../../../services/product/product.service';
 import {faFilter, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {Router} from '@angular/router';
 import {PageableProducts} from '../../../services/pagination/pageable-products';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-shop-product',
@@ -29,6 +30,7 @@ export class ShopProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchProducts();
+    AOS.init();
   }
 
   fetchProducts(): void {
@@ -55,13 +57,10 @@ export class ShopProductComponent implements OnInit {
   }
 
   errorOccurred() {
-    return this.error || this.pageableProducts.error;
+    return this.pageableProducts.error;
   }
 
   getErrorMessage() {
-    if (this.error) {
-      return this.errorMessage;
-    }
     return this.pageableProducts.errorMessage;
   }
 
@@ -69,8 +68,6 @@ export class ShopProductComponent implements OnInit {
    * Error flag will be deactivated, which clears the error message
    */
   vanishError() {
-    this.error = false;
-    this.errorMessage = '';
     this.pageableProducts.vanishError();
   }
 }

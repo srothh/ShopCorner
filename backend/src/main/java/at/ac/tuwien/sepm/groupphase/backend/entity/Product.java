@@ -25,13 +25,13 @@ public class Product {
     private Long id;
 
     @NotBlank
-    @Size(min = 3, max = 50, message = "name should contain at least 3 characters and 50 at most")
+    @Size(min = 3, max = 50, message = "Name muss mindest 3 und maximal 50 Zeichen enthalten!")
     private String name;
 
-    @Size(max = 200)
+    @Size(max = 200, message = "Beschreibung darf nicht mehr als 200 Zeichen enthalten")
     private String description;
 
-    @DecimalMin("0.0")
+    @DecimalMin(value = "0.0", message = "Produktpreis darf nicht weniger als 0€ betragen")
     private Double price;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -199,8 +199,9 @@ public class Product {
         private byte[] picture;
         private LocalDateTime expiresAt;
         private boolean deleted;
+        private Long saleCount;
 
-        public ProductBuilder(){
+        ProductBuilder() {
         }
 
         public static ProductBuilder getProductBuilder() {
@@ -208,9 +209,13 @@ public class Product {
         }
 
 
-
         public ProductBuilder withName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public ProductBuilder withSaleCount(Long saleCount) {
+            this.saleCount = saleCount;
             return this;
         }
 
@@ -271,6 +276,7 @@ public class Product {
             product.setPicture(picture);
             product.setDeleted(deleted);
             product.setExpiresAt(expiresAt);
+            product.setSaleCount(saleCount);
             return product;
         }
     }

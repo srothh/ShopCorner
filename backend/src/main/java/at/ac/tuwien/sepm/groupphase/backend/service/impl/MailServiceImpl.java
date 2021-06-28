@@ -1,13 +1,16 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
+import at.ac.tuwien.sepm.groupphase.backend.entity.CancellationPeriod;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Promotion;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
+import at.ac.tuwien.sepm.groupphase.backend.service.ShopService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +20,13 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.URLDataSource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -40,16 +40,20 @@ public class MailServiceImpl implements MailService {
     private final TemplateEngine thymeleafTemplateEngine;
 
     private final PdfGeneratorService pdfGeneratorService;
+    private final ShopService shopService;
+
 
     @Autowired
-    public MailServiceImpl(JavaMailSender emailSender, TemplateEngine thymeleafTemplateEngine, @Lazy PdfGeneratorService pdfGeneratorService) {
+    public MailServiceImpl(JavaMailSender emailSender, TemplateEngine thymeleafTemplateEngine, @Lazy PdfGeneratorService pdfGeneratorService,
+                           ShopService shopService) {
         this.emailSender = emailSender;
         this.thymeleafTemplateEngine = thymeleafTemplateEngine;
         this.pdfGeneratorService = pdfGeneratorService;
+        this.shopService = shopService;
     }
 
     @Override
-    public void sendMail(Order order) {
+    public void sendMail(Order order, CancellationPeriod cancellationPeriod) throws IOException {
         LOGGER.trace("sendMail({})", order);
         double tax = 0;
         double subtotal = 0;
@@ -68,11 +72,22 @@ public class MailServiceImpl implements MailService {
         }
         addressString += ", " + address.getPostalCode();
         Context thymeleafContext = new Context();
+        thymeleafContext.setVariable("shop", replaceSpecialChar(shopService.getSettings().getTitle()));
         thymeleafContext.setVariable("name", replaceSpecialChar(order.getCustomer().getName()));
         thymeleafContext.setVariable("address", replaceSpecialChar(addressString));
         thymeleafContext.setVariable("sum", (double) Math.round(subtotal * 100) / 100);
         thymeleafContext.setVariable("tax", (double) Math.round(tax * 100) / 100);
-        thymeleafContext.setVariable("end", order.getInvoice().getAmount());
+        thymeleafContext.setVariable("end", (double) Math.round(order.getInvoice().getAmount() * 100) / 100);
+        if (cancellationPeriod.getDays() == 0) {
+            thymeleafContext.setVariable("cancel", "Diese Bestellung ist unwiderruflich!");
+        } else {
+            thymeleafContext.setVariable("cancel", "Sie k&ouml;nnen ihr Bestellung innerhalb eines Zeitraums von " + cancellationPeriod.getDays() + " Tagen unter\n"
+                + "    <a href=\"http://localhost:4200/#/account/orders\">Meine Bestellungen</a> stornieren.");
+        }
+        Promotion promotion = order.getPromotion();
+        if (promotion != null) {
+            thymeleafContext.setVariable("promotionDiscount", (double) -Math.round(promotion.getDiscount() * 100) / 100);
+        }
         String htmlBody = thymeleafTemplateEngine.process("emailTemplate.html", thymeleafContext);
 
         MimeMessage email = emailSender.createMimeMessage();
@@ -86,19 +101,13 @@ public class MailServiceImpl implements MailService {
             messageBodyPart.setContent(htmlBody, "text/html");
             multipart.addBodyPart(messageBodyPart);
             messageBodyPart = new MimeBodyPart();
-            DataSource fds = new URLDataSource(new URL("https://i.imgur.com/zMBx1FY.png"));
-            messageBodyPart.setDataHandler(new DataHandler(fds));
-            messageBodyPart.setHeader("Content-ID", "<logo>");
-            messageBodyPart.setDisposition(MimeBodyPart.INLINE);
-            multipart.addBodyPart(messageBodyPart);
-            messageBodyPart = new MimeBodyPart();
             ByteArrayDataSource ds = new ByteArrayDataSource(pdfGeneratorService.createPdfInvoiceCustomer(order), "application/pdf");
             messageBodyPart.setDataHandler(new DataHandler(ds));
             messageBodyPart.setFileName("Rechnung.pdf");
             multipart.addBodyPart(messageBodyPart);
             email.setContent(multipart);
             emailSender.send(email);
-        } catch (MessagingException | MalformedURLException e) {
+        } catch (MessagingException e) {
             throw new ServiceException("Fehler beim erstellen der Verifizierungs E-mail", e);
         }
     }

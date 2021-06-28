@@ -18,12 +18,14 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -32,6 +34,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final Validator validator;
     private final InvoiceItemService invoiceItemService;
+
 
     @Autowired
     public InvoiceServiceImpl(InvoiceRepository invoiceRepository, Validator validator, InvoiceItemService invoiceItemService) {
@@ -50,8 +53,17 @@ public class InvoiceServiceImpl implements InvoiceService {
         } else if (pageCount > 50) {
             pageCount = 50;
         }
-        Pageable returnPage = PageRequest.of(page, pageCount);
+        Pageable returnPage = PageRequest.of(page, pageCount, Sort.by("date").descending());
+        if (invoiceType == InvoiceType.operator) {
+            return this.invoiceRepository.findAll(returnPage);
+        }
         return this.invoiceRepository.findAll(InvoiceSpecifications.hasInvoiceType(invoiceType), returnPage);
+    }
+
+    @Override
+    public List<Invoice> findByDate(LocalDateTime start, LocalDateTime end) {
+        LOGGER.trace("findByDate({}{})", start, end);
+        return invoiceRepository.findAll(InvoiceSpecifications.isInPeriod(start, end));
     }
 
     @Override
@@ -68,6 +80,24 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.count(InvoiceSpecifications.hasInvoiceType(InvoiceType.customer));
     }
 
+    @Override
+    @Cacheable(value = "counts", key = "'canceledInvoices'")
+    public Long getCanceledInvoiceCount() {
+        LOGGER.trace("getCanceledInvoiceCount()");
+        return invoiceRepository.count(InvoiceSpecifications.hasInvoiceType(InvoiceType.canceled));
+    }
+
+    @Override
+    @Caching(evict = {
+        @CacheEvict(value = "counts", key = "'invoices'"),
+        @CacheEvict(value = "counts", key = "'canceledInvoices'"),
+        @CacheEvict(value = "invoicePages", allEntries = true)
+    })
+    public Invoice setInvoiceCanceled(Invoice invoice) {
+        LOGGER.trace("setInvoiceCanceled({})", invoice);
+        invoice.setInvoiceType(InvoiceType.canceled);
+        return this.invoiceRepository.save(invoice);
+    }
 
     @Cacheable(value = "counts", key = "'invoicesByYear'")
     public long getInvoiceCountByYear(LocalDateTime firstDateOfYear) {
@@ -78,7 +108,20 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice findOneById(Long id) {
         LOGGER.trace("findOneById({})", id);
-        return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Could not find invoice with id %s", id)));
+        return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException("Rechnung konnte nicht gefunden werden"));
+    }
+
+    @Override
+    public Invoice findOneByOrderNumber(String orderNumber) {
+        return this.invoiceRepository.findByOrderNumber(orderNumber)
+            .orElseThrow(() -> new NotFoundException("Rechnung konnte nicht gefunden werden"));
+    }
+
+    @Override
+    public Invoice getByIdAndCustomerId(Long id, Long customerId) {
+        LOGGER.trace("getByIdAndCustomerId({}, {})", id, customerId);
+        return this.invoiceRepository.findByIdAndCustomerId(id, customerId)
+            .orElseThrow(() -> new NotFoundException(String.format("Rechnung mit id %d konnte nicht gefunden werden", id)));
     }
 
     @Caching(evict = {
@@ -105,6 +148,5 @@ public class InvoiceServiceImpl implements InvoiceService {
         return createdInvoice;
 
     }
-
 
 }

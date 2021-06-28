@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class CustomerMappingTest implements TestData {
+class CustomerMappingTest implements TestData {
     private final Address address = new Address(0L, TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
     private final Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "");
     @Autowired
@@ -32,7 +32,7 @@ public class CustomerMappingTest implements TestData {
     private AddressMapper addressMapper;
 
     @Test
-    public void givenNothing_whenMapCustomerToCustomerRegistrationDto_thenEntityHasAllProperties() {
+    void givenNothing_whenMapCustomerToCustomerRegistrationDto_thenEntityHasAllProperties() {
         CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
         customerDto.getAddress().setId(0L);
         assertAll(
@@ -46,7 +46,7 @@ public class CustomerMappingTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenMapListWithTwoAddressEntitiesToDto_thenGetListWithSizeTwoAndAllProperties() {
+    void givenNothing_whenMapListWithTwoAddressEntitiesToDto_thenGetListWithSizeTwoAndAllProperties() {
         List<Customer> customers = new ArrayList<>();
         customers.add(customer);
         customers.add(customer);

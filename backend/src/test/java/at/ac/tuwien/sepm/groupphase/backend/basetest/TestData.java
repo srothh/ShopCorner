@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.basetest;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Permissions;
-import com.github.javafaker.LeagueOfLegends;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

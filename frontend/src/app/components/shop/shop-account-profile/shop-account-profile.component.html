@@ -1,13 +1,13 @@
 <div class="container mt-5">
   <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Problems!</strong> {{ errorMessage }}
+    <strong>Error!</strong> {{ errorMessage }}
     <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="header">
     <h2>Meine Daten</h2>
-    <div class="btn-toolbar">
+    <div class="btn-toolbar align-items-center">
       <button *ngIf="!isEditMode" class="btn btn-outline-danger mr-2" (click)="attemptToDeleteAccount()">
         <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
         Konto löschen
@@ -17,7 +17,7 @@
         Bearbeiten
       </button>
     </div>
-    <div *ngIf="isEditMode" class="btn-toolbar">
+    <div *ngIf="isEditMode" class="btn-toolbar align-items-center">
       <button class="btn btn-outline-secondary mr-2" (click)="cancelEdit()">Abbrechen</button>
       <button class="btn btn-primary" (click)="saveUser()">Speichern</button>
     </div>
@@ -28,8 +28,7 @@
       <h4>Profil</h4>
       <div>
         <label for="username">Benutzername</label>
-        <input *ngIf="isEditMode" type="text" name="username" formControlName="loginName" class="form-control"
-               id="username">
+        <input *ngIf="isEditMode" type="text" name="username" formControlName="loginName" class="form-control" id="username">
         <span *ngIf="!isEditMode">{{ editForm.value.loginName }}</span>
       </div>
       <div>
@@ -43,7 +42,7 @@
         <span *ngIf="!isEditMode">{{ editForm.value.name }}</span>
       </div>
       <div>
-        <label for="password">Altes Passwort</label>
+        <label for="password">{{isEditMode ? 'Altes Passwort' : 'Passwort'}}</label>
         <input *ngIf="isEditMode" type="text" name="password" formControlName="password" class="form-control"
                id="password">
         <!-- We don't actually show the password here since the backend should never send it this is just a placeholder -->
@@ -54,6 +53,11 @@
         <input *ngIf="isEditMode" type="text" name="newPassword" formControlName="newPassword" class="form-control"
                id="newPassword">
       </div>
+      <small placement="left"
+             ngbPopover="Um Ihr Passwort aktualisieren zu können, müssen altes und neues Passwort angegeben werden." popoverTitle="Passwort Informationen" class="text-muted" style="cursor: pointer">
+        <fa-icon class="mr-2" [icon]="faInfo"></fa-icon>
+        Passwort Informationen
+      </small>
       <div>
         <label for="phoneNumber">Telefon</label>
         <input *ngIf="isEditMode" type="text" name="phoneNumber" formControlName="phoneNumber" class="form-control" id="phoneNumber">

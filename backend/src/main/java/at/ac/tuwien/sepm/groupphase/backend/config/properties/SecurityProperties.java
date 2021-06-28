@@ -71,7 +71,7 @@ public class SecurityProperties {
         private String loginUriCustomer;
         private String loginUriOperator;
 
-        public String getHeader() {
+        String getHeader() {
             return header;
         }
 
@@ -79,7 +79,7 @@ public class SecurityProperties {
             this.header = header;
         }
 
-        public String getPrefix() {
+        String getPrefix() {
             return prefix;
         }
 
@@ -87,7 +87,7 @@ public class SecurityProperties {
             this.prefix = prefix;
         }
 
-        public String getLoginUriCustomer() {
+        String getLoginUriCustomer() {
             return loginUriCustomer;
         }
 
@@ -95,7 +95,7 @@ public class SecurityProperties {
             this.loginUriCustomer = loginUriCustomer;
         }
 
-        public String getLoginUriOperator() {
+        String getLoginUriOperator() {
             return loginUriOperator;
         }
 
@@ -111,7 +111,7 @@ public class SecurityProperties {
         private String audience;
         private Long expirationTime;
 
-        public String getSecret() {
+        String getSecret() {
             return secret;
         }
 
@@ -119,7 +119,7 @@ public class SecurityProperties {
             this.secret = secret;
         }
 
-        public String getType() {
+        String getType() {
             return type;
         }
 
@@ -127,7 +127,7 @@ public class SecurityProperties {
             this.type = type;
         }
 
-        public String getIssuer() {
+        String getIssuer() {
             return issuer;
         }
 
@@ -135,7 +135,7 @@ public class SecurityProperties {
             this.issuer = issuer;
         }
 
-        public String getAudience() {
+        String getAudience() {
             return audience;
         }
 
@@ -143,7 +143,7 @@ public class SecurityProperties {
             this.audience = audience;
         }
 
-        public Long getExpirationTime() {
+        Long getExpirationTime() {
             return expirationTime;
         }
 

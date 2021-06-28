@@ -104,7 +104,8 @@ export class OperatorProductFormComponent implements OnInit {
       false,
       null,
       null,
-      false);
+      false,
+      0);
   }
 
   setFormProperties(): void {
@@ -174,7 +175,7 @@ export class OperatorProductFormComponent implements OnInit {
       }, error => {
         this.errorOccurred = true;
         // NOTE: not all error types supported yet because of the way how the interceptor is handling errors
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       });
     } else {
       this.updateProduct();
@@ -182,7 +183,6 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   updateProduct() {
-    console.log(this.newProduct);
     this.productService.updateProduct(this.newProduct.id, this.newProduct).subscribe(() => {
         this.inEditMode = true;
         this.addProductEnabled = false;

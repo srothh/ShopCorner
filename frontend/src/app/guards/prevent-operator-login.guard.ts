@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, Router} from '@angular/router';
-import {CustomerAuthService} from '../services/auth/customer-auth.service';
 import {OperatorAuthService} from '../services/auth/operator-auth.service';
 
 /**

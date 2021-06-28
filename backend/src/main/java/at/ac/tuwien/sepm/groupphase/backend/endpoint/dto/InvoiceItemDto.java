@@ -11,17 +11,17 @@ import java.util.Objects;
 
 public class InvoiceItemDto {
 
-    @NotNull(message = "InvoiceItemKey is mandatory")
+    @NotNull(message = "InvoiceItemKey darf nicht null sein")
     private InvoiceItemKey id;
 
-    @NotNull(message = "Invoice is mandatory")
+    @NotNull(message = "Invoice darf nicht null sein")
     private Invoice invoice;
 
-    @NotNull(message = "Product is mandatory")
+    @NotNull(message = "Product darf nicht null sein")
     private Product product;
 
-    @NotNull(message = "Number of Items is mandatory")
-    @Min(value = 1, message = "Minimum number of items is 1")
+    @NotNull(message = "Itemanzahl darf nicht null sein")
+    @Min(value = 1, message = "Die minimale Anzahl von Items ist 1")
     private int numberOfItems;
 
     public InvoiceItemDto() {

@@ -6,31 +6,31 @@
     </button>
   </div>
   <div class="d-flex justify-content-around">
-    <img class="zoom" *ngIf="product.picture != null" src="{{getImageSource(product)}}" width="500px"
+    <img class="zoom" *ngIf="product?.picture != null" src="{{getImageSource(product)}}" width="500px"
          height="400px"
          alt="produkt">
-    <object class="zoom" *ngIf="product.picture == null" data="assets/no_image_available.svg" width="400"
+    <object class="zoom" *ngIf="product?.picture == null" data="assets/no_image_available.svg" width="400"
             height="400"></object>
     <div class="custom-card p-3">
       <div class="d-flex flex-column">
         <h2>{{this.product?.name}}</h2>
         <p class="text-muted">
-          {{this.product.description}}
+          {{this.product?.description}}
         </p>
       </div>
       <div class="add-to-cart-footer">
         <div class="d-flex justify-content-between align-items-center">
           <div class="d-flex flex-column">
-            <span class="price">€ {{(this.product.taxRate.calculationFactor * this.product.price).toFixed(2)}}</span>
+            <span class="price">{{(this.product?.taxRate.calculationFactor * this.product?.price).toFixed(2)}} €</span>
             <span class="text-muted small">Preisangaben inkl. USt.</span>
           </div>
           <!-- Possibilities: In stock, Unavailable, Available until ...-->
           <span class="card-text availability"
-                [class.in-stock]="!product.locked"
-                [class.locked]="product.locked || (product.hasExpiration && product.hasExpired)"
-                [class.expires]="product.hasExpiration && !product.hasExpired">{{product.availabilityText}}</span>
+                [class.in-stock]="!product?.locked"
+                [class.locked]="product?.locked || (product?.hasExpiration && product?.hasExpired)"
+                [class.expires]="product?.hasExpiration && !product?.hasExpired">{{product?.availabilityText}}</span>
         </div>
-        <button class="btn btn-primary" [disabled]="product.locked" (click)="addToCart(product)">In den Einkaufswagen</button>
+        <button class="btn btn-primary" [disabled]="product?.locked || (product?.hasExpiration && product?.hasExpired)" (click)="addToCart(product)">In den Einkaufswagen</button>
       </div>
     </div>
   </div>

@@ -1,26 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
-import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CartDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CartItemMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CartMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Cart;
-import at.ac.tuwien.sepm.groupphase.backend.entity.CartItem;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+/*
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
@@ -60,3 +40,4 @@ public class CartMapperTest implements TestData {
     }
 
 }
+*/

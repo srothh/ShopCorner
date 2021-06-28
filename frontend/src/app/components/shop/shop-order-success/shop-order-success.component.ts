@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {faCheckCircle, faTimesCircle} from '@fortawesome/free-solid-svg-icons';
-import {PaypalService} from '../../../services/paypal.service';
+import {PaypalService} from '../../../services/paypal/paypal.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {Product} from '../../../dtos/product';
-import {OrderService} from '../../../services/order.service';
+import {OrderService} from '../../../services/order/order.service';
 import {Order} from '../../../dtos/order';
 import {Customer} from '../../../dtos/customer';
 import {Invoice} from '../../../dtos/invoice';
@@ -13,9 +13,11 @@ import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {formatDate} from '@angular/common';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {Cart} from '../../../dtos/cart';
-import {MeService} from '../../../services/me.service';
-import {CartService} from '../../../services/cart.service';
+import {MeService} from '../../../services/me/me.service';
+import {CartService} from '../../../services/cart/cart.service';
 import {ConfirmedPayment} from '../../../dtos/confirmedPayment';
+import {PromotionService} from '../../../services/promotion/promotion.service';
+import {Promotion} from '../../../dtos/promotion';
 
 @Component({
   selector: 'app-shop-order-success',
@@ -34,6 +36,10 @@ export class ShopOrderSuccessComponent implements OnInit {
   cart: Cart;
   confirmedPayment: ConfirmedPayment;
   alreadyOrdered: boolean;
+  promotionId;
+  promotion: Promotion;
+  error = false;
+  errorMessage = '';
 
   constructor(private paypalService: PaypalService,
               private activatedRoute: ActivatedRoute,
@@ -41,7 +47,8 @@ export class ShopOrderSuccessComponent implements OnInit {
               private cartGlobals: CartGlobals,
               private orderService: OrderService,
               private meService: MeService,
-              private cartService: CartService) {
+              private cartService: CartService,
+              private promotionService: PromotionService) {
   }
 
   ngOnInit(): void {
@@ -50,28 +57,58 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.paymentId = params['paymentId'];
       this.payerId = params['PayerID'];
-      this.confirmedPayment = new ConfirmedPayment(0, this.paymentId, this.payerId);
-      this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
-        if (finalisedPaymentData.includes('Payment successful')) {
-          this.paymentSucceeded = true;
-          this.placeNewOrder();
-          this.cartGlobals.resetCart();
-          //after payment -> discard paymentId and payerID
-
+      this.promotionId = params['promotion'];
+      if (this.promotionId) {
+        this.getPromotion();
+      }
+      this.paypalService.getConfirmedPayment(this.paymentId, this.payerId).subscribe((cp) => {
+        this.alreadyOrdered = cp !== null;
+        if (this.alreadyOrdered === false) {
+          this.confirmPayment();
+        } else {
+          this.goToHome();
         }
       }, error => {
-        this.paymentSucceeded = false;
+        this.error = true;
+        this.errorMessage = error;
       });
+    }, error => {
+      this.error = true;
+      this.errorMessage = error;
     });
   }
-  getCartSize() {
-    return this.cartGlobals.getCartSize();
+
+  confirmPayment() {
+    this.confirmedPayment = new ConfirmedPayment(null, this.paymentId, this.payerId);
+    this.paypalService.confirmPayment(this.confirmedPayment).subscribe((finalisedPaymentData) => {
+      if (finalisedPaymentData.includes('Payment successful')) {
+        this.paymentSucceeded = true;
+        this.placeNewOrder();
+      }
+    }, (error) => {
+      this.paymentSucceeded = false;
+      this.error = true;
+      this.errorMessage = error;
+    });
+  }
+
+  getPromotion() {
+    this.promotionService.getPromotionByCode(this.promotionId).subscribe((promotion: Promotion) => {
+      this.promotion = promotion;
+    }, (error) => {
+      this.error = true;
+      this.errorMessage = error;
+    });
   }
 
   placeNewOrder() {
-    this.creatInvoiceDto();
-    const order: Order = new Order(0, this.invoiceDto, this.customer);
+    this.createInvoiceDto();
+    const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
     this.orderService.placeNewOrder(order).subscribe((orderData) => {
+    }, error => {
+      this.paymentSucceeded = false;
+      this.error = true;
+      this.errorMessage = error;
     });
   }
 
@@ -95,16 +132,27 @@ export class ShopOrderSuccessComponent implements OnInit {
     return subtotal;
   }
 
+  getTotalPriceWithPromotion() {
+    if (this.promotion) {
+      return this.getTotalPrice() - this.promotion.discount;
+    } else {
+      return this.getTotalPrice();
+    }
+  }
+
   fetchCustomer() {
     this.meService.getMyProfileData().subscribe(
       (customer: Customer) => {
         this.customer = customer;
         this.getCartItems();
+      }, error => {
+        this.error = true;
+        this.errorMessage = error;
       }
     );
   }
 
-  creatInvoiceDto() {
+  createInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
 
@@ -114,7 +162,7 @@ export class ShopOrderSuccessComponent implements OnInit {
         this.invoiceDto.items.push(invItem);
       }
     }
-    this.invoiceDto.amount = +this.getTotalPrice().toFixed(2);
+    this.invoiceDto.amount = +this.getTotalPriceWithPromotion().toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
@@ -124,10 +172,15 @@ export class ShopOrderSuccessComponent implements OnInit {
     this.cartService.getCart().subscribe((cart: Cart
     ) => {
       this.cart = cart;
-    });
+    }, error => {
+        this.error = true;
+        this.errorMessage = error;
+      }
+    );
   }
 
   goToHome() {
+    this.cartGlobals.resetCart();
     this.router.navigate(['/home']).then();
   }
 }

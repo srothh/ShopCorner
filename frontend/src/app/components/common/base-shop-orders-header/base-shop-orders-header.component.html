@@ -1,0 +1,29 @@
+<div class="card-header">
+  <div class="order-header-information d-flex justify-content-between ">
+    <div class="order-number">
+      <p class="font-weight-bolder">Bestellungs. Nr.</p>
+      <p>{{order.invoice.orderNumber}}</p>
+    </div>
+    <div class="order-date">
+      <p class="font-weight-bolder">Bestellungsdatum:</p>
+      <p>{{order.invoice.date | date: 'dd.MM.YYYY'}}</div>
+    <div class="order-total-price">
+      <p class="font-weight-bolder">Gesamtpreis (inkl. MwSt.): </p>
+      <p>{{(isCanceled? order.invoice.amount * (-1):order.invoice.amount).toFixed(2)}} €</p>
+    </div>
+    <div class="order-invoice">
+      <p class="font-weight-bolder" *ngIf="isCanceled">Storno Rechnung: </p>
+      <p class="font-weight-bolder" *ngIf="!isCanceled">Rechnung: </p>
+      <a href="#" class="link-primary" (click)="downloadInvoice($event, order.invoice.id, order.invoice.date)">PDF download</a>
+    </div>
+    <div class="order-cancel" *ngIf="!isCanceled&&isCancelable">
+      <button class="btn btn-primary" (click)="attemptToCancelInvoiceModal()">Stornieren</button>
+    </div>
+
+    <div class="order-detail">
+    <a routerLink="/account/orders/{{order.id}}"> <button class="btn btn-primary"> Zur Detailansicht </button> </a>
+    </div>
+
+  </div>
+</div>
+

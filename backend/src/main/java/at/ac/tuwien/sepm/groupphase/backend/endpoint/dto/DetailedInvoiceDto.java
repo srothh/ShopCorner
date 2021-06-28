@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Objects;
@@ -9,7 +7,7 @@ import java.util.Set;
 
 public class DetailedInvoiceDto extends SimpleInvoiceDto {
 
-    @NotNull(message = "Set<InvoiceItemDto> can not be null")
+    @NotNull(message = "Set<InvoiceItemDto> darf nicht null sein")
     private Set<InvoiceItemDto> items = new HashSet<>();
 
 

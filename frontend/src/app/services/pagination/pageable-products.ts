@@ -2,7 +2,6 @@ import {IPageable} from './pageable.interface';
 import {Product} from '../../dtos/product';
 import {ProductService} from '../product/product.service';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -46,11 +45,7 @@ export class PageableProducts implements IPageable<Product> {
         this.collectionSize = productData.totalItemCount;
       }, error => {
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        this.errorMessage = error;
       });
   }
 

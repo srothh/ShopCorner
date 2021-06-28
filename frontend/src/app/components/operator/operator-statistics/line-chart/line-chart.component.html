@@ -1,0 +1,24 @@
+<div xmlns="http://www.w3.org/1999/html">
+  <span style="margin-left: 10px"> Umsatz pro Tag (in Euro €) </span>
+  <br>
+  <div class="btn-group btn-group-toggle blocks" role="group" data-toggle="buttons" aria-label="operator selection">
+    <label class="btn btn-light active ">
+      <input type="radio" name="buttons" id="option1" (click)=viewOverall() checked>
+      Gesamt
+    </label>
+    <label class="btn btn-light">
+      <input type="radio" name="buttons" id="option2" (click)=viewDetail()>
+      Detail
+    </label>
+  </div>
+  <div style="display: block" class="chart">
+    <canvas baseChart
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            [colors]="chartColors"
+            [legend]="chartLegend"
+            [chartType]="chartType">
+    </canvas>
+  </div>
+</div>

@@ -13,9 +13,9 @@ public interface ConfirmedPaymentRepository extends JpaRepository<ConfirmedPayme
      *
      * @param payerId the payerId to look for in a ConfirmedPayment
      * @param paymentId the paymentId to look for in a ConfirmedPayment
-     *
      * @return the ConfirmedPayment with the given paymentId and the payerId
-     * */
+     * @throws RuntimeException upon encountering errors with the database
+     */
     @Query("select cp from ConfirmedPayment cp where cp.payerId =:payerId and cp.paymentId =:paymentId")
     ConfirmedPayment getConfirmedPaymentByPayerIdAndPaymentId(@Param("payerId")String payerId, @Param("paymentId")String paymentId);
 }

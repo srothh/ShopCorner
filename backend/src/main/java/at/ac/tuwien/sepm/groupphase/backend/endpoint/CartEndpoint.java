@@ -52,6 +52,8 @@ public class CartEndpoint {
     /**
      * Get cart assigned by sessionId.
      *
+     * @param sessionId of current session
+     * @param response the response for the client
      * @return CartDto with all given information of the Cart
      */
     @PermitAll
@@ -81,7 +83,9 @@ public class CartEndpoint {
     /**
      * Delete cartItem from cart by productId.
      *
+     * @param sessionId of current session
      * @param id the productId of the cartItem to be removed
+     * @return corresponding response
      */
     @PermitAll
     @DeleteMapping("/{id}")
@@ -101,6 +105,7 @@ public class CartEndpoint {
     /**
      * Update the cartItem from cart assigned by sessionId.
      *
+     * @param sessionId of current session
      * @param item the cartItem to be updated
      * @return CartDto with all given information of the Cart
      */
@@ -108,7 +113,8 @@ public class CartEndpoint {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "update the cart")
-    public ResponseEntity<CartDto> updateProductInCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId, @Valid @RequestBody CartItemDto item, HttpServletResponse response) {
+    public ResponseEntity<CartDto> updateProductInCart(@CookieValue(name = "sessionId", defaultValue = "default") String sessionId,
+                                                       @Valid @RequestBody CartItemDto item) {
         LOGGER.info("PUT /api/v1/carts/ {}", item);
         if (!sessionId.equals("default")) {
             if (this.cartService.sessionIdExists(UUID.fromString(sessionId))) {
@@ -126,8 +132,10 @@ public class CartEndpoint {
     /**
      * creates a cart and a cartItem which are assigned to a sessionId.
      *
+     * @param sessionId of current session
      * @param item the cartItem to be created
-     * @return CartDto with all given information of the Cart
+     * @param response the response for the client
+     * @return  CartDto with all given information of the Cart
      */
     @PermitAll
     @PostMapping

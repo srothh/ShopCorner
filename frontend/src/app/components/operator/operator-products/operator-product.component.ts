@@ -4,11 +4,12 @@ import {Product} from '../../../dtos/product';
 import {Router, UrlSerializer} from '@angular/router';
 import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
-import {CategoryService} from '../../../services/category.service';
-import {TaxRateService} from '../../../services/tax-rate.service';
+import {CategoryService} from '../../../services/category/category.service';
+import {TaxRateService} from '../../../services/tax-rate/tax-rate.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
-import {faFilter} from '@fortawesome/free-solid-svg-icons';
+import {faPlusCircle, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
 import {PageableProducts} from '../../../services/pagination/pageable-products';
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-operator-products',
@@ -17,7 +18,8 @@ import {PageableProducts} from '../../../services/pagination/pageable-products';
 })
 export class OperatorProductComponent implements OnInit {
   @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
-  faFilter = faFilter;
+  faPlusCircle = faPlusCircle;
+  faMinusCircle = faMinusCircle;
   categories: Category[];
   taxRates: TaxRate[];
   selectedProducts: Product[] = [];
@@ -35,6 +37,7 @@ export class OperatorProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchProducts();
+    this.fetchCategoriesAndTaxRates();
   }
 
   /**
@@ -49,6 +52,18 @@ export class OperatorProductComponent implements OnInit {
   fetchProducts(): void {
     this.pageableProducts.fetchProducts();
   }
+
+  fetchCategoriesAndTaxRates() {
+    forkJoin([this.categoryService.getCategories(), this.taxRateService.getTaxRates()])
+      .subscribe(([categoriesData, taxRatesData]) => {
+        this.categories = categoriesData;
+        this.taxRates = taxRatesData;
+      }, (error) => {
+        this.error = true;
+        this.errorMessage = error;
+      });
+  }
+
 
   resetAndFetchProducts(searchForm) {
     this.pageableProducts.searchQuery = {
@@ -116,19 +131,16 @@ export class OperatorProductComponent implements OnInit {
         }
       }, error => {
         this.error = true;
-        this.errorMessage = error.error.message;
+        this.errorMessage = error;
       });
     }
   }
 
   errorOccurred() {
-    return this.error || this.pageableProducts.error;
+    return this.pageableProducts.error;
   }
 
   getErrorMessage() {
-    if (this.error) {
-      return this.errorMessage;
-    }
     return this.pageableProducts.errorMessage;
   }
 

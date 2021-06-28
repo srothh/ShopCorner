@@ -21,38 +21,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-
-public class OperatorEndpointTest implements TestData {
+class OperatorEndpointTest implements TestData {
 
     @Autowired
     CacheManager cacheManager;
@@ -83,7 +72,7 @@ public class OperatorEndpointTest implements TestData {
     private final Operator operator = new Operator(TEST_OPERATOR_NAME, TEST_OPERATOR_LOGINNAME, TEST_OPERATOR_PASSWORD, TEST_OPERATOR_EMAIL, TEST_OPERATOR_PERMISSION);
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         operatorService.deleteAll();
         Operator admin = new Operator(TEST_ADMIN_NAME, TEST_ADMIN_LOGINNAME, TEST_ADMIN_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PERMISSIONS);
         Operator employee = new Operator(TEST_EMPLOYEE_NAME, TEST_EMPLOYEE_LOGINNAME, TEST_EMPLOYEE_PASSWORD, TEST_EMPLOYEE_EMAIL, TEST_EMPLOYEE_PERMISSIONS);
@@ -91,7 +80,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPost_thenOperatorWithAllSetPropertiesPlusId() throws Exception {
+    void givenNothing_whenPost_thenOperatorWithAllSetPropertiesPlusId() throws Exception {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         String body = objectMapper.writeValueAsString(operatorDto);
         MvcResult mvcResult = this.mockMvc.perform(post(OPERATOR_BASE_URI)
@@ -126,7 +115,7 @@ public class OperatorEndpointTest implements TestData {
 
 
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
+    void givenNothing_whenPostInvalid_then400() throws Exception {
         operator.setName(null);
         operator.setEmail(null);
         operator.setLoginName(null);
@@ -153,7 +142,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneOperator_whenPostAlreadyExists_then422() throws Exception {
+    void givenOneOperator_whenPostAlreadyExists_then422() throws Exception {
         operatorRepository.save(operator);
 
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
@@ -174,7 +163,7 @@ public class OperatorEndpointTest implements TestData {
 
 
     @Test
-    public void givenNothing_whenFindAll_thenEmptyList() throws Exception {
+    void givenNothing_whenFindAll_thenEmptyList() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "?page=0&page_count=0&permissions=admin")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
@@ -192,7 +181,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoOperators_whenFindAllWithPageAndPermission_thenListWithSizeOneAndOverviewOperatorsWithAllPropertiesExceptPassword()
+    void givenTwoOperators_whenFindAllWithPageAndPermission_thenListWithSizeOneAndOverviewOperatorsWithAllPropertiesExceptPassword()
         throws Exception {
         operatorService.save(admin);
         operatorService.save(employee);
@@ -223,7 +212,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneAdmin_whenFindAllWithPageAndPermissionAdminAsEmployee_thenReturnForbidden()
+    void givenOneAdmin_whenFindAllWithPageAndPermissionAdminAsEmployee_thenReturnForbidden()
         throws Exception {
         operatorRepository.save(admin);
 
@@ -237,7 +226,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoOperators_whenGetCount_thenArrayWithTwoOnes()
+    void givenTwoOperators_whenGetCount_thenArrayWithTwoOnes()
         throws Exception {
         operatorRepository.save(admin);
         operatorRepository.save(employee);
@@ -271,7 +260,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoOperators_whenGetCount_thenArrayWithTwoOnesInCache()
+    void givenTwoOperators_whenGetCount_thenArrayWithTwoOnesInCache()
         throws Exception {
         OperatorDto adminDto = operatorMapper.entityToDto(admin);
         String body = objectMapper.writeValueAsString(adminDto);
@@ -319,7 +308,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoOperators_whenDelete_findAllAfterDeleteReturnsListOfSize1()
+    void givenTwoOperators_whenDelete_findAllAfterDeleteReturnsListOfSize1()
         throws Exception {
         operatorRepository.save(admin);
         operatorRepository.save(employee);
@@ -349,7 +338,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenDelete_thenNotFoundResponse()
+    void givenNothing_whenDelete_thenNotFoundResponse()
         throws Exception {
         MvcResult mvcResultDelete = this.mockMvc.perform(delete(OPERATORS_BASE_URI + "/" + 100)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
@@ -361,7 +350,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneAdmin_whenDeleteOwnAccount_thenForbiddenResponse()
+    void givenOneAdmin_whenDeleteOwnAccount_thenForbiddenResponse()
         throws Exception {
         Operator saved = operatorRepository.save(admin);
 
@@ -375,7 +364,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoAdmins_whenDeleteAndNotOwnAccount_findAllAfterDeleteReturnsListOfSize1()
+    void givenTwoAdmins_whenDeleteAndNotOwnAccount_findAllAfterDeleteReturnsListOfSize1()
         throws Exception {
         Operator admin1 = operatorRepository.save(admin);
         Operator admin2 = operatorRepository.save(operator);
@@ -405,7 +394,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenChangePermissions_thenNotFoundResponse()
+    void givenNothing_whenChangePermissions_thenNotFoundResponse()
         throws Exception {
         String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.admin));
 
@@ -421,7 +410,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneAdmin_whenChangeOwnPermissions_thenForbiddenResponse()
+    void givenOneAdmin_whenChangeOwnPermissions_thenForbiddenResponse()
         throws Exception {
         operatorRepository.save(admin);
         String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.employee));
@@ -438,7 +427,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoOperators_whenChangePermissions_thenGetAdminWithLengthTwoAndEmployeeWithLengthZero()
+    void givenTwoOperators_whenChangePermissions_thenGetAdminWithLengthTwoAndEmployeeWithLengthZero()
         throws Exception {
         operatorRepository.save(admin);
         operatorRepository.save(employee);
@@ -496,7 +485,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoAdmins_whenChangePermissions_thenGetAdminWithLengthOneAndEmployeeWithLengthOne()
+    void givenTwoAdmins_whenChangePermissions_thenGetAdminWithLengthOneAndEmployeeWithLengthOne()
         throws Exception {
         operatorRepository.save(admin);
         operatorRepository.save(operator);
@@ -554,7 +543,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneAdmin_whenChangePermissionsAsEmployee_thenForbiddenResponse()
+    void givenOneAdmin_whenChangePermissionsAsEmployee_thenForbiddenResponse()
         throws Exception {
         operatorRepository.save(admin);
         String body = objectMapper.writeValueAsString(new OperatorPermissionChangeDto(Permissions.admin));
@@ -571,7 +560,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneOperator_whenPutByNonExistingId_then404() throws Exception {
+    void givenOneOperator_whenPutByNonExistingId_then404() throws Exception {
         operatorRepository.save(operator);
 
         employee.setId(-1L);
@@ -592,7 +581,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenOneOperator_whenPutByExistingId_thenVerifyOperatorChanged() throws Exception {
+    void givenOneOperator_whenPutByExistingId_thenVerifyOperatorChanged() throws Exception {
         Operator updatedOperator = operatorRepository.save(operator);
         updatedOperator.setName("Updated Name");
         updatedOperator.setPassword("unchanged");
@@ -632,7 +621,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoOperators_whenPutByExistingIdAndChangedOperatorAlreadyExists_then422() throws Exception {
+    void givenTwoOperators_whenPutByExistingIdAndChangedOperatorAlreadyExists_then422() throws Exception {
         Operator firstOperator = operatorRepository.save(admin);
         Operator updatedOperator = operatorRepository.save(operator);
 
@@ -657,7 +646,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoOperators_whenPutByExistingIdAndIllegalAccess_then403() throws Exception {
+    void givenTwoOperators_whenPutByExistingIdAndIllegalAccess_then403() throws Exception {
         operatorRepository.save(admin);
         Operator updatedOperator = operatorRepository.save(operator);
 
@@ -682,7 +671,7 @@ public class OperatorEndpointTest implements TestData {
 
 
     @Test
-    public void givenOneOperator_whenPutInvalid_then400() throws Exception {
+    void givenOneOperator_whenPutInvalid_then400() throws Exception {
         Operator updatedOperator = operatorRepository.save(operator);
         updatedOperator.setName(null);
         updatedOperator.setLoginName(null);
@@ -706,7 +695,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenFindByLoginName_then404() throws Exception {
+    void givenNothing_whenFindByLoginName_then404() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(OPERATORS_BASE_URI + "/" + operator.getLoginName())
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(TEST_OPERATOR_LOGINNAME, ADMIN_ROLES)))
             .andDo(print())
@@ -719,7 +708,7 @@ public class OperatorEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoOperators_whenFindByLoginName_thenCorrectOperator() throws Exception {
+    void givenTwoOperators_whenFindByLoginName_thenCorrectOperator() throws Exception {
         Operator operator = operatorRepository.save(admin);
         operatorRepository.save(employee);
 

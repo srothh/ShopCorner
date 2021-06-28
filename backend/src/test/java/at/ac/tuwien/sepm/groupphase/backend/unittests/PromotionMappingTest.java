@@ -21,14 +21,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class PromotionMappingTest implements TestData {
+class PromotionMappingTest implements TestData {
 
     private final Promotion promotion = new Promotion(0L, TEST_PROMOTION_NAME, TEST_PROMOTION_DISCOUNT, LocalDateTime.now(), TEST_PROMOTION_EXPIRATIONDATE, TEST_PROMOTION_CODE, TEST_PROMOTION_MINIMUMORDERVALUE);
     @Autowired
     PromotionMapper promotionMapper;
 
     @Test
-    public void givenNothing_whenMapPromotionToPromotionDto_thenEntityHasAllProperties() {
+    void givenNothing_whenMapPromotionToPromotionDto_thenEntityHasAllProperties() {
         PromotionDto promotionDto = promotionMapper.promotionToPromotionDto(promotion);
         assertAll(
             () -> assertEquals(0, promotionDto.getId()),
@@ -41,7 +41,7 @@ public class PromotionMappingTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenMapListWithTwoPromotionEntitiesToDto_thenGetListWithSizeTwoAndAllProperties() {
+    void givenNothing_whenMapListWithTwoPromotionEntitiesToDto_thenGetListWithSizeTwoAndAllProperties() {
         List<Promotion> promotions = new ArrayList<>();
         promotions.add(promotion);
         promotions.add(promotion);

@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -33,6 +31,6 @@ public class TaxRateServiceImpl implements TaxRateService {
 
     public TaxRate findTaxRateById(Long taxRateId) {
         LOGGER.trace("findTaxRateById({})", taxRateId);
-        return this.taxRateRepository.findById(taxRateId).orElseThrow(() -> new NotFoundException("Could not find tax-rate!"));
+        return this.taxRateRepository.findById(taxRateId).orElseThrow(() -> new NotFoundException("Steuersatz konnte nicht gefunden werden"));
     }
 }

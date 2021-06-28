@@ -4,12 +4,8 @@ import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.*;
-import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.OrderRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,11 +33,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class PayPalEndpointTest implements TestData {
+class PayPalEndpointTest implements TestData {
     @Autowired
     private MockMvc mockMvc;
-
-
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -66,7 +60,7 @@ public class PayPalEndpointTest implements TestData {
 
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         orderRepository.deleteAll();
         invoice.setAmount(12.56);
         invoice.setInvoiceType(InvoiceType.customer);
@@ -75,7 +69,7 @@ public class PayPalEndpointTest implements TestData {
     }
 
     @Test
-    public void givenAOrder_whenProceedToPay_thenExpectValidRedirectURLAndSuccessfulPayment() throws Exception{
+    void givenAOrder_whenProceedToPay_thenExpectValidRedirectURLAndSuccessfulPayment() throws Exception{
         OrderDto dto = orderMapper.orderToOrderDto(order);
         String body = objectMapper.writeValueAsString(dto);
 

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {faEdit, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faMinusCircle, faInfo} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Customer} from '../../../dtos/customer';
-import {MeService} from '../../../services/me.service';
+import {MeService} from '../../../services/me/me.service';
 import {Address} from '../../../dtos/address';
 import {CustomerAuthService} from '../../../services/auth/customer-auth.service';
 import {Router} from '@angular/router';
@@ -19,6 +19,7 @@ export class ShopAccountProfileComponent implements OnInit {
   // Fontawesome Styling Components
   faEdit = faEdit;
   faMinusCircle = faMinusCircle;
+  faInfo = faInfo;
 
   editForm: FormGroup;
   isEditMode = false;
@@ -32,6 +33,7 @@ export class ShopAccountProfileComponent implements OnInit {
               private customerAuthService: CustomerAuthService,
               private router: Router,
               private modalService: NgbModal) {
+    this.initializeForm();
   }
 
   ngOnInit(): void {
@@ -64,13 +66,8 @@ export class ShopAccountProfileComponent implements OnInit {
         modalRef.componentInstance.body = 'Ihr Konto wurde erfolgreich gelöscht!';
       });
     }, error => {
-      console.log(error);
       this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
+      this.errorMessage = error;
     });
   }
 
@@ -86,7 +83,7 @@ export class ShopAccountProfileComponent implements OnInit {
    */
   cancelEdit() {
     this.toggleEditMode();
-    this.initializeForm();
+    this.updateForm();
   }
 
   /**
@@ -113,16 +110,12 @@ export class ShopAccountProfileComponent implements OnInit {
       this.editForm.value.phoneNumber
     );
 
-    if(this.editForm.value.password !== '' && this.editForm.value.newPassword !== ''){
-      this.meService.updatePassword(this.editForm.value.password, this.editForm.value.newPassword).subscribe(() => {}, error => {
-        console.log(error);
+    if (this.editForm.value.password !== '' && this.editForm.value.newPassword !== '') {
+      this.meService.updatePassword(this.editForm.value.password, this.editForm.value.newPassword).subscribe(() => {
+      }, error => {
         this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
-      }, ()=> {
+        this.errorMessage = error;
+      }, () => {
         this.editData();
       });
     } else {
@@ -138,22 +131,17 @@ export class ShopAccountProfileComponent implements OnInit {
   }
 
   /**
-   * Fetches my profile (customer data) and initializes the form
+   * Fetches my profile (customer data) and updates the form
    *
    * @private
    */
   private fetchMyProfile() {
     this.meService.getMyProfileData().subscribe((myProfile) => {
       this.myProfile = myProfile;
-      this.initializeForm();
+      this.updateForm();
     }, error => {
-      console.log(error);
       this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
+      this.errorMessage = error;
     });
   }
 
@@ -162,18 +150,14 @@ export class ShopAccountProfileComponent implements OnInit {
    *
    * @private
    */
-  private editData(){
+  private editData() {
+    this.resetPassword();
     const user = this.customerAuthService.getUser();
 
     this.meService.updateProfileData(this.myProfile).subscribe(() => {
     }, error => {
-      console.log(error);
       this.error = true;
-      if (typeof error.error === 'object') {
-        this.errorMessage = error.error.error;
-      } else {
-        this.errorMessage = error.error;
-      }
+      this.errorMessage = error;
     }, () => {
       if (this.myProfile.loginName !== user) {
         this.customerAuthService.logoutUser();
@@ -182,25 +166,33 @@ export class ShopAccountProfileComponent implements OnInit {
     });
   }
 
+  private resetPassword() {
+    this.editForm.controls['password'].setValue('');
+    this.editForm.controls['newPassword'].setValue('');
+  }
+
+  private updateForm() {
+    this.editForm = this.myProfile.buildFormGroup(this.editForm);
+  }
+
   /**
    * Initializes the form data with the customer data
    *
    * @private
    */
   private initializeForm() {
-    // TODO: add validators
     this.editForm = this.formBuilder.group({
-      loginName: [this.myProfile.loginName],
-      email: [this.myProfile.email],
-      name: [this.myProfile.name],
-      phoneNumber: [this.myProfile.phoneNumber],
+      loginName: [''],
+      email: [''],
+      name: [''],
+      phoneNumber: [''],
       password: [''],
       newPassword: [''],
-      street: [this.myProfile.address.street],
-      postalCode: [this.myProfile.address.postalCode],
-      houseNumber: [this.myProfile.address.houseNumber],
-      stairNumber: [this.myProfile.address.stairNumber],
-      doorNumber: [this.myProfile.address.doorNumber],
+      street: [''],
+      postalCode: [''],
+      houseNumber: [''],
+      stairNumber: [''],
+      doorNumber: [''],
     });
   }
 }

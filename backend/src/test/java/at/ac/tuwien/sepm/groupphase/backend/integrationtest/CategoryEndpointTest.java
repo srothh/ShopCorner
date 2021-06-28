@@ -10,14 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CategoryMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
-import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.CategoryRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.ProductRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +38,7 @@ import java.util.List;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class CategoryEndpointTest implements TestData {
+class CategoryEndpointTest implements TestData {
     @Autowired
     private MockMvc mockMvc;
 
@@ -65,12 +62,12 @@ public class CategoryEndpointTest implements TestData {
     private final Category category3 = new Category();
     private final Product product = new Product();
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         categoryRepository.deleteAll();
         category.setName(TEST_CATEGORY_NAME);
     }
     @Test
-    public void givenNothing_whenPost_thenCategoryWithAllSetPropertiesPlusId() throws Exception {
+    void givenNothing_whenPost_thenCategoryWithAllSetPropertiesPlusId() throws Exception {
         CategoryDto categoryDto = categoryMapper.entityToDto(category);
         String body = objectMapper.writeValueAsString(categoryDto);
 
@@ -94,7 +91,7 @@ public class CategoryEndpointTest implements TestData {
         assertEquals(category, categoryMapper.dtoToEntity(categoryResponse));
     }
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
+    void givenNothing_whenPostInvalid_then400() throws Exception {
         category.setName("Too Long String - Too Long String - Too Long String - Too Long String");
 
         CategoryDto categoryDto = categoryMapper.entityToDto(category);
@@ -119,7 +116,7 @@ public class CategoryEndpointTest implements TestData {
         );
     }
     @Test
-    public void givenACategory_whenPut_thenVerifyCategoryChanged() throws Exception{
+    void givenACategory_whenPut_thenVerifyCategoryChanged() throws Exception{
         Category newCategory = categoryRepository.save(category);
         newCategory.setName("changedCategory");
         CategoryDto categoryDto = categoryMapper.entityToDto(newCategory);
@@ -138,7 +135,7 @@ public class CategoryEndpointTest implements TestData {
         assertEquals(newCategory.getName(),updatedCategory.getName());
     }
     @Test
-    public void givenACategory_whenPutByNonExistingId_then400() throws Exception {
+    void givenACategory_whenPutByNonExistingId_then400() throws Exception {
         categoryRepository.save(category);
         System.out.println("All categories in repository: " + this.categoryRepository.findAll());
         Category newCategory = new Category();
@@ -154,7 +151,7 @@ public class CategoryEndpointTest implements TestData {
             .andExpect(status().isNotFound());
     }
     @Test
-    public void givenACategory_whenPutIllegalArgument_then400() throws Exception{
+    void givenACategory_whenPutIllegalArgument_then400() throws Exception{
         Category newCategory = categoryRepository.save(category);
         newCategory.setName("       ");
         CategoryDto categoryDto = categoryMapper.entityToDto(newCategory);
@@ -169,7 +166,7 @@ public class CategoryEndpointTest implements TestData {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
     @Test
-    public void givenACategory_whenDelete_thenVerifyCategoryDeleted() throws Exception {
+    void givenACategory_whenDelete_thenVerifyCategoryDeleted() throws Exception {
 
         Category newCategory = categoryRepository.save(category);
 
@@ -184,7 +181,7 @@ public class CategoryEndpointTest implements TestData {
         assertEquals(0, categoryRepository.findAll().size());
     }
     @Test
-    public void givenSeveralCategories_whenDeleteMultiple_thenVerifyCategoriesDeleted() throws Exception {
+    void givenSeveralCategories_whenDeleteMultiple_thenVerifyCategoriesDeleted() throws Exception {
 
         Category newCategory = categoryRepository.save(category);
         category2.setName("Cat2");
