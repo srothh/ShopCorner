@@ -275,14 +275,14 @@ public class ProductEndpointTest implements TestData {
 
     @Test
     public void givenATaxRate_whenDeleteByNonExistingId_then404() throws Exception {
-        this.productRepository.deleteAll();
+        taxRateRepository.save(taxRate);
+        product.setId(-1000L);
 
-        MvcResult mvcResult = this.mockMvc.perform(delete(PRODUCTS_BASE_URI + "/" + -1000L)
+        MvcResult mvcResult = this.mockMvc.perform(delete(PRODUCTS_BASE_URI + "/" + product.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
             .andReturn();
-
         MockHttpServletResponse response = mvcResult.getResponse();
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
