@@ -2,15 +2,18 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 public class UpdatePasswordDto {
 
-    @NotNull(message = "Altes passwort darf nicht null sein")
-    @NotBlank(message = "Altes passwort darf nicht leer sein")
+    @NotNull(message = "Altes Passwort darf nicht null sein")
+    @NotBlank(message = "Altes Passwort darf nicht leer sein")
+    @Size(min = 8, message = "Altes Passwort muss mindestens aus 8 Zeichen bestehen.")
     private String oldPassword;
-    @NotNull(message = "Neues passwort darf nicht null sein")
-    @NotBlank(message = "Neues passwort darf nicht leer sein")
+    @NotNull(message = "Neues Passwort darf nicht null sein")
+    @NotBlank(message = "Neues Passwort darf nicht leer sein")
+    @Size(min = 8, message = "Neues Passwort muss mindestens aus 8 Zeichen bestehen.")
     private String newPassword;
 
     public UpdatePasswordDto(){}
