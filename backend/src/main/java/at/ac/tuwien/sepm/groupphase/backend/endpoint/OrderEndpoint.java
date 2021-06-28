@@ -69,7 +69,7 @@ public class OrderEndpoint {
      * @return newly placed order
      * @throws IOException if something with the shop settings goes wrong
      */
-    @PermitAll
+    @Secured({"ROLE_CUSTOMER"})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Place a new order", security = @SecurityRequirement(name = "apiKey"))

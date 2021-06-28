@@ -38,7 +38,7 @@ export class OrderService {
    * @return the order dto as returned from the backend
    */
   placeNewOrder(order: Order): Observable<Order> {
-    return this.httpClient.post<Order>(this.orderBaseURI, order, {withCredentials: true, headers: this.getHeadersForOperator()});
+    return this.httpClient.post<Order>(this.orderBaseURI, order, {withCredentials: true, headers: this.getHeadersForCustomer()});
   }
 
   /** sets the cancellation period for orders.
