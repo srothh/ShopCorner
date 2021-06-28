@@ -32,6 +32,7 @@ export class ShopAccountProfileComponent implements OnInit {
               private customerAuthService: CustomerAuthService,
               private router: Router,
               private modalService: NgbModal) {
+    this.initializeForm();
   }
 
   ngOnInit(): void {
@@ -81,7 +82,7 @@ export class ShopAccountProfileComponent implements OnInit {
    */
   cancelEdit() {
     this.toggleEditMode();
-    this.initializeForm();
+    this.updateForm();
   }
 
   /**
@@ -128,14 +129,14 @@ export class ShopAccountProfileComponent implements OnInit {
   }
 
   /**
-   * Fetches my profile (customer data) and initializes the form
+   * Fetches my profile (customer data) and updates the form
    *
    * @private
    */
   private fetchMyProfile() {
     this.meService.getMyProfileData().subscribe((myProfile) => {
       this.myProfile = myProfile;
-      this.initializeForm();
+      this.updateForm();
     }, error => {
       this.error = true;
       this.errorMessage = error;
@@ -162,6 +163,10 @@ export class ShopAccountProfileComponent implements OnInit {
     });
   }
 
+  private updateForm() {
+    this.editForm = this.myProfile.buildFormGroup(this.editForm);
+  }
+
   /**
    * Initializes the form data with the customer data
    *
@@ -169,17 +174,17 @@ export class ShopAccountProfileComponent implements OnInit {
    */
   private initializeForm() {
     this.editForm = this.formBuilder.group({
-      loginName: [this.myProfile.loginName],
-      email: [this.myProfile.email],
-      name: [this.myProfile.name],
-      phoneNumber: [this.myProfile.phoneNumber],
+      loginName: [''],
+      email: [''],
+      name: [''],
+      phoneNumber: [''],
       password: [''],
       newPassword: [''],
-      street: [this.myProfile.address.street],
-      postalCode: [this.myProfile.address.postalCode],
-      houseNumber: [this.myProfile.address.houseNumber],
-      stairNumber: [this.myProfile.address.stairNumber],
-      doorNumber: [this.myProfile.address.doorNumber],
+      street: [''],
+      postalCode: [''],
+      houseNumber: [''],
+      stairNumber: [''],
+      doorNumber: [''],
     });
   }
 }
