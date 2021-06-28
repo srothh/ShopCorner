@@ -20,8 +20,8 @@ export class InvoiceService {
   private customerBaseUri: string = this.globals.backendUri + '/customers';
   constructor(private httpClient: HttpClient,
               private globals: Globals,
-              private operatorAuthService: OperatorAuthService,
-              private customerAuthService: CustomerAuthService) {
+              private operatorAuthService: OperatorAuthService
+  ) {
   }
 
   /**
