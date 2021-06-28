@@ -23,15 +23,12 @@
         <th scope="col" class="tax">MwSt</th>
         <th scope="col" class="price">Einzelpreis inkl. MwSt</th>
         <th scope="col" class="total" colspan="2">Gesamtbetrag</th>
-
       </tr>
       </thead>
       <tbody class="border">
       <tr *ngFor="let product of products; let i = index" style="cursor: pointer">
-        <td class="centerContent picture" (click)="routeToDetailView(product)"><img *ngIf="product.picture != null"
-                                                                                    class="card-img-top"
-                                                                                    src="{{getImageSource(product)}}"
-                                                                                    alt="produkt"></td>
+        <td class="centerContent picture" (click)="routeToDetailView(product)">
+          <img *ngIf="product.picture != null" class="card-img-top" src="{{getImageSource(product)}}" alt="produkt"></td>
         <td class="name" (click)="routeToDetailView(product)">{{product.name}}</td>
         <td class="quantity"><input type="number" name="quantity" id="quantity" min=1 max=12 [value]="product.cartItemQuantity"
                                     (mouseleave)="updateQuantity($event, i)"

@@ -4,6 +4,7 @@ import {Promotion} from '../../../dtos/promotion';
 import {PromotionService} from '../../../services/promotion.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {Globals} from '../../../global/globals';
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-promotions',
@@ -11,7 +12,6 @@ import {Globals} from '../../../global/globals';
   styleUrls: ['./operator-promotion.component.scss']
 })
 export class OperatorPromotionComponent implements OnInit {
-
   error = false;
   errorMessage = '';
   promotions: Promotion[];
@@ -19,6 +19,7 @@ export class OperatorPromotionComponent implements OnInit {
   pageSize = 15;
   collectionSize = 0;
   form = false;
+  faPlusCircle = faPlusCircle;
 
   constructor(private promotionService: PromotionService,
               private authService: OperatorAuthService,

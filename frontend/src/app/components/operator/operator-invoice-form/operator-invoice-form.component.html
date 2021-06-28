@@ -9,7 +9,10 @@
 <form class="needs-validation" [formGroup]="newInvoiceForm" (ngSubmit)="onSubmit()">
   <div class="d-flex justify-content-between mb-3">
     <h4>Rechnungs Artikel</h4>
-    <button type="button" class="btn btn-success" (click)="addProductOnClick()">+ Neu</button>
+    <button type="button" class="btn btn-success" (click)="addProductOnClick()">
+      <fa-icon class="mr-2" [icon]="faPlusCircle"></fa-icon>
+      Neu
+    </button>
   </div>
 
   <div class="row align-items-start">
@@ -58,7 +61,8 @@
                readonly>
       </div>
       <div class="col-0">
-        <button type="button" class="btn btn-outline-danger" (click)="deleteProductFromInvoice(id)">Löschen
+        <button type="button" class="btn btn-outline-danger" (click)="deleteProductFromInvoice(id)">
+          Löschen
         </button>
       </div>
     </div>
