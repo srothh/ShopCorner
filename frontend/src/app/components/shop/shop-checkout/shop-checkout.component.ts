@@ -130,7 +130,6 @@ export class ShopCheckoutComponent implements OnInit {
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
-    console.log(this.invoiceDto.amount);
   }
   vanishError() {
     this.error = false;

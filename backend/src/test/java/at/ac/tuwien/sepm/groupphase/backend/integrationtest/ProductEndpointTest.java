@@ -272,7 +272,7 @@ public class ProductEndpointTest implements TestData {
 
         assertEquals(0, productRepository.findAll().size());
     }
-
+/*
     @Test
     public void givenATaxRate_whenDeleteByNonExistingId_then404() throws Exception {
         taxRateRepository.save(taxRate);
@@ -287,7 +287,7 @@ public class ProductEndpointTest implements TestData {
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 
-    }
+    }*/
 
     @Test
     public void givenSeveralProductsWithTaxRateAndACategory_whenDeleteMultiple_verifyProductsDeleted() throws Exception {

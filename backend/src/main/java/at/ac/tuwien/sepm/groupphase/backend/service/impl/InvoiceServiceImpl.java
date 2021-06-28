@@ -108,13 +108,13 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice findOneById(Long id) {
         LOGGER.trace("findOneById({})", id);
-        return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Konnte Rechnung mit der id %s nicht finden", id)));
+        return this.invoiceRepository.findById(id).orElseThrow(() -> new NotFoundException("Rechnung konnte nicht gefunden werden"));
     }
 
     @Override
     public Invoice findOneByOrderNumber(String orderNumber) {
         return this.invoiceRepository.findByOrderNumber(orderNumber)
-            .orElseThrow(() -> new NotFoundException(String.format("Konnte Rechnung mit der Bestellnummer %s nicht finden", orderNumber)));
+            .orElseThrow(() -> new NotFoundException("Rechnung konnte nicht gefunden werden"));
     }
 
     @Override
