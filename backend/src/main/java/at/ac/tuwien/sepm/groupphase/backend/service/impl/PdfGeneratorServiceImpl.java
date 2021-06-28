@@ -30,9 +30,9 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 
     @Autowired
     public PdfGeneratorServiceImpl(@Lazy PdfGenerator pdfGenerator,
-                                   OrderService orderService,
-                                   InvoiceArchiveService invoiceArchiveService,
-                                   ShopService shopService) throws IOException {
+                                   @Lazy OrderService orderService,
+                                   @Lazy InvoiceArchiveService invoiceArchiveService,
+                                   @Lazy ShopService shopService) throws IOException {
         this.pdfGenerator = pdfGenerator;
         this.orderService = orderService;
         this.invoiceArchiveService = invoiceArchiveService;
