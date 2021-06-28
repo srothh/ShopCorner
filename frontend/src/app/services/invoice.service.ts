@@ -9,6 +9,7 @@ import {Pagination} from '../dtos/pagination';
 import {InvoiceType} from '../dtos/invoiceType.enum';
 import {Customer} from '../dtos/customer';
 import {CustomerAuthService} from './auth/customer-auth.service';
+import {Order} from '../dtos/order';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,8 @@ export class InvoiceService {
   private invoiceBaseUri: string = this.globals.backendUri + '/invoices';
   private productBaseUri: string = this.globals.backendUri + '/products';
   private customerBaseUri: string = this.globals.backendUri + '/customers';
+  private orderBaseUri: string = this.globals.backendUri + '/orders';
+
   constructor(private httpClient: HttpClient,
               private globals: Globals,
               private operatorAuthService: OperatorAuthService,
@@ -79,6 +82,7 @@ export class InvoiceService {
   }
 
 
+
   /**
    * Loads invoice by id from the backend
    *
@@ -130,6 +134,16 @@ export class InvoiceService {
    */
   createInvoiceAsPdf(invoice: Invoice): Observable<any> {
     return this.httpClient.post(this.invoiceBaseUri, invoice , this.getPdfHeadersForOperator());
+  }
+
+  /**
+   * Loads customer by orderNumber from the backend
+   *
+   * @param orderNumber of the invoice
+   * @return order from invoice
+   */
+  getOrderByOrderNumber(orderNumber: string): Observable<Order> {
+    return this.httpClient.get<Order>(this.orderBaseUri + '/' + orderNumber + '/order', {headers: this.getHeadersForOperator()});
   }
 
   private getHeadersForOperator(): HttpHeaders {

@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -109,8 +110,16 @@ public class OrderEndpoint {
         if (order.getCustomer().getLoginName().equals(principal.getName())) {
             return this.orderMapper.orderToOrderDto(order);
         }
-
         throw new AccessDeniedException("Illegal access");
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping("/{orderNumber}/order")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Retrieve order", security = @SecurityRequirement(name = "apiKey"))
+    public OrderDto getOrderById(@PathVariable String orderNumber) {
+        LOGGER.info("GET " + BASE_URL + "/{}", orderNumber);
+        return this.orderMapper.orderToOrderDto(this.orderService.findOrderByOrderNumber(orderNumber));
     }
 
     /**
