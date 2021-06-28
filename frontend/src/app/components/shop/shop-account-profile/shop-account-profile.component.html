@@ -28,8 +28,7 @@
       <h4>Profil</h4>
       <div>
         <label for="username">Benutzername</label>
-        <input *ngIf="isEditMode" type="text" name="username" formControlName="loginName" class="form-control"
-               id="username">
+        <input *ngIf="isEditMode" type="text" name="username" formControlName="loginName" class="form-control" id="username">
         <span *ngIf="!isEditMode">{{ editForm.value.loginName }}</span>
       </div>
       <div>

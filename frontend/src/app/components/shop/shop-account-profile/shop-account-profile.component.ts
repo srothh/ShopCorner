@@ -82,7 +82,7 @@ export class ShopAccountProfileComponent implements OnInit {
    */
   cancelEdit() {
     this.toggleEditMode();
-    this.initializeForm();
+    this.updateForm();
   }
 
   /**
@@ -129,7 +129,7 @@ export class ShopAccountProfileComponent implements OnInit {
   }
 
   /**
-   * Fetches my profile (customer data) and initializes the form
+   * Fetches my profile (customer data) and updates the form
    *
    * @private
    */
