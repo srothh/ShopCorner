@@ -37,7 +37,7 @@ public interface InvoiceService {
     /**
      * Find a single invoice entry with the given id and customerId.
      *
-     * @param id         the id of the invoice entry
+     * @param id the id of the invoice entry
      * @param customerId the id of the customer
      * @return the invoice entry
      * @throws NotFoundException when no invoice with the id is found
