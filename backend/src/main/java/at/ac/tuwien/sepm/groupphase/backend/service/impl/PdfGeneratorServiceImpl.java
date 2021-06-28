@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceArchiveService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
+import at.ac.tuwien.sepm.groupphase.backend.service.ShopService;
 import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 @Service
@@ -23,12 +25,20 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     private final PdfGenerator pdfGenerator;
     private final OrderService orderService;
     private final InvoiceArchiveService invoiceArchiveService;
+    private final ShopService shopService;
+    private final ShopSettings shopSettings;
 
     @Autowired
-    public PdfGeneratorServiceImpl(@Lazy PdfGenerator pdfGenerator, OrderService orderService, InvoiceArchiveService invoiceArchiveService) {
+    public PdfGeneratorServiceImpl(@Lazy PdfGenerator pdfGenerator,
+                                   OrderService orderService,
+                                   InvoiceArchiveService invoiceArchiveService,
+                                   ShopService shopService) throws IOException {
         this.pdfGenerator = pdfGenerator;
         this.orderService = orderService;
         this.invoiceArchiveService = invoiceArchiveService;
+        this.shopService = shopService;
+        this.shopSettings = shopService.getSettings();
+        this.pdfGenerator.setShopSettings(this.shopSettings);
     }
 
     @Override

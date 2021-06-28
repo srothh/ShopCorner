@@ -33,15 +33,11 @@ public class PdfGenerator {
     private final String htmlCustomer;
     private final String htmlCanceledOperator;
     private final String htmlCanceledCustomer;
-    //private final ShopService shopService;
     private ShopSettings shopSettings;
 
-    @Autowired
     public PdfGenerator() {
         String directory = "src/main/resources/invoice-templates";
-        //this.shopService = shopService;
         try {
-            //shopSettings = this.shopService.getSettings();
 
             BufferedReader in = new BufferedReader(new FileReader(directory + "/operatorInvoiceTemplate_v1.html"));
             htmlOperator = in.lines().collect(Collectors.joining());
@@ -54,6 +50,10 @@ public class PdfGenerator {
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);
         }
+    }
+
+    public void setShopSettings(ShopSettings shopSettings) {
+        this.shopSettings = shopSettings;
     }
 
     public void updateCompanyInformation(ShopSettings shopSettings) {
