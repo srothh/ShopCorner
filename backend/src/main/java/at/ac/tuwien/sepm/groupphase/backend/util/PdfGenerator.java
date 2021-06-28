@@ -16,6 +16,7 @@ import com.itextpdf.styledxmlparser.jsoup.nodes.Document;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -36,10 +37,9 @@ public class PdfGenerator {
     private ShopSettings shopSettings;
 
     @Autowired
-    public PdfGenerator(ShopService shopService) {
+    public PdfGenerator(@Lazy ShopService shopService) {
         String directory = "src/main/resources/invoice-templates";
         this.shopService = shopService;
-
         try {
             shopSettings = this.shopService.getSettings();
 
