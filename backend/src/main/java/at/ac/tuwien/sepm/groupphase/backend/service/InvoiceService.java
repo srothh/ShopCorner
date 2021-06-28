@@ -25,6 +25,16 @@ public interface InvoiceService {
     Invoice findOneById(Long id);
 
     /**
+     * Find a single invoice entry by order number.
+     *
+     * @param orderNumber the order number of the invoice entry
+     * @return the invoice entry
+     * @throws NotFoundException when no invoice with the id is found
+     * @throws RuntimeException  upon encountering errors with the database
+     */
+    Invoice findOneByOrderNumber(String orderNumber);
+
+    /**
      * Find a single invoice entry with the given id and customerId.
      *
      * @param id the id of the invoice entry

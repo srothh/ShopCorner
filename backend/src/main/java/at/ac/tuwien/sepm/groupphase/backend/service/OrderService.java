@@ -45,6 +45,15 @@ public interface OrderService {
      */
     Order findOrderById(Long id);
 
+    /**
+     * Returns the specified order from the database.
+     *
+     * @param orderNumber the order number of the order to be retrieved
+     * @return the specified order
+     * @throws NotFoundException is thrown if the specified order does not exists
+     * @throws RuntimeException upon encountering errors with the database
+     */
+    Order findOrderByOrderNumber(String orderNumber);
 
     /**
      * Updates the given order in the database to canceled.

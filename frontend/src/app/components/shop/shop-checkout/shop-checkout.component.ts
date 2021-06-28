@@ -110,13 +110,13 @@ export class ShopCheckoutComponent implements OnInit {
   proceedToPay() {
     const mappedProducts = this.products.map(ProductService.productMapper);
     mappedProducts.forEach((product) => {
-      if (product.hasExpiration && product.hasExpired){
+      if (product.hasExpiration && product.hasExpired) {
         this.error = true;
         this.errorMessage = `Das Produkt "${product.name}" ist nicht verfügbar. Bitte setzen Sie ihren Einkauf ohne dieses Produkt fort.`;
       }
     });
     if (!this.error) {
-      this.creatInvoiceDto();
+      this.createInvoiceDto();
       const order: Order = new Order(0, this.invoiceDto, this.customer, this.promotion);
       this.paypalService.createPayment(order).subscribe((redirectUrl) => {
         window.location.href = redirectUrl;
@@ -124,8 +124,7 @@ export class ShopCheckoutComponent implements OnInit {
       });
     }
   }
-
-  creatInvoiceDto() {
+  createInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
 

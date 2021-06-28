@@ -241,7 +241,7 @@ public class ProductDataGenerator {
                 invoice.setAmount((double) Math.round(amount * 100) / 100);
                 invoice.setInvoiceNumber(i + "Customer" + invoice.getDate().getYear());
                 int custId = (int) (Math.random() * customers.size());
-                invoice.setCustomerId((long) custId);
+                invoice.setCustomerId(customers.get(custId).getId());
                 invoice.setOrderNumber("Test" + i);
                 if (i % 100 == 0) {
                     invoice.setInvoiceType(InvoiceType.canceled);

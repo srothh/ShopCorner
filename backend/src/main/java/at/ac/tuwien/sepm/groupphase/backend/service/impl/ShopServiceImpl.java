@@ -1,9 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.ShopSettings;
+import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShopService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -22,6 +25,10 @@ public class ShopServiceImpl implements ShopService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final String settingsPath = "src/main/resources/shop.settings";
     private final Properties properties = new Properties();
+
+    @Autowired
+    public ShopServiceImpl() {
+    }
 
     @Override
     public ShopSettings updateSettings(ShopSettings shopSettings) throws IOException {

@@ -118,6 +118,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order findOrderByOrderNumber(String orderNumber) {
+        return this.orderRepository.findOrderByInvoice(this.invoiceService.findOneByOrderNumber(orderNumber))
+            .orElseThrow(() -> new NotFoundException("Konnte die Bestellung nicht finden."));
+    }
+
+    @Override
     @Cacheable(value = "orderPages")
     public Page<Order> getAllOrdersByCustomer(int page, int pageCount, Long customerId) {
         LOGGER.trace("getAllOrdersByCustomerId({})", customerId);

@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -63,7 +64,7 @@ public class MeEndpoint {
                       OrderService orderService,
                       OrderMapper orderMapper,
                       InvoiceService invoiceService,
-                      PdfGeneratorService pdfGeneratorService) {
+                      @Lazy PdfGeneratorService pdfGeneratorService) {
         this.customerMapper = customerMapper;
         this.customerService = customerService;
         this.orderService = orderService;

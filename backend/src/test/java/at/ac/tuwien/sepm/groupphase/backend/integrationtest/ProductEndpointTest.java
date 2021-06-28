@@ -18,7 +18,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TaxRateRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,6 +80,7 @@ public class ProductEndpointTest implements TestData {
     public void beforeEach() {
         productRepository.deleteAll();
         categoryRepository.deleteAll();
+        taxRateRepository.deleteAll();
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -164,7 +164,6 @@ public class ProductEndpointTest implements TestData {
                 assertEquals(2, errors.length);
             }
         );
-
     }
 
     @Test
@@ -278,13 +277,17 @@ public class ProductEndpointTest implements TestData {
         taxRateRepository.save(taxRate);
         product.setId(-1000L);
 
-        ResultActions mvcResult = this.mockMvc.perform(
-            delete(PRODUCTS_BASE_URI + "/" + product.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
-            .andExpect(status().isNotFound());
+        MvcResult mvcResult = this.mockMvc.perform(delete(PRODUCTS_BASE_URI + "/" + product.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 
     }
+
     @Test
     public void givenSeveralProductsWithTaxRateAndACategory_whenDeleteMultiple_verifyProductsDeleted() throws Exception {
         TaxRate newTaxRate = taxRateRepository.save(taxRate);
@@ -305,14 +308,14 @@ public class ProductEndpointTest implements TestData {
 
         List<Long> ids = List.of(newProduct.getId(), newProduct2.getId(), newProduct3.getId());
 
-        for (Long id: ids) {
+        for (Long id : ids) {
             ResultActions mvcResult = this.mockMvc.perform(
                 delete(PRODUCTS_BASE_URI + "/" + id)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
                 .andExpect(status().isOk());
         }
-        assertEquals(0,productRepository.findAll().size());
+        assertEquals(0, productRepository.findAll().size());
 
     }
 

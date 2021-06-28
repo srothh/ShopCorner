@@ -286,7 +286,7 @@ public class CartEndpointTest implements TestData {
     }
 
     @Test
-    public void givenWrongId_whenDelete_then200() throws Exception {
+    public void givenWrongId_whenDelete_then400() throws Exception {
 
         MvcResult mvcResult = this.mockMvc.perform(delete(CART_BASE_URI + "/" + 0L)
             .contentType(MediaType.APPLICATION_JSON))
