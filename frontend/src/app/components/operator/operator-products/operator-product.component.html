@@ -9,20 +9,26 @@
   <div class="product-header">
     <div class="d-flex justify-content-between">
       <h2>Produkte</h2>
-
-      <div *ngIf="getPermission() === 'ADMIN'" class="btn-toolbar">
-        <div class="mr-2">
-          <button type="button" class="btn btn-primary" (click)="addNewProduct()">Produkt hinzufügen</button>
+      <div *ngIf="getPermission() === 'ADMIN'" class="btn-toolbar" style="gap: 10px">
+        <div>
+          <button type="button" class="btn btn-primary" (click)="addNewProduct()">
+            <fa-icon class="mr-2" [icon]="faPlusCircle"></fa-icon>
+            Produkt hinzufügen
+          </button>
         </div>
         <div>
           <div *ngIf="selectedProducts.length >0; else not_selected">
             <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteCommit">
+              <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
               Auswahl löschen
             </button>
           </div>
           <ng-template #not_selected>
           <span>
-            <button type="button" class="btn btn-outline-danger" disabled>Auswahl löschen</button>
+            <button type="button" class="btn btn-outline-danger" disabled>
+              <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
+              Auswahl löschen
+            </button>
           </span>
           </ng-template>
         </div>

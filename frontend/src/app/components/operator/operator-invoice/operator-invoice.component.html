@@ -30,8 +30,10 @@
     </div>
     <div>
       <div>
-        <button type="button" class="btn btn-primary"
-                (click)="toggleSide()">{{(toggleForm || toggleDetailView) ? 'Zurück' : '+ Rechnung'}}</button>
+        <button type="button" class="btn btn-primary" (click)="toggleSide()">
+          <fa-icon [hidden]="(toggleForm || toggleDetailView)" class="mr-2" [icon]="faPlusCircle"></fa-icon>
+          {{(toggleForm || toggleDetailView) ? 'Zurück' : 'Rechnung'}}
+        </button>
       </div>
     </div>
     <div *ngIf="toggleDetailView&&!isDetailedInvoiceCanceled()">

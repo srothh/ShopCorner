@@ -5,34 +5,35 @@
   </button>
 </div>
 
-<div class="operator-category-container">
-  <h2>Kategorien</h2>
-  <div *ngIf="getPermission() === 'ADMIN'">
-    <div class="category_options">
-      <button type="button" class="btn btn-primary" (click)="addNewCategory()">
-        <fa-icon class="mr-2" [icon]="faPlusCircle"></fa-icon>
-        Kategorie hinzufügen
-      </button>
-    </div>
-    <div class="category_options">
-      <div *ngIf="selectedCategories.length >0; else not_selected">
-        <button type="button" class="btn btn-outline-danger" (click)="attemptToDeleteMultipleCategories()">
-          <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
-          Auswahl löschen
+<div class="mt-3">
+  <div class="d-flex justify-content-between">
+    <h2>Kategorien</h2>
+    <div *ngIf="getPermission() === 'ADMIN'" class="btn-toolbar" style="gap: 10px">
+      <div>
+        <button type="button" class="btn btn-primary" (click)="addNewCategory()">
+          <fa-icon class="mr-2" [icon]="faPlusCircle"></fa-icon>
+          Kategorie hinzufügen
         </button>
       </div>
-      <ng-template #not_selected>
-    <span>
-      <button type="button" class="btn btn-outline-danger" disabled>
-        <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
-        Auswahl löschen
-      </button>
-    </span>
-      </ng-template>
+      <div>
+        <div *ngIf="selectedCategories.length >0; else not_selected">
+          <button type="button" class="btn btn-outline-danger" (click)="attemptToDeleteMultipleCategories()">
+            <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
+            Auswahl löschen
+          </button>
+        </div>
+        <ng-template #not_selected>
+        <span>
+          <button type="button" class="btn btn-outline-danger" disabled>
+            <fa-icon class="mr-2" [icon]="faMinusCircle"></fa-icon>
+            Auswahl löschen
+          </button>
+        </span>
+        </ng-template>
+      </div>
     </div>
-    <div class="button_block"></div>
-  </div>
 
+  </div>
   <hr>
   <div class="operator-category-body">
     <div>

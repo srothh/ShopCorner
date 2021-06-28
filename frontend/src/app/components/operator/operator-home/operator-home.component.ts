@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
+import {Permissions} from '../../../dtos/permissions.enum';
 import {Router} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {OperatorService} from '../../../services/operator.service';
 import {Permissions} from '../../../dtos/permissions.enum';
+import {faEdit} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-home',
@@ -17,6 +19,8 @@ export class OperatorHomeComponent implements OnInit {
   user: string;
   error = false;
   errorMessage = '';
+
+  faEdit = faEdit;
 
   constructor(private router: Router, private authenticationService: OperatorAuthService,
               private operatorService: OperatorService) {

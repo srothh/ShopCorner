@@ -8,6 +8,13 @@
   <br>
   <h2>Bestellungen
     <a routerLink="/operator/orders/settings"> <button class="btn btn-dark float-right"> Bestelleinstellungen </button> </a></h2>
+  <div class="d-flex justify-content-between align-items-center">
+    <h2>Bestellungen</h2>
+    <button class="btn btn-primary" routerLink="/operator/orders/settings">
+      <fa-icon class="mr-2" [icon]="faCog"></fa-icon>
+      Bestelleinstellungen
+    </button>
+  </div>
   <hr>
   <div>
     <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
@@ -50,6 +57,5 @@
     <button class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
     <button class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
   </div>
-
 
 </div>

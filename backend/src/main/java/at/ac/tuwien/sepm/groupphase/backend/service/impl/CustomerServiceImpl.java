@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.CustomerRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AddressService;
 import at.ac.tuwien.sepm.groupphase.backend.service.CustomerService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
+import at.ac.tuwien.sepm.groupphase.backend.util.CustomerSpecifications;
 import at.ac.tuwien.sepm.groupphase.backend.util.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteCustomerByLoginName(String loginName) {
         LOGGER.trace("deleteCustomerByLoginName({})", loginName);
-        boolean softDelete = false;
+        boolean softDelete;
         Customer customer = customerRepository.findByLoginName(loginName);
         softDelete = this.orderService.findAllOrders()
             .stream()
@@ -162,7 +163,7 @@ public class CustomerServiceImpl implements CustomerService {
             pageCount = 50;
         }
         Pageable returnPage = PageRequest.of(page, pageCount);
-        return customerRepository.findAll(returnPage);
+        return customerRepository.findAll(CustomerSpecifications.hasDeleted(false), returnPage);
     }
 
     @CacheEvict(value = "customerPages", allEntries = true)
@@ -176,14 +177,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Cacheable(value = "counts", key = "'customers'")
     @Override
     public long getCustomerCount() {
-        return customerRepository.count();
+        return customerRepository.count(CustomerSpecifications.hasDeleted(false));
     }
 
 
     @Override
     public List<Customer> findAll() {
         LOGGER.trace("findAll()");
-        return customerRepository.findAll();
+        return customerRepository.findAll(CustomerSpecifications.hasDeleted(false));
     }
 
     @Override
