@@ -3,20 +3,16 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
-import at.ac.tuwien.sepm.groupphase.backend.entity.ShopSettings;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.InvoiceArchiveService;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.PdfGeneratorService;
-import at.ac.tuwien.sepm.groupphase.backend.service.ShopService;
 import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 @Service
@@ -79,13 +75,6 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
         }
         return this.invoiceArchiveService.findByInvoiceNumber(order.getInvoice().getInvoiceNumber());
     }
-    /*
-    @Override
-    public void updateCompanyInformation(ShopSettings shopSettings) {
-        LOGGER.trace("updateCompanyInformation({})", shopSettings);
-        this.pdfGenerator.updateCompanyInformation(shopSettings);
-    }*/
-
 
     @Override
     public byte[] createPdfCanceledInvoiceOperator(Invoice invoice) {

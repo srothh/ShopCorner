@@ -6,7 +6,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
-import at.ac.tuwien.sepm.groupphase.backend.entity.ShopSettings;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShopService;
@@ -17,7 +16,6 @@ import com.itextpdf.styledxmlparser.jsoup.nodes.Document;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -34,7 +32,7 @@ public class PdfGenerator {
     private final String htmlCustomer;
     private final String htmlCanceledOperator;
     private final String htmlCanceledCustomer;
-    private ShopService shopService;
+    private final ShopService shopService;
 
     @Autowired
     public PdfGenerator(ShopService shopService) {
@@ -104,7 +102,11 @@ public class PdfGenerator {
         this.addCompanyFooter(document);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         ConverterProperties properties = new ConverterProperties();
-        HtmlConverter.convertToPdf(document.html(), buffer, properties);
+        if (document != null) {
+            HtmlConverter.convertToPdf(document.html(), buffer, properties);
+        } else {
+            throw new ServiceException("Pdf konnte nicht generiert werden");
+        }
         return buffer.toByteArray();
     }
 
@@ -228,7 +230,7 @@ public class PdfGenerator {
             if (shopService.getSettings().getStairNumber() != 0) {
                 address.append(" / ").append(shopService.getSettings().getStairNumber());
             }
-            address.append(", ").append(shopService.getSettings().getPostalCode() + " ").append(shopService.getSettings().getCity());
+            address.append(", ").append(shopService.getSettings().getPostalCode()).append(" ").append(shopService.getSettings().getCity());
             document.body().select(".name").html(shopService.getSettings().getTitle());
             document.body().select(".address").html(address.toString());
             document.body().select(".phone").html(shopService.getSettings().getPhoneNumber());

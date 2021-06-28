@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationRequestDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleInvoiceDto;
