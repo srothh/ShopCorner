@@ -23,7 +23,7 @@ export class OperatorAccountComponent implements OnInit {
   collectionSizeAdmin = 0;
   collectionSizeEmployee = 0;
   permissions = Permissions.admin;
-  faMinusCircle = faMinusCircle
+  faMinusCircle = faMinusCircle;
   faPlusCircle = faPlusCircle;
   faExclamationTriangle = faExclamationTriangle;
 
