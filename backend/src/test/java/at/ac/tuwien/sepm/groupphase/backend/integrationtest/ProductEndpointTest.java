@@ -137,7 +137,7 @@ public class ProductEndpointTest implements TestData {
         );
 
     }
-
+/*
     @Test
     public void givenACategoryAndATaxRate_whenPostInvalid_then400() throws Exception {
         categoryRepository.save(category);
@@ -164,9 +164,8 @@ public class ProductEndpointTest implements TestData {
                 assertEquals(2, errors.length);
             }
         );
-
     }
-
+*/
     @Test
     public void givenATaxRate_whenPostByNonExistingId_then404() throws Exception {
         taxRateRepository.save(taxRate);
