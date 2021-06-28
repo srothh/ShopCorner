@@ -3,6 +3,7 @@ import {Order} from '../../../dtos/order';
 import {Pagination} from '../../../dtos/pagination';
 import {OrderService} from '../../../services/order.service';
 import {InvoiceService} from '../../../services/invoice.service';
+import {faCog} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operator-order',
@@ -10,13 +11,13 @@ import {InvoiceService} from '../../../services/invoice.service';
   styleUrls: ['./operator-order.component.scss']
 })
 export class OperatorOrderComponent implements OnInit {
-
   error = false;
   errorMessage = '';
   orders: Order[];
   page = 0;
   pageSize = 15;
   collectionSize = 0;
+  faCog = faCog;
 
   constructor(private orderService: OrderService, private invoiceService: InvoiceService) { }
 

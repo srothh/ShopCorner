@@ -7,7 +7,7 @@ import {TaxRate} from '../../../dtos/tax-rate';
 import {CategoryService} from '../../../services/category.service';
 import {TaxRateService} from '../../../services/tax-rate.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
-import {faFilter} from '@fortawesome/free-solid-svg-icons';
+import {faPlusCircle, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
 import {PageableProducts} from '../../../services/pagination/pageable-products';
 import {forkJoin} from 'rxjs';
 
@@ -18,7 +18,8 @@ import {forkJoin} from 'rxjs';
 })
 export class OperatorProductComponent implements OnInit {
   @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
-  faFilter = faFilter;
+  faPlusCircle = faPlusCircle;
+  faMinusCircle = faMinusCircle;
   categories: Category[];
   taxRates: TaxRate[];
   selectedProducts: Product[] = [];
