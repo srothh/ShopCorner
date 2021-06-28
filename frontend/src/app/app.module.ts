@@ -2,6 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
+import { ChartsModule } from 'ng2-charts';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -54,6 +55,11 @@ import { OperatorOrderSettingsComponent } from './components/operator/operator-o
 import { ShopAccountOrderDetailsComponent } from './components/shop/shop-account-order-details/shop-account-order-details.component';
 import { BaseShopOrdersHeaderComponent } from './components/common/base-shop-orders-header/base-shop-orders-header.component';
 import { BaseShopOrderItemComponent } from './components/common/base-shop-order-item/base-shop-order-item.component';
+import { LineChartComponent } from './components/operator/operator-statistics/line-chart/line-chart.component';
+import { BarChartComponent } from './components/operator/operator-statistics/bar-chart/bar-chart.component';
+import { PieChartComponent } from './components/operator/operator-statistics/pie-chart/pie-chart.component';
+import { ProductsTopsellerChartComponent } from
+    './components/operator/operator-statistics/products-topseller-chart/products-topseller-chart.component';
 import { ShopNotFoundComponent } from './components/shop/shop-not-found/shop-not-found.component';
 
 @NgModule({
@@ -108,6 +114,10 @@ import { ShopNotFoundComponent } from './components/shop/shop-not-found/shop-not
     OperatorOrderSettingsComponent,
     BaseShopOrdersHeaderComponent,
     BaseShopOrderItemComponent,
+    LineChartComponent,
+    BarChartComponent,
+    PieChartComponent,
+    ProductsTopsellerChartComponent,
     ShopAccountOrderDetailsComponent,
     OperatorPromotionFormComponent,
     OperatorPromotionComponent,
@@ -121,7 +131,8 @@ import { ShopNotFoundComponent } from './components/shop/shop-not-found/shop-not
     HttpClientModule,
     NgbModule,
     FormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    ChartsModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

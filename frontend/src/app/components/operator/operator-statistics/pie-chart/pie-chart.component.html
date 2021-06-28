@@ -1,0 +1,14 @@
+<div>
+  <span style="margin-left: 10px">Anteil am Umsatz</span>
+  <div style="display: block" class="chart">
+    <canvas baseChart
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            [legend]="chartLegend"
+            [colors]="chartColors"
+            [chartType]="chartType"
+            [plugins]="pieChartPlugins">
+    </canvas>
+  </div>
+</div>

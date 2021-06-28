@@ -25,6 +25,7 @@ import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -57,6 +58,12 @@ public class InvoiceServiceImpl implements InvoiceService {
             return this.invoiceRepository.findAll(returnPage);
         }
         return this.invoiceRepository.findAll(InvoiceSpecifications.hasInvoiceType(invoiceType), returnPage);
+    }
+
+    @Override
+    public List<Invoice> findByDate(LocalDateTime start, LocalDateTime end) {
+        LOGGER.trace("findByDate({}{})", start, end);
+        return invoiceRepository.findAll(InvoiceSpecifications.isInPeriod(start, end));
     }
 
     @Override

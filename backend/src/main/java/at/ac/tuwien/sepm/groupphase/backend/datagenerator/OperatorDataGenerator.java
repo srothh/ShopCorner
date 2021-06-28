@@ -33,7 +33,7 @@ public class OperatorDataGenerator {
     @Transactional
     @PostConstruct
     public void generateOperators() {
-        if (operatorRepository.findAll().size() > 0) {
+        if (operatorRepository.count() > 0) {
             LOGGER.debug("operators already generated");
         } else {
             Faker faker = new Faker(new Locale("de-AT"));

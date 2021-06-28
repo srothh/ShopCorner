@@ -124,9 +124,14 @@ public class ProductServiceImpl implements ProductService {
         return this.productRepository.findAll();
     }
 
+    @Override
     public List<Product> getAllProductsByCategory(Long categoryId) {
         LOGGER.trace("getAllProductsByCategory(categoryId)");
-        return this.productRepository.findAllByCategoryId(categoryId);
+        if (categoryId > 0) {
+            return this.productRepository.findAllByCategoryId(categoryId);
+        } else {
+            return this.productRepository.findAll();
+        }
     }
 
     @Caching(evict = {

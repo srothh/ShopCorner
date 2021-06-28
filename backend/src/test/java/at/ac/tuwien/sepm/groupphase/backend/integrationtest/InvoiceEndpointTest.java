@@ -366,5 +366,60 @@ public class InvoiceEndpointTest implements TestData {
         );
     }
 
+    @Test
+    public void givenOne_whenGetByDateInside_returnListWithInvoice() throws Exception {
+        Set<InvoiceItem> set1 = invoice1.getItems();
+        invoice1.setItems(null);
+
+        Invoice newInvoice = invoiceRepository.save(invoice1);
+
+        for (InvoiceItem item : set1) {
+            item.setInvoice(newInvoice);
+            invoiceItemRepository.save(item);
+        }
+        newInvoice.setItems(set1);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/stats?start=1990-01-01&end=3000-01-01")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        List<Invoice> invoices = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>() {
+            });
+
+        assertEquals(1, invoices.size());
+    }
+
+    @Test
+    public void givenOne_whenGetByDateOutside_returnEmptyList() throws Exception {
+        Set<InvoiceItem> set1 = invoice1.getItems();
+        invoice1.setItems(null);
+
+        Invoice newInvoice = invoiceRepository.save(invoice1);
+
+        for (InvoiceItem item : set1) {
+            item.setInvoice(newInvoice);
+            invoiceItemRepository.save(item);
+        }
+        newInvoice.setItems(set1);
+
+        MvcResult mvcResult = this.mockMvc.perform(get(INVOICE_BASE_URI + "/stats?start=3000-01-01&end=3000-02-01")
+            .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+            .andDo(print())
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        List<Invoice> invoices = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>() {
+            });
+
+        assertEquals(0, invoices.size());
+    }
 
 }
