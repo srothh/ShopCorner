@@ -32,6 +32,7 @@ export class ShopAccountProfileComponent implements OnInit {
               private customerAuthService: CustomerAuthService,
               private router: Router,
               private modalService: NgbModal) {
+    this.initializeForm();
   }
 
   ngOnInit(): void {
@@ -135,7 +136,7 @@ export class ShopAccountProfileComponent implements OnInit {
   private fetchMyProfile() {
     this.meService.getMyProfileData().subscribe((myProfile) => {
       this.myProfile = myProfile;
-      this.initializeForm();
+      this.updateForm();
     }, error => {
       this.error = true;
       this.errorMessage = error;
@@ -162,6 +163,18 @@ export class ShopAccountProfileComponent implements OnInit {
     });
   }
 
+  private updateForm() {
+    this.editForm.value.loginName = this.myProfile.loginName;
+    this.editForm.value.email = this.myProfile.email;
+    this.editForm.value.name = this.myProfile.name;
+    this.editForm.value.phoneNumber = this.myProfile.phoneNumber;
+    this.editForm.value.street = this.myProfile.loginName;
+    this.editForm.value.postalCode = this.myProfile.address.postalCode;
+    this.editForm.value.houseNumber = this.myProfile.address.houseNumber;
+    this.editForm.value.stairNumber = this.myProfile.address.stairNumber;
+    this.editForm.value.doorNumber = this.myProfile.address.doorNumber;
+  }
+
   /**
    * Initializes the form data with the customer data
    *
@@ -169,17 +182,17 @@ export class ShopAccountProfileComponent implements OnInit {
    */
   private initializeForm() {
     this.editForm = this.formBuilder.group({
-      loginName: [this.myProfile.loginName],
-      email: [this.myProfile.email],
-      name: [this.myProfile.name],
-      phoneNumber: [this.myProfile.phoneNumber],
-      password: [''],
+      loginName: [],
+      email: [],
+      name: [],
+      phoneNumber: [],
+      password: [],
       newPassword: [''],
-      street: [this.myProfile.address.street],
-      postalCode: [this.myProfile.address.postalCode],
-      houseNumber: [this.myProfile.address.houseNumber],
-      stairNumber: [this.myProfile.address.stairNumber],
-      doorNumber: [this.myProfile.address.doorNumber],
+      street: [],
+      postalCode: [],
+      houseNumber: [],
+      stairNumber: [],
+      doorNumber: [],
     });
   }
 }
