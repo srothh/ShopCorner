@@ -6,6 +6,8 @@ import {Observable} from 'rxjs';
 import {Customer} from '../../dtos/customer';
 import {Pagination} from '../../dtos/pagination';
 import {Order} from '../../dtos/order';
+import {map} from 'rxjs/operators';
+import {CustomerService} from '../customer/customer.service';
 
 
 @Injectable({
@@ -21,8 +23,11 @@ export class MeService {
    * Retrieves the current customer's profile data
    */
   getMyProfileData(): Observable<Customer> {
-    return this.httpClient.get<Customer>(this.meBaseUri, {headers: this.getHeadersForCustomer()});
+    return this.httpClient.get<Customer>(this.meBaseUri, {headers: this.getHeadersForCustomer()}).pipe(
+      map(CustomerService.customerMapper)
+    );
   }
+
   getOrdersForPage(page: number, pageSize: number): Observable<Pagination<Order>> {
     const options = {
       params: new HttpParams()
@@ -55,6 +60,7 @@ export class MeService {
     console.log('Update password');
     return this.httpClient.post<string>(this.meBaseUri + '/password', {oldPassword, newPassword}, {headers: this.getHeadersForCustomer()});
   }
+
   /**
    * Loads invoice pdf by id from the backend for the customer
    *
@@ -77,6 +83,7 @@ export class MeService {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`);
   }
+
   private getPdfHeadersForCustomer(): any {
     return {
       responseType: 'blob' as 'json',

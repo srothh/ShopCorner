@@ -15,6 +15,10 @@ export class CustomerService {
   constructor(private httpClient: HttpClient, private globals: Globals, private operatorAuthService: OperatorAuthService) {
   }
 
+  static customerMapper(c: Customer) {
+    return new Customer(c.id, c.loginName, '', c.name, c.email, c.address, c.phoneNumber);
+  }
+
   /**
    * Register a new customer.
    *
