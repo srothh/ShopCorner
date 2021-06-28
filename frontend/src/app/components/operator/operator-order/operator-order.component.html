@@ -1,6 +1,5 @@
-
 <div>
-  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Error! </strong> {{ errorMessage }}
     <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
@@ -8,8 +7,7 @@
   </div>
   <br>
   <h2>Bestellungen
-  <a routerLink="/operator/orders/settings"> <button class="btn btn-dark float-right"> Bestelleinstellungen </button> </a>
-  </h2>
+    <a routerLink="/operator/orders/settings"> <button class="btn btn-dark float-right"> Bestelleinstellungen </button> </a></h2>
   <hr>
   <div>
     <p style="font-size: 10px; color: gray" *ngIf="collectionSize === 0; else not_empty">
@@ -26,7 +24,7 @@
     </ng-template>
   </div>
   <div class="border rounded" style="height: 560px">
-    <table class="table table-sm" data-pagination="true" data-page-list="[1,2]">
+    <table class="table table-sm" data-pagination="true" data-page-list="[1,3]">
       <thead>
       <tr class="table-secondary">
         <th scope="col" class="font-weight-bold">Bestellung aufgegeben am</th>
@@ -37,12 +35,12 @@
       </thead>
       <tbody>
       <tr *ngFor="let order of orders">
-        <td><span>{{order.invoice.date.replace('T', ', ')}} Uhr</span></td>
+        <td><span>{{order.invoice.date.replace('T', ', ').substring(0,20)}} Uhr</span></td>
         <td><span>{{order.invoice.amount.toFixed(2)}}€</span></td>
         <td><span>{{order.customer.name}}</span></td>
-        <td><span>
+        <td>
           <button class="btn btn-link" type="submit" (click)="downloadInvoice(order.invoice.id, order.invoice.date)">PDF download</button>
-        </span></td>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -52,5 +50,6 @@
     <button class="btn btn-primary" (click)=previousPage()>Vorherige Seite</button>
     <button class="btn btn-primary" (click)=nextPage()>Nächste Seite</button>
   </div>
+
 
 </div>
