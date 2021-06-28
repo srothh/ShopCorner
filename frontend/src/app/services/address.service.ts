@@ -17,6 +17,7 @@ export class AddressService {
    * Adds a new address to persist.
    *
    * @param address The address dto to persist.
+   * @return Address added address
    */
   addAddress(address: Address): Observable<Address> {
     console.log('Create new Address', address);

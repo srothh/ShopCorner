@@ -7,7 +7,6 @@ import {CancellationPeriod} from '../dtos/cancellationPeriod';
 import {OperatorAuthService} from './auth/operator-auth.service';
 import {CustomerAuthService} from './auth/customer-auth.service';
 import {Pagination} from '../dtos/pagination';
-import {Invoice} from '../dtos/invoice';
 
 @Injectable({
   providedIn: 'root'
@@ -75,6 +74,7 @@ export class OrderService {
    *
    * @param page that is needed
    * @param pageCount amount of orders per page
+   * @return the page with orders
    */
   getOrdersPage(page: number, pageCount: number): Observable<Pagination<Order>> {
     console.log('Get orders for page: ', page);

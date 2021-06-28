@@ -50,6 +50,7 @@ export class MeService {
    *
    * @param oldPassword the password to be updated
    * @param newPassword the new password
+   * @return updated password
    */
   updatePassword(oldPassword: string, newPassword: string): Observable<string>{
     console.log('Update password');

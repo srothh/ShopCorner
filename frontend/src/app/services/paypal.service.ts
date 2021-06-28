@@ -5,8 +5,6 @@ import {Order} from '../dtos/order';
 import {Observable} from 'rxjs';
 import {CustomerAuthService} from './auth/customer-auth.service';
 import {ConfirmedPayment} from '../dtos/confirmedPayment';
-import {map} from 'rxjs/operators';
-
 
 @Injectable({
   providedIn: 'root'
@@ -33,10 +31,10 @@ export class PaypalService {
     };
     return this.httpClient.post(this.paypalBaseURI, order, options);
   }
+
   /** Confirm the previously created new payment
    *
    * @param confirmedPayment the confirmedPayment containing payerId and paymentId to finalise the payment
-   *
    * @return the text with either 'successful payment' or 'not successful payment'
    */
   confirmPayment(confirmedPayment: ConfirmedPayment): Observable<string> {
@@ -47,11 +45,11 @@ export class PaypalService {
     };
     return this.httpClient.post(this.paypalBaseURI + '/confirmation', confirmedPayment, options);
   }
+
   /** Gets a specific ConfirmedPayment specified by paymentId and payerId
    *
    * @param paymentId the paymentId to look for in a ConfirmedPayment
    * @param payerId the payerId to look for in a ConfirmedPayment
-   *
    * @return the ConfirmedPayment with the given parameters
    */
   getConfirmedPayment(paymentId: string, payerId: string): Observable<ConfirmedPayment>{
