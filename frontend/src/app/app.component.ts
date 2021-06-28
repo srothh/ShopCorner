@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ShopService} from './services/shop/shop.service';
-import {Title} from "@angular/platform-browser";
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',

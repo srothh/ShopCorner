@@ -15,6 +15,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     /**
      * Find order by an given invoice entry.
      *
+     * @param invoice that should be searched for
      * @return order with the specific invoice
      * @throws RuntimeException upon encountering errors with the database
      */

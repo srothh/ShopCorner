@@ -21,6 +21,7 @@ export class OperatorService {
    * Loads the specified operator from the backend
    *
    * @param loginName of operator to load
+   * @return operator with loginName
    */
   getOperatorByLoginName(loginName: string): Observable<Operator> {
     console.log('Load operator ' + loginName);
@@ -32,6 +33,7 @@ export class OperatorService {
    * Creates a new operator account in the backend.
    *
    * @param operator to be created
+   * @return created operator
    */
   createOperator(operator: Operator): Observable<Operator> {
     console.log('Create new operator account', operator);
@@ -57,6 +59,7 @@ export class OperatorService {
    *
    * @param oldPassword the password to be updated
    * @param newPassword the new password
+   * @return new password
    */
   updatePassword(oldPassword: string, newPassword: string): Observable<string> {
     console.log('Update password');
@@ -71,6 +74,7 @@ export class OperatorService {
    * @param page that is needed
    * @param pageCount amount of operators per page
    * @param permissions of needed operators
+   * @param page with operators
    */
   getOperatorsPage(page: number, pageCount: number, permissions: Permissions): Observable<Pagination<Operator>> {
     console.log('Get Operators with permission: ', permissions, ' for page: ', page);

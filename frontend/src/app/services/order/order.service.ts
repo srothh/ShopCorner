@@ -38,7 +38,7 @@ export class OrderService {
    * @return the order dto as returned from the backend
    */
   placeNewOrder(order: Order): Observable<Order> {
-    return this.httpClient.post<Order>(this.orderBaseURI, order, {withCredentials: true});
+    return this.httpClient.post<Order>(this.orderBaseURI, order, {withCredentials: true, headers: this.getHeadersForCustomer()});
   }
 
   /** sets the cancellation period for orders.
@@ -74,6 +74,7 @@ export class OrderService {
    *
    * @param page that is needed
    * @param pageCount amount of orders per page
+   * @return the page with orders
    */
   getOrdersPage(page: number, pageCount: number): Observable<Pagination<Order>> {
     console.log('Get orders for page: ', page);

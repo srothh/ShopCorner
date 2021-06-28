@@ -15,6 +15,8 @@ export class TaxRateService {
 
   /**
    * Loads all tax-rates from the backend
+   *
+   * @return all taxrates
    */
   getTaxRates(): Observable<TaxRate[]> {
     return this.httpClient.get<TaxRate[]>(this.messageBaseUri);

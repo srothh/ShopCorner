@@ -42,6 +42,12 @@ export class PromotionService {
     return this.httpClient.get<Pagination<Promotion>>(this.promotionBaseUri, {params, headers: this.getHeadersForOperator()});
   }
 
+  /**
+   * gets promotion with given code.
+   *
+   * @param code of promotion
+   * @return promotion with code
+   */
   getPromotionByCode(code: string) {
     return this.httpClient.get<Promotion>(this.promotionBaseUri + '/' + code);
   }

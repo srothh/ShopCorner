@@ -62,6 +62,7 @@ public class CustomerEndpoint {
     /**
      * Retrieves a page of customers from the database.
      *
+     * @param paginationRequestDto information about page
      * @return A page of customers
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})

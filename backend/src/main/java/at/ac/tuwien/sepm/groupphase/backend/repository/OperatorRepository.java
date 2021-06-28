@@ -13,9 +13,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface OperatorRepository extends JpaRepository<Operator, Long>, JpaSpecificationExecutor<Operator> {
+
     /**
      * Finds an operator based on the login name.
      *
+     * @param loginName that should be searched after
      * @return an operator with the login name
      * @throws RuntimeException  upon encountering errors with the database
      */
@@ -24,6 +26,7 @@ public interface OperatorRepository extends JpaRepository<Operator, Long>, JpaSp
     /**
      * Finds an operator based on the email address.
      *
+     * @param email that should be searched for
      * @return an operator with the given email
      * @throws RuntimeException  upon encountering errors with the database
      */
@@ -34,6 +37,7 @@ public interface OperatorRepository extends JpaRepository<Operator, Long>, JpaSp
      *
      * @param permissions that should overwrite the old one
      * @param id of Operator that should be updated
+     * @throws RuntimeException  upon encountering errors with the database
      */
     @Modifying
     @Query("update Operator o set o.permissions = ?1 where o.id = ?2")

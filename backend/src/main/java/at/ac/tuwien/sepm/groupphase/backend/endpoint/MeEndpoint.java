@@ -93,7 +93,7 @@ public class MeEndpoint {
      * Finds an invoice of the customer and generates a PDF from it.
      *
      * @param paginationRequestDto the dto containing pagination parameters
-     * @param principal            the currently logged in user
+     * @param principal the currently logged in user
      * @return paginated Orders with the given pagination parameters
      */
     @Secured({"ROLE_CUSTOMER"})
@@ -113,7 +113,7 @@ public class MeEndpoint {
     /**
      * Finds an invoice of the customer and generates a PDF from it.
      *
-     * @param id        id of the invoice
+     * @param id id of the invoice
      * @param principal the currently logged in user
      * @return ResponseEntity with the generated pdf for the customer
      */
@@ -146,7 +146,7 @@ public class MeEndpoint {
      * Edits an already existing Customer.
      *
      * @param customerDto the dto containing the updated fields
-     * @param principal   the currently logged in user
+     * @param principal the currently logged in user
      * @return the updated customer entry
      */
     @Secured({"ROLE_CUSTOMER"})
@@ -168,6 +168,7 @@ public class MeEndpoint {
      * Update the password of an existing operator.
      *
      * @param updatePasswordDto the old and new password
+     * @param principal the currently logged in user
      */
     @Secured({"ROLE_CUSTOMER"})
     @PostMapping("/password")

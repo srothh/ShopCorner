@@ -12,9 +12,9 @@ public interface PromotionRepository extends JpaRepository<Promotion, Long> {
      * Finds a Promotion by its code.
      *
      * @param code the code to look for in a Promotion
-     *
      * @return the Promotion with the given code
-     * */
+     * @throws RuntimeException upon encountering errors with the database
+     */
     Promotion findByCode(String code);
 
 }

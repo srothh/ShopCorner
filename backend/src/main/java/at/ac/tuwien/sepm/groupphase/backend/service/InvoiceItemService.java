@@ -14,6 +14,7 @@ public interface InvoiceItemService {
      * Returns all invoiceItems from the database.
      *
      * @return A list containing all the invoiceItems entities from the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     List<InvoiceItem> findAllInvoicesItems();
 

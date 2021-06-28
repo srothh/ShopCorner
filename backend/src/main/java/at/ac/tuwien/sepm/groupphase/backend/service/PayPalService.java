@@ -14,7 +14,6 @@ public interface PayPalService {
      * Initiates a Payment transaction with PayPal's API.
      *
      * @param order the order containing all information for the payment process
-     *
      * @return a redirect URL to confirm the payment
      * @throws PayPalRESTException is being thrown when processing Paypal's API ends in a failure
      */
@@ -24,8 +23,6 @@ public interface PayPalService {
      * Confirms a payment with the specified PayerID and PaymentID in the request.
      *
      * @param confirmedPayment the confirmed payment contains the necessary parameters to confirm the payment
-     *
-     *
      * @return the created Payment object
      * @throws PayPalRESTException is being thrown when processing Paypal's API ends in a failure
      */
@@ -36,7 +33,6 @@ public interface PayPalService {
      *
      * @param paymentId the paymentId to look for in a ConfirmedPayment
      * @param payerId the payerId to look for in a ConfirmedPayment
-     *
      * @return the created Payment object
      */
     ConfirmedPayment getConfirmedPaymentByPaymentIdAndPayerId(String paymentId, String payerId);

@@ -31,6 +31,7 @@ export class ShopService {
    * Updates the shops settings in the backend
    *
    * @param shopSettings the settings that will override the old
+   * @return shopSettings current settings after update
    */
   updateSettings(shopSettings: ShopSettings): Observable<ShopSettings> {
     console.log('Update settings');
@@ -45,6 +46,8 @@ export class ShopService {
 
   /**
    * Fetches settings from the backend and caches them
+   *
+   * @return shopSettings current settings
    */
   loadSettings(): Observable<ShopSettings> {
     console.log('Load settings from backend into cache');

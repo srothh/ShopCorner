@@ -88,7 +88,6 @@ export class OperatorStatisticComponent implements OnInit {
   }
 
   changeCategory() {
-    console.log(this.selected);
     this.fetchProducts();
   }
 

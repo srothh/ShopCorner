@@ -120,7 +120,6 @@ public interface OrderService {
     /**
      * Finds all orders currently saved in the database.
      *
-     *
      * @throws RuntimeException upon encountering problems with the database
      */
     List<Order> findAllOrders();

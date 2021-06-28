@@ -54,6 +54,7 @@ public class PromotionEndpoint {
     /**
      * Retrieves a page of promotions from the database.
      *
+     * @param paginationRequestDto information about page
      * @return A list of all the retrieved promotions
      */
     @GetMapping
@@ -69,6 +70,7 @@ public class PromotionEndpoint {
     /**
      * Retrieves a promotion based on its code.
      *
+     * @param code that should be searched for
      * @return The found promotion
      */
     @GetMapping(value = "/{code}")

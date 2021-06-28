@@ -48,7 +48,6 @@ public class CategoryEndpoint {
      * Creates a new category in the database.
      *
      * @param categoryDto the category as a dto which contains the given fields to store
-     *
      * @return the newly added category in a dto - format
      */
     @Secured("ROLE_ADMIN")
@@ -65,7 +64,6 @@ public class CategoryEndpoint {
      * Gets all categories that are currently saved in the database in a paginated manner specified by the current page and the pageCount.
      *
      * @param paginationRequestDto describes the pagination request
-     *
      * @return all categories specified by the current page and the pageCount
      */
     @PermitAll
@@ -86,9 +84,8 @@ public class CategoryEndpoint {
     /**
      * Gets all the categories that were previously saved.
      *
-     * @return all categories that were previously added
-     *
-     * */
+     * @return list of all categories that were previously added
+     */
     @PermitAll
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
@@ -134,9 +131,7 @@ public class CategoryEndpoint {
      * Gets a specific category with the given id.
      *
      * @param categoryId the id of the category to retrieve from the database
-     *
      * @return the requested category with the given id
-     *
      */
     @PermitAll
     @GetMapping("/{categoryId}")

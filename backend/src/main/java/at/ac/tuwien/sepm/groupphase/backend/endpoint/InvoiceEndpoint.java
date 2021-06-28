@@ -86,11 +86,12 @@ public class InvoiceEndpoint {
         return invoiceMapper.invoiceToDetailedInvoiceDto(invoiceService.findOneById(id));
     }
 
-
     /**
-     * Get overviewing information for all invoices.
+     * Get page with invoices.
      *
-     * @return List with all SimpleInvoices
+     * @param paginationRequestDto information about page
+     * @param invoiceType of invoices that are needed
+     * @return page of SimpleInvoices
      */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping
@@ -151,6 +152,7 @@ public class InvoiceEndpoint {
     /**
      * Set an invoice to canceled in the database.
      *
+     * @param invoiceDto changes
      * @param invoiceId id of the invoice which should be updated in the database
      * @return DetailedInvoiceDto with the updated invoice
      */
