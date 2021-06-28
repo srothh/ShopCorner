@@ -123,19 +123,6 @@ public class InvoiceServiceTest implements TestData {
         doReturn(invoiceMock).when(invoiceServiceMock).createInvoice(invoiceMock);
     }
 
-    @Test
-    public void whenGivenOneInvoice_findByDateInside_thenReturnListWithInvoice() {
-        Invoice created = invoiceService.createInvoice(invoice);
-        List<Invoice> invoiceList = invoiceService.findByDate(LocalDateTime.now().minusDays(10), LocalDateTime.now());
-        Invoice got = invoiceList.get(0);
-        assertAll(
-            () -> assertEquals(1, invoiceList.size()),
-            () -> assertEquals(created.getId(), got.getId()),
-            () -> assertEquals(created.getAmount(), got.getAmount()),
-            () -> assertEquals(created.getItems().size(), got.getItems().size()),
-            () -> assertEquals(created.getInvoiceNumber(), got.getInvoiceNumber())
-        );
-    }
 
     @Test
     public void whenGivenOneInvoice_findByDateOutside_thenReturnEmptyList() {
