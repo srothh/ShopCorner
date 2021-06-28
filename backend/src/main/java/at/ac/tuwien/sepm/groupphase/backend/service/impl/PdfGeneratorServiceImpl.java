@@ -12,6 +12,7 @@ import at.ac.tuwien.sepm.groupphase.backend.util.PdfGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
@@ -24,7 +25,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     private final InvoiceArchiveService invoiceArchiveService;
 
     @Autowired
-    public PdfGeneratorServiceImpl(PdfGenerator pdfGenerator, OrderService orderService, InvoiceArchiveService invoiceArchiveService) {
+    public PdfGeneratorServiceImpl(@Lazy PdfGenerator pdfGenerator, OrderService orderService, InvoiceArchiveService invoiceArchiveService) {
         this.pdfGenerator = pdfGenerator;
         this.orderService = orderService;
         this.invoiceArchiveService = invoiceArchiveService;
