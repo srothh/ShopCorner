@@ -82,7 +82,7 @@ public interface ProductService {
      * @param category the category the page is assigned to
      * @throws RuntimeException occurs during database operations
      */
-    Long getCountByCategory(Page page, Long category);
+    Long getCountByCategory(Page<Product> page, Long category);
 
     /**
      * Gets all products that are associated to a specific category.
