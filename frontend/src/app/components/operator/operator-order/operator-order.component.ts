@@ -74,7 +74,6 @@ export class OperatorOrderComponent implements OnInit {
   private loadOrdersForPage() {
     this.orderService.getOrdersPage(this.page, this.pageSize).subscribe(
       (paginationDto: Pagination<Order>) => {
-        console.log(paginationDto);
         this.orders = paginationDto.items;
         this.collectionSize = paginationDto.totalItemCount;
       },

@@ -57,7 +57,6 @@ export class OperatorCustomerComponent implements OnInit {
   private loadCustomersForPage() {
     this.customerService.getAllCustomersForPage(this.page, this.pageSize).subscribe(
       (paginationDto: Pagination<Customer>) => {
-        console.log(paginationDto);
         this.customers = paginationDto.items;
         this.collectionSize = paginationDto.totalItemCount;
       },
