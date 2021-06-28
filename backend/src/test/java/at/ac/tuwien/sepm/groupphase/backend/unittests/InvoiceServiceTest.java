@@ -125,6 +125,7 @@ public class InvoiceServiceTest implements TestData {
 
     @Test
     public void whenGivenOneInvoice_findByDateInside_thenReturnListWithInvoice() {
+        invoiceRepository.deleteAll();
         Invoice created = invoiceService.createInvoice(invoice);
         List<Invoice> invoiceList = invoiceService.findByDate(LocalDateTime.now().minusDays(10), LocalDateTime.now());
         Invoice got = invoiceList.get(0);

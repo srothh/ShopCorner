@@ -1,13 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CancellationPeriodDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedInvoiceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PaginationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CancellationPeriodMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.OrderMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Customer;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
@@ -17,6 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -54,7 +52,9 @@ public class OrderEndpoint {
 
 
     @Autowired
-    public OrderEndpoint(OrderMapper orderMapper, OrderService orderService, CancellationPeriodMapper cancellationPeriodMapper, PdfGeneratorService pdfGeneratorService) {
+    public OrderEndpoint(OrderMapper orderMapper, OrderService orderService,
+                         CancellationPeriodMapper cancellationPeriodMapper,
+                         @Lazy PdfGeneratorService pdfGeneratorService) {
         this.orderMapper = orderMapper;
         this.orderService = orderService;
         this.cancellationPeriodMapper = cancellationPeriodMapper;
@@ -109,8 +109,22 @@ public class OrderEndpoint {
         if (order.getCustomer().getLoginName().equals(principal.getName())) {
             return this.orderMapper.orderToOrderDto(order);
         }
-
         throw new AccessDeniedException("Illegal access");
+    }
+
+    /**
+     * Get specified order by orderNumber.
+     *
+     * @param orderNumber of the order to be retrieved
+     * @return the specified order
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @GetMapping("/{orderNumber}/order")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Retrieve order", security = @SecurityRequirement(name = "apiKey"))
+    public OrderDto getOrderById(@PathVariable String orderNumber) {
+        LOGGER.info("GET " + BASE_URL + "/{}", orderNumber);
+        return this.orderMapper.orderToOrderDto(this.orderService.findOrderByOrderNumber(orderNumber));
     }
 
     /**

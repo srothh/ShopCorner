@@ -151,7 +151,8 @@ public class InvoiceEndpointTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenPost_thenInvoicePdf() throws Exception {
+    public void g
+        () throws Exception {
         DetailedInvoiceDto detailedInvoiceDto = invoiceMapper.invoiceToDetailedInvoiceDto(invoice1);
         String body = objectMapper.writeValueAsString(detailedInvoiceDto);
 
@@ -332,7 +333,7 @@ public class InvoiceEndpointTest implements TestData {
             () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
             () -> {
                 String content = response.getContentAsString();
-                assertEquals(("Could not find invoice with id 0"), content);
+                assertEquals(("Rechnung konnte nicht gefunden werden"), content);
             }
         );
     }

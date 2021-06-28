@@ -23,7 +23,9 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     private final InvoiceArchiveService invoiceArchiveService;
 
     @Autowired
-    public PdfGeneratorServiceImpl(PdfGenerator pdfGenerator, OrderService orderService, InvoiceArchiveService invoiceArchiveService) {
+    public PdfGeneratorServiceImpl(PdfGenerator pdfGenerator,
+                                   OrderService orderService,
+                                   InvoiceArchiveService invoiceArchiveService) {
         this.pdfGenerator = pdfGenerator;
         this.orderService = orderService;
         this.invoiceArchiveService = invoiceArchiveService;
@@ -73,7 +75,6 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
         }
         return this.invoiceArchiveService.findByInvoiceNumber(order.getInvoice().getInvoiceNumber());
     }
-
 
     @Override
     public byte[] createPdfCanceledInvoiceOperator(Invoice invoice) {

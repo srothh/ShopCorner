@@ -7,12 +7,15 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Product;
 import at.ac.tuwien.sepm.groupphase.backend.entity.TaxRate;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.service.ShopService;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.styledxmlparser.jsoup.Jsoup;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Document;
 import com.itextpdf.styledxmlparser.jsoup.nodes.Element;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -29,10 +32,14 @@ public class PdfGenerator {
     private final String htmlCustomer;
     private final String htmlCanceledOperator;
     private final String htmlCanceledCustomer;
+    private final ShopService shopService;
 
-    public PdfGenerator() {
+    @Autowired
+    public PdfGenerator(ShopService shopService) {
         String directory = "src/main/resources/invoice-templates";
+        this.shopService = shopService;
         try {
+
             BufferedReader in = new BufferedReader(new FileReader(directory + "/operatorInvoiceTemplate_v1.html"));
             htmlOperator = in.lines().collect(Collectors.joining());
             in = new BufferedReader(new FileReader(directory + "/customerInvoiceTemplate_v1.html"));
@@ -61,6 +68,7 @@ public class PdfGenerator {
         if (customer != null && invoice.getInvoiceType() == InvoiceType.customer) {
             document = Jsoup.parse(htmlCustomer);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+            this.addLogo(document);
             this.addInvoiceInformation(document, invoice);
             this.addOrderInformation(document, invoice);
             this.addCustomerInformation(document, customer);
@@ -69,6 +77,7 @@ public class PdfGenerator {
         } else if (customer != null && invoice.getInvoiceType() == InvoiceType.canceled) {
             document = Jsoup.parse(htmlCanceledCustomer);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+            this.addLogo(document);
             this.addInvoiceInformation(document, invoice);
             this.addCustomerInformation(document, customer);
             this.addOrderInformation(document, invoice);
@@ -77,6 +86,7 @@ public class PdfGenerator {
         } else if (invoice.getInvoiceType() == InvoiceType.operator) {
             document = Jsoup.parse(htmlOperator);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+            this.addLogo(document);
             this.addInvoiceInformation(document, invoice);
             this.addOrderInformation(document, invoice);
             this.addProductTable(document, invoice, 0, 1);
@@ -84,6 +94,7 @@ public class PdfGenerator {
         } else if (invoice.getInvoiceType() == InvoiceType.canceled) {
             document = Jsoup.parse(htmlCanceledOperator);
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+            this.addLogo(document);
             this.addInvoiceInformation(document, invoice);
             this.addProductTable(document, invoice, 0, -1);
         }
@@ -91,7 +102,11 @@ public class PdfGenerator {
         this.addCompanyFooter(document);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         ConverterProperties properties = new ConverterProperties();
-        HtmlConverter.convertToPdf(document.html(), buffer, properties);
+        if (document != null) {
+            HtmlConverter.convertToPdf(document.html(), buffer, properties);
+        } else {
+            throw new ServiceException("Pdf konnte nicht generiert werden");
+        }
         return buffer.toByteArray();
     }
 
@@ -115,6 +130,14 @@ public class PdfGenerator {
         int postalCode = customer.getAddress().getPostalCode();
         document.body().select(".customer-city").html(postalCode + " ");
 
+    }
+
+    private void addLogo(Document document) {
+        try {
+            document.body().select(".logo").attr("src", shopService.getSettings().getLogo());
+        } catch (IOException e) {
+            throw new NotFoundException("Logo konnte nicht gefunden werden");
+        }
     }
 
     private void addOrderInformation(Document document, Invoice invoice) {
@@ -160,9 +183,6 @@ public class PdfGenerator {
             tableItemStringBuilder.append("</tr>");
 
         }
-        if (promotionDiscount > 0) {
-            total -= promotionDiscount;
-        }
         tableItemStringBuilder.append("</table>");
         tableArticle.html(tableItemStringBuilder.toString());
         addTotalTable(document, total, subtotal, tax, promotionDiscount, calculationFactor);
@@ -182,7 +202,8 @@ public class PdfGenerator {
         if (promotionDiscount > 0) {
             tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
             tableTotalStringBuilder.append("<td class=\"right total-text none-border\"><span>Gutscheincode</span></td>");
-            tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", -promotionDiscount));
+            tableTotalStringBuilder.append(String.format("<td class=\"center none-border\"><span>%1.2f €</span></td></tr>", -promotionDiscount * calculationFactor));
+            total = total - promotionDiscount;
         }
         tableTotalStringBuilder.append("<tr ><td class=\"right span\" colspan=\"3\"></td>");
         tableTotalStringBuilder.append("<td class=\"right total-text\"><span>Summe</span></td>");
@@ -193,10 +214,30 @@ public class PdfGenerator {
 
 
     private void addCompanyFooter(Document document) {
-        document.body().select(".name").html("ShopCorner");
-        document.body().select(".address").html("Favoritenstraße 9/11, 1040 Wien");
-        document.body().select(".phone").html("01 5880119501");
-        document.body().select(".email").html("admin@shop-corner.at");
+        StringBuilder address = new StringBuilder();
+        try {
+            address.append(shopService.getSettings().getStreet());
+            if (shopService.getSettings().getHouseNumber() != null) {
+                if ("".equals(shopService.getSettings().getHouseNumber())) {
+                    address.append(" ").append(shopService.getSettings().getHouseNumber());
+                }
+            }
+            if (shopService.getSettings().getDoorNumber() != null) {
+                if ("".equals(shopService.getSettings().getDoorNumber())) {
+                    address.append(" / ").append(shopService.getSettings().getDoorNumber());
+                }
+            }
+            if (shopService.getSettings().getStairNumber() != 0) {
+                address.append(" / ").append(shopService.getSettings().getStairNumber());
+            }
+            address.append(", ").append(shopService.getSettings().getPostalCode()).append(" ").append(shopService.getSettings().getCity());
+            document.body().select(".name").html(shopService.getSettings().getTitle());
+            document.body().select(".address").html(address.toString());
+            document.body().select(".phone").html(shopService.getSettings().getPhoneNumber());
+            document.body().select(".email").html(shopService.getSettings().getEmail());
+        } catch (IOException e) {
+            throw new NotFoundException("Firmendaten konnte nicht gefunden werden");
+        }
     }
 
     private Element getElement(Document document, String cssClass) {

@@ -41,6 +41,15 @@ public interface PdfGeneratorService {
     byte[] createPdfInvoiceCustomer(Order order);
 
 
+    /*
+     * Updates the company information in the pdf invoice.
+     *
+     * @param shopSettings the updates company information
+     */
+    /*
+    void updateCompanyInformation(ShopSettings shopSettings);
+    */
+
     /**
      * Recreates an invoice pdf to a canceled invoice pdf.
      *

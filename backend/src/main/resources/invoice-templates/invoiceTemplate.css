@@ -11,6 +11,10 @@ body {
     font-family: Arial,serif;
 
 }
+.logo {
+    height: 150px;
+    width: auto;
+}
 
 .main-table{
     width: 100%;
