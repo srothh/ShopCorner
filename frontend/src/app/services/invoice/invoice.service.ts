@@ -8,7 +8,7 @@ import {OperatorAuthService} from '../auth/operator-auth.service';
 import {Pagination} from '../../dtos/pagination';
 import {Customer} from '../../dtos/customer';
 import {Order} from '../../dtos/order';
-import {InvoiceType} from "../../dtos/invoiceType.enum";
+import {InvoiceType} from '../../dtos/invoiceType.enum';
 
 @Injectable({
   providedIn: 'root'
