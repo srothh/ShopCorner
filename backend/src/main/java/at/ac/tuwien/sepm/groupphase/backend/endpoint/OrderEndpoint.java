@@ -84,7 +84,7 @@ public class OrderEndpoint {
      * @param pageCount amount per page
      * @return A page of all the retrieved orders
      */
-    @Secured("ROLE_ADMIN, ROLE_EMPLOYEE")
+    @Secured({"ROLE_CUSTOMER", "ROLE_CUSTOMER"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all orders", security = @SecurityRequirement(name = "apiKey"))
