@@ -42,16 +42,6 @@ export class CustomerService {
     return this.httpClient.get<Pagination<Customer>>(this.customerBaseUri, {params, headers: this.getHeadersForOperator()});
   }
 
-  /**
-   * Retrieves the amount of customers persisted in the backend.
-   *
-   * @return The number of registered customer accounts
-   */
-  getCustomerCount(): Observable<number> {
-    console.log('Get customer count');
-    return this.httpClient.get<number>(this.customerBaseUri + '/count', {headers: this.getHeadersForOperator()});
-  }
-
   private getHeadersForOperator(): HttpHeaders {
     return new HttpHeaders()
       .set('Authorization', `Bearer ${this.operatorAuthService.getToken()}`);
