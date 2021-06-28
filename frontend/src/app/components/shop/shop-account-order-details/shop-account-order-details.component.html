@@ -5,24 +5,27 @@
   </button>
 </div>
 
-  <div class="container mt-5">
-
-    <h2>Bestelldetails</h2>
-    <h5>bestellt am {{ this.day}}.{{this.month}}.{{this.year}}, {{this.time}} Uhr | Bestellung #{{this.order.invoice.orderNumber}}</h5>
-      <div class="mb-3">
-        <div class="card mb-4">
-          <div class="address-info d-flex flex-column ml-4 mt-4">
-          <div class="font-weight-bold">Lieferadresse:</div>
-          <div>{{this.order.customer.name}}</div>
-          <div> Straße: {{this.order.customer.address.street}} {{this.order.customer.address.houseNumber}}</div>
-          <div> PLZ: {{this.order.customer.address.postalCode}}</div>
-          <div> Tür: {{this.order.customer.address.doorNumber}}</div>
-          <div> Stiege: {{this.order.customer.address.stairNumber}}
-          <a routerLink="/account/profile"> <button class="btn btn-dark float-right mb-4 mr-4"> Für zukünftige Bestellungen ändern </button> </a>
-          </div>
-        </div>
+<div class="container mt-5">
+  <h2>Bestelldetails</h2>
+  <span>bestellt am {{ this.day}}.{{this.month}}.{{this.year}}, {{this.time}}
+    Uhr | Bestellung #{{this.order.invoice.orderNumber}}</span>
+  <hr>
+  <div class="my-3">
+    <div class="card mb-4">
+      <div class="address-info d-flex flex-column ml-4 mt-4">
+        <div class="font-weight-bold">Lieferadresse:</div>
+        <div>{{this.order.customer.name}}</div>
+        <div> Straße: {{this.order.customer.address.street}} {{this.order.customer.address.houseNumber}}</div>
+        <div> PLZ: {{this.order.customer.address.postalCode}}</div>
+        <div> Tür: {{this.order.customer.address.doorNumber}}</div>
+        <div> Stiege: {{this.order.customer.address.stairNumber}}
+          <a routerLink="/account/profile">
+            <button class="btn btn-primary float-right mb-4 mr-4"> Für zukünftige Bestellungen ändern</button>
+          </a>
         </div>
       </div>
+    </div>
+  </div>
 
   <div>
     <div class="card mb-3 rounded-lg shadow-sm" *ngFor="let item of this.items">
