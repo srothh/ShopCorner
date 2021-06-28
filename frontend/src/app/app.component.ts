@@ -7,7 +7,6 @@ import {ShopService} from './services/shop/shop.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'ShopCorner';
 
   constructor(private shopService: ShopService) {
   }

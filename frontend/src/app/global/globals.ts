@@ -62,9 +62,6 @@ export class Globals {
       return window.location.protocol + '//' + window.location.host + window.location.pathname + 'api/v1';
     }
   }
-
-
-
 }
 
 
