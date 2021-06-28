@@ -10,7 +10,7 @@
           class="order-product-name font-weight-bold">{{ orderItem.numberOfItems + ' x ' + orderItem.product.name}}</div>
         <div class="order-product-description">{{orderItem.product.description}}</div>
         <div
-          class="order-product-price">{{(orderItem.product.price * orderItem.product.taxRate.calculationFactor).toFixed(2) + ' EUR'}}</div>
+          class="order-product-price">{{(orderItem.product.price * orderItem.product.taxRate.calculationFactor).toFixed(2)}} €</div>
       </div>
     </li>
   </ul>

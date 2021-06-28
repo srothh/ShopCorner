@@ -38,7 +38,7 @@
           class="order-product-name font-weight-bold">{{ item.numberOfItems + ' x ' + item.product.name}} </div>
         <div class="order-product-description">{{item.product.description}}</div>
         <div
-          class="order-product-price">{{(item.product.price * item.product.taxRate.calculationFactor).toFixed(2) + ' EUR'}} </div>
+          class="order-product-price">{{(item.product.price * item.product.taxRate.calculationFactor).toFixed(2)}} €</div>
       </div>
 
       <p class="buy-product-again">
@@ -52,7 +52,7 @@
   <h5 class="order-amount font-weight-bold">
     Gesamtpreis (inkl. MwSt.):
   </h5>
-  <span>{{isCanceled ? order.invoice.amount * (-1) : order.invoice.amount.toFixed(2)}} EUR
+  <span>{{isCanceled ? order.invoice.amount * (-1) : order.invoice.amount.toFixed(2)}} €
     <button class="btn btn-primary float-right mr-4" *ngIf="!isCanceled&&!isCancelable"
             (click)="attemptToCancelInvoiceModal()"> Stornieren
     </button>
