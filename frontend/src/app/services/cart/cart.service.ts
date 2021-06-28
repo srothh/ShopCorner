@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Globals} from '../global/globals';
+import {Globals} from '../../global/globals';
 import {Observable} from 'rxjs';
-import {Cart} from '../dtos/cart';
-import {CartItem} from '../dtos/cartItem';
+import {Cart} from '../../dtos/cart';
+import {CartItem} from '../../dtos/cartItem';
 
 
 @Injectable({

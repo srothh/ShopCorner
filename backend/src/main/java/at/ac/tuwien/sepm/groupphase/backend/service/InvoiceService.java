@@ -2,8 +2,8 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Invoice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceType;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
@@ -49,7 +49,7 @@ public interface InvoiceService {
      * Returns amount of invoices in the database.
      *
      * @return The amount of invoices in the database
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     Long getInvoiceCount();
 
@@ -58,7 +58,7 @@ public interface InvoiceService {
      *
      * @param invoice is the invoice to be canceled
      * @return The canceled invoice from the database
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     Invoice setInvoiceCanceled(Invoice invoice);
 
@@ -66,7 +66,7 @@ public interface InvoiceService {
      * Returns amount of customerInvoices in the database.
      *
      * @return The amount of customer invoices in the database
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     Long getCustomerInvoiceCount();
 
@@ -74,7 +74,7 @@ public interface InvoiceService {
      * Returns amount of canceledInvoices in the database.
      *
      * @return The amount of canceled invoices in the database
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     Long getCanceledInvoiceCount();
 
@@ -90,9 +90,9 @@ public interface InvoiceService {
     /**
      * Returns page with all needed Invoices.
      *
-     * @param page which should be returned
+     * @param page        which should be returned
      * @param invoiceType of invoices which should be returned
-     * @param pageCount amount of invoices per page
+     * @param pageCount   amount of invoices per page
      * @return Page with all Invoices with right permission
      */
     Page<Invoice> findAll(int page, int pageCount, InvoiceType invoiceType);
@@ -101,10 +101,18 @@ public interface InvoiceService {
      * Returns all Invoices in specified time period.
      *
      * @param start of time period
-     * @param end of time period
+     * @param end   of time period
      * @return List of Invoices in time period
-     * @throws RuntimeException  upon encountering errors with the database
+     * @throws RuntimeException upon encountering errors with the database
      */
     List<Invoice> findByDate(LocalDateTime start, LocalDateTime end);
+
+    /**
+     * Returns the count of invoices in the given year.
+     *
+     * @param firstDateOfYear the start of the year to return the count of
+     * @return The count of invoices for the given year
+     */
+    long getInvoiceCountByYear(LocalDateTime firstDateOfYear);
 
 }

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Invoice} from '../../../dtos/invoice';
-import {InvoiceService} from '../../../services/invoice.service';
+import {InvoiceService} from '../../../services/invoice/invoice.service';
 import {Customer} from '../../../dtos/customer';
 import {Promotion} from '../../../dtos/promotion';
 

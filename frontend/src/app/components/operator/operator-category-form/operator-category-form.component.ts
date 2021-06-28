@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Category} from '../../../dtos/category';
-import {CategoryService} from '../../../services/category.service';
+import {CategoryService} from '../../../services/category/category.service';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute, Router} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
@@ -116,10 +116,6 @@ export class OperatorCategoryFormComponent implements OnInit {
     const isWhitespace = (control.value || '').trim().length < 3;
     const isValid = !isWhitespace;
     return isValid ? null : {whitespace: true};
-  }
-
-  goBackToCategoriesOverview() {
-    this.router.navigate(['operator/categories']).then();
   }
 
   getPermission(): string {

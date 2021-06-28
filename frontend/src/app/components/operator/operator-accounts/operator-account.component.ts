@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
-import {OperatorService} from '../../../services/operator.service';
+import {OperatorService} from '../../../services/operator/operator.service';
 import {Permissions} from '../../../dtos/permissions.enum';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {Pagination} from '../../../dtos/pagination';

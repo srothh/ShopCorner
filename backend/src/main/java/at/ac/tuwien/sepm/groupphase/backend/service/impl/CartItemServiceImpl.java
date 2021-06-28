@@ -55,7 +55,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public void deleteCartItemById(Long id) {
-        LOGGER.trace("deleteCartItemById({},{})", id);
+        LOGGER.trace("deleteCartItemById({})", id);
         this.cartItemRepository.deleteById(id);
     }
 

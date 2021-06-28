@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class ShopSettings {
@@ -17,18 +16,18 @@ public class ShopSettings {
     private static final String phoneNumberKey = "phoneNumber";
     private static final String emailKey = "email";
 
-    String title;
-    String logo;
-    String bannerTitle;
-    String bannerText;
-    String street;
-    String houseNumber;
-    int stairNumber;
-    String doorNumber;
-    int postalCode;
-    String city;
-    String phoneNumber;
-    String email;
+    private String title;
+    private String logo;
+    private String bannerTitle;
+    private String bannerText;
+    private String street;
+    private String houseNumber;
+    private int stairNumber;
+    private String doorNumber;
+    private int postalCode;
+    private String city;
+    private String phoneNumber;
+    private String email;
 
     public String getTitle() {
         return title;

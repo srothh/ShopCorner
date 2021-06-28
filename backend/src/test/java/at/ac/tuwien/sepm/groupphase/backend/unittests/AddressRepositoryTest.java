@@ -17,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ActiveProfiles("test")
-public class AddressRepositoryTest implements TestData {
+class AddressRepositoryTest implements TestData {
     @Autowired
     private AddressRepository addressRepository;
 
     @Test
-    public void givenNothing_whenSaveAddress_thenFindListWithOneAddressAndFindElementById() {
+    void givenNothing_whenSaveAddress_thenFindListWithOneAddressAndFindElementById() {
         Address address = new Address(0L,TEST_ADDRESS_STREET,TEST_ADDRESS_POSTALCODE,TEST_ADDRESS_HOUSENUMBER,0,"0");
         addressRepository.save(address);
         assertAll(

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Invoice} from '../../../dtos/invoice';
-import {InvoiceService} from '../../../services/invoice.service';
+import {InvoiceService} from '../../../services/invoice/invoice.service';
 import {Pagination} from '../../../dtos/pagination';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {NgdbModalActionComponent} from '../../common/ngbd-modal-action/ngdb-modal-action.component';

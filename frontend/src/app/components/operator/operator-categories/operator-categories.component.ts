@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Category} from '../../../dtos/category';
-import {CategoryService} from '../../../services/category.service';
+import {CategoryService} from '../../../services/category/category.service';
 import {Router, UrlSerializer} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -75,7 +75,7 @@ export class OperatorCategoriesComponent implements OnInit {
   goToCategoryDetails(selectedCategory: Category, event) {
     const targetHTMLElement = event.target.toString();
     if (!(targetHTMLElement.includes('HTMLLabelElement') || targetHTMLElement.includes('HTMLInputLabel'))) {
-      this.router.navigate(['operator/categories/' + selectedCategory.id], {state: [selectedCategory]}).then();
+      this.router.navigate(['operator/categories/' + selectedCategory.id], { state: [selectedCategory]}).then();
     }
   }
 

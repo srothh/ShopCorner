@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Order} from '../../../dtos/order';
 import {Pagination} from '../../../dtos/pagination';
-import {OrderService} from '../../../services/order.service';
-import {InvoiceService} from '../../../services/invoice.service';
+import {OrderService} from '../../../services/order/order.service';
+import {InvoiceService} from '../../../services/invoice/invoice.service';
 import {faCog} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -74,7 +74,6 @@ export class OperatorOrderComponent implements OnInit {
   private loadOrdersForPage() {
     this.orderService.getOrdersPage(this.page, this.pageSize).subscribe(
       (paginationDto: Pagination<Order>) => {
-        console.log(paginationDto);
         this.orders = paginationDto.items;
         this.collectionSize = paginationDto.totalItemCount;
       },

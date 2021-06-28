@@ -4,8 +4,8 @@ import {Router} from '@angular/router';
 import {TaxRate} from '../../../dtos/tax-rate';
 import {Category} from '../../../dtos/category';
 import {forkJoin} from 'rxjs';
-import {CategoryService} from '../../../services/category.service';
-import {TaxRateService} from '../../../services/tax-rate.service';
+import {CategoryService} from '../../../services/category/category.service';
+import {TaxRateService} from '../../../services/tax-rate/tax-rate.service';
 
 @Component({
   selector: 'app-operator-add-product',
@@ -55,9 +55,4 @@ export class OperatorAddProductComponent implements OnInit {
   vanishError() {
     this.errorOccurred = false;
   }
-
-  goBackToProductsOverview() {
-    this.router.navigate(['/operator/products']).then();
-  }
-
 }

@@ -1,17 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.OneToMany;
-import javax.persistence.FetchType;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "tax_rate")
@@ -80,11 +74,11 @@ public class TaxRate {
     }
 
     public static final class TaxRateBuilder {
-        public Long id;
-        public Double percentage;
-        public Double calculationFactor;
+        Long id;
+        Double percentage;
+        Double calculationFactor;
 
-        public TaxRateBuilder(){}
+        TaxRateBuilder(){}
 
         public static TaxRateBuilder getTaxRateBuilder() {
             return new TaxRateBuilder();

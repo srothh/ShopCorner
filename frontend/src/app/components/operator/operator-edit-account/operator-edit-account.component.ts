@@ -2,9 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {OperatorService} from '../../../services/operator.service';
+import {OperatorService} from '../../../services/operator/operator.service';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
-
 
 @Component({
   selector: 'app-operator-edit-account',
@@ -12,7 +11,6 @@ import {OperatorAuthService} from '../../../services/auth/operator-auth.service'
   styleUrls: ['./operator-edit-account.component.scss']
 })
 export class OperatorEditAccountComponent implements OnInit {
-
   user: string;
   operator: Operator;
   password = 'unchanged';
@@ -28,9 +26,7 @@ export class OperatorEditAccountComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.user = this.authenticationService.getUser();
-
     this.operatorService.getOperatorByLoginName(this.user)
       .subscribe(operator => this.operator = operator, error => {
         console.log(error);
@@ -52,9 +48,7 @@ export class OperatorEditAccountComponent implements OnInit {
   }
 
   save(): void {
-
     if (this.updateForm.valid) {
-
       this.operator = new Operator(this.operator.id, this.updateForm.controls.name.value,
         this.updateForm.controls.loginName.value,
         this.password, this.updateForm.controls.email.value,
@@ -79,9 +73,7 @@ export class OperatorEditAccountComponent implements OnInit {
     } else {
       console.log('Invalid input');
     }
-
   }
-
 
   /**
    * Updates user data not related to the password.
@@ -105,6 +97,4 @@ export class OperatorEditAccountComponent implements OnInit {
       }
     });
   }
-
-
 }

@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ActiveProfiles("test")
-public class InvoiceRepositoryTest implements TestData {
+class InvoiceRepositoryTest implements TestData {
     private final InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
     private final InvoiceItem invoiceItem = new InvoiceItem();
     private final Invoice invoice = new Invoice();
@@ -55,7 +55,7 @@ public class InvoiceRepositoryTest implements TestData {
 
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         product.setId(0L);
         product.setName(TEST_PRODUCT_NAME);
         product.setDescription(TEST_PRODUCT_DESCRIPTION);
@@ -94,7 +94,7 @@ public class InvoiceRepositoryTest implements TestData {
 
 
     @Test
-    public void givenAllProperties_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
+    void givenAllProperties_whenSaveInvoice_thenFindListWithOneInvoiceAndFindElementById() {
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
         invoiceItemRepository.save(invoiceItem);
         Pageable returnPage = PageRequest.of(0, 15);
@@ -107,7 +107,7 @@ public class InvoiceRepositoryTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenGetInvoice_thenFindListWithOneInvoiceAndFindElementById() {
+    void givenAllProperties_whenGetInvoice_thenFindListWithOneInvoiceAndFindElementById() {
         invoiceItem.setInvoice(invoiceRepository.save(invoice));
         invoiceItemRepository.save(invoiceItem);
         Pageable returnPage = PageRequest.of(0, 15);
@@ -117,7 +117,7 @@ public class InvoiceRepositoryTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenGetInvoice_thenFindListWIthOneInvoiceWithTheCustomer(){
+    void givenAllProperties_whenGetInvoice_thenFindListWIthOneInvoiceWithTheCustomer(){
         //First Address for customer
         Address address = new Address(TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
         addressRepository.save(address);

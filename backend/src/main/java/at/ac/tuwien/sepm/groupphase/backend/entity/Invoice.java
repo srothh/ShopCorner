@@ -47,7 +47,7 @@ public class Invoice {
     @NotNull(message = "InvoiceType darf nicht null sein")
     @Column(name = "invoiceType")
     @Enumerated(EnumType.STRING)
-    InvoiceType invoiceType;
+    private InvoiceType invoiceType;
 
     public Invoice() {
         items = new HashSet<>();

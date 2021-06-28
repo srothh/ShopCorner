@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {ShopService} from './services/shop.service';
+import {ShopService} from './services/shop/shop.service';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -7,12 +8,12 @@ import {ShopService} from './services/shop.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'ShopCorner';
 
-  constructor(private shopService: ShopService) {
+  constructor(private shopService: ShopService, private titleService: Title) {
   }
 
   ngOnInit(): void {
     this.shopService.loadSettings().subscribe();
+    this.titleService.setTitle(this.shopService.getSettings().title);
   }
 }

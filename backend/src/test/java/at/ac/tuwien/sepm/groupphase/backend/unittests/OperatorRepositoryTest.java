@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ActiveProfiles("test")
-public class OperatorRepositoryTest implements TestData {
+class OperatorRepositoryTest implements TestData {
 
     private final Operator admin = new Operator(TEST_ADMIN_NAME, TEST_ADMIN_LOGINNAME, TEST_ADMIN_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PERMISSIONS);
     private final Operator employee = new Operator(TEST_EMPLOYEE_NAME, TEST_EMPLOYEE_LOGINNAME, TEST_EMPLOYEE_PASSWORD, TEST_EMPLOYEE_EMAIL, TEST_EMPLOYEE_PERMISSIONS);
@@ -30,7 +30,7 @@ public class OperatorRepositoryTest implements TestData {
     private OperatorRepository operatorRepository;
 
     @Test
-    public void givenNothing_whenSaveTwoOperators_thenFindOperatorsWithTwoElementsAndFindOperatorById() {
+    void givenNothing_whenSaveTwoOperators_thenFindOperatorsWithTwoElementsAndFindOperatorById() {
         operatorRepository.save(admin);
         operatorRepository.save(employee);
 
@@ -42,7 +42,7 @@ public class OperatorRepositoryTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenSaveTwoOperators_thenFindOperatorsWithPageAndPermissionWithOneElementEachAndFindOperatorById() {
+    void givenNothing_whenSaveTwoOperators_thenFindOperatorsWithPageAndPermissionWithOneElementEachAndFindOperatorById() {
         operatorRepository.save(admin);
         operatorRepository.save(employee);
         Pageable returnPage = PageRequest.of(0, 15);
@@ -56,7 +56,7 @@ public class OperatorRepositoryTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenSaveOperator_thenFindOperatorWithOneElementAndFindOperatorById() {
+    void givenNothing_whenSaveOperator_thenFindOperatorWithOneElementAndFindOperatorById() {
         Operator operator = new Operator(TEST_OPERATOR_NAME, TEST_OPERATOR_LOGINNAME, TEST_OPERATOR_PASSWORD, TEST_OPERATOR_EMAIL, TEST_OPERATOR_PERMISSION);
 
         operatorRepository.save(operator);
@@ -68,7 +68,7 @@ public class OperatorRepositoryTest implements TestData {
     }
 
     @Test
-    public void givenOneOperator_whenDeleteByIdOperator_thenFindAllEmpty() {
+    void givenOneOperator_whenDeleteByIdOperator_thenFindAllEmpty() {
         operatorRepository.save(admin);
 
         operatorRepository.deleteById(admin.getId());
@@ -79,7 +79,7 @@ public class OperatorRepositoryTest implements TestData {
     }
 
     @Test
-    public void givenOneOperator_whenSetPermissionById_thenFindAllAdminsReturnsListWithSizeOne() {
+    void givenOneOperator_whenSetPermissionById_thenFindAllAdminsReturnsListWithSizeOne() {
         operatorRepository.save(employee);
         Pageable returnPage = PageRequest.of(0, 15);
 
@@ -89,7 +89,7 @@ public class OperatorRepositoryTest implements TestData {
     }
 
     @Test
-    public void givenOneOperator_whenSetPermissionById_thenFindAllEmployeesReturnsListWithSizeOne() {
+    void givenOneOperator_whenSetPermissionById_thenFindAllEmployeesReturnsListWithSizeOne() {
         operatorRepository.save(admin);
         Pageable returnPage = PageRequest.of(0, 15);
 

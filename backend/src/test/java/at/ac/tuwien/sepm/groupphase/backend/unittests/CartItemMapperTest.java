@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class CartItemMapperTest implements TestData {
+class CartItemMapperTest implements TestData {
     private static final CartItem cartItem1 = new CartItem();
     private static final CartItem cartItem2 = new CartItem();
 
@@ -40,7 +40,7 @@ public class CartItemMapperTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenMapCartItemDtoToEntity_thenEntityHasAllProperties() {
+    void givenAllProperties_whenMapCartItemDtoToEntity_thenEntityHasAllProperties() {
         CartItemDto cartItemDto = cartItemMapper.cartItemToCartItemDto(cartItem1);
         assertAll(
             () -> assertEquals(cartItem1.getProductId(), cartItemDto.getProductId()),
@@ -49,7 +49,7 @@ public class CartItemMapperTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenMapSetWithTwoCartItemDtoToEntity_thenEntityHasAllProperties() {
+    void givenAllProperties_whenMapSetWithTwoCartItemDtoToEntity_thenEntityHasAllProperties() {
         Set<CartItem> itemSet = new HashSet<>();
         itemSet.add(cartItem1);
         itemSet.add(cartItem2);

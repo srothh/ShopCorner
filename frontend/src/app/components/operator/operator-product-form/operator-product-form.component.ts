@@ -183,7 +183,6 @@ export class OperatorProductFormComponent implements OnInit {
   }
 
   updateProduct() {
-    console.log(this.newProduct);
     this.productService.updateProduct(this.newProduct.id, this.newProduct).subscribe(() => {
         this.inEditMode = true;
         this.addProductEnabled = false;

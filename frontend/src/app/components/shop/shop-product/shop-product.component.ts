@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CategoryService} from '../../../services/category.service';
+import {CategoryService} from '../../../services/category/category.service';
 import {Category} from '../../../dtos/category';
 import {ProductService} from '../../../services/product/product.service';
 import {faFilter, faSearch} from '@fortawesome/free-solid-svg-icons';

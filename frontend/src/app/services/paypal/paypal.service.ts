@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Globals} from '../global/globals';
-import {Order} from '../dtos/order';
+import {Globals} from '../../global/globals';
+import {Order} from '../../dtos/order';
 import {Observable} from 'rxjs';
-import {CustomerAuthService} from './auth/customer-auth.service';
-import {ConfirmedPayment} from '../dtos/confirmedPayment';
+import {CustomerAuthService} from '../auth/customer-auth.service';
+import {ConfirmedPayment} from '../../dtos/confirmedPayment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +14,6 @@ export class PaypalService {
 
   constructor(private httpClient: HttpClient, private globals: Globals, private customerAuthService: CustomerAuthService) {
   }
-  static confirmedPaypalMapper(cp: ConfirmedPayment){
-    return new ConfirmedPayment(cp.id, cp.paymentId, cp.payerId);
-  }
 
   /** Initiates a new payment
    *
@@ -24,7 +21,7 @@ export class PaypalService {
    * @return the the url redirecting to the paypal service
    */
   createPayment(order: Order): Observable<string> {
-    const options  = {
+    const options = {
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`),
       responseType: 'text' as 'text'
@@ -38,7 +35,7 @@ export class PaypalService {
    * @return the text with either 'successful payment' or 'not successful payment'
    */
   confirmPayment(confirmedPayment: ConfirmedPayment): Observable<string> {
-    const options  = {
+    const options = {
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${this.customerAuthService.getToken()}`),
       responseType: 'text' as 'text'
@@ -52,7 +49,7 @@ export class PaypalService {
    * @param payerId the payerId to look for in a ConfirmedPayment
    * @return the ConfirmedPayment with the given parameters
    */
-  getConfirmedPayment(paymentId: string, payerId: string): Observable<ConfirmedPayment>{
+  getConfirmedPayment(paymentId: string, payerId: string): Observable<ConfirmedPayment> {
     const params = new HttpParams()
       .set(this.globals.requestParamKeys.paypal.payerId, payerId)
       .set(this.globals.requestParamKeys.paypal.paymentId, paymentId);

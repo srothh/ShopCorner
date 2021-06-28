@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class InvoiceItemMappingTest implements TestData {
+class InvoiceItemMappingTest implements TestData {
         private static final InvoiceItem invoiceItem = new InvoiceItem();
         private static final InvoiceItem invoiceItem2 = new InvoiceItem();
 
@@ -85,7 +85,7 @@ public class InvoiceItemMappingTest implements TestData {
 
 
     @Test
-    public void givenAllProperties_whenMapSetWithTwoInvoiceItemDtoToEntity_thenGetListWithSizeTwoAndAllProperties() {
+    void givenAllProperties_whenMapSetWithTwoInvoiceItemDtoToEntity_thenGetListWithSizeTwoAndAllProperties() {
         Set<InvoiceItem> invoiceItemSet = new LinkedHashSet<>();
         invoiceItemSet.add(invoiceItem);
         invoiceItemSet.add(invoiceItem2);
@@ -102,7 +102,7 @@ public class InvoiceItemMappingTest implements TestData {
     }
 
     @Test
-    public void givenAllProperties_whenMapInvoiceItemDtoToEntity_thenEntityHasAllProperties() {
+    void givenAllProperties_whenMapInvoiceItemDtoToEntity_thenEntityHasAllProperties() {
         InvoiceItemDto invoiceItemDto = invoiceItemMapper.entityToDto(invoiceItem);
         assertAll(
             () -> assertEquals(invoiceItem.getId(), invoiceItemDto.getId()),

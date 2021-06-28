@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {CategoryService} from '../../../services/category.service';
-import {TaxRateService} from '../../../services/tax-rate.service';
+import {CategoryService} from '../../../services/category/category.service';
+import {TaxRateService} from '../../../services/tax-rate/tax-rate.service';
 import {Category} from '../../../dtos/category';
 import {TaxRate} from '../../../dtos/tax-rate';
 import {forkJoin} from 'rxjs';
@@ -19,10 +19,8 @@ export class OperatorProductDetailsComponent implements OnInit {
   product: Product;
   categoryId: number;
   taxRateId: number;
-  // properties for drop-down
   categories: Category[];
   taxRates: TaxRate[];
-  // util properties
   shouldFetch: boolean;
   errorOccurred: boolean;
   errorMessage: string;

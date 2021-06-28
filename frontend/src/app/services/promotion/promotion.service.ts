@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Globals} from '../global/globals';
-import {OperatorAuthService} from './auth/operator-auth.service';
+import {Globals} from '../../global/globals';
+import {OperatorAuthService} from '../auth/operator-auth.service';
 import {Observable} from 'rxjs';
-import {Pagination} from '../dtos/pagination';
-import {Promotion} from '../dtos/promotion';
+import {Pagination} from '../../dtos/pagination';
+import {Promotion} from '../../dtos/promotion';
 
 @Injectable({
   providedIn: 'root'

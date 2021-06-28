@@ -1,13 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.config.properties;
 
 import com.paypal.base.rest.APIContext;
-import com.paypal.base.rest.OAuthTokenCredential;
-import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Map;
 
 @Configuration
 public class PayPalProperties {
@@ -29,7 +25,7 @@ public class PayPalProperties {
         private String clientSecret;
         private String mode;
 
-        public String getClientId() {
+        String getClientId() {
             return clientId;
         }
 
@@ -37,7 +33,7 @@ public class PayPalProperties {
             this.clientId = clientId;
         }
 
-        public String getClientSecret() {
+        String getClientSecret() {
             return clientSecret;
         }
 
@@ -45,7 +41,7 @@ public class PayPalProperties {
             this.clientSecret = clientSecret;
         }
 
-        public String getMode() {
+        String getMode() {
             return mode;
         }
 

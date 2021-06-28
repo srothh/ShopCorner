@@ -3,5 +3,6 @@ export class TaxRate {
     public id: number,
     public percentage: number,
     public calculationFactor: number,
-  ){}
+  ) {
+  }
 }

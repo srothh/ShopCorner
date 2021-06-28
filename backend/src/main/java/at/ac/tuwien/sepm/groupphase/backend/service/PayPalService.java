@@ -5,8 +5,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Order;
 import com.paypal.base.rest.PayPalRESTException;
 import com.paypal.api.payments.Payment;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * A Service class handling business logic for PayPal specific tasks.
  */

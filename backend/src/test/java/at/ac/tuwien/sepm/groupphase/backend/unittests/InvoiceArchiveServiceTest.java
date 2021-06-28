@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class InvoiceArchiveServiceTest implements TestData {
+class InvoiceArchiveServiceTest implements TestData {
 
     private byte[] pdf;
     private String invoiceNumber;
@@ -65,7 +65,7 @@ public class InvoiceArchiveServiceTest implements TestData {
     private PdfGeneratorService pdfGeneratorService;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
         InvoiceItem invoiceItem = new InvoiceItem();
         Invoice newInvoice = new Invoice();
@@ -114,14 +114,14 @@ public class InvoiceArchiveServiceTest implements TestData {
     }
 
     @Test
-    public void createNewInvoiceArchived_thenReturnPdfAsByteArray() {
+    void createNewInvoiceArchived_thenReturnPdfAsByteArray() {
         invoiceArchivedRepository.deleteAll();
         byte[] savedPdf = this.invoiceArchiveService.createInvoiceArchive(this.invoiceNumber, this.pdf);
         assertEquals(this.pdf, savedPdf);
     }
 
     @Test
-    public void createNewInvoiceArchivedAndFindByInvoiceNumber_thenReturnPdfAsByteArray() {
+    void createNewInvoiceArchivedAndFindByInvoiceNumber_thenReturnPdfAsByteArray() {
         invoiceArchivedRepository.deleteAll();
         byte[] savedPdf = this.invoiceArchiveService.createInvoiceArchive(this.invoiceNumber, this.pdf);
         byte[] foundPdf = this.invoiceArchiveService.findByInvoiceNumber(this.invoiceNumber);
@@ -130,7 +130,7 @@ public class InvoiceArchiveServiceTest implements TestData {
     }
 
     @Test
-    public void createNewInvoiceArchivedAndCheckIfExists_thenReturnBoolean() {
+    void createNewInvoiceArchivedAndCheckIfExists_thenReturnBoolean() {
         invoiceArchivedRepository.deleteAll();
         byte[] savedPdf = this.invoiceArchiveService.createInvoiceArchive(this.invoiceNumber, this.pdf);
         boolean exists = this.invoiceArchiveService.invoiceExistsByInvoiceNumber(this.invoiceNumber);

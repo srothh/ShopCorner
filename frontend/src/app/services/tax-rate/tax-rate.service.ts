@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Globals} from '../global/globals';
+import {Globals} from '../../global/globals';
 import {Observable} from 'rxjs';
-import {TaxRate} from '../dtos/tax-rate';
+import {TaxRate} from '../../dtos/tax-rate';
 
 @Injectable({
   providedIn: 'root'

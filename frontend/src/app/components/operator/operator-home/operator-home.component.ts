@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Operator} from '../../../dtos/operator';
 import {Router} from '@angular/router';
 import {OperatorAuthService} from '../../../services/auth/operator-auth.service';
-import {OperatorService} from '../../../services/operator.service';
+import {OperatorService} from '../../../services/operator/operator.service';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -11,8 +11,6 @@ import {faEdit} from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./operator-home.component.scss']
 })
 export class OperatorHomeComponent implements OnInit {
-
-
   operator: Operator;
   user: string;
   error = false;

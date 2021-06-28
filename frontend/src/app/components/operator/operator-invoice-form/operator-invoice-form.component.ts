@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Product} from '../../../dtos/product';
 import {Invoice} from '../../../dtos/invoice';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {InvoiceService} from '../../../services/invoice.service';
+import {InvoiceService} from '../../../services/invoice/invoice.service';
 
 import {formatDate} from '@angular/common';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
@@ -128,7 +128,6 @@ export class OperatorInvoiceFormComponent implements OnInit {
     this.invoiceDto.amount = +this.total.toFixed(2);
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.invoiceType = InvoiceType.operator;
-    console.log(this.invoiceDto);
   }
 
 

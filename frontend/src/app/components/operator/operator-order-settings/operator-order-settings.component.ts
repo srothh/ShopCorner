@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {OrderService} from '../../../services/order.service';
+import {OrderService} from '../../../services/order/order.service';
 import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 

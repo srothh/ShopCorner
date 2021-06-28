@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Customer} from '../../../dtos/customer';
-import {CustomerService} from '../../../services/customer.service';
+import {CustomerService} from '../../../services/customer/customer.service';
 import {Pagination} from '../../../dtos/pagination';
 
 @Component({
@@ -57,7 +57,6 @@ export class OperatorCustomerComponent implements OnInit {
   private loadCustomersForPage() {
     this.customerService.getAllCustomersForPage(this.page, this.pageSize).subscribe(
       (paginationDto: Pagination<Customer>) => {
-        console.log(paginationDto);
         this.customers = paginationDto.items;
         this.collectionSize = paginationDto.totalItemCount;
       },
@@ -67,6 +66,4 @@ export class OperatorCustomerComponent implements OnInit {
       }
     );
   }
-
-
 }

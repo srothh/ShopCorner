@@ -170,13 +170,6 @@ public class ProductServiceImpl implements ProductService {
             .orElseThrow(() -> new NotFoundException(String.format("Produkt mit id %d konnte nicht gefunden werden", productId)));
     }
 
-    @Cacheable(value = "counts", key = "'products'")
-    @Override
-    public Long getProductsCount() {
-        LOGGER.trace("getProductsCount()");
-        return productRepository.count(ProductSpecifications.hasDeleted(false));
-    }
-
     @Caching(evict = {
         @CacheEvict(value = "productPages", allEntries = true),
         @CacheEvict(value = "counts", key = "'products'"),
@@ -200,9 +193,4 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
-    @Cacheable(value = "categoryCounts", key = "#category")
-    public Long getCountByCategory(Page<Product> page, Long category) {
-        return page.getTotalElements();
-    }
 }

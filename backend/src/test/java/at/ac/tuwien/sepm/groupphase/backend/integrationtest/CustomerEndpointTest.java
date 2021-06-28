@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class CustomerEndpointTest implements TestData {
+class CustomerEndpointTest implements TestData {
     @Autowired
     private MockMvc mockMvc;
 
@@ -80,7 +80,7 @@ public class CustomerEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPost_thenCustomerWithAllSetPropertiesPlusId() throws Exception {
+    void givenNothing_whenPost_thenCustomerWithAllSetPropertiesPlusId() throws Exception {
         CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(customerDto);
 
@@ -117,7 +117,7 @@ public class CustomerEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
+    void givenNothing_whenPostInvalid_then400() throws Exception {
         customer.setName(null);
         customer.setEmail(null);
         customer.setLoginName(null);
@@ -144,7 +144,7 @@ public class CustomerEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenAddressInvalid_then404() throws Exception {
+    void givenNothing_whenAddressInvalid_then404() throws Exception {
         customer.setAddress(null);
         CustomerRegistrationDto dto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(dto);
@@ -163,7 +163,7 @@ public class CustomerEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenFindAllCustomers_thenEmptyList() throws Exception {
+    void givenNothing_whenFindAllCustomers_thenEmptyList() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(CUSTOMER_BASE_URI + "?page=0&pageCount=1")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
@@ -179,7 +179,7 @@ public class CustomerEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoCustomers_whenFindAllWithPage_thenListWithSizeOneCustomersWithAllPropertiesExceptPassword()
+    void givenTwoCustomers_whenFindAllWithPage_thenListWithSizeOneCustomersWithAllPropertiesExceptPassword()
         throws Exception {
         CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
         String body = objectMapper.writeValueAsString(customerDto);
@@ -228,7 +228,7 @@ public class CustomerEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoCustomers_whenGetCount_thenArrayWithTwo()
+    void givenTwoCustomers_whenGetCount_thenArrayWithTwo()
         throws Exception {
 
         CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);
@@ -268,7 +268,7 @@ public class CustomerEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoCustomers_whenGetCount_thenTwoInCache()
+    void givenTwoCustomers_whenGetCount_thenTwoInCache()
         throws Exception {
 
         CustomerRegistrationDto customerDto = customerMapper.customerToCustomerRegistrationDto(customer);

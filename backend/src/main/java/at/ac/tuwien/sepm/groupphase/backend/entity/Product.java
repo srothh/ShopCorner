@@ -201,7 +201,7 @@ public class Product {
         private boolean deleted;
         private Long saleCount;
 
-        public ProductBuilder() {
+        ProductBuilder() {
         }
 
         public static ProductBuilder getProductBuilder() {

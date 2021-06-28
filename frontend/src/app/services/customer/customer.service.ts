@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Globals} from '../global/globals';
-import {Customer} from '../dtos/customer';
-import {OperatorAuthService} from './auth/operator-auth.service';
-import {Pagination} from '../dtos/pagination';
+import {Globals} from '../../global/globals';
+import {Customer} from '../../dtos/customer';
+import {OperatorAuthService} from '../auth/operator-auth.service';
+import {Pagination} from '../../dtos/pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -44,16 +44,6 @@ export class CustomerService {
       .set(this.globals.requestParamKeys.pagination.pageCount, String(pageCount));
 
     return this.httpClient.get<Pagination<Customer>>(this.customerBaseUri, {params, headers: this.getHeadersForOperator()});
-  }
-
-  /**
-   * Retrieves the amount of customers persisted in the backend.
-   *
-   * @return The number of registered customer accounts
-   */
-  getCustomerCount(): Observable<number> {
-    console.log('Get customer count');
-    return this.httpClient.get<number>(this.customerBaseUri + '/count', {headers: this.getHeadersForOperator()});
   }
 
   private getHeadersForOperator(): HttpHeaders {

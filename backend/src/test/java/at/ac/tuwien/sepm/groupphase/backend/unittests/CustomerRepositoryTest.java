@@ -19,13 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ActiveProfiles("test")
-public class CustomerRepositoryTest implements TestData {
+class CustomerRepositoryTest implements TestData {
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
     private AddressRepository addressRepository;
     @Test
-    public void givenNothing_whenSaveCustomer_thenFindListWithOneCustomerAndFindElementById() {
+    void givenNothing_whenSaveCustomer_thenFindListWithOneCustomerAndFindElementById() {
         Address address = new Address(0L, TEST_ADDRESS_STREET, TEST_ADDRESS_POSTALCODE, TEST_ADDRESS_HOUSENUMBER, 0, "0");
         address = addressRepository.save(address);
         Customer customer = new Customer(TEST_CUSTOMER_EMAIL, TEST_CUSTOMER_PASSWORD, TEST_CUSTOMER_NAME, TEST_CUSTOMER_LOGINNAME, address, 0L, "");

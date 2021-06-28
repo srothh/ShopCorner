@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class InvoiceArchiveRepositoryTest implements TestData {
+class InvoiceArchiveRepositoryTest implements TestData {
     private final InvoiceArchive invoiceArchive = new InvoiceArchive();
 
     @Autowired
@@ -58,7 +58,7 @@ public class InvoiceArchiveRepositoryTest implements TestData {
     private PdfGeneratorService pdfGeneratorService;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         InvoiceItemKey invoiceItemKey = new InvoiceItemKey();
         InvoiceItem invoiceItem = new InvoiceItem();
         Invoice newInvoice = new Invoice();
@@ -109,7 +109,7 @@ public class InvoiceArchiveRepositoryTest implements TestData {
     }
 
     @Test
-    public void createNewInvoiceArchived_thenReturnInvoiceArchive() {
+    void createNewInvoiceArchived_thenReturnInvoiceArchive() {
         invoiceArchivedRepository.deleteAll();
         InvoiceArchive archive = invoiceArchivedRepository.save(this.invoiceArchive);
         assertEquals(this.invoiceArchive, archive);

@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class PromotionEndpointTest implements TestData {
+class PromotionEndpointTest implements TestData {
 
     private final Promotion promotion = new Promotion(0L, TEST_PROMOTION_NAME, TEST_PROMOTION_DISCOUNT, LocalDateTime.now(), TEST_PROMOTION_EXPIRATIONDATE, TEST_PROMOTION_CODE, TEST_PROMOTION_MINIMUMORDERVALUE);
     private final Promotion promotion2 = new Promotion(0L, TEST_PROMOTION_NAME, TEST_PROMOTION_DISCOUNT, LocalDateTime.now(), TEST_PROMOTION_EXPIRATIONDATE, "testest", TEST_PROMOTION_MINIMUMORDERVALUE);
@@ -68,7 +68,7 @@ public class PromotionEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPost_thenPromotionWithAllSetPropertiesPlusId() throws Exception {
+    void givenNothing_whenPost_thenPromotionWithAllSetPropertiesPlusId() throws Exception {
         PromotionDto promotionDto = promotionMapper.promotionToPromotionDto(promotion);
         String body = objectMapper.writeValueAsString(promotionDto);
 
@@ -100,7 +100,7 @@ public class PromotionEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
+    void givenNothing_whenPostInvalid_then400() throws Exception {
         promotion.setName(null);
         promotion.setCode(null);
         PromotionDto dto = promotionMapper.promotionToPromotionDto(promotion);
@@ -126,7 +126,7 @@ public class PromotionEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenFindAllCustomers_thenEmptyList() throws Exception {
+    void givenNothing_whenFindAllCustomers_thenEmptyList() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get(PROMOTION_BASE_URI + "?page=0&pageCount=1")
             .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
             .andDo(print())
@@ -143,7 +143,7 @@ public class PromotionEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoPromotions_whenFindAllWithPage_thenListWithSizeTwoPromotionsWithAllProperties()
+    void givenTwoPromotions_whenFindAllWithPage_thenListWithSizeTwoPromotionsWithAllProperties()
         throws Exception {
         PromotionDto promotionDto = promotionMapper.promotionToPromotionDto(promotion);
         String body = objectMapper.writeValueAsString(promotionDto);
@@ -188,7 +188,7 @@ public class PromotionEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoCustomers_whenGetCount_thenArrayWithTwo()
+    void givenTwoCustomers_whenGetCount_thenArrayWithTwo()
         throws Exception {
         PromotionDto promotionDto = promotionMapper.promotionToPromotionDto(promotion);
         String body = objectMapper.writeValueAsString(promotionDto);
@@ -227,7 +227,7 @@ public class PromotionEndpointTest implements TestData {
     }
 
     @Test
-    public void givenTwoCustomers_whenGetCount_thenTwoInCache()
+    void givenTwoCustomers_whenGetCount_thenTwoInCache()
         throws Exception {
 
         PromotionDto promotionDto = promotionMapper.promotionToPromotionDto(promotion);

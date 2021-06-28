@@ -148,7 +148,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setPassword(passwordEncoder.encode(newPassword));
             customerRepository.save(customer);
         } else {
-            throw new ValidationException("Passwort konnte nicht upgedated werden");
+            throw new ValidationException("Das alte Passwort ist inkorrekt.");
         }
     }
 
@@ -192,10 +192,4 @@ public class CustomerServiceImpl implements CustomerService {
         LOGGER.trace("findCustomerById({})", id);
         return customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Kunde konnte nicht gefunden werden"));
     }
-
-    @Override
-    public Long getCountByCategory(Pageable page, Long category) {
-        return null;
-    }
-
 }

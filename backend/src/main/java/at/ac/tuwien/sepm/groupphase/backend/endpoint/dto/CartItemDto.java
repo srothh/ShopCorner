@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class CartItemDto {
 
-    Long id;
+    private Long id;
 
     @NotNull(message = "ProductId darf nicht null sein")
     private Long productId;

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Customer} from '../../../dtos/customer';
-import {MeService} from '../../../services/me.service';
-import {CartService} from '../../../services/cart.service';
+import {MeService} from '../../../services/me/me.service';
+import {CartService} from '../../../services/cart/cart.service';
 import {CartGlobals} from '../../../global/cartGlobals';
 import {Product} from '../../../dtos/product';
 import {Invoice} from '../../../dtos/invoice';
@@ -9,15 +9,15 @@ import {InvoiceItem} from '../../../dtos/invoiceItem';
 import {InvoiceItemKey} from '../../../dtos/invoiceItemKey';
 import {formatDate} from '@angular/common';
 import {Cart} from '../../../dtos/cart';
-import {OrderService} from '../../../services/order.service';
+import {OrderService} from '../../../services/order/order.service';
 import {Order} from '../../../dtos/order';
 import {Address} from '../../../dtos/address';
-import {PaypalService} from '../../../services/paypal.service';
+import {PaypalService} from '../../../services/paypal/paypal.service';
 import {Router} from '@angular/router';
 import {InvoiceType} from '../../../dtos/invoiceType.enum';
 import {CancellationPeriod} from '../../../dtos/cancellationPeriod';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {PromotionService} from '../../../services/promotion.service';
+import {PromotionService} from '../../../services/promotion/promotion.service';
 import {Promotion} from '../../../dtos/promotion';
 import {ProductService} from '../../../services/product/product.service';
 
@@ -27,7 +27,6 @@ import {ProductService} from '../../../services/product/product.service';
   styleUrls: ['./shop-checkout.component.scss']
 })
 export class ShopCheckoutComponent implements OnInit {
-
   customer: Customer = new Customer(0, '', '', '', '', new Address(0, '', 0, '', 0, '')
     , '');
   products: Product[];
@@ -93,10 +92,6 @@ export class ShopCheckoutComponent implements OnInit {
     return tax;
   }
 
-  vanishError() {
-    this.error = false;
-  }
-
   getCartItems() {
     this.cartService.getCart().subscribe((cart: Cart
     ) => {
@@ -124,6 +119,7 @@ export class ShopCheckoutComponent implements OnInit {
       });
     }
   }
+
   createInvoiceDto() {
     this.invoiceDto = new Invoice();
     this.invoiceDto.invoiceNumber = '';
@@ -138,6 +134,10 @@ export class ShopCheckoutComponent implements OnInit {
     this.invoiceDto.date = formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en');
     this.invoiceDto.customerId = this.customer.id;
     this.invoiceDto.invoiceType = InvoiceType.customer;
+  }
+
+  vanishError() {
+    this.error = false;
   }
 
   getPromotion() {
@@ -187,6 +187,4 @@ export class ShopCheckoutComponent implements OnInit {
       this.errorMessage = error;
     }));
   }
-
-
 }

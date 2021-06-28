@@ -1,10 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProductDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TaxRateDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ProductMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.TaxRateMapper;
-import at.ac.tuwien.sepm.groupphase.backend.service.ProductService;
 import at.ac.tuwien.sepm.groupphase.backend.service.TaxRateService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
@@ -14,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
 import java.lang.invoke.MethodHandles;

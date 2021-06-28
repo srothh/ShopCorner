@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.InvoiceItem;
-
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Objects;

@@ -1,17 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.OneToMany;
-import javax.persistence.FetchType;
-import javax.persistence.CascadeType;
-import javax.persistence.PreRemove;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -76,7 +70,7 @@ public class Category {
         private String name;
         private Set<Product> products;
 
-        public CategoryBuilder() {
+        CategoryBuilder() {
         }
 
         public static CategoryBuilder getCategoryBuilder() {

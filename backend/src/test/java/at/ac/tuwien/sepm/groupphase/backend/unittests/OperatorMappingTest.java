@@ -15,15 +15,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-
-public class OperatorMappingTest implements TestData {
+class OperatorMappingTest implements TestData {
 
     private final Operator admin = new Operator(0L, TEST_ADMIN_NAME, TEST_ADMIN_LOGINNAME, TEST_ADMIN_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PERMISSIONS);
     private final Operator employee = new Operator(1L, TEST_EMPLOYEE_NAME, TEST_EMPLOYEE_LOGINNAME, TEST_EMPLOYEE_PASSWORD, TEST_EMPLOYEE_EMAIL, TEST_EMPLOYEE_PERMISSIONS);
@@ -33,7 +30,7 @@ public class OperatorMappingTest implements TestData {
     private OperatorMapper operatorMapper;
 
     @Test
-    public void givenNothing_whenMapEntityToOverviewOperatorDto_thenDtoHasAllPropertiesExceptPassword() {
+    void givenNothing_whenMapEntityToOverviewOperatorDto_thenDtoHasAllPropertiesExceptPassword() {
         OverviewOperatorDto overviewOperatorDto = operatorMapper.operatorToOverviewOperatorDto(admin);
         assertAll(
             () -> assertEquals(0L, overviewOperatorDto.getId()),
@@ -45,7 +42,7 @@ public class OperatorMappingTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenMapListWithTwoOperatorEntitiesToOverviewOperatorDto_thenGetListWithSizeTwoAndAllPropertiesExceptPassword() {
+    void givenNothing_whenMapListWithTwoOperatorEntitiesToOverviewOperatorDto_thenGetListWithSizeTwoAndAllPropertiesExceptPassword() {
         List<Operator> operators = new ArrayList<>();
         operators.add(admin);
         operators.add(employee);
@@ -70,7 +67,7 @@ public class OperatorMappingTest implements TestData {
         );
     }
 
-    public void givenNothing_whenMapOperatorDtoToEntity_thenEntityHasAllProperties() {
+    void givenNothing_whenMapOperatorDtoToEntity_thenEntityHasAllProperties() {
         OperatorDto operatorDto = operatorMapper.entityToDto(operator);
         assertAll(
             () -> assertEquals(0L, operatorDto.getId()),
