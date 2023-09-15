@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
     public Order placeNewOrder(Order order, String session) throws IOException {
         LOGGER.trace("placeNewOrder({},{})", order, session);
         if (session.equals("default") || !this.cartService.validateSession(UUID.fromString(session))) {
-            throw new ServiceException("invalid sessionId");
+            throw new ServiceException("Ungültige Sitzung!");
         }
         order.setInvoice(this.invoiceService.createInvoice(order.getInvoice()));
         order.getInvoice().setOrderNumber(Long.toHexString(order.getInvoice().getId()));
